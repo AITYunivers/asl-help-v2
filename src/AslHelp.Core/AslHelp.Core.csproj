@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <TargetFramework>net481</TargetFramework>
+
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="AslHelp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System" />
+    <Using Include="System.Collections" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Diagnostics" />
+    <Using Include="System.IO" />
+    <Using Include="System.Linq" />
+    <Using Include="System.Reflection" />
+    <Using Include="System.Runtime.CompilerServices" />
+    <Using Include="System.Runtime.InteropServices" />
+    <Using Include="System.Threading" />
+    <Using Include="System.Threading.Tasks" />
+    <Using Include="System.Windows.Forms" />
+
+    <Using Include="LiveSplit.Model" />
+    <Using Include="LiveSplit.UI" />
+
+    <Using Alias="Debug" Include="AslHelp.Core.IO.Debug" />
+    <Using Alias="Module" Include="AslHelp.Core.Memory.Models.Module" />
+    <Using Alias="Script" Include="AslHelp.Core.LiveSplitInterop.Script" />
+    <Using Alias="Timer" Include="AslHelp.Core.LiveSplitInterop.Timer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Windows.Forms" />
+
+    <Reference Include="Irony" HintPath="..\..\ref\Irony.dll" />
+    <Reference Include="LiveSplit.Core" HintPath="..\..\ref\LiveSplit.Core.dll" />
+    <Reference Include="LiveSplit.ScriptableAutoSplit" HintPath="..\..\ref\LiveSplit.ScriptableAutoSplit.dll" />
+    <Reference Include="LiveSplit.View" HintPath="..\..\ref\LiveSplit.View.dll" />
+    <Reference Include="UpdateManager" HintPath="..\..\ref\UpdateManager.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Memory\Injection\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
+</Project>

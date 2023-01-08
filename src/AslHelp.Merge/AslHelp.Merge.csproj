@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ilmerge" Version="3.0.41" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AslHelp\AslHelp.csproj" />
+    <ProjectReference Include="..\AslHelp.Core\AslHelp.Core.csproj" />
+    <ProjectReference Include="..\AslHelp.Emu\AslHelp.Emu.csproj" />
+    <ProjectReference Include="..\AslHelp.GameMaker\AslHelp.GameMaker.csproj" />
+    <ProjectReference Include="..\AslHelp.Unity\AslHelp.Unity.csproj" />
+    <ProjectReference Include="..\AslHelp.Unreal\AslHelp.Unreal.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="set out=$(TargetDir)&#xD;&#xA;set /p lsdir=&lt;$(SolutionDir).lsdir&#xD;&#xA;&#xD;&#xA;$(ILMergeConsolePath) /out:%25out%25asl-help.dll ^&#xD;&#xA;  %25out%25AslHelp.dll ^&#xD;&#xA;  %25out%25AslHelp.Core.dll ^&#xD;&#xA;  %25out%25AslHelp.Emu.dll ^&#xD;&#xA;  %25out%25AslHelp.GameMaker.dll ^&#xD;&#xA;  %25out%25AslHelp.Unity.dll ^&#xD;&#xA;  %25out%25AslHelp.Unreal.dll&#xD;&#xA;&#xD;&#xA;if exist %25lsdir%25\Components\ (&#xD;&#xA;  copy %25out%25\asl-help.dll %25lsdir%25\Components\asl-help&#xD;&#xA;)" />
+  </Target>
+
+</Project>
