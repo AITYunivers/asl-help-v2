@@ -1,24 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp", "src\AslHelp\AslHelp.csproj", "{7B399498-7E93-4C49-892B-AE1A1EC5F525}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp.Emu", "src\AslHelp.Emu\AslHelp.Emu.csproj", "{7BCDA4BA-0A10-469D-BDDE-23D2DA58DBFD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp.GameMaker", "src\AslHelp.GameMaker\AslHelp.GameMaker.csproj", "{E027BCC1-88F7-44CF-9825-0C44B4C150D9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp.Unity", "src\AslHelp.Unity\AslHelp.Unity.csproj", "{14F387FA-8BBD-4996-8078-893C418C93CE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp.Unreal", "src\AslHelp.Unreal\AslHelp.Unreal.csproj", "{CF916438-976B-4A7C-8B8C-5E3E8579667D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp.Merge", "src\AslHelp.Merge\AslHelp.Merge.csproj", "{00B29C65-16C5-44E1-80D9-B4B410FD85C4}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{50B0001E-35EA-47CD-89F2-A4BA94B5A8E0}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.lsdir = .lsdir
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp", "src\AslHelp\AslHelp.csproj", "{7B399498-7E93-4C49-892B-AE1A1EC5F525}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp.Core", "src\AslHelp.Core\AslHelp.Core.csproj", "{9CCE5252-203B-41AF-B128-BE32617B4225}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp.Emu", "src\AslHelp.Emu\AslHelp.Emu.csproj", "{7BCDA4BA-0A10-469D-BDDE-23D2DA58DBFD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp.GameMaker", "src\AslHelp.GameMaker\AslHelp.GameMaker.csproj", "{E027BCC1-88F7-44CF-9825-0C44B4C150D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp.Merge", "src\AslHelp.Merge\AslHelp.Merge.csproj", "{00B29C65-16C5-44E1-80D9-B4B410FD85C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Native", "src\AslHelp.Native\AslHelp.Native.csproj", "{6EBD746C-ABC3-49E8-812D-F837FB659302}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp.Unity", "src\AslHelp.Unity\AslHelp.Unity.csproj", "{14F387FA-8BBD-4996-8078-893C418C93CE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp.Unreal", "src\AslHelp.Unreal\AslHelp.Unreal.csproj", "{CF916438-976B-4A7C-8B8C-5E3E8579667D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,10 @@ Global
 		{9CCE5252-203B-41AF-B128-BE32617B4225}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CCE5252-203B-41AF-B128-BE32617B4225}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CCE5252-203B-41AF-B128-BE32617B4225}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EBD746C-ABC3-49E8-812D-F837FB659302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EBD746C-ABC3-49E8-812D-F837FB659302}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EBD746C-ABC3-49E8-812D-F837FB659302}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EBD746C-ABC3-49E8-812D-F837FB659302}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

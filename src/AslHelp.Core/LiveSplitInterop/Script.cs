@@ -1,4 +1,5 @@
-﻿using AslHelp.Core.Reflection;
+﻿using AslHelp.Core.Exceptions;
+using AslHelp.Core.Reflection;
 using Irony.Parsing;
 using LiveSplit.ASL;
 using LiveSplit.UI.Components;
@@ -28,7 +29,7 @@ internal static class Script
                 return false;
             }
 
-            IEnumerable<ASLMethod> methods = script.GetFieldValue<IEnumerable<ASLMethod>>("_methods");
+            ASLScript.Methods methods = script.GetFieldValue<ASLScript.Methods>("_methods");
             if (methods.FirstOrDefault() is not ASLMethod method)
             {
                 return false;
@@ -40,8 +41,8 @@ internal static class Script
 
         if (component is null)
         {
-            Debug.Info("  => Failure! ASLComponent could not be found.");
-            throw new();
+            Debug.Info("    => Failure! ASLComponent could not be found.");
+            ThrowHelper.ThrowIOE("ASLComponent not found.");
         }
 
         _component = component;

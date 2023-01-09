@@ -4,10 +4,10 @@ public partial class Basic
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerable<nint> UnpureScanEnumerator(
-        Span<byte> memory,
+        byte[] memory,
         int offset,
-        ReadOnlySpan<ulong> values,
-        ReadOnlySpan<ulong> masks)
+        ulong[] values,
+        ulong[] masks)
     {
         const int UNROLLS = 8;
 
@@ -95,16 +95,16 @@ public partial class Basic
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerable<nint> PureScanEnumerator(
-        Span<byte> memory,
+        byte[] memory,
         int offset,
-        ReadOnlySpan<ulong> values)
+        ulong[] values)
     {
         const int UNROLLS = 8;
 
         int length = values.Length;
         int last = memory.Length - length - UNROLLS;
         ulong value0 = values[0];
-
+        
         int index = 0, matchIndex;
         while (index < last)
         {

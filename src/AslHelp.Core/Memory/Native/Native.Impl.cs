@@ -54,7 +54,7 @@ internal static unsafe partial class Native
         }
 
         int numModules = (int)(cbNeeded / Marshal.SizeOf<nint>());
-        ReadOnlySpan<nint> hModule = stackalloc nint[numModules];
+        nint[] hModule = new nint[numModules];
 
         if (!EnumProcessModulesEx(hProcess, hModule, cbNeeded, out _))
         {

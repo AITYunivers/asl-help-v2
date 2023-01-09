@@ -10,7 +10,7 @@ internal static unsafe partial class Native
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool EnumProcessModulesEx(nint hProcess, ReadOnlySpan<nint> hModule, uint cb, out uint cbNeeded)
     {
-        fixed (void* lphModule = hModule)
+        fixed (nint* lphModule = hModule)
         fixed (uint* lpcbNeeded = &cbNeeded)
         {
             return K32EnumProcessModulesEx(
