@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Core.Collections;
+﻿using AslHelp.Core.Exceptions;
+
+namespace AslHelp.Core.Collections;
 
 public abstract class CachedEnumerable<TKey, TValue> : IEnumerable<TValue> where TKey : notnull
 {
@@ -33,7 +35,8 @@ public abstract class CachedEnumerable<TKey, TValue> : IEnumerable<TValue> where
             }
             else
             {
-                throw new KeyNotFoundException(KeyNotFoundMessage(key));
+                ThrowHelper.Throw.KeyNotFound(KeyNotFoundMessage(key));
+                return default;
             }
         }
         protected set => _cache[key] = value;

@@ -104,7 +104,9 @@ internal static unsafe partial class Native
 
     private static int EnumSymbolsCallback(SYMBOL_INFOW* pSymInfo, uint SymbolSize, void* UserContext)
     {
-        Unsafe.AsRef<List<DebugSymbol>>(UserContext).Add(new(*pSymInfo));
+        DebugSymbol sym = new(*pSymInfo);
+        Unsafe.AsRef<Dictionary<string, DebugSymbol>>(UserContext)[sym.Name.ToLowerInvariant()] = sym;
+
         return 1;
     }
 

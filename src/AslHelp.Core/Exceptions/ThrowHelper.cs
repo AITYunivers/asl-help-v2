@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Exceptions;
 
-internal static class ThrowHelper
+internal static partial class ThrowHelper
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNull(object argument, string message = null, [CallerArgumentExpression(nameof(argument))] string paramName = null)
@@ -9,11 +9,11 @@ internal static class ThrowHelper
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                ThrowANE(paramName);
+                Throw.ArgumentNull(paramName);
             }
             else
             {
-                ThrowANE(paramName, message);
+                Throw.ArgumentNull(paramName, message);
             }
         }
     }
@@ -25,7 +25,7 @@ internal static class ThrowHelper
 
         if (process.HasExited)
         {
-            ThrowIOE("Process has exited.");
+            Throw.InvalidOperation("Process has exited.");
         }
     }
 
@@ -34,71 +34,28 @@ internal static class ThrowHelper
     {
         if (collection is null)
         {
-            ThrowANE(paramName);
+            Throw.ArgumentNull(paramName);
         }
 
         if (!collection.Any())
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                ThrowAE(paramName, "Collection cannot be empty.");
+                Throw.Argument(paramName, "Collection cannot be empty.");
             }
             else
             {
-                ThrowAE(paramName, message);
+                Throw.Argument(paramName, message);
             }
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfInvalid(nint address, string message = null, [CallerArgumentExpression(nameof(address))] string paramName = null)
+    public static void ThrowIfAddressInvalid(nint address, string message, [CallerArgumentExpression(nameof(address))] string paramName = null)
     {
         if (address <= 0)
         {
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                ThrowAOORE(paramName);
-            }
-            else
-            {
-                ThrowAOORE(paramName, message);
-            }
+            Throw.ArgumentOutOfRange(paramName, message);
         }
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowAE(string paramName, string message)
-    {
-        throw new ArgumentException(message, paramName);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowANE(string paramName)
-    {
-        throw new ArgumentNullException(paramName);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowANE(string paramName, string message)
-    {
-        throw new ArgumentNullException(paramName, message);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowAOORE(string paramName)
-    {
-        throw new ArgumentOutOfRangeException(paramName);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowAOORE(string paramName, string message)
-    {
-        throw new ArgumentOutOfRangeException(message, paramName);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowIOE(string message)
-    {
-        throw new InvalidOperationException(message);
     }
 }

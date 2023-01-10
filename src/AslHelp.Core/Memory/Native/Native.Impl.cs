@@ -14,7 +14,7 @@ internal static unsafe partial class Native
         int wow64;
         if (IsWow64Process(process.Handle, &wow64) == 0)
         {
-            throw new Win32Exception();
+            ThrowHelper.Throw.Win32();
         }
 
         return Environment.Is64BitOperatingSystem && wow64 == 0;
@@ -50,7 +50,7 @@ internal static unsafe partial class Native
 
         if (EnumProcessModulesEx(hProcess, null, 0, out uint cbNeeded))
         {
-            throw new Win32Exception();
+            ThrowHelper.Throw.Win32();
         }
 
         int numModules = (int)(cbNeeded / Marshal.SizeOf<nint>());
@@ -58,7 +58,7 @@ internal static unsafe partial class Native
 
         if (!EnumProcessModulesEx(hProcess, hModule, cbNeeded, out _))
         {
-            throw new Win32Exception();
+            ThrowHelper.Throw.Win32();
         }
 
         for (int i = 0; i < numModules; i++)
@@ -78,7 +78,7 @@ internal static unsafe partial class Native
                 yield break;
             }
 
-            yield return new(baseName, fileName, moduleInfo);
+            yield return new(process, baseName, fileName, moduleInfo);
         }
     }
 
@@ -91,12 +91,12 @@ internal static unsafe partial class Native
         {
             if (!Module32FirstW(snapshot, ref me))
             {
-                throw new Win32Exception();
+                ThrowHelper.Throw.Win32();
             }
 
             do
             {
-                yield return new(me);
+                yield return new(process, me);
             } while (Module32NextW(snapshot, ref me));
         }
         finally
@@ -129,14 +129,14 @@ internal static unsafe partial class Native
         }
     }
 
-    public static List<DebugSymbol> Symbols(this Module module, Process process)
+    public static Dictionary<string, DebugSymbol> Symbols(this Module module, Process process)
     {
         ThrowHelper.ThrowIfNullOrExited(process);
         ThrowHelper.ThrowIfNull(module);
 
         nint hProcess = process.Handle;
 
-        List<DebugSymbol> syms = new();
+        Dictionary<string, DebugSymbol> syms = new();
         void* pSyms = Unsafe.AsPointer(ref syms);
 
         getSymbols(null);
@@ -148,19 +148,19 @@ internal static unsafe partial class Native
         {
             if (!SymInitializeW(hProcess, pdbDirectory))
             {
-                throw new Win32Exception();
+                ThrowHelper.Throw.Win32();
             }
 
             try
             {
                 if (!SymLoadModuleExW(hProcess, module))
                 {
-                    throw new Win32Exception();
+                    ThrowHelper.Throw.Win32();
                 }
 
                 if (!SymEnumSymbolsW(hProcess, module, pSyms))
                 {
-                    throw new Win32Exception();
+                    ThrowHelper.Throw.Win32();
                 }
             }
             finally
@@ -188,7 +188,7 @@ internal static unsafe partial class Native
             if (WriteProcessMemory((void*)process.Handle, memory, pValue, length, &nWritten) == 0
                 || nWritten != length)
             {
-                throw new Win32Exception();
+                ThrowHelper.Throw.Win32();
             }
         }
 

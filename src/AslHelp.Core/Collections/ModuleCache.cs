@@ -2,7 +2,7 @@
 
 namespace AslHelp.Core.Collections;
 
-public class ModuleCache : CachedEnumerable<string, Module>
+public sealed class ModuleCache : CachedEnumerable<string, Module>
 {
     private readonly Process _process;
 

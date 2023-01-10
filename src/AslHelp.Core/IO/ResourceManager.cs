@@ -1,33 +1,47 @@
-﻿namespace AslHelp.Core.IO;
+﻿using AslHelp.Core.Exceptions;
+
+namespace AslHelp.Core.IO;
 
 internal static class ResourceManager
 {
-    public static string Unpack(string resource, string directory = null)
+    public static string UnpackResource(string resource, string directory)
     {
-        directory = directory is null ? Directory.GetCurrentDirectory() : Path.GetFullPath(directory);
-
-        if (!Directory.Exists(directory))
-        {
-            throw new IOException($"Directory '{directory}' does not exist.");
-        }
-
-        string file = Path.Combine(directory, resource);
-        if (File.Exists(file))
-        {
-            return file;
-        }
-
-        using Stream source = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
-
-        if (source is null)
-        {
-            throw new IOException($"Resource '{resource}' does not exist.");
-        }
-
-        using Stream destination = File.OpenWrite(file);
+        using Stream source = GetResourceStream(resource);
+        using FileStream destination = OpenWrite(directory, resource);
 
         source.CopyTo(destination);
 
-        return file;
+        return destination.Name;
+    }
+
+    public static Stream GetResourceStream(string resourceName)
+    {
+        Stream resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+
+        if (resourceStream is null)
+        {
+            ThrowHelper.Throw.FileNotFound(resourceName, "Unable to find the specified resource.");
+        }
+
+        return resourceStream;
+    }
+
+    public static FileStream OpenWrite(string fileName)
+    {
+        string path = Path.GetFullPath(fileName);
+        return File.OpenWrite(path);
+    }
+
+    public static FileStream OpenWrite(string directory, string fileName)
+    {
+        string path = Path.GetFullPath(directory);
+        if (!Directory.Exists(path))
+        {
+            ThrowHelper.Throw.DirectoryNotFound();
+        }
+
+        path = Path.Combine(path, fileName);
+
+        return File.OpenWrite(path);
     }
 }

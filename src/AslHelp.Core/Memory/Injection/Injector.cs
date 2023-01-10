@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Core.Memory.Injection;
+﻿using AslHelp.Core.Exceptions;
+
+namespace AslHelp.Core.Memory.Injection;
 
 internal static unsafe class Injector
 {
@@ -16,11 +18,12 @@ internal static unsafe class Injector
         modulePath = Path.GetFullPath(modulePath);
         if (!File.Exists(modulePath))
         {
-            throw new IOException($"File '{modulePath}' does not exist.");
+            ThrowHelper.Throw.FileNotFound(modulePath, $"Unable to find the specified file.");
         }
 
         nint libraryAlloc = process.AllocateRemoteString(modulePath);
 
+        moduleBaseAddress = 0;
         return true;
     }
 }
