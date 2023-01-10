@@ -21,8 +21,4 @@
     <Exec Command="set out=$(TargetDir)&#xD;&#xA;set /p lsdir=&lt;$(SolutionDir).lsdir&#xD;&#xA;&#xD;&#xA;$(ILMergeConsolePath) /out:%25out%25asl-help.dll ^&#xD;&#xA;  %25out%25AslHelp.dll ^&#xD;&#xA;  %25out%25AslHelp.Core.dll ^&#xD;&#xA;  %25out%25AslHelp.Emu.dll ^&#xD;&#xA;  %25out%25AslHelp.GameMaker.dll ^&#xD;&#xA;  %25out%25AslHelp.Unity.dll ^&#xD;&#xA;  %25out%25AslHelp.Unreal.dll&#xD;&#xA;&#xD;&#xA;if exist %25lsdir%25\Components\ (&#xD;&#xA;  copy %25out%25asl-help.dll %25lsdir%25\Components\asl-help&#xD;&#xA;)" />
   </Target>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="dotnet publish -r win-x64 -c Release $(SolutionDir)src/AslHelp.Native" />
-  </Target>
-
 </Project>

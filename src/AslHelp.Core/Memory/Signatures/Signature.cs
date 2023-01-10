@@ -47,7 +47,7 @@ public readonly ref struct Signature
 
                 if (!hasUpper || !hasLower)
                 {
-                    Pure = false;
+                    HasMasks = true;
                 }
             }
         }
@@ -68,7 +68,6 @@ public readonly ref struct Signature
 
         Offset = offset;
         Length = pattern.Length;
-        Pure = true;
 
         int length = (pattern.Length + 7) & ~7;
         Array.Resize(ref pattern, length);
@@ -82,5 +81,5 @@ public readonly ref struct Signature
     public ReadOnlySpan<ulong> Values { get; }
     public ReadOnlySpan<ulong> Masks { get; }
 
-    public bool Pure { get; }
+    public bool HasMasks { get; }
 }
