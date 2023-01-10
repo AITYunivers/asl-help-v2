@@ -12,9 +12,9 @@ internal static class CharExtensions
             return (byte)digit;
         }
 
-        char letter = (char)((c | 0x20) - 'A');
+        int letter = (c | 0x20) - 'a';
 
-        if (letter < 7)
+        if (letter < 6)
         {
             return (byte)(letter + 10);
         }

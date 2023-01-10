@@ -26,13 +26,13 @@ public unsafe ref struct ScanIterator
         _length = signature.Values.Length;
         _end = memory.Length - _length - UNROLLS;
 
-        for (int i = 0; i <= 8; i++)
+        for (int i = 1; i <= 8; i++)
         {
             _align[i] = alignment * i;
         }
     }
 
-    public int Current { get; set; }
+    public int Current { get; private set; }
 
     public bool MoveNext()
     {
@@ -41,7 +41,7 @@ public unsafe ref struct ScanIterator
 
     private unsafe bool NextPattern()
     {
-        (int length, int end, int next) = (_length, _end, _next);
+        int length = _length, end = _end, next = _next;
 
         fixed (byte* pMemory = _memory)
         fixed (int* pAlign = _align)
@@ -106,7 +106,7 @@ public unsafe ref struct ScanIterator
                     }
                 }
 
-                int match = next = sizeof(ulong);
+                int match = next + sizeof(ulong);
 
                 for (int i = 1; i < length; i++)
                 {
@@ -133,7 +133,7 @@ public unsafe ref struct ScanIterator
 
     private unsafe bool NextBytes()
     {
-        (int length, int end, int next) = (_length, _end, _next);
+        int length = _length, end = _end, next = _next;
 
         fixed (byte* pMemory = _memory)
         fixed (int* pAlign = _align)
@@ -198,7 +198,7 @@ public unsafe ref struct ScanIterator
                     }
                 }
 
-                int match = next = sizeof(ulong);
+                int match = next + sizeof(ulong);
 
                 for (int i = 1; i < length; i++)
                 {

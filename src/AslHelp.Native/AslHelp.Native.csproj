@@ -9,6 +9,15 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <PublishAot>true</PublishAot>
+
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
+    <StripSymbols>true</StripSymbols>
+
+    <IlcInvariantGlobalization>true</IlcInvariantGlobalization>
+    <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
+
+    <SelfContained>true</SelfContained>
   </PropertyGroup>
 
   <ItemGroup>
