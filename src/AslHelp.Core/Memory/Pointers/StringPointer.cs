@@ -2,7 +2,7 @@
 
 namespace AslHelp.Core.Memory.Pointers;
 
-public class StringPointer : PointerBase<string>
+public sealed class StringPointer : PointerBase<string>
 {
     private readonly int _length;
     private readonly ReadStringType _stringType;

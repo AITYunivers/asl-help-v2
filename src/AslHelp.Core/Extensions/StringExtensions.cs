@@ -26,7 +26,7 @@ internal static class StringExtensions
         }
     }
 
-    public static unsafe string Concat(this string[] source)
+    public static string Concat(this string[] source)
     {
         ThrowHelper.ThrowIfNullOrEmpty(source);
 

@@ -18,7 +18,7 @@ internal static unsafe partial class Native
     ///     otherwise, 0.
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
-    private static extern int ReadProcessMemory(
+    public static extern int ReadProcessMemory(
         void* hProcess,
         void* lpBaseAddress,
         void* lpBuffer,
@@ -40,7 +40,7 @@ internal static unsafe partial class Native
     ///     otherwise, 0.
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
-    private static extern int WriteProcessMemory(
+    public static extern int WriteProcessMemory(
         void* hProcess,
         void* lpBaseAddress,
         void* lpBuffer,
@@ -82,7 +82,7 @@ internal static unsafe partial class Native
     ///     otherwise, <see langword="null"/>.
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
-    private static extern void* VirtualAllocEx(
+    public static extern void* VirtualAllocEx(
         void* hProcess,
         void* lpAddress,
         nuint dwSize,
@@ -103,7 +103,7 @@ internal static unsafe partial class Native
     ///     otherwise, 0.
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
-    private static extern int VirtualFreeEx(
+    public static extern int VirtualFreeEx(
         void* hProcess,
         void* lpAddress,
         nuint dwSize,

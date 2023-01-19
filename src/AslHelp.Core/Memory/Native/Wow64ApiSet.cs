@@ -23,7 +23,7 @@ internal static unsafe partial class Native
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
     private static extern int IsWow64Process(
-        nint hProces,
+        void* hProces,
         int* Wow64Process);
 }
 #pragma warning restore IDE1006

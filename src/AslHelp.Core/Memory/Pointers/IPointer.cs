@@ -14,7 +14,8 @@ public interface IPointer
     void Reset();
 }
 
-public interface IPointer<T> : IPointer
+public interface IPointer<T>
+    : IPointer
 {
     new T Current { get; set; }
     new T Old { get; set; }

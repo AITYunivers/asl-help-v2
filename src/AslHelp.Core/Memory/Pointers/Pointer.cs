@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Memory.Pointers;
 
-public class Pointer<T> : PointerBase<T> where T : unmanaged
+public sealed class Pointer<T> : PointerBase<T> where T : unmanaged
 {
     public Pointer(IHelper helper, nint @base, params int[] offsets)
         : base(helper, @base, offsets) { }

@@ -13,6 +13,7 @@ internal static class Script
 
     public static void Init()
     {
+
         Debug.Info("  => Initializing script data...");
 
         IEnumerable<IComponent> components = Timer.Layout.Components.Prepend(Timer.Run.AutoSplitter?.Component);

@@ -50,15 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\AslHelp.Native\bin\Release\net7.0\win-x64\publish\AslHelp.Native.dll" />
+    <EmbeddedResource Include="..\..\x64\Release\AslHelp.Native.dll" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Memory\Injection\" />
-  </ItemGroup>
-
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="dotnet publish -r win-x64 -c Release $(SolutionDir)src/AslHelp.Native" />
-  </Target>
 
 </Project>

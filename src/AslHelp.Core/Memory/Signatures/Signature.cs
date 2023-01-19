@@ -3,7 +3,7 @@ using AslHelp.Core.Extensions;
 
 namespace AslHelp.Core.Memory.Signatures;
 
-public readonly ref struct Signature
+public sealed class Signature
 {
     public Signature(params string[] pattern)
         : this(0, pattern) { }
@@ -12,6 +12,8 @@ public readonly ref struct Signature
     {
         ThrowHelper.ThrowIfNullOrEmpty(pattern);
 
+        // We could potentially avoid this step and do concatenation, removal of whitespace,
+        // and parsing all in the same step. That would avoid two allocations.
         string signature = pattern.Concat().RemoveWhiteSpace();
 
         if (signature.Length % 2 != 0)
@@ -22,8 +24,10 @@ public readonly ref struct Signature
         int bytes = signature.Length / 2;
         int length = (bytes + 7) & ~7;
 
-        Span<byte> values = new byte[length];
-        Span<byte> masks = new byte[length];
+        // It would probably be better to allocate the ulong arrays directly instead of creating
+        // two byte spans and then converting them.
+        Span<byte> values = stackalloc byte[length];
+        Span<byte> masks = stackalloc byte[length];
 
         fixed (char* pSignature = signature)
         {
@@ -55,8 +59,8 @@ public readonly ref struct Signature
         Offset = offset;
         Length = bytes;
 
-        Values = MemoryMarshal.Cast<byte, ulong>(values);
-        Masks = MemoryMarshal.Cast<byte, ulong>(masks);
+        Values = MemoryMarshal.Cast<byte, ulong>(values).ToArray();
+        Masks = MemoryMarshal.Cast<byte, ulong>(masks).ToArray();
     }
 
     public Signature(params byte[] pattern)
@@ -69,17 +73,18 @@ public readonly ref struct Signature
         Offset = offset;
         Length = pattern.Length;
 
+        // There has to be a better way to do this.
         int length = (pattern.Length + 7) & ~7;
         Array.Resize(ref pattern, length);
 
-        Values = MemoryMarshal.Cast<byte, ulong>(pattern);
+        Values = MemoryMarshal.Cast<byte, ulong>(pattern).ToArray();
     }
 
     public int Offset { get; }
     public int Length { get; }
 
-    public ReadOnlySpan<ulong> Values { get; }
-    public ReadOnlySpan<ulong> Masks { get; }
+    public ulong[] Values { get; }
+    public ulong[] Masks { get; }
 
     public bool HasMasks { get; }
 }

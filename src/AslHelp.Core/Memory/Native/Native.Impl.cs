@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using AslHelp.Core.Exceptions;
+﻿using AslHelp.Core.Exceptions;
 using AslHelp.Core.Memory.Models;
 
 namespace AslHelp.Core.Memory;
@@ -12,7 +11,7 @@ internal static unsafe partial class Native
         ThrowHelper.ThrowIfNullOrExited(process);
 
         int wow64;
-        if (IsWow64Process(process.Handle, &wow64) == 0)
+        if (IsWow64Process((void*)process.Handle, &wow64) == 0)
         {
             ThrowHelper.Throw.Win32();
         }
@@ -136,7 +135,7 @@ internal static unsafe partial class Native
 
         nint hProcess = process.Handle;
 
-        Dictionary<string, DebugSymbol> syms = new();
+        Dictionary<string, DebugSymbol> syms = new(StringComparer.OrdinalIgnoreCase);
         void* pSyms = Unsafe.AsPointer(ref syms);
 
         getSymbols(null);
@@ -173,26 +172,44 @@ internal static unsafe partial class Native
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nint AllocateRemoteString(this Process process, string value)
     {
-        uint length = sizeof(char) * ((uint)value.Length + 1);
+        ThrowHelper.ThrowIfNullOrExited(process);
+
+        return (nint)AllocateRemoteString((void*)process.Handle, value);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void* AllocateRemoteString(void* hProcess, string value)
+    {
+        if (hProcess == null)
+        {
+            ThrowHelper.Throw.ArgumentNull(nameof(hProcess));
+        }
+
+        uint length = (uint)((value.Length + 1) * sizeof(char));
         void* memory = VirtualAllocEx(
-            (void*)process.Handle,
+            hProcess,
             null,
             length,
             MemState.MEM_COMMIT | MemState.MEM_RESERVE,
             MemProtect.PAGE_READWRITE);
 
+        if (memory == null)
+        {
+            ThrowHelper.Throw.Win32();
+        }
+
         fixed (char* pValue = value)
         {
             nuint nWritten;
 
-            if (WriteProcessMemory((void*)process.Handle, memory, pValue, length, &nWritten) == 0
+            if (WriteProcessMemory(hProcess, memory, pValue, length, &nWritten) == 0
                 || nWritten != length)
             {
                 ThrowHelper.Throw.Win32();
             }
         }
 
-        return (nint)memory;
+        return memory;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

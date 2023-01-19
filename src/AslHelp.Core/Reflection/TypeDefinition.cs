@@ -1,16 +1,21 @@
 ﻿namespace AslHelp.Core.Reflection;
 
-public sealed class TypeDefinition
+public sealed class TypeDefinition<T>
+    : ITypeDefinition<T>
+    where T : unmanaged
 {
-    public TypeDefinition(Type type)
+    public T Default { get; } = default;
+    public unsafe int Size { get; } = sizeof(T);
+
+    object ITypeDefinition.Default => Default;
+
+    public unsafe T Convert(byte* buffer)
     {
-        Type = type;
-        Size = Marshal.SizeOf(type);
-        Default = Activator.CreateInstance(type);
+        return Unsafe.ReadUnaligned<T>(buffer);
     }
 
-    public Type Type { get; }
-    public int Size { get; }
-
-    public object Default { get; }
+    unsafe object ITypeDefinition.Convert(byte* buffer)
+    {
+        return Convert(buffer);
+    }
 }

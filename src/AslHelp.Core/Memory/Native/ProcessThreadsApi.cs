@@ -31,7 +31,7 @@ internal static unsafe partial class Native
     /// <param name="dwCreationFlags">The flags that control the creation of the thread.</param>
     /// <param name="lpThreadId">Unused.</param>
     /// <returns>
-    ///     A handle to the new thread if function succeeds,
+    ///     A handle to the new thread if the function succeeds,
     ///     otherwise, <see langword="null"/>.
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
@@ -43,4 +43,22 @@ internal static unsafe partial class Native
         void* lpParameter,
         uint dwCreationFlags,
         uint* lpThreadId);
+
+    /// <summary>
+    ///     Opens an existing local process object.<br/>
+    ///     For further information see:
+    ///     <i><see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess">OpenProcess function (processthreadsapi.h)</see></i>.
+    /// </summary>
+    /// <param name="dwDesiredAccess">The access to the process object.</param>
+    /// <param name="bInheritHandle">If this value is non-zero, processes created by this process will inherit the handle. Otherwise, the processes do not inherit this handle.</param>
+    /// <param name="dwProcessId">The identifier of the local process to be opened.</param>
+    /// <returns>
+    ///     An open handle to the specified process if the function succeeds,
+    ///     otherwise, <see langword="null"/>.
+    /// </returns>
+    [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
+    private static extern void* OpenProcess(
+        uint dwDesiredAccess,
+        int bInheritHandle,
+        uint dwProcessId);
 }

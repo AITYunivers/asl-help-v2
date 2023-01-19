@@ -4,11 +4,11 @@ using Microsoft.CSharp;
 
 namespace AslHelp.Core.Reflection;
 
-internal static class TypeDefinitionFactory
+public static class TypeDefinitionFactory
 {
     private readonly static CSharpCodeProvider _codeProvider = new();
 
-    public static TypeDefinition CreateFromSource(string source, params string[] references)
+    public static ITypeDefinition CreateFromSource(string source, params string[] references)
     {
         CompilerParameters parameters = new()
         {
@@ -44,7 +44,7 @@ internal static class TypeDefinitionFactory
             TypeDefinitionCompilerException.ThrowIfNotValueType();
         }
 
-        return new(target);
+        return (ITypeDefinition)Activator.CreateInstance(typeof(TypeDefinition<>).MakeGenericType(target));
     }
 
     public static void Dispose()

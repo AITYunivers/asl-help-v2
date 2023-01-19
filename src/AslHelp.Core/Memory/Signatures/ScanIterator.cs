@@ -1,22 +1,24 @@
 ﻿namespace AslHelp.Core.Memory.Signatures;
 
-public unsafe ref struct ScanIterator
+public sealed unsafe class ScanEnumerator
+    : IEnumerator<int>,
+    IEnumerable<int>
 {
     private const int UNROLLS = 8;
 
-    private readonly ReadOnlySpan<byte> _memory;
-    private readonly ReadOnlySpan<ulong> _values;
-    private readonly ReadOnlySpan<ulong> _masks;
+    private readonly byte[] _memory;
+    private readonly ulong[] _values;
+    private readonly ulong[] _masks;
 
     private readonly bool _hasMasks;
     private readonly int _length;
     private readonly int _end;
 
-    private readonly Span<int> _align = new int[9];
+    private readonly int[] _align = new int[9];
 
     private int _next;
 
-    public ScanIterator(ReadOnlySpan<byte> memory, Signature signature, int alignment = 1)
+    public ScanEnumerator(byte[] memory, Signature signature, int alignment = 1)
     {
         _memory = memory;
         _values = signature.Values;
@@ -33,6 +35,7 @@ public unsafe ref struct ScanIterator
     }
 
     public int Current { get; private set; }
+    object IEnumerator.Current => Current;
 
     public bool MoveNext()
     {
@@ -51,21 +54,21 @@ public unsafe ref struct ScanIterator
 
             while (next < end)
             {
-                if ((*(ulong*)pMemory[next] & mask0) != value0)
+                if ((*(ulong*)(pMemory + next) & mask0) != value0)
                 {
-                    if ((*(ulong*)pMemory[next + pAlign[1]] & mask0) != value0)
+                    if ((*(ulong*)(pMemory + next + pAlign[1]) & mask0) != value0)
                     {
-                        if ((*(ulong*)pMemory[next + pAlign[2]] & mask0) != value0)
+                        if ((*(ulong*)(pMemory + next + pAlign[2]) & mask0) != value0)
                         {
-                            if ((*(ulong*)pMemory[next + pAlign[3]] & mask0) != value0)
+                            if ((*(ulong*)(pMemory + next + pAlign[3]) & mask0) != value0)
                             {
-                                if ((*(ulong*)pMemory[next + pAlign[4]] & mask0) != value0)
+                                if ((*(ulong*)(pMemory + next + pAlign[4]) & mask0) != value0)
                                 {
-                                    if ((*(ulong*)pMemory[next + pAlign[5]] & mask0) != value0)
+                                    if ((*(ulong*)(pMemory + next + pAlign[5]) & mask0) != value0)
                                     {
-                                        if ((*(ulong*)pMemory[next + pAlign[6]] & mask0) != value0)
+                                        if ((*(ulong*)(pMemory + next + pAlign[6]) & mask0) != value0)
                                         {
-                                            if ((*(ulong*)pMemory[next + pAlign[7]] & mask0) != value0)
+                                            if ((*(ulong*)(pMemory + next + pAlign[7]) & mask0) != value0)
                                             {
                                                 next += pAlign[8];
                                                 goto Next;
@@ -110,7 +113,7 @@ public unsafe ref struct ScanIterator
 
                 for (int i = 1; i < length; i++)
                 {
-                    if ((*(ulong*)pMemory[match] & pMasks[i]) != pValues[i])
+                    if ((*(ulong*)(pMemory + match) & pMasks[i]) != pValues[i])
                     {
                         goto Next;
                     }
@@ -143,21 +146,21 @@ public unsafe ref struct ScanIterator
 
             while (next < end)
             {
-                if (*(ulong*)pMemory[next] != value0)
+                if (*(ulong*)(pMemory + next) != value0)
                 {
-                    if (*(ulong*)pMemory[next + pAlign[1]] != value0)
+                    if (*(ulong*)(pMemory + next + pAlign[1]) != value0)
                     {
-                        if (*(ulong*)pMemory[next + pAlign[2]] != value0)
+                        if (*(ulong*)(pMemory + next + pAlign[2]) != value0)
                         {
-                            if (*(ulong*)pMemory[next + pAlign[3]] != value0)
+                            if (*(ulong*)(pMemory + next + pAlign[3]) != value0)
                             {
-                                if (*(ulong*)pMemory[next + pAlign[4]] != value0)
+                                if (*(ulong*)(pMemory + next + pAlign[4]) != value0)
                                 {
-                                    if (*(ulong*)pMemory[next + pAlign[5]] != value0)
+                                    if (*(ulong*)(pMemory + next + pAlign[5]) != value0)
                                     {
-                                        if (*(ulong*)pMemory[next + pAlign[6]] != value0)
+                                        if (*(ulong*)(pMemory + next + pAlign[6]) != value0)
                                         {
-                                            if (*(ulong*)pMemory[next + pAlign[7]] != value0)
+                                            if (*(ulong*)(pMemory + next + pAlign[7]) != value0)
                                             {
                                                 next += pAlign[8];
                                                 goto Next;
@@ -202,7 +205,7 @@ public unsafe ref struct ScanIterator
 
                 for (int i = 1; i < length; i++)
                 {
-                    if (*(ulong*)pMemory[match] != pValues[i])
+                    if (*(ulong*)(pMemory + match) != pValues[i])
                     {
                         goto Next;
                     }
@@ -228,8 +231,15 @@ public unsafe ref struct ScanIterator
         _next = 0;
     }
 
-    public ScanIterator GetEnumerator()
+    IEnumerator<int> IEnumerable<int>.GetEnumerator()
     {
         return this;
     }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return this;
+    }
+
+    public void Dispose() { }
 }

@@ -5,6 +5,24 @@ namespace AslHelp.Core.Memory;
 #pragma warning disable IDE1006
 internal static unsafe partial class Native
 {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static nint OpenProcess(this Process process, uint dwDesiredAccess, bool bInheritHandle = false)
+    {
+        return (nint)OpenProcess(process.Id, dwDesiredAccess, bInheritHandle);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void* OpenProcess(int dwProcessId, uint dwDesiredAccess, bool bInheritHandle = false)
+    {
+        return OpenProcess(dwDesiredAccess, bInheritHandle ? 1 : 0, (uint)dwProcessId);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CloseHandle(nint hObject)
+    {
+        return CloseHandle((void*)hObject) != 0;
+    }
+
     private const int MAX_PATH = 260;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -105,7 +123,7 @@ internal static unsafe partial class Native
     private static int EnumSymbolsCallback(SYMBOL_INFOW* pSymInfo, uint SymbolSize, void* UserContext)
     {
         DebugSymbol sym = new(*pSymInfo);
-        Unsafe.AsRef<Dictionary<string, DebugSymbol>>(UserContext)[sym.Name.ToLowerInvariant()] = sym;
+        Unsafe.AsRef<Dictionary<string, DebugSymbol>>(UserContext)[sym.Name] = sym;
 
         return 1;
     }
@@ -132,12 +150,6 @@ internal static unsafe partial class Native
         {
             return Module32NextW((void*)hSnapshot, lpme) != 0;
         }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool CloseHandle(nint hObject)
-    {
-        return CloseHandle((void*)hObject) != 0;
     }
 }
 #pragma warning restore IDE1006

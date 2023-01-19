@@ -10,7 +10,7 @@ internal static unsafe partial class Native
     /// <param name="dwFlags">The portions of the system to be included in the snapshot.</param>
     /// <param name="th32ProcessID">The process identifier of the process to be included in the snapshot.</param>
     /// <returns>
-    ///     An open handle to the specified snapshot if funcion succeeds;
+    ///     An open handle to the specified snapshot if the funcion succeeds;
     ///     otherwise, <see langword="null"/>.
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
