@@ -1,9 +1,6 @@
-﻿using System.Diagnostics;
-using AslHelp.Core.Collections;
+﻿namespace AslHelp.Core.Memory.Models;
 
-namespace AslHelp.Core.Memory.Models;
-
-public record Module
+public sealed record Module
 {
     private readonly Process _process;
 

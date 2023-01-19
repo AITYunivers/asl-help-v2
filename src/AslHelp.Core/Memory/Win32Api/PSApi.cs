@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Memory;
 
-internal static unsafe partial class Native
+internal static unsafe partial class Win32
 {
     private const int LIST_MODULES_ALL = 3;
 
@@ -19,7 +19,7 @@ internal static unsafe partial class Native
     ///     otherwise, 0.
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
-    private static extern int K32EnumProcessModulesEx(
+    public static extern int K32EnumProcessModulesEx(
         void* hProcess,
         void** lphModule,
         uint cb,
@@ -40,7 +40,7 @@ internal static unsafe partial class Native
     ///     otherwise, zero.
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
-    private static extern uint K32GetModuleBaseNameW(
+    public static extern uint K32GetModuleBaseNameW(
         void* hProcess,
         void* hModule,
         ushort* lpBaseName,
@@ -60,7 +60,7 @@ internal static unsafe partial class Native
     ///     otherwise, zero.
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
-    private static extern uint K32GetModuleFileNameExW(
+    public static extern uint K32GetModuleFileNameExW(
         void* hProcess,
         void* hModule,
         ushort* lpFilename,
@@ -80,7 +80,7 @@ internal static unsafe partial class Native
     ///     otherwise, 0.
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
-    private static extern int K32GetModuleInformation(
+    public static extern int K32GetModuleInformation(
         void* hProcess,
         void* hModule,
         MODULEINFO* lpmodinfo,

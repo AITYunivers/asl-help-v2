@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Memory.Models;
 
-public record DebugSymbol
+public sealed record DebugSymbol
 {
     internal unsafe DebugSymbol(SYMBOL_INFOW symbol)
     {

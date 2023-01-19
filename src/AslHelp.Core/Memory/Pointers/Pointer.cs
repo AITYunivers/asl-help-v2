@@ -2,10 +2,10 @@
 
 public sealed class Pointer<T> : PointerBase<T> where T : unmanaged
 {
-    public Pointer(IHelper helper, nint @base, params int[] offsets)
+    public Pointer(IProcessMemoryManager helper, nint @base, params int[] offsets)
         : base(helper, @base, offsets) { }
 
-    public Pointer(IHelper helper, PointerBase<nint> parent, int baseOffset, params int[] offsets)
+    public Pointer(IProcessMemoryManager helper, PointerBase<nint> parent, int baseOffset, params int[] offsets)
         : base(helper, parent, baseOffset, offsets) { }
 
     protected override T Default { get; } = default;

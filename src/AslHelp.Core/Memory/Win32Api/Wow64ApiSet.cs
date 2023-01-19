@@ -1,7 +1,7 @@
 ﻿namespace AslHelp.Core.Memory;
 
 #pragma warning disable IDE1006
-internal static unsafe partial class Native
+internal static unsafe partial class Win32
 {
     /// <summary>
     ///     Determines whether the specified process is running under WOW64 or an Intel64 of x64 processor.<br/>
@@ -22,7 +22,7 @@ internal static unsafe partial class Native
     ///     otherwise, 0.
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
-    private static extern int IsWow64Process(
+    public static extern int IsWow64Process(
         void* hProces,
         int* Wow64Process);
 }

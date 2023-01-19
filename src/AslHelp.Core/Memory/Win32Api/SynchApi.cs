@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Memory;
 
-internal static unsafe partial class Native
+internal static unsafe partial class Win32
 {
     /// <summary>
     ///     Waits until the specified object is in the signaled state or the time-out interval elapses.<br/>

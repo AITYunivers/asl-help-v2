@@ -1,7 +1,7 @@
 ﻿namespace AslHelp.Core.Memory;
 
 #pragma warning disable IDE1006
-internal static unsafe partial class Native
+internal static unsafe partial class Win32
 {
     /// <summary>
     ///     Initializes the symbol handler for a process.<br/>
@@ -20,7 +20,7 @@ internal static unsafe partial class Native
     ///     otherwise, 0.
     /// </returns>
     [DllImport("dbghelp", SetLastError = true, ExactSpelling = true)]
-    private static extern int SymInitializeW(
+    public static extern int SymInitializeW(
         void* hProcess,
         ushort* UserSearchPath,
         int fInvadeProcess);
@@ -43,7 +43,7 @@ internal static unsafe partial class Native
     ///     otherwise, 0.
     /// </returns>
     [DllImport("dbghelp", SetLastError = true, ExactSpelling = true)]
-    private static extern ulong SymLoadModuleExW(
+    public static extern ulong SymLoadModuleExW(
         void* hProcess,
         void* hFile,
         ushort* ImageName,
@@ -68,7 +68,7 @@ internal static unsafe partial class Native
     ///     otherwise, 0.
     /// </returns>
     [DllImport("dbghelp", SetLastError = true, ExactSpelling = true)]
-    private static extern int SymEnumSymbolsW(
+    public static extern int SymEnumSymbolsW(
         void* hProcess,
         ulong BaseOfDll,
         ushort* Mask,
@@ -86,7 +86,7 @@ internal static unsafe partial class Native
     ///     otherwise, 0.
     /// </returns>
     [DllImport("dbghelp", SetLastError = true, ExactSpelling = true)]
-    private static extern int SymCleanup(
+    public static extern int SymCleanup(
         void* hProcess);
 }
 #pragma warning restore IDE1006

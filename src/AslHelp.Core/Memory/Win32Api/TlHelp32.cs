@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Memory;
 
-internal static unsafe partial class Native
+internal static unsafe partial class Win32
 {
     /// <summary>
     ///     Takes a snapshot of the specified processes, as well as the heaps, modules, and threads used by these processes.<br/>

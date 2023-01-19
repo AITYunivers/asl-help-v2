@@ -2,8 +2,12 @@
 
 namespace AslHelp.Core.Memory;
 
+/// <summary>
+///     The <see cref="Win32"/> class
+///     provides interop with many Win32 API functions, as well as some convenient wrappers around them.
+/// </summary>
 #pragma warning disable IDE1006
-internal static unsafe partial class Native
+internal static unsafe partial class Win32
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nint OpenProcess(this Process process, uint dwDesiredAccess, bool bInheritHandle = false)
@@ -26,7 +30,7 @@ internal static unsafe partial class Native
     private const int MAX_PATH = 260;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool EnumProcessModulesEx(nint hProcess, ReadOnlySpan<nint> hModule, uint cb, out uint cbNeeded)
+    public static bool EnumProcessModulesEx(nint hProcess, ReadOnlySpan<nint> hModule, uint cb, out uint cbNeeded)
     {
         fixed (nint* lphModule = hModule)
         fixed (uint* lpcbNeeded = &cbNeeded)
@@ -41,7 +45,7 @@ internal static unsafe partial class Native
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool GetModuleBaseNameW(nint hProcess, nint hModule, out string baseName)
+    public static bool GetModuleBaseNameW(nint hProcess, nint hModule, out string baseName)
     {
         ushort* buffer = stackalloc ushort[MAX_PATH];
 
@@ -56,7 +60,7 @@ internal static unsafe partial class Native
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool GetModuleFileNameExW(nint hProcess, nint hModule, out string fileName)
+    public static bool GetModuleFileNameExW(nint hProcess, nint hModule, out string fileName)
     {
         ushort* buffer = stackalloc ushort[MAX_PATH];
 
@@ -71,7 +75,7 @@ internal static unsafe partial class Native
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool GetModuleInformation(nint hProcess, nint hModule, out MODULEINFO moduleInfo)
+    public static bool GetModuleInformation(nint hProcess, nint hModule, out MODULEINFO moduleInfo)
     {
         fixed (MODULEINFO* lpmodinfo = &moduleInfo)
         {
@@ -80,7 +84,7 @@ internal static unsafe partial class Native
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool VirtualQueryEx(nint hProcess, nint address, out MEMORY_BASIC_INFORMATION mbi)
+    public static bool VirtualQueryEx(nint hProcess, nint address, out MEMORY_BASIC_INFORMATION mbi)
     {
         fixed (MEMORY_BASIC_INFORMATION* lpBuffer = &mbi)
         {
@@ -89,7 +93,7 @@ internal static unsafe partial class Native
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool SymInitializeW(nint hProcess, string userSearchPath)
+    public static bool SymInitializeW(nint hProcess, string userSearchPath)
     {
         fixed (char* lpUserSearchPath = userSearchPath)
         {
@@ -98,7 +102,7 @@ internal static unsafe partial class Native
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool SymLoadModuleExW(nint hProcess, Module module)
+    public static bool SymLoadModuleExW(nint hProcess, Module module)
     {
         fixed (char* lpImageName = module.Name)
         {
@@ -107,7 +111,7 @@ internal static unsafe partial class Native
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool SymEnumSymbolsW(nint hProcess, Module module, void* pSymbols)
+    public static bool SymEnumSymbolsW(nint hProcess, Module module, void* pSymbols)
     {
         nint callbackPtr = Marshal.GetFunctionPointerForDelegate(EnumSymbolsCallback);
         ushort* mask = stackalloc ushort[2] { '*', '\0' };
@@ -120,7 +124,7 @@ internal static unsafe partial class Native
             pSymbols) != 0;
     }
 
-    private static int EnumSymbolsCallback(SYMBOL_INFOW* pSymInfo, uint SymbolSize, void* UserContext)
+    public static int EnumSymbolsCallback(SYMBOL_INFOW* pSymInfo, uint SymbolSize, void* UserContext)
     {
         DebugSymbol sym = new(*pSymInfo);
         Unsafe.AsRef<Dictionary<string, DebugSymbol>>(UserContext)[sym.Name] = sym;
@@ -129,13 +133,13 @@ internal static unsafe partial class Native
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static nint CreateToolhelp32Snapshot(ThFlags dwFlags, int th32ProcessID)
+    public static nint CreateToolhelp32Snapshot(ThFlags dwFlags, int th32ProcessID)
     {
         return (nint)CreateToolhelp32Snapshot(dwFlags, (uint)th32ProcessID);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool Module32FirstW(nint hSnapshot, ref MODULEENTRY32W me)
+    public static bool Module32FirstW(nint hSnapshot, ref MODULEENTRY32W me)
     {
         fixed (MODULEENTRY32W* lpme = &me)
         {
@@ -144,7 +148,7 @@ internal static unsafe partial class Native
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool Module32NextW(nint hSnapshot, ref MODULEENTRY32W me)
+    public static bool Module32NextW(nint hSnapshot, ref MODULEENTRY32W me)
     {
         fixed (MODULEENTRY32W* lpme = &me)
         {

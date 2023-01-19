@@ -7,14 +7,14 @@ public sealed class StringPointer : PointerBase<string>
     private readonly int _length;
     private readonly ReadStringType _stringType;
 
-    public StringPointer(IHelper helper, int length, ReadStringType stringType, nint @base, params int[] offsets)
+    public StringPointer(IProcessMemoryManager helper, int length, ReadStringType stringType, nint @base, params int[] offsets)
         : base(helper, @base, offsets)
     {
         _length = length;
         _stringType = stringType;
     }
 
-    public StringPointer(IHelper helper, int length, ReadStringType stringType, PointerBase<nint> parent, int baseOffset, params int[] offsets)
+    public StringPointer(IProcessMemoryManager helper, int length, ReadStringType stringType, PointerBase<nint> parent, int baseOffset, params int[] offsets)
         : base(helper, parent, baseOffset, offsets)
     {
         _length = length;

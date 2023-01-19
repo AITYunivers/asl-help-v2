@@ -53,4 +53,9 @@
     <EmbeddedResource Include="..\..\x64\Release\AslHelp.Native.dll" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Memory\IO\MemoryIOBase\Scan\" />
+    <Folder Include="Memory\IO\MemoryIOBase\Write\" />
+  </ItemGroup>
+
 </Project>

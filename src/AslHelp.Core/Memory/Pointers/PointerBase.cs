@@ -4,7 +4,7 @@ namespace AslHelp.Core.Memory.Pointers;
 
 public abstract class PointerBase<T> : IPointer<T>
 {
-    protected readonly IHelper _helper;
+    protected readonly IProcessMemoryManager _helper;
 
     private readonly PointerBase<nint> _parent;
     private readonly int _baseOffset;
@@ -14,7 +14,7 @@ public abstract class PointerBase<T> : IPointer<T>
 
     private uint _tick;
 
-    public PointerBase(IHelper helper, nint @base, params int[] offsets)
+    public PointerBase(IProcessMemoryManager helper, nint @base, params int[] offsets)
     {
         ThrowHelper.ThrowIfNull(helper);
         ThrowHelper.ThrowIfNull(offsets);
@@ -28,7 +28,7 @@ public abstract class PointerBase<T> : IPointer<T>
         _current = Default;
     }
 
-    public PointerBase(IHelper helper, PointerBase<nint> parent, int baseOffset, params int[] offsets)
+    public PointerBase(IProcessMemoryManager helper, PointerBase<nint> parent, int baseOffset, params int[] offsets)
     {
         ThrowHelper.ThrowIfNull(helper);
         ThrowHelper.ThrowIfNull(parent);

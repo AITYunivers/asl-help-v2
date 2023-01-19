@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Memory;
 
-internal static unsafe partial class Native
+internal static unsafe partial class Win32
 {
     /// <summary>
     ///     Retrieves the termination status of the specified thread.<br/>
@@ -57,7 +57,7 @@ internal static unsafe partial class Native
     ///     otherwise, <see langword="null"/>.
     /// </returns>
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
-    private static extern void* OpenProcess(
+    public static extern void* OpenProcess(
         uint dwDesiredAccess,
         int bInheritHandle,
         uint dwProcessId);

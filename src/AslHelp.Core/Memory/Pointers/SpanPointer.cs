@@ -4,13 +4,13 @@ public sealed class SpanPointer<T> : PointerBase<T[]> where T : unmanaged
 {
     private readonly int _length;
 
-    public SpanPointer(IHelper helper, int length, nint @base, params int[] offsets)
+    public SpanPointer(IProcessMemoryManager helper, int length, nint @base, params int[] offsets)
         : base(helper, @base, offsets)
     {
         _length = length;
     }
 
-    public SpanPointer(IHelper helper, int length, PointerBase<nint> parent, int baseOffset, params int[] offsets)
+    public SpanPointer(IProcessMemoryManager helper, int length, PointerBase<nint> parent, int baseOffset, params int[] offsets)
         : base(helper, parent, baseOffset, offsets)
     {
         _length = length;

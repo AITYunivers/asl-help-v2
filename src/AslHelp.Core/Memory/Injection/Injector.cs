@@ -20,7 +20,7 @@ public static unsafe class Injector
             ThrowHelper.Throw.FileNotFound(modulePath, "Unable to find the specified module to inject.");
         }
 
-        void* hProcess = Native.OpenProcess(process.Id, (uint)(ProcessAccess.CREATE_THREAD | ProcessAccess.VM_OPERATION | ProcessAccess.VM_WRITE));
+        void* hProcess = Win32.OpenProcess(process.Id, (uint)(ProcessAccess.CREATE_THREAD | ProcessAccess.VM_OPERATION | ProcessAccess.VM_WRITE));
         if (hProcess == null)
         {
             return false;
@@ -34,7 +34,7 @@ public static unsafe class Injector
             void* hModule;
             fixed (char* pKernel32 = "kernel32.dll")
             {
-                hModule = Native.GetModuleHandleW((ushort*)pKernel32);
+                hModule = Win32.GetModuleHandleW((ushort*)pKernel32);
                 if (hModule == null)
                 {
                     return false;
@@ -44,14 +44,14 @@ public static unsafe class Injector
             void* pLoadLib;
             fixed (byte* pLoadLibraryW = "LoadLibraryW"u8)
             {
-                pLoadLib = Native.GetProcAddress(hModule, (sbyte*)pLoadLibraryW);
+                pLoadLib = Win32.GetProcAddress(hModule, (sbyte*)pLoadLibraryW);
                 if (pLoadLib == null)
                 {
                     return false;
                 }
             }
 
-            void* pModuleAlloc = Native.VirtualAllocEx(hProcess, nullPtr, (nuint)length, MemState.MEM_COMMIT | MemState.MEM_RESERVE, MemProtect.PAGE_READWRITE);
+            void* pModuleAlloc = Win32.VirtualAllocEx(hProcess, nullPtr, (nuint)length, MemState.MEM_COMMIT | MemState.MEM_RESERVE, MemProtect.PAGE_READWRITE);
             if (pModuleAlloc == null)
             {
                 return false;
@@ -60,14 +60,14 @@ public static unsafe class Injector
             fixed (char* pModulePath = modulePath)
             {
                 nuint bytesWritten;
-                if (Native.WriteProcessMemory(hProcess, pModuleAlloc, pModulePath, (nuint)length, &bytesWritten) == 0
+                if (Win32.WriteProcessMemory(hProcess, pModuleAlloc, pModulePath, (nuint)length, &bytesWritten) == 0
                     || bytesWritten != (nuint)length)
                 {
                     return false;
                 }
             }
 
-            void* hThread = Native.CreateRemoteThread(hProcess, nullPtr, 0, pLoadLib, pModuleAlloc, 0, null);
+            void* hThread = Win32.CreateRemoteThread(hProcess, nullPtr, 0, pLoadLib, pModuleAlloc, 0, null);
             if (hThread == null)
             {
                 return false;
@@ -76,22 +76,22 @@ public static unsafe class Injector
             uint exitCode;
             try
             {
-                if (Native.WaitForSingleObject(hThread, uint.MaxValue) == 0)
+                if (Win32.WaitForSingleObject(hThread, uint.MaxValue) == 0)
                 {
                     ThrowHelper.Throw.Win32();
                 }
 
-                if (Native.GetExitCodeThread(hThread, &exitCode) == 0)
+                if (Win32.GetExitCodeThread(hThread, &exitCode) == 0)
                 {
                     ThrowHelper.Throw.Win32();
                 }
             }
             finally
             {
-                Native.CloseHandle(hThread);
+                Win32.CloseHandle(hThread);
             }
 
-            if (Native.VirtualFreeEx(hProcess, pModuleAlloc, 0, MemState.MEM_RELEASE) == 0)
+            if (Win32.VirtualFreeEx(hProcess, pModuleAlloc, 0, MemState.MEM_RELEASE) == 0)
             {
                 ThrowHelper.Throw.Win32();
             }
@@ -100,7 +100,7 @@ public static unsafe class Injector
         }
         finally
         {
-            Native.CloseHandle(hProcess);
+            Win32.CloseHandle(hProcess);
         }
     }
 }

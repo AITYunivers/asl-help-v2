@@ -1,6 +1,6 @@
 namespace AslHelp.Core.Memory;
 
-internal static unsafe partial class Native
+internal static unsafe partial class Win32
 {
     /// <summary>
     ///     Copies the data in the specified address range from the address space of

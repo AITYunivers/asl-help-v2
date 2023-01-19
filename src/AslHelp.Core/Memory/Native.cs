@@ -1,9 +1,10 @@
 ﻿using AslHelp.Core.Exceptions;
 using AslHelp.Core.Memory.Models;
+using static AslHelp.Core.Memory.Win32;
 
 namespace AslHelp.Core.Memory;
 
-internal static unsafe partial class Native
+public static unsafe class Native
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Is64Bit(this Process process)

@@ -1,7 +1,7 @@
 ﻿using AslHelp.Core;
 using AslHelp.Core.Reflection;
 
-public partial class Basic : IHelper
+public partial class Basic : IProcessMemoryManager
 {
     internal static Basic Instance { get; private set; }
 
