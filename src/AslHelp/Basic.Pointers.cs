@@ -6,56 +6,48 @@ public partial class Basic
 {
     public uint Tick { get; private set; }
 
-    public Pointer<T> Make<T>(int baseOffset, params int[] offsets)
-        where T : unmanaged
+    public Pointer<T> Make<T>(int baseOffset, params int[] offsets) where T : unmanaged
     {
         return Make<T>(MainModule, baseOffset, offsets);
     }
 
-    public Pointer<T> Make<T>(string module, int baseOffset, params int[] offsets)
-        where T : unmanaged
+    public Pointer<T> Make<T>(string module, int baseOffset, params int[] offsets) where T : unmanaged
     {
         return Make<T>(Modules[module], baseOffset, offsets);
     }
 
-    public Pointer<T> Make<T>(Module module, int baseOffset, params int[] offsets)
-        where T : unmanaged
+    public Pointer<T> Make<T>(Module module, int baseOffset, params int[] offsets) where T : unmanaged
     {
         ThrowHelper.ThrowIfNull(module, $"[Make<{typeof(T).Name}>] Module cannot be found.");
 
         return new(this, module.Base + baseOffset, offsets);
     }
 
-    public Pointer<T> Make<T>(nint baseAddress, params int[] offsets)
-        where T : unmanaged
+    public Pointer<T> Make<T>(nint baseAddress, params int[] offsets) where T : unmanaged
     {
         ThrowHelper.ThrowIfNull(baseAddress, $"[Make<{typeof(T).Name}>] The base address cannot be 0.");
 
         return new(this, baseAddress, offsets);
     }
 
-    public SpanPointer<T> MakeSpan<T>(int length, int baseOffset, params int[] offsets)
-        where T : unmanaged
+    public SpanPointer<T> MakeSpan<T>(int length, int baseOffset, params int[] offsets) where T : unmanaged
     {
         return MakeSpan<T>(length, MainModule, baseOffset, offsets);
     }
 
-    public SpanPointer<T> MakeSpan<T>(int length, string module, int baseOffset, params int[] offsets)
-        where T : unmanaged
+    public SpanPointer<T> MakeSpan<T>(int length, string module, int baseOffset, params int[] offsets) where T : unmanaged
     {
         return MakeSpan<T>(length, Modules[module], baseOffset, offsets);
     }
 
-    public SpanPointer<T> MakeSpan<T>(int length, Module module, int baseOffset, params int[] offsets)
-        where T : unmanaged
+    public SpanPointer<T> MakeSpan<T>(int length, Module module, int baseOffset, params int[] offsets) where T : unmanaged
     {
         ThrowHelper.ThrowIfNull(module, $"[MakeSpan<{typeof(T).Name}>] Module cannot be found.");
 
         return new(this, length, module.Base + baseOffset, offsets);
     }
 
-    public SpanPointer<T> MakeSpan<T>(int length, nint baseAddress, params int[] offsets)
-        where T : unmanaged
+    public SpanPointer<T> MakeSpan<T>(int length, nint baseAddress, params int[] offsets) where T : unmanaged
     {
         ThrowHelper.ThrowIfNull(baseAddress, $"[MakeSpan<{typeof(T).Name}>] The base address cannot be 0.");
 

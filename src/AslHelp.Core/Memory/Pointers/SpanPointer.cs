@@ -4,14 +4,14 @@ public sealed class SpanPointer<T> : PointerBase<T[]> where T : unmanaged
 {
     private readonly int _length;
 
-    public SpanPointer(IProcessMemoryManager helper, int length, nint @base, params int[] offsets)
-        : base(helper, @base, offsets)
+    public SpanPointer(IMemoryManager manager, int length, nint @base, params int[] offsets)
+        : base(manager, @base, offsets)
     {
         _length = length;
     }
 
-    public SpanPointer(IProcessMemoryManager helper, int length, PointerBase<nint> parent, int baseOffset, params int[] offsets)
-        : base(helper, parent, baseOffset, offsets)
+    public SpanPointer(IMemoryManager manager, int length, PointerBase<nint> parent, int baseOffset, params int[] offsets)
+        : base(manager, parent, baseOffset, offsets)
     {
         _length = length;
     }
@@ -20,7 +20,7 @@ public sealed class SpanPointer<T> : PointerBase<T[]> where T : unmanaged
 
     protected override bool TryUpdate(out T[] result)
     {
-        return _helper.TryReadSpan(out result, Address);
+        return _manager.TryReadSpan(out result, _length, Address);
     }
 
     protected override bool CheckChanged(T[] old, T[] current)
@@ -38,7 +38,7 @@ public sealed class SpanPointer<T> : PointerBase<T[]> where T : unmanaged
 
     protected override bool Write(T[] value)
     {
-        return _helper.WriteSpan(value, Address);
+        return _manager.WriteSpan(value, Address);
     }
 
     public override string ToString()

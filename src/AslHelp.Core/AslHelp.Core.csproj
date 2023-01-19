@@ -33,6 +33,7 @@
     <Using Alias="Debug" Include="AslHelp.Core.IO.Debug" />
     <Using Alias="Module" Include="AslHelp.Core.Memory.Models.Module" />
     <Using Alias="Script" Include="AslHelp.Core.LiveSplitInterop.Script" />
+    <Using Alias="Signature" Include="AslHelp.Core.Memory.Signatures.Signature" />
     <Using Alias="Timer" Include="AslHelp.Core.LiveSplitInterop.Timer" />
   </ItemGroup>
 
@@ -51,11 +52,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="..\..\x64\Release\AslHelp.Native.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Memory\IO\MemoryIOBase\Scan\" />
-    <Folder Include="Memory\IO\MemoryIOBase\Write\" />
   </ItemGroup>
 
 </Project>

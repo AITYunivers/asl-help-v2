@@ -1,16 +1,16 @@
 ﻿namespace AslHelp.Core.Memory.IO;
 
-public abstract partial class MemoryIOBase
+public abstract partial class MemoryIO
 {
     public nint Deref(int baseOffset, params int[] offsets)
     {
-        TryDeref(out nint result, _manager.MainModule, baseOffset, offsets);
+        TryDeref(out nint result, MainModule, baseOffset, offsets);
         return result;
     }
 
     public nint Deref(string module, int baseOffset, params int[] offsets)
     {
-        TryDeref(out nint result, _manager.Modules[module], baseOffset, offsets);
+        TryDeref(out nint result, Modules[module], baseOffset, offsets);
         return result;
     }
 
@@ -28,12 +28,12 @@ public abstract partial class MemoryIOBase
 
     public bool TryDeref(out nint result, int baseOffset, params int[] offsets)
     {
-        return TryDeref(out result, _manager.MainModule, baseOffset, offsets);
+        return TryDeref(out result, MainModule, baseOffset, offsets);
     }
 
     public bool TryDeref(out nint result, string module, int baseOffset, params int[] offsets)
     {
-        return TryDeref(out result, _manager.Modules[module], baseOffset, offsets);
+        return TryDeref(out result, Modules[module], baseOffset, offsets);
     }
 
     public bool TryDeref(out nint result, Module module, int baseOffset, params int[] offsets)

@@ -1,10 +1,11 @@
 ﻿using AslHelp.Core.Exceptions;
+using AslHelp.Core.Memory.IO;
 
 namespace AslHelp.Core.Memory.Pointers;
 
 public abstract class PointerBase<T> : IPointer<T>
 {
-    protected readonly IProcessMemoryManager _helper;
+    protected readonly IMemoryManager _manager;
 
     private readonly PointerBase<nint> _parent;
     private readonly int _baseOffset;
@@ -14,12 +15,12 @@ public abstract class PointerBase<T> : IPointer<T>
 
     private uint _tick;
 
-    public PointerBase(IProcessMemoryManager helper, nint @base, params int[] offsets)
+    public PointerBase(IMemoryManager manager, nint @base, params int[] offsets)
     {
-        ThrowHelper.ThrowIfNull(helper);
+        ThrowHelper.ThrowIfNull(manager);
         ThrowHelper.ThrowIfNull(offsets);
 
-        _helper = helper;
+        _manager = manager;
 
         _base = @base;
         _offsets = offsets;
@@ -28,13 +29,13 @@ public abstract class PointerBase<T> : IPointer<T>
         _current = Default;
     }
 
-    public PointerBase(IProcessMemoryManager helper, PointerBase<nint> parent, int baseOffset, params int[] offsets)
+    public PointerBase(IMemoryManager manager, PointerBase<nint> parent, int baseOffset, params int[] offsets)
     {
-        ThrowHelper.ThrowIfNull(helper);
+        ThrowHelper.ThrowIfNull(manager);
         ThrowHelper.ThrowIfNull(parent);
         ThrowHelper.ThrowIfNull(offsets);
 
-        _helper = helper;
+        _manager = manager;
 
         _parent = parent;
         _baseOffset = baseOffset;
@@ -56,7 +57,7 @@ public abstract class PointerBase<T> : IPointer<T>
     {
         get
         {
-            if (Enabled && _tick != _helper.Tick)
+            if (Enabled && _tick != _manager.Tick)
             {
                 Update();
             }
@@ -77,7 +78,7 @@ public abstract class PointerBase<T> : IPointer<T>
     {
         get
         {
-            if (Enabled && _tick != _helper.Tick)
+            if (Enabled && _tick != _manager.Tick)
             {
                 Update();
             }
@@ -101,18 +102,18 @@ public abstract class PointerBase<T> : IPointer<T>
         {
             if (_parent is null)
             {
-                return _helper.Deref(_base, _offsets);
+                return _manager.Deref(_base, _offsets);
             }
             else
             {
-                return _helper.Deref(_parent.Current + _baseOffset, _offsets);
+                return _manager.Deref(_parent.Current + _baseOffset, _offsets);
             }
         }
     }
 
     private void Update()
     {
-        _tick = _helper.Tick;
+        _tick = _manager.Tick;
         _old = _current;
 
         if (!TryUpdate(out T result))
@@ -131,7 +132,7 @@ public abstract class PointerBase<T> : IPointer<T>
 
         if (LogChange && Changed)
         {
-            _helper.Log($"[{Name}] changed: [Old] {_old} -> [Current] {_current}");
+            _manager.Log($"[{Name}] changed: [Old] {_old} -> [Current] {_current}");
         }
     }
 

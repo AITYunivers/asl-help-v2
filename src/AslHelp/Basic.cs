@@ -1,14 +1,12 @@
-﻿using AslHelp.Core;
-using AslHelp.Core.Reflection;
+﻿using AslHelp.Core.Reflection;
 
-public partial class Basic : IProcessMemoryManager
+public partial class Basic
 {
     internal static Basic Instance { get; private set; }
 
     public Basic()
         : this(true) { }
 
-    // The real entry point for all helpers.
     public Basic(bool generateCode)
     {
         Instance = this;

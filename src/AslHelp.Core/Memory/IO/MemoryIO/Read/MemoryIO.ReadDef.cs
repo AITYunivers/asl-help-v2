@@ -2,17 +2,17 @@
 
 namespace AslHelp.Core.Memory.IO;
 
-public abstract partial class MemoryIOBase
+public abstract partial class MemoryIO
 {
     public dynamic ReadDef(ITypeDefinition definition, int baseOffset, params int[] offsets)
     {
-        TryReadDef(definition, out dynamic result, _manager.MainModule, baseOffset, offsets);
+        TryReadDef(definition, out dynamic result, MainModule, baseOffset, offsets);
         return result;
     }
 
     public dynamic ReadDef(ITypeDefinition definition, string module, int baseOffset, params int[] offsets)
     {
-        TryReadDef(definition, out dynamic result, _manager.Modules[module], baseOffset, offsets);
+        TryReadDef(definition, out dynamic result, Modules[module], baseOffset, offsets);
         return result;
     }
 
@@ -30,12 +30,12 @@ public abstract partial class MemoryIOBase
 
     public bool TryReadDef(ITypeDefinition definition, out dynamic result, int baseOffset, params int[] offsets)
     {
-        return TryReadDef(definition, out result, _manager.MainModule, baseOffset, offsets);
+        return TryReadDef(definition, out result, MainModule, baseOffset, offsets);
     }
 
     public bool TryReadDef(ITypeDefinition definition, out dynamic result, string module, int baseOffset, params int[] offsets)
     {
-        return TryReadDef(definition, out result, _manager.Modules[module], baseOffset, offsets);
+        return TryReadDef(definition, out result, Modules[module], baseOffset, offsets);
     }
 
     public bool TryReadDef(ITypeDefinition definition, out dynamic result, Module module, int baseOffset, params int[] offsets)

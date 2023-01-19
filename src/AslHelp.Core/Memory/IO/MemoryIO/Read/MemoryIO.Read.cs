@@ -1,16 +1,16 @@
 ﻿namespace AslHelp.Core.Memory.IO;
 
-public abstract partial class MemoryIOBase
+public abstract partial class MemoryIO
 {
     public T Read<T>(int baseOffset, params int[] offsets) where T : unmanaged
     {
-        TryRead<T>(out T result, _manager.MainModule, baseOffset, offsets);
+        TryRead<T>(out T result, MainModule, baseOffset, offsets);
         return result;
     }
 
     public T Read<T>(string module, int baseOffset, params int[] offsets) where T : unmanaged
     {
-        TryRead<T>(out T result, _manager.Modules[module], baseOffset, offsets);
+        TryRead<T>(out T result, Modules[module], baseOffset, offsets);
         return result;
     }
 
@@ -28,12 +28,12 @@ public abstract partial class MemoryIOBase
 
     public bool TryRead<T>(out T result, int baseOffset, params int[] offsets) where T : unmanaged
     {
-        return TryRead<T>(out result, _manager.MainModule, baseOffset, offsets);
+        return TryRead<T>(out result, MainModule, baseOffset, offsets);
     }
 
     public bool TryRead<T>(out T result, string module, int baseOffset, params int[] offsets) where T : unmanaged
     {
-        return TryRead<T>(out result, _manager.Modules[module], baseOffset, offsets);
+        return TryRead<T>(out result, Modules[module], baseOffset, offsets);
     }
 
     public bool TryRead<T>(out T result, Module module, int baseOffset, params int[] offsets) where T : unmanaged

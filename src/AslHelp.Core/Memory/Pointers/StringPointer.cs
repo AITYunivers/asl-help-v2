@@ -7,15 +7,15 @@ public sealed class StringPointer : PointerBase<string>
     private readonly int _length;
     private readonly ReadStringType _stringType;
 
-    public StringPointer(IProcessMemoryManager helper, int length, ReadStringType stringType, nint @base, params int[] offsets)
-        : base(helper, @base, offsets)
+    public StringPointer(IMemoryManager manager, int length, ReadStringType stringType, nint @base, params int[] offsets)
+        : base(manager, @base, offsets)
     {
         _length = length;
         _stringType = stringType;
     }
 
-    public StringPointer(IProcessMemoryManager helper, int length, ReadStringType stringType, PointerBase<nint> parent, int baseOffset, params int[] offsets)
-        : base(helper, parent, baseOffset, offsets)
+    public StringPointer(IMemoryManager manager, int length, ReadStringType stringType, PointerBase<nint> parent, int baseOffset, params int[] offsets)
+        : base(manager, parent, baseOffset, offsets)
     {
         _length = length;
         _stringType = stringType;
@@ -25,7 +25,7 @@ public sealed class StringPointer : PointerBase<string>
 
     protected override bool TryUpdate(out string result)
     {
-        return _helper.TryReadString(out result, _length, _stringType, Address);
+        return _manager.TryReadString(out result, _length, _stringType, Address);
     }
 
     protected override bool CheckChanged(string old, string current)

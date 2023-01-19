@@ -60,8 +60,8 @@ internal static class Script
 
     public static Process Game
     {
-        get => _script.GetFieldValue<Process>("_game");
-        set => _script.SetFieldValue<Process>("_game", value);
+        get => Emissions.GetScriptGame(_script);
+        set => Emissions.SetScriptGame(_script, value);
     }
 
     public static dynamic Vars { get; private set; }

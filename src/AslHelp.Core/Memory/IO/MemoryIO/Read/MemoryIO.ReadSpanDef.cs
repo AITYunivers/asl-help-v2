@@ -2,68 +2,85 @@
 
 namespace AslHelp.Core.Memory.IO;
 
-public abstract partial class MemoryIOBase
+public abstract partial class MemoryIO
 {
     public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, int baseOffset, params int[] offsets)
     {
         dynamic[] results = new dynamic[length];
-        TryReadSpanDef(definition, results, _manager.MainModule, baseOffset, offsets);
+        TryReadSpanDef(definition, results, MainModule, baseOffset, offsets);
 
         return results;
     }
 
     public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, string module, int baseOffset, params int[] offsets)
     {
-        throw new NotImplementedException();
+        dynamic[] results = new dynamic[length];
+        TryReadSpanDef(definition, results, Modules[module], baseOffset, offsets);
+
+        return results;
     }
 
     public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, Module module, int baseOffset, params int[] offsets)
     {
-        throw new NotImplementedException();
+        dynamic[] results = new dynamic[length];
+        TryReadSpanDef(definition, results, module, baseOffset, offsets);
+
+        return results;
     }
 
     public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, nint baseAddress, params int[] offsets)
     {
-        throw new NotImplementedException();
+        dynamic[] results = new dynamic[length];
+        TryReadSpanDef(definition, results, baseAddress, offsets);
+
+        return results;
     }
 
     public bool TryReadSpanDef(ITypeDefinition definition, out dynamic[] results, int length, int baseOffset, params int[] offsets)
     {
-        throw new NotImplementedException();
+        results = new dynamic[length];
+        return TryReadSpanDef(definition, results, MainModule, baseOffset, offsets);
     }
 
     public bool TryReadSpanDef(ITypeDefinition definition, out dynamic[] results, int length, string module, int baseOffset, params int[] offsets)
     {
-        throw new NotImplementedException();
+        results = new dynamic[length];
+        return TryReadSpanDef(definition, results, Modules[module], baseOffset, offsets);
     }
 
     public bool TryReadSpanDef(ITypeDefinition definition, out dynamic[] results, int length, Module module, int baseOffset, params int[] offsets)
     {
-        throw new NotImplementedException();
+        results = new dynamic[length];
+        return TryReadSpanDef(definition, results, module, baseOffset, offsets);
     }
 
     public bool TryReadSpanDef(ITypeDefinition definition, out dynamic[] results, int length, nint baseAddress, params int[] offsets)
     {
-        throw new NotImplementedException();
+        results = new dynamic[length];
+        return TryReadSpanDef(definition, results, baseAddress, offsets);
     }
 
     public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, int baseOffset, params int[] offsets)
     {
-        throw new NotImplementedException();
+        return TryReadSpanDef(definition, buffer, MainModule, baseOffset, offsets);
     }
 
     public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, string module, int baseOffset, params int[] offsets)
     {
-        throw new NotImplementedException();
+        return TryReadSpanDef(definition, buffer, Modules[module], baseOffset, offsets);
     }
 
     public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, Module module, int baseOffset, params int[] offsets)
     {
-        throw new NotImplementedException();
+        if (module is null)
+        {
+            Debug.Warn($"[ReadSpanDef] Module could not be found.");
+
+            return false;
+        }
+
+        return TryReadSpanDef(definition, buffer, module.Base + baseOffset, offsets);
     }
 
-    public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nint baseAddress, params int[] offsets)
-    {
-        throw new NotImplementedException();
-    }
+    public abstract bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nint baseAddress, params int[] offsets);
 }

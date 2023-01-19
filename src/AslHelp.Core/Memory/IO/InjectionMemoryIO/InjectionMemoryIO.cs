@@ -1,5 +1,5 @@
 ﻿namespace AslHelp.Core.Memory.IO;
 
-public class InjectionMemoryIO : IMemoryReader
+public class InjectionMemoryIO
 {
 }
