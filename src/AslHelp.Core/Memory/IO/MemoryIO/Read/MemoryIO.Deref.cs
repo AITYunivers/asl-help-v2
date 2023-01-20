@@ -4,25 +4,25 @@ public abstract partial class MemoryIO
 {
     public nint Deref(int baseOffset, params int[] offsets)
     {
-        TryDeref(out nint result, MainModule, baseOffset, offsets);
+        _ = TryDeref(out nint result, MainModule, baseOffset, offsets);
         return result;
     }
 
     public nint Deref(string module, int baseOffset, params int[] offsets)
     {
-        TryDeref(out nint result, Modules[module], baseOffset, offsets);
+        _ = TryDeref(out nint result, Modules[module], baseOffset, offsets);
         return result;
     }
 
     public nint Deref(Module module, int baseOffset, params int[] offsets)
     {
-        TryDeref(out nint result, module, baseOffset, offsets);
+        _ = TryDeref(out nint result, module, baseOffset, offsets);
         return result;
     }
 
     public nint Deref(nint baseAddress, params int[] offsets)
     {
-        TryDeref(out nint result, baseAddress, offsets);
+        _ = TryDeref(out nint result, baseAddress, offsets);
         return result;
     }
 

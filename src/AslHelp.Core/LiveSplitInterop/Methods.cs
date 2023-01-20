@@ -46,7 +46,7 @@ internal static class Methods
     public static Method isLoading { get; set; } = new("isLoading");
     public static Method onStart { get; set; } = new("onStart");
     public static Method onSplit { get; set; } = new("onSplit");
-    public static Method onReset  { get; set; } = new("onReset");
+    public static Method onReset { get; set; } = new("onReset");
 #pragma warning restore IDE1006
 
     internal struct Method

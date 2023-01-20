@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace AslHelp.Core.Memory.IO;
+﻿namespace AslHelp.Core.Memory.IO;
 
 public abstract partial class MemoryIO
 {

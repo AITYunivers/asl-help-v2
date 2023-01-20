@@ -42,7 +42,7 @@ internal class TypeDefinitionCompilerException : Exception
 
         foreach (CompilerError error in errors)
         {
-            sb
+            _ = sb
             .Append(Environment.NewLine)
             .Append("Line").Append(error.Line).Append(", ")
             .Append("Col").Append(error.Column).Append(": ")

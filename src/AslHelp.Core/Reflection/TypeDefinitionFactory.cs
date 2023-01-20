@@ -6,7 +6,7 @@ namespace AslHelp.Core.Reflection;
 
 public static class TypeDefinitionFactory
 {
-    private readonly static CSharpCodeProvider _codeProvider = new();
+    private static readonly CSharpCodeProvider _codeProvider = new();
 
     public static ITypeDefinition CreateFromSource(string source, params string[] references)
     {

@@ -1,13 +1,11 @@
-﻿using System;
-
-namespace AslHelp.Core.Memory.IO;
+﻿namespace AslHelp.Core.Memory.IO;
 
 public abstract partial class MemoryIO
 {
     public T[] ReadSpan<T>(int length, int baseOffset, params int[] offsets) where T : unmanaged
     {
         T[] results = new T[length];
-        TryReadSpan<T>(results, MainModule, baseOffset, offsets);
+        _ = TryReadSpan<T>(results, MainModule, baseOffset, offsets);
 
         return results;
     }
@@ -15,7 +13,7 @@ public abstract partial class MemoryIO
     public T[] ReadSpan<T>(int length, string module, int baseOffset, params int[] offsets) where T : unmanaged
     {
         T[] results = new T[length];
-        TryReadSpan<T>(results, Modules[module], baseOffset, offsets);
+        _ = TryReadSpan<T>(results, Modules[module], baseOffset, offsets);
 
         return results;
     }
@@ -23,7 +21,7 @@ public abstract partial class MemoryIO
     public T[] ReadSpan<T>(int length, Module module, int baseOffset, params int[] offsets) where T : unmanaged
     {
         T[] results = new T[length];
-        TryReadSpan<T>(results, module, baseOffset, offsets);
+        _ = TryReadSpan<T>(results, module, baseOffset, offsets);
 
         return results;
     }
@@ -31,7 +29,7 @@ public abstract partial class MemoryIO
     public T[] ReadSpan<T>(int length, nint baseAddress, params int[] offsets) where T : unmanaged
     {
         T[] results = new T[length];
-        TryReadSpan<T>(results, baseAddress, offsets);
+        _ = TryReadSpan<T>(results, baseAddress, offsets);
 
         return results;
     }

@@ -1,6 +1,4 @@
-﻿using AslHelp.Core.Memory.IO;
-
-namespace AslHelp.Core.Memory.Pointers;
+﻿namespace AslHelp.Core.Memory.Pointers;
 
 public sealed class Pointer<T> : PointerBase<T> where T : unmanaged
 {

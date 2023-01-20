@@ -88,7 +88,7 @@ public static unsafe class Injector
             }
             finally
             {
-                Win32.CloseHandle(hThread);
+                _ = Win32.CloseHandle(hThread);
             }
 
             if (Win32.VirtualFreeEx(hProcess, pModuleAlloc, 0, MemState.MEM_RELEASE) == 0)
@@ -100,7 +100,7 @@ public static unsafe class Injector
         }
         finally
         {
-            Win32.CloseHandle(hProcess);
+            _ = Win32.CloseHandle(hProcess);
         }
     }
 }

@@ -30,7 +30,7 @@ public partial class Basic
         }
         catch (Exception ex)
         {
-            Debug.Show($"""
+            _ = Debug.Show($"""
                 asl-help had to abort due to a startup error.
 
                 {ex}

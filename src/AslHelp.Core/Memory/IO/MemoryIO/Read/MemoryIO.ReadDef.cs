@@ -6,25 +6,25 @@ public abstract partial class MemoryIO
 {
     public dynamic ReadDef(ITypeDefinition definition, int baseOffset, params int[] offsets)
     {
-        TryReadDef(definition, out dynamic result, MainModule, baseOffset, offsets);
+        _ = TryReadDef(definition, out dynamic result, MainModule, baseOffset, offsets);
         return result;
     }
 
     public dynamic ReadDef(ITypeDefinition definition, string module, int baseOffset, params int[] offsets)
     {
-        TryReadDef(definition, out dynamic result, Modules[module], baseOffset, offsets);
+        _ = TryReadDef(definition, out dynamic result, Modules[module], baseOffset, offsets);
         return result;
     }
 
     public dynamic ReadDef(ITypeDefinition definition, Module module, int baseOffset, params int[] offsets)
     {
-        TryReadDef(definition, out dynamic result, module, baseOffset, offsets);
+        _ = TryReadDef(definition, out dynamic result, module, baseOffset, offsets);
         return result;
     }
 
     public dynamic ReadDef(ITypeDefinition definition, nint baseAddress, params int[] offsets)
     {
-        TryReadDef(definition, out dynamic result, baseAddress, offsets);
+        _ = TryReadDef(definition, out dynamic result, baseAddress, offsets);
         return result;
     }
 

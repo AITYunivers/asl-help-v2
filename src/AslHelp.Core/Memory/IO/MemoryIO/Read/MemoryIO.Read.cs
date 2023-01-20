@@ -4,25 +4,25 @@ public abstract partial class MemoryIO
 {
     public T Read<T>(int baseOffset, params int[] offsets) where T : unmanaged
     {
-        TryRead<T>(out T result, MainModule, baseOffset, offsets);
+        _ = TryRead<T>(out T result, MainModule, baseOffset, offsets);
         return result;
     }
 
     public T Read<T>(string module, int baseOffset, params int[] offsets) where T : unmanaged
     {
-        TryRead<T>(out T result, Modules[module], baseOffset, offsets);
+        _ = TryRead<T>(out T result, Modules[module], baseOffset, offsets);
         return result;
     }
 
     public T Read<T>(Module module, int baseOffset, params int[] offsets) where T : unmanaged
     {
-        TryRead<T>(out T result, module, baseOffset, offsets);
+        _ = TryRead<T>(out T result, module, baseOffset, offsets);
         return result;
     }
 
     public T Read<T>(nint baseAddress, params int[] offsets) where T : unmanaged
     {
-        TryRead<T>(out T result, baseAddress, offsets);
+        _ = TryRead<T>(out T result, baseAddress, offsets);
         return result;
     }
 

@@ -101,7 +101,7 @@ public static unsafe class Native
         }
         finally
         {
-            CloseHandle(snapshot);
+            _ = CloseHandle(snapshot);
         }
     }
 
@@ -165,7 +165,7 @@ public static unsafe class Native
             }
             finally
             {
-                SymCleanup((void*)hProcess);
+                _ = SymCleanup((void*)hProcess);
             }
         }
     }

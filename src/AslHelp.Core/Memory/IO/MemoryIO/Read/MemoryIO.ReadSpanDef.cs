@@ -7,7 +7,7 @@ public abstract partial class MemoryIO
     public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, int baseOffset, params int[] offsets)
     {
         dynamic[] results = new dynamic[length];
-        TryReadSpanDef(definition, results, MainModule, baseOffset, offsets);
+        _ = TryReadSpanDef(definition, results, MainModule, baseOffset, offsets);
 
         return results;
     }
@@ -15,7 +15,7 @@ public abstract partial class MemoryIO
     public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, string module, int baseOffset, params int[] offsets)
     {
         dynamic[] results = new dynamic[length];
-        TryReadSpanDef(definition, results, Modules[module], baseOffset, offsets);
+        _ = TryReadSpanDef(definition, results, Modules[module], baseOffset, offsets);
 
         return results;
     }
@@ -23,7 +23,7 @@ public abstract partial class MemoryIO
     public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, Module module, int baseOffset, params int[] offsets)
     {
         dynamic[] results = new dynamic[length];
-        TryReadSpanDef(definition, results, module, baseOffset, offsets);
+        _ = TryReadSpanDef(definition, results, module, baseOffset, offsets);
 
         return results;
     }
@@ -31,7 +31,7 @@ public abstract partial class MemoryIO
     public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, nint baseAddress, params int[] offsets)
     {
         dynamic[] results = new dynamic[length];
-        TryReadSpanDef(definition, results, baseAddress, offsets);
+        _ = TryReadSpanDef(definition, results, baseAddress, offsets);
 
         return results;
     }

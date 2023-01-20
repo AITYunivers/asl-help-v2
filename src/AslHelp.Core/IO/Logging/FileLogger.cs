@@ -20,7 +20,7 @@ public sealed class FileLogger : LoggerBase, IDisposable
 
     public override void Start()
     {
-        Task.Run(() =>
+        _ = Task.Run(() =>
         {
             _cancelSource = new();
             _lineNumber = 0;
@@ -43,7 +43,7 @@ public sealed class FileLogger : LoggerBase, IDisposable
 
             while (true)
             {
-                _resetEvent.WaitOne();
+                _ = _resetEvent.WaitOne();
                 if (_cancelSource.IsCancellationRequested)
                 {
                     break;
@@ -53,7 +53,7 @@ public sealed class FileLogger : LoggerBase, IDisposable
                 {
                     if (!_queuedLines.Any())
                     {
-                        _resetEvent.Reset();
+                        _ = _resetEvent.Reset();
                         continue;
                     }
 
@@ -70,7 +70,7 @@ public sealed class FileLogger : LoggerBase, IDisposable
         lock (_queuedLines)
         {
             _queuedLines.Enqueue("");
-            _resetEvent.Set();
+            _ = _resetEvent.Set();
         }
     }
 
@@ -79,14 +79,14 @@ public sealed class FileLogger : LoggerBase, IDisposable
         lock (_queuedLines)
         {
             _queuedLines.Enqueue($"[{DateTime.Now:dd-MMM-yy HH:mm:ss.fff}] :: {output}");
-            _resetEvent.Set();
+            _ = _resetEvent.Set();
         }
     }
 
     public override void Stop()
     {
         _cancelSource.Cancel();
-        _resetEvent.Set();
+        _ = _resetEvent.Set();
         _queuedLines.Clear();
     }
 

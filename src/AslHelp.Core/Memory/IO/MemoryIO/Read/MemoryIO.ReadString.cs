@@ -6,98 +6,98 @@ public abstract partial class MemoryIO
 {
     public string ReadString(int baseOffset, params int[] offsets)
     {
-        TryReadString(out string result, 128, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
+        _ = TryReadString(out string result, 128, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
         return result;
     }
 
     public string ReadString(int length, int baseOffset, params int[] offsets)
     {
-        TryReadString(out string result, length, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
+        _ = TryReadString(out string result, length, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
         return result;
     }
 
     public string ReadString(ReadStringType stringType, int baseOffset, params int[] offsets)
     {
-        TryReadString(out string result, 128, stringType, MainModule, baseOffset, offsets);
+        _ = TryReadString(out string result, 128, stringType, MainModule, baseOffset, offsets);
         return result;
     }
 
     public string ReadString(int length, ReadStringType stringType, int baseOffset, params int[] offsets)
     {
-        TryReadString(out string result, length, stringType, MainModule, baseOffset, offsets);
+        _ = TryReadString(out string result, length, stringType, MainModule, baseOffset, offsets);
         return result;
     }
 
     public string ReadString(string module, int baseOffset, params int[] offsets)
     {
-        TryReadString(out string result, 128, ReadStringType.AutoDetect, Modules[module], baseOffset, offsets);
+        _ = TryReadString(out string result, 128, ReadStringType.AutoDetect, Modules[module], baseOffset, offsets);
         return result;
     }
 
     public string ReadString(int length, string module, int baseOffset, params int[] offsets)
     {
-        TryReadString(out string result, length, ReadStringType.AutoDetect, Modules[module], baseOffset, offsets);
+        _ = TryReadString(out string result, length, ReadStringType.AutoDetect, Modules[module], baseOffset, offsets);
         return result;
     }
 
     public string ReadString(ReadStringType stringType, string module, int baseOffset, params int[] offsets)
     {
-        TryReadString(out string result, 128, stringType, Modules[module], baseOffset, offsets);
+        _ = TryReadString(out string result, 128, stringType, Modules[module], baseOffset, offsets);
         return result;
     }
 
     public string ReadString(int length, ReadStringType stringType, string module, int baseOffset, params int[] offsets)
     {
 
-        TryReadString(out string result, length, stringType, Modules[module], baseOffset, offsets);
+        _ = TryReadString(out string result, length, stringType, Modules[module], baseOffset, offsets);
         return result;
     }
 
     public string ReadString(Module module, int baseOffset, params int[] offsets)
     {
-        TryReadString(out string result, 128, ReadStringType.AutoDetect, module, baseOffset, offsets);
+        _ = TryReadString(out string result, 128, ReadStringType.AutoDetect, module, baseOffset, offsets);
         return result;
     }
 
     public string ReadString(int length, Module module, int baseOffset, params int[] offsets)
     {
-        TryReadString(out string result, length, ReadStringType.AutoDetect, module, baseOffset, offsets);
+        _ = TryReadString(out string result, length, ReadStringType.AutoDetect, module, baseOffset, offsets);
         return result;
     }
 
     public string ReadString(ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
     {
-        TryReadString(out string result, 128, stringType, module, baseOffset, offsets);
+        _ = TryReadString(out string result, 128, stringType, module, baseOffset, offsets);
         return result;
     }
 
     public string ReadString(int length, ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
     {
-        TryReadString(out string result, length, stringType, module, baseOffset, offsets);
+        _ = TryReadString(out string result, length, stringType, module, baseOffset, offsets);
         return result;
     }
 
     public string ReadString(nint baseAddress, params int[] offsets)
     {
-        TryReadString(out string result, 128, ReadStringType.AutoDetect, baseAddress, offsets);
+        _ = TryReadString(out string result, 128, ReadStringType.AutoDetect, baseAddress, offsets);
         return result;
     }
 
     public string ReadString(int length, nint baseAddress, params int[] offsets)
     {
-        TryReadString(out string result, length, ReadStringType.AutoDetect, baseAddress, offsets);
+        _ = TryReadString(out string result, length, ReadStringType.AutoDetect, baseAddress, offsets);
         return result;
     }
 
     public string ReadString(ReadStringType stringType, nint baseAddress, params int[] offsets)
     {
-        TryReadString(out string result, 128, stringType, baseAddress, offsets);
+        _ = TryReadString(out string result, 128, stringType, baseAddress, offsets);
         return result;
     }
 
     public string ReadString(int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
     {
-        TryReadString(out string result, length, stringType, baseAddress, offsets);
+        _ = TryReadString(out string result, length, stringType, baseAddress, offsets);
         return result;
     }
 
