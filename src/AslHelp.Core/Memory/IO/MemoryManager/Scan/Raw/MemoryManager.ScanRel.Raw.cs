@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Memory.IO;
 
-public abstract partial class MemoryIO
+public abstract partial class MemoryManagerBase
 {
     public nint ScanRel(int offset, params string[] pattern)
     {

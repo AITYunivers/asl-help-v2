@@ -2,7 +2,7 @@
 
 namespace AslHelp.Core.Memory.IO;
 
-public abstract partial class MemoryIO
+public abstract partial class MemoryManagerBase
 {
     public string ReadString(int baseOffset, params int[] offsets)
     {

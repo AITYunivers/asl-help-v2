@@ -3,7 +3,7 @@ using AslHelp.Core.Reflection;
 
 namespace AslHelp.Core.Memory.IO;
 
-public abstract partial class MemoryIO
+public abstract partial class MemoryManagerBase
 {
     public bool WriteSpan<T>(ICollection<T> values, int baseOffset, params int[] offsets) where T : unmanaged
     {

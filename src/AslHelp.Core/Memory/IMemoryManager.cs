@@ -4,7 +4,8 @@ using AslHelp.Core.Memory.IO;
 namespace AslHelp.Core.Memory;
 
 public interface IMemoryManager
-    : IMemoryReader,
+    : IDisposable,
+    IMemoryReader,
     IMemoryWriter,
     IMemoryScanner
 {
@@ -14,6 +15,7 @@ public interface IMemoryManager
     Module MainModule { get; }
     ModuleCache Modules { get; }
 
+    void Update();
     uint Tick { get; }
 
     void Log(object output);

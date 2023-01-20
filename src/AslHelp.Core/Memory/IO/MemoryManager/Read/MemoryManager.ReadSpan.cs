@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Memory.IO;
 
-public abstract partial class MemoryIO
+public abstract partial class MemoryManagerBase
 {
     public T[] ReadSpan<T>(int length, int baseOffset, params int[] offsets) where T : unmanaged
     {

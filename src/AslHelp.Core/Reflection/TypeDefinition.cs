@@ -9,13 +9,13 @@ public sealed class TypeDefinition<T>
 
     object ITypeDefinition.Default => Default;
 
-    public unsafe T Convert(byte* buffer)
+    public unsafe T CreateInstance(byte* buffer)
     {
         return Unsafe.ReadUnaligned<T>(buffer);
     }
 
-    unsafe object ITypeDefinition.Convert(byte* buffer)
+    unsafe object ITypeDefinition.CreateInstance(byte* buffer)
     {
-        return Convert(buffer);
+        return CreateInstance(buffer);
     }
 }

@@ -5,7 +5,7 @@ public interface ITypeDefinition
     int Size { get; }
     object Default { get; }
 
-    unsafe object Convert(byte* buffer);
+    unsafe object CreateInstance(byte* buffer);
 }
 
 public interface ITypeDefinition<T>
@@ -13,5 +13,5 @@ public interface ITypeDefinition<T>
 {
     new T Default { get; }
 
-    new unsafe T Convert(byte* buffer);
+    new unsafe T CreateInstance(byte* buffer);
 }

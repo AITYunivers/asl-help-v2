@@ -2,7 +2,7 @@
 
 namespace AslHelp.Core.Memory.IO;
 
-public abstract partial class MemoryIO
+public abstract partial class MemoryManagerBase
 {
     public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, int baseOffset, params int[] offsets)
     {
@@ -82,5 +82,31 @@ public abstract partial class MemoryIO
         return TryReadSpanDef(definition, buffer, module.Base + baseOffset, offsets);
     }
 
-    public abstract bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nint baseAddress, params int[] offsets);
+    public unsafe bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nint baseAddress, params int[] offsets)
+    {
+        if (!TryDeref(out nint deref, baseAddress, offsets))
+        {
+            buffer.Fill(definition.Default);
+            return false;
+        }
+
+        int size = definition.Size;
+        Span<byte> bBuffer = stackalloc byte[size];
+
+        if (!TryReadSpan<byte>(bBuffer, deref))
+        {
+            buffer.Fill(definition.Default);
+            return false;
+        }
+
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            fixed (byte* pBuffer = bBuffer.Slice(size * i, size))
+            {
+                buffer[i] = definition.CreateInstance(pBuffer);
+            }
+        }
+
+        return true;
+    }
 }

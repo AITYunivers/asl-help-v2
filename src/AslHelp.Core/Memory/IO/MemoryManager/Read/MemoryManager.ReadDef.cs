@@ -2,7 +2,7 @@
 
 namespace AslHelp.Core.Memory.IO;
 
-public abstract partial class MemoryIO
+public abstract partial class MemoryManagerBase
 {
     public dynamic ReadDef(ITypeDefinition definition, int baseOffset, params int[] offsets)
     {
@@ -70,7 +70,7 @@ public abstract partial class MemoryIO
 
         fixed (byte* pBuffer = buffer)
         {
-            result = definition.Convert(pBuffer);
+            result = definition.CreateInstance(pBuffer);
             return true;
         }
     }
