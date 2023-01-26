@@ -67,9 +67,9 @@ public abstract partial class MemoryManagerBase
             yield break;
         }
 
-        foreach (int offset in new ScanEnumerator(memory, signature, alignment))
+        foreach (int scanOffset in new ScanEnumerator(memory, signature, alignment))
         {
-            yield return startAddress + offset + signature.Offset;
+            yield return startAddress + scanOffset + signature.Offset;
         }
     }
 }

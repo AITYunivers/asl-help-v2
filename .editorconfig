@@ -226,7 +226,7 @@ dotnet_naming_rule.non_field_members_should_be_pascalcase.style    = pascalcase
 
 dotnet_naming_rule.constant_fields_should_be_all_upper.severity = warning
 dotnet_naming_rule.constant_fields_should_be_all_upper.symbols  = constant_fields
-dotnet_naming_rule.constant_fields_should_be_all_upper.style    = all_upper
+dotnet_naming_rule.constant_fields_should_be_all_upper.style    = pascalcase
 
 dotnet_naming_rule.public_static_fields_should_be_pascalcase.severity = warning
 dotnet_naming_rule.public_static_fields_should_be_pascalcase.symbols  = public_static_fields
@@ -254,7 +254,7 @@ dotnet_naming_rule.parameters_should_be_camelcase.style    = camelcase
 
 dotnet_naming_rule.local_constants_should_be_all_upper.severity = warning
 dotnet_naming_rule.local_constants_should_be_all_upper.symbols  = local_constants
-dotnet_naming_rule.local_constants_should_be_all_upper.style    = all_upper
+dotnet_naming_rule.local_constants_should_be_all_upper.style    = pascalcase
 
 dotnet_naming_rule.local_variables_should_be_camelcase.severity = warning
 dotnet_naming_rule.local_variables_should_be_camelcase.symbols  = local_variables
@@ -344,8 +344,3 @@ dotnet_naming_style._camelcase.required_prefix = _
 dotnet_naming_style._camelcase.required_suffix =
 dotnet_naming_style._camelcase.word_separator  =
 dotnet_naming_style._camelcase.capitalization  = camel_case
-
-dotnet_naming_style.all_upper.required_prefix =
-dotnet_naming_style.all_upper.required_suffix =
-dotnet_naming_style.all_upper.word_separator  = _
-dotnet_naming_style.all_upper.capitalization  = all_upper

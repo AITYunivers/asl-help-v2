@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Core.Memory.IO;
+﻿using AslHelp.Core.Memory.Models;
+
+namespace AslHelp.Core.Memory.IO;
 
 public abstract partial class MemoryManagerBase
 {
@@ -29,7 +31,13 @@ public abstract partial class MemoryManagerBase
 
     public IEnumerable<nint> ScanPagesAll(bool allPages, Signature signature, int alignment = 1)
     {
-
+        foreach (MemoryPage page in Process.MemoryPages(Is64Bit, allPages))
+        {
+            foreach (nint scanResult in ScanAll(signature, page.Base, page.RegionSize))
+            {
+                yield return scanResult;
+            }
+        }
     }
 
     public IEnumerable<nint> ScanPagesAllRel(Signature signature, int alignment = 1)

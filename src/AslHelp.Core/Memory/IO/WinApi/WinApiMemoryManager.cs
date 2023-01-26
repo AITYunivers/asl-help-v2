@@ -1,10 +1,10 @@
 ﻿using LiveSplit.ComponentUtil;
 
-namespace AslHelp.Core.Memory.IO;
+namespace AslHelp.Core.Memory.IO.Win32;
 
-public class Win32MemoryManager : MemoryManagerBase
+public class WinApiMemoryManager : MemoryManagerBase
 {
-    public override unsafe bool TryDeref(out nint result, nint baseAddress, params int[] offsets)
+    public sealed override unsafe bool TryDeref(out nint result, nint baseAddress, params int[] offsets)
     {
         if (baseAddress == 0)
         {
@@ -36,7 +36,7 @@ public class Win32MemoryManager : MemoryManagerBase
         }
     }
 
-    public override unsafe bool TryRead<T>(out T result, nint baseAddress, params int[] offsets)
+    public sealed override unsafe bool TryRead<T>(out T result, nint baseAddress, params int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
@@ -55,7 +55,7 @@ public class Win32MemoryManager : MemoryManagerBase
         }
     }
 
-    public override unsafe bool TryReadSpan<T>(Span<T> buffer, nint baseAddress, params int[] offsets)
+    public sealed override unsafe bool TryReadSpan<T>(Span<T> buffer, nint baseAddress, params int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
@@ -68,7 +68,7 @@ public class Win32MemoryManager : MemoryManagerBase
             Span<ulong> buf64 = MemoryMarshal.Cast<T, ulong>(buffer);
 
             int length = buf64.Length;
-            if (!TryReadSpan<uint>(buf32[length..], deref))
+            if (!TryReadSpan(buf32[length..], deref))
             {
                 return false;
             }
@@ -87,12 +87,12 @@ public class Win32MemoryManager : MemoryManagerBase
         }
     }
 
-    public override bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public sealed override bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
     {
-        throw new NotImplementedException();
+
     }
 
-    public override unsafe bool Write<T>(T value, nint baseAddress, params int[] offsets)
+    public sealed override unsafe bool Write<T>(T value, nint baseAddress, params int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
@@ -102,7 +102,7 @@ public class Win32MemoryManager : MemoryManagerBase
         return Process.Write(deref, &value, Native.GetTypeSize<T>(Is64Bit));
     }
 
-    public override unsafe bool WriteSpan<T>(ReadOnlySpan<T> values, nint baseAddress, params int[] offsets)
+    public sealed override unsafe bool WriteSpan<T>(ReadOnlySpan<T> values, nint baseAddress, params int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
@@ -112,7 +112,7 @@ public class Win32MemoryManager : MemoryManagerBase
         if (!Is64Bit && Native.IsPointer<T>())
         {
             ReadOnlySpan<uint> v32 = MemoryMarshal.Cast<T, uint>(values);
-            return WriteSpan<uint>(v32, deref);
+            return WriteSpan(v32, deref);
         }
 
         fixed (T* pValues = values)

@@ -28,8 +28,6 @@ public partial class Basic
 
     public virtual void Dispose(bool removeTexts)
     {
-        Tick = 0;
-
         TypeDefinitionFactory.Dispose();
         _fileLogger?.Dispose();
         _fileLogger = null;

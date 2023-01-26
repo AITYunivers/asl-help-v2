@@ -9,12 +9,12 @@ public abstract partial class MemoryManagerBase
     {
         int count = values.Count;
 
-        T[] poolArray = ArrayPool<T>.Shared.Rent(count);
-        values.CopyTo(poolArray, 0);
+        T[] rented = ArrayPool<T>.Shared.Rent(count);
+        values.CopyTo(rented, 0);
 
-        bool success = WriteSpan<T>(poolArray.AsSpan(0, count), MainModule, baseOffset, offsets);
+        bool success = WriteSpan<T>(rented.AsSpan(0, count), MainModule, baseOffset, offsets);
 
-        ArrayPool<T>.Shared.Return(poolArray);
+        ArrayPool<T>.Shared.Return(rented);
 
         return success;
     }
@@ -23,12 +23,12 @@ public abstract partial class MemoryManagerBase
     {
         int count = values.Count;
 
-        T[] poolArray = ArrayPool<T>.Shared.Rent(count);
-        values.CopyTo(poolArray, 0);
+        T[] rented = ArrayPool<T>.Shared.Rent(count);
+        values.CopyTo(rented, 0);
 
-        bool success = WriteSpan<T>(poolArray.AsSpan(0, count), Modules[module], baseOffset, offsets);
+        bool success = WriteSpan<T>(rented.AsSpan(0, count), Modules[module], baseOffset, offsets);
 
-        ArrayPool<T>.Shared.Return(poolArray);
+        ArrayPool<T>.Shared.Return(rented);
 
         return success;
     }
@@ -37,12 +37,12 @@ public abstract partial class MemoryManagerBase
     {
         int count = values.Count;
 
-        T[] poolArray = ArrayPool<T>.Shared.Rent(count);
-        values.CopyTo(poolArray, 0);
+        T[] rented = ArrayPool<T>.Shared.Rent(count);
+        values.CopyTo(rented, 0);
 
-        bool success = WriteSpan<T>(poolArray.AsSpan(0, count), module, baseOffset, offsets);
+        bool success = WriteSpan<T>(rented.AsSpan(0, count), module, baseOffset, offsets);
 
-        ArrayPool<T>.Shared.Return(poolArray);
+        ArrayPool<T>.Shared.Return(rented);
 
         return success;
     }
@@ -51,12 +51,12 @@ public abstract partial class MemoryManagerBase
     {
         int count = values.Count;
 
-        T[] poolArray = ArrayPool<T>.Shared.Rent(count);
-        values.CopyTo(poolArray, 0);
+        T[] rented = ArrayPool<T>.Shared.Rent(count);
+        values.CopyTo(rented, 0);
 
-        bool success = WriteSpan<T>(poolArray.AsSpan(0, count), baseAddress, offsets);
+        bool success = WriteSpan<T>(rented.AsSpan(0, count), baseAddress, offsets);
 
-        ArrayPool<T>.Shared.Return(poolArray);
+        ArrayPool<T>.Shared.Return(rented);
 
         return success;
     }

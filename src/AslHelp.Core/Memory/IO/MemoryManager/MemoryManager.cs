@@ -16,7 +16,7 @@ public abstract partial class MemoryManagerBase
             ThrowHelper.ThrowIfNullOrExited(value);
 
             _process = value;
-            Is64Bit = Native.Is64Bit(value);
+            Is64Bit = value.Is64Bit();
             Modules = new(value);
         }
     }

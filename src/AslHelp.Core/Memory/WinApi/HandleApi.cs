@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Memory;
 
-internal static unsafe partial class Win32
+internal static unsafe partial class WinApi
 {
     /// <summary>
     ///     Closes an open object handle.

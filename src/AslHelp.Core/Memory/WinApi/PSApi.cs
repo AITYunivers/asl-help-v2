@@ -1,8 +1,8 @@
 ﻿namespace AslHelp.Core.Memory;
 
-internal static unsafe partial class Win32
+internal static unsafe partial class WinApi
 {
-    private const int LIST_MODULES_ALL = 3;
+    private const int ListModulesAll = 3;
 
     /// <summary>
     ///     Retrieves a handle for each module in the specified process that meets the specified filter criteria.<br/>

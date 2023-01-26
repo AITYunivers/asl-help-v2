@@ -1,7 +1,7 @@
 ﻿namespace AslHelp.Core.Memory;
 
 #pragma warning disable IDE1006
-internal static unsafe partial class Win32
+internal static unsafe partial class WinApi
 {
     /// <summary>
     ///     Initializes the symbol handler for a process.<br/>

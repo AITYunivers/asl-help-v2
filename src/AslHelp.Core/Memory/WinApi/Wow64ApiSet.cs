@@ -1,7 +1,7 @@
 ﻿namespace AslHelp.Core.Memory;
 
 #pragma warning disable IDE1006
-internal static unsafe partial class Win32
+internal static unsafe partial class WinApi
 {
     /// <summary>
     ///     Determines whether the specified process is running under WOW64 or an Intel64 of x64 processor.<br/>

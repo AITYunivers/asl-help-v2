@@ -1,4 +1,7 @@
-﻿namespace AslHelp.Core.Memory.IO;
+﻿using AslHelp.Core.Memory.Models;
+using AslHelp.Core.Memory.Signatures;
+
+namespace AslHelp.Core.Memory.IO;
 
 public abstract partial class MemoryManagerBase
 {
@@ -54,12 +57,14 @@ public abstract partial class MemoryManagerBase
 
     public IEnumerable<nint> ScanPagesAll(bool allPages, int offset, params string[] pattern)
     {
-
+        Signature signature = new(offset, pattern);
+        return ScanPagesAll(allPages, signature);
     }
 
     public IEnumerable<nint> ScanPagesAll(bool allPages, int offset, params byte[] pattern)
     {
-
+        Signature signature = new(offset, pattern);
+        return ScanPagesAll(allPages, signature);
     }
 
     public IEnumerable<nint> ScanPagesAllRel(int offset, params string[] pattern)

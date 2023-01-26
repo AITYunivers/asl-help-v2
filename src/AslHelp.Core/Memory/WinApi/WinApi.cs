@@ -3,11 +3,11 @@
 namespace AslHelp.Core.Memory;
 
 /// <summary>
-///     The <see cref="Win32"/> class
+///     The <see cref="WinApi"/> class
 ///     provides interop with many Win32 API functions, as well as some convenient wrappers around them.
 /// </summary>
 #pragma warning disable IDE1006
-internal static unsafe partial class Win32
+internal static unsafe partial class WinApi
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nint OpenProcess(this Process process, uint dwDesiredAccess, bool bInheritHandle = false)
@@ -27,7 +27,7 @@ internal static unsafe partial class Win32
         return CloseHandle((void*)hObject) != 0;
     }
 
-    private const int MAX_PATH = 260;
+    private const int MaxPath = 260;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool EnumProcessModulesEx(nint hProcess, ReadOnlySpan<nint> hModule, uint cb, out uint cbNeeded)
@@ -40,16 +40,16 @@ internal static unsafe partial class Win32
                 (void**)lphModule,
                 cb,
                 lpcbNeeded,
-                LIST_MODULES_ALL) != 0;
+                ListModulesAll) != 0;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool GetModuleBaseNameW(nint hProcess, nint hModule, out string baseName)
     {
-        ushort* buffer = stackalloc ushort[MAX_PATH];
+        ushort* buffer = stackalloc ushort[MaxPath];
 
-        if (K32GetModuleBaseNameW((void*)hProcess, (void*)hModule, buffer, MAX_PATH) == 0)
+        if (K32GetModuleBaseNameW((void*)hProcess, (void*)hModule, buffer, MaxPath) == 0)
         {
             baseName = null;
             return false;
@@ -62,9 +62,9 @@ internal static unsafe partial class Win32
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool GetModuleFileNameExW(nint hProcess, nint hModule, out string fileName)
     {
-        ushort* buffer = stackalloc ushort[MAX_PATH];
+        ushort* buffer = stackalloc ushort[MaxPath];
 
-        if (K32GetModuleFileNameExW((void*)hProcess, (void*)hModule, buffer, MAX_PATH) == 0)
+        if (K32GetModuleFileNameExW((void*)hProcess, (void*)hModule, buffer, MaxPath) == 0)
         {
             fileName = null;
             return false;

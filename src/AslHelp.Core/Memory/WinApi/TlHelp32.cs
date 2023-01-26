@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Memory;
 
-internal static unsafe partial class Win32
+internal static unsafe partial class WinApi
 {
     /// <summary>
     ///     Takes a snapshot of the specified processes, as well as the heaps, modules, and threads used by these processes.<br/>

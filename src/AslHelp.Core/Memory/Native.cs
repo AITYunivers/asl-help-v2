@@ -1,6 +1,6 @@
 ﻿using AslHelp.Core.Exceptions;
 using AslHelp.Core.Memory.Models;
-using static AslHelp.Core.Memory.Win32;
+using static AslHelp.Core.Memory.WinApi;
 
 namespace AslHelp.Core.Memory;
 
@@ -105,7 +105,7 @@ public static unsafe class Native
         }
     }
 
-    public static IEnumerable<MemoryPage> MemoryPages(this Process process, bool is64Bit)
+    public static IEnumerable<MemoryPage> MemoryPages(this Process process, bool is64Bit, bool allPages)
     {
         ThrowHelper.ThrowIfNullOrExited(process);
 
@@ -116,6 +116,16 @@ public static unsafe class Native
             addr += (nint)mbi.RegionSize;
 
             if (mbi.State != MemState.MEM_COMMIT)
+            {
+                continue;
+            }
+
+            if (!allPages && (mbi.Protect & MemProtect.PAGE_GUARD) != 0)
+            {
+                continue;
+            }
+
+            if (!allPages && mbi.Type != MemType.MEM_PRIVATE)
             {
                 continue;
             }

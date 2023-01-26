@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Memory;
 
-internal static unsafe partial class Win32
+internal static unsafe partial class WinApi
 {
     [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
     public static extern void* GetModuleHandleW(
