@@ -1,6 +1,7 @@
-﻿using LiveSplit.ComponentUtil;
+﻿using System.Text;
+using LiveSplit.ComponentUtil;
 
-namespace AslHelp.Core.Memory.IO.Win32;
+namespace AslHelp.Core.Memory.IO;
 
 public class WinApiMemoryManager : MemoryManagerBase
 {
@@ -51,7 +52,7 @@ public class WinApiMemoryManager : MemoryManagerBase
                 return false;
             }
 
-            return !Native.IsPointer<T>() || !result.Equals(default);
+            return !Native.IsPointer<T>() || !result.Equals(default(T));
         }
     }
 
@@ -87,9 +88,26 @@ public class WinApiMemoryManager : MemoryManagerBase
         }
     }
 
-    public sealed override bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public sealed override bool TryReadString(out string result, int length, ReadStringType stringType, bool sized, nint baseAddress, params int[] offsets)
     {
+        if (!TryDeref(out nint deref, baseAddress, offsets))
+        {
+            result = null;
+            return false;
+        }
 
+        Encoding encoding;
+        bool isUnicode;
+        byte charSize;
+
+        setEncoding(stringType == ReadStringType.UTF16);
+
+        void setEncoding(bool unicode)
+        {
+            encoding = unicode ? Encoding.Unicode : (stringType == ReadStringType.ASCII ? Encoding.ASCII : Encoding.UTF8);
+            isUnicode = unicode;
+            charSize = (byte)(unicode ? 2 : 1);
+        }
     }
 
     public sealed override unsafe bool Write<T>(T value, nint baseAddress, params int[] offsets)
