@@ -1,6 +1,6 @@
-﻿using System.Text;
-using AslHelp.Core.IO.Logging;
+﻿using AslHelp.Core.IO.Logging;
 using LiveSplit.ComponentUtil;
+using System.Text;
 
 namespace AslHelp.Core.Memory.IO;
 
@@ -94,23 +94,18 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
 
     public sealed override bool TryReadString(out string result, int length, ReadStringType stringType, bool sized, nint baseAddress, params int[] offsets)
     {
-        if (!TryDeref(out nint deref, baseAddress, offsets))
+        if (!TryDeref(out _, baseAddress, offsets))
         {
             result = null;
             return false;
         }
 
-        Encoding encoding;
-        bool isUnicode;
-        byte charSize;
-
         setEncoding(stringType == ReadStringType.UTF16);
 
         void setEncoding(bool unicode)
         {
-            encoding = unicode ? Encoding.Unicode : (stringType == ReadStringType.ASCII ? Encoding.ASCII : Encoding.UTF8);
-            isUnicode = unicode;
-            charSize = (byte)(unicode ? 2 : 1);
+            _ = unicode ? Encoding.Unicode : (stringType == ReadStringType.ASCII ? Encoding.ASCII : Encoding.UTF8);
+            _ = (byte)(unicode ? 2 : 1);
         }
     }
 

@@ -1,6 +1,4 @@
-﻿using AslHelp.Core.Memory.Signatures;
-
-namespace AslHelp.Core.Memory.IO;
+﻿namespace AslHelp.Core.Memory.IO;
 
 public abstract partial class MemoryManagerBase
 {

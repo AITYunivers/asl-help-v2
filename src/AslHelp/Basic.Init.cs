@@ -1,6 +1,6 @@
-﻿using System.Reflection;
+﻿using AslHelp.Core.LiveSplitInterop;
+using System.Reflection;
 using System.Windows.Forms;
-using AslHelp.Core.LiveSplitInterop;
 
 public partial class Basic
 {

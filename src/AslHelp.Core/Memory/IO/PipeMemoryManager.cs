@@ -1,7 +1,8 @@
-﻿using System.IO.Pipes;
+﻿using AslHelp.Core.IO.Logging;
 using AslHelp.Core.Memory.Pipes;
 using CommunityToolkit.HighPerformance;
 using LiveSplit.ComponentUtil;
+using System.IO.Pipes;
 
 namespace AslHelp.Core.Memory.IO;
 
@@ -18,13 +19,15 @@ public sealed class PipeMemoryManager : MemoryManagerBase
         _pipe = pipe;
     }
 
+    public bool IsConnected => _pipe.IsConnected && _pipe.CanRead && _pipe.CanWrite;
+
     public sealed override bool TryDeref(out nint result, nint baseAddress, params int[] offsets)
     {
         if (!IsConnected)
         {
             result = default;
             return false;
-    }
+        }
 
         _pipe.Write(PipeRequestCode.Deref);
 
@@ -35,10 +38,10 @@ public sealed class PipeMemoryManager : MemoryManagerBase
         PipeResponseCode code = _pipe.Read<PipeResponseCode>();
 
         if (code != PipeResponseCode.Success)
-    {
+        {
             result = default;
             return false;
-    }
+        }
 
         result = (nint)_pipe.Read<long>();
         return result != default;
@@ -50,7 +53,7 @@ public sealed class PipeMemoryManager : MemoryManagerBase
         {
             result = default;
             return false;
-    }
+        }
 
         _pipe.Write(PipeRequestCode.Read);
 
@@ -75,9 +78,9 @@ public sealed class PipeMemoryManager : MemoryManagerBase
     public sealed override unsafe bool TryReadSpan<T>(Span<T> buffer, nint baseAddress, params int[] offsets)
     {
         if (!IsConnected)
-    {
+        {
             return false;
-    }
+        }
 
         _pipe.Write(PipeRequestCode.ReadSpan);
 
@@ -90,15 +93,15 @@ public sealed class PipeMemoryManager : MemoryManagerBase
         PipeResponseCode code = _pipe.Read<PipeResponseCode>();
 
         if (code != PipeResponseCode.Success)
-    {
+        {
             return false;
         }
 
-        _pipe.Read(MemoryMarshal.AsBytes(buffer));
+        _ = _pipe.Read(MemoryMarshal.AsBytes(buffer));
         return true;
     }
 
-    public sealed override bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public override bool TryReadString(out string result, int length, ReadStringType stringType, bool sized, nint baseAddress, params int[] offsets)
     {
 
     }
@@ -122,7 +125,7 @@ public sealed class PipeMemoryManager : MemoryManagerBase
         PipeResponseCode code = _pipe.Read<PipeResponseCode>();
 
         return code == PipeResponseCode.Success;
-        }
+    }
 
     public sealed override unsafe bool WriteSpan<T>(ReadOnlySpan<T> values, nint baseAddress, params int[] offsets)
     {
