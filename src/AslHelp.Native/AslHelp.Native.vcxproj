@@ -20,8 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.c" />
+    <ClCompile Include="io\console.c" />
+    <ClCompile Include="io\pipe.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="io\console.h" />
+    <ClInclude Include="io\pipe.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

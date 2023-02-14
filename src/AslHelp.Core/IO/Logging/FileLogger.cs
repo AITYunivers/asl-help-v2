@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Core.IO.Logging;
+﻿using AslHelp.Core.Exceptions;
+
+namespace AslHelp.Core.IO.Logging;
 
 public sealed class FileLogger : LoggerBase, IDisposable
 {
@@ -13,6 +15,24 @@ public sealed class FileLogger : LoggerBase, IDisposable
 
     public FileLogger(string path, int maximumLines, int linesToErase)
     {
+        if (maximumLines < 1)
+        {
+            string msg = "The file logger must allow at least 1 line.";
+            ThrowHelper.Throw.ArgumentOutOfRange(nameof(maximumLines), msg);
+        }
+
+        if (linesToErase < 1)
+        {
+            string msg = "File logger must erase at least 1 line.";
+            ThrowHelper.Throw.ArgumentOutOfRange(nameof(linesToErase), msg);
+        }
+
+        if (linesToErase > maximumLines)
+        {
+            string msg = "The file logger's maximum lines must be greater or equal to the amount of lines to erase.";
+            ThrowHelper.Throw.InvalidOperation(msg);
+        }
+
         _filePath = path;
         _maximumLines = maximumLines;
         _linesToErase = linesToErase;

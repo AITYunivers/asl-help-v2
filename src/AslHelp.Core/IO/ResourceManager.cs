@@ -1,4 +1,5 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System.IO;
+using AslHelp.Core.Exceptions;
 
 namespace AslHelp.Core.IO;
 
@@ -6,12 +7,19 @@ internal static class ResourceManager
 {
     public static string UnpackResource(string resource, string directory)
     {
+        string outputFile = $"{directory}/{resource}";
+
+        if (File.Exists(outputFile))
+        {
+            return outputFile;
+        }
+
         using Stream source = GetResourceStream(resource);
-        using FileStream destination = OpenWrite(directory, resource);
+        using FileStream destination = OpenWrite(outputFile);
 
         source.CopyTo(destination);
 
-        return destination.Name;
+        return outputFile;
     }
 
     public static Stream GetResourceStream(string resourceName)
@@ -28,20 +36,11 @@ internal static class ResourceManager
 
     public static FileStream OpenWrite(string fileName)
     {
-        string path = Path.GetFullPath(fileName);
-        return File.OpenWrite(path);
-    }
-
-    public static FileStream OpenWrite(string directory, string fileName)
-    {
-        string path = Path.GetFullPath(directory);
-        if (!Directory.Exists(path))
+        if (!Directory.Exists(Path.GetDirectoryName(fileName))
         {
             ThrowHelper.Throw.DirectoryNotFound();
         }
 
-        path = Path.Combine(path, fileName);
-
-        return File.OpenWrite(path);
+        return File.OpenWrite(fileName);
     }
 }

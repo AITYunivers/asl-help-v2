@@ -1,4 +1,5 @@
-﻿using AslHelp.Core.IO.Logging;
+﻿using AslHelp.Core.Exceptions;
+using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;
 
 public partial class Basic
@@ -17,25 +18,7 @@ public partial class Basic
         if (Methods.CurrentMethod != "startup")
         {
             string msg = "[IO] The file logger may not be started outside of the 'startup' action.";
-            throw new InvalidOperationException(msg);
-        }
-
-        if (maxLines < 1)
-        {
-            string msg = "[IO] The file logger must allow at least 1 line.";
-            throw new ArgumentOutOfRangeException(msg);
-        }
-
-        if (linesToErase < 1)
-        {
-            string msg = "[IO] The file logger must erase at least 1 line.";
-            throw new ArgumentOutOfRangeException(msg);
-        }
-
-        if (linesToErase > maxLines)
-        {
-            string msg = "[IO] The file logger's maximum lines must be greater than the amount of lines to erase.";
-            throw new InvalidOperationException(msg);
+            ThrowHelper.Throw.InvalidOperation(msg);
         }
 
         try
@@ -45,7 +28,10 @@ public partial class Basic
         }
         catch (Exception ex)
         {
-            Debug.Error($"[IO] Was unable to create the file logger:\n{ex}");
+            Debug.Error($"""
+                [IO] Was unable to create the file logger:
+                {ex}
+                """);
         }
     }
 

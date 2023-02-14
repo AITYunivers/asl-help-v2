@@ -1,16 +1,15 @@
 ﻿using AslHelp.Core.Collections;
-using AslHelp.Core.Memory.IO;
 
-namespace AslHelp.Core.Memory;
+namespace AslHelp.Core.Memory.IO;
 
 public interface IMemoryManager
-    : IDisposable,
-    IMemoryReader,
+    : IMemoryReader,
     IMemoryWriter,
     IMemoryScanner
 {
     Process Process { get; }
     bool Is64Bit { get; }
+    byte PtrSize { get; }
 
     Module MainModule { get; }
     ModuleCache Modules { get; }

@@ -18,9 +18,21 @@
     <ClCompile Include="dllmain.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="io\console.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="io\pipe.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="io\console.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="io\pipe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

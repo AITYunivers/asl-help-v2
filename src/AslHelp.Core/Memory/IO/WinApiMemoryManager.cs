@@ -1,9 +1,13 @@
-﻿using LiveSplit.ComponentUtil;
+﻿using AslHelp.Core.IO.Logging;
+using LiveSplit.ComponentUtil;
 
-namespace AslHelp.Core.Memory.IO.Win32;
+namespace AslHelp.Core.Memory.IO;
 
-public class WinApiMemoryManager : MemoryManagerBase
+public sealed class WinApiMemoryManager : MemoryManagerBase
 {
+    public WinApiMemoryManager(Process process, LoggerBase logger)
+        : base(process, logger) { }
+
     public sealed override unsafe bool TryDeref(out nint result, nint baseAddress, params int[] offsets)
     {
         if (baseAddress == 0)
