@@ -52,7 +52,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\..\x64\Release\AslHelp.Native.dll" />
+    <EmbeddedResource Include="Native.x64.dll" Link="..\..\x64\Release\AslHelp.Native.dll" />
+    <EmbeddedResource Include="Native.x86.dll" Link="..\..\x86\Release\AslHelp.Native.dll" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Core.Memory.Pointers;
+﻿using AslHelp.Core.Memory.IO;
+
+namespace AslHelp.Core.Memory.Pointers;
 
 public sealed class SpanPointer<T> : PointerBase<T[]> where T : unmanaged
 {

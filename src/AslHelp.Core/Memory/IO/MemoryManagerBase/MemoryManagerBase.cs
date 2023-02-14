@@ -1,37 +1,39 @@
 ﻿using AslHelp.Core.Collections;
 using AslHelp.Core.Exceptions;
+using AslHelp.Core.IO.Logging;
 
 namespace AslHelp.Core.Memory.IO;
 
 public abstract partial class MemoryManagerBase
     : IMemoryManager
 {
-    private Process _process;
+    private readonly LoggerBase _logger;
 
-    public Process Process
+    public MemoryManagerBase(Process process, LoggerBase logger)
     {
-        get => _process;
-        set
-        {
-            ThrowHelper.ThrowIfNullOrExited(value);
+        ThrowHelper.ThrowIfNullOrExited(process);
 
-            _process = value;
-            Is64Bit = value.Is64Bit();
-            Modules = new(value);
-        }
+        Process = process;
+        Is64Bit = process.Is64Bit();
+        PtrSize = (byte)(Is64Bit ? 0x8 : 0x4);
+        Modules = new(process);
+
+        _logger = logger;
     }
 
-    public bool Is64Bit { get; private set; }
+    public Process Process { get; }
+    public bool Is64Bit { get; }
+    public byte PtrSize { get; }
 
     public Module MainModule => Modules.FirstOrDefault();
-    public ModuleCache Modules { get; private set; }
+    public ModuleCache Modules { get; }
 
     public uint Tick { get; private set; }
 
-    public void Update()
+    public virtual void Update()
     {
+        Process?.Refresh();
         Tick++;
-        _process?.Refresh();
     }
 
     public nint FromAbsoluteAddress(nint address)
@@ -51,11 +53,6 @@ public abstract partial class MemoryManagerBase
 
     public void Log(object output)
     {
-        // TODO
-    }
-
-    public void Dispose()
-    {
-        _process?.Dispose();
+        _logger?.Log(output);
     }
 }

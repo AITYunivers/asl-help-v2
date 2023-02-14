@@ -5,16 +5,18 @@ using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.IO;
 
-public class PipeMemoryManager : MemoryManagerBase
+public sealed class PipeMemoryManager : MemoryManagerBase
 {
     private readonly NamedPipeClientStream _pipe;
 
-    public PipeMemoryManager(NamedPipeClientStream pipe)
+    public PipeMemoryManager(Process process, NamedPipeClientStream pipe)
+        : this(process, null, pipe) { }
+
+    public PipeMemoryManager(Process process, LoggerBase logger, NamedPipeClientStream pipe)
+        : base(process, logger)
     {
         _pipe = pipe;
     }
-
-    public bool IsConnected => _pipe.IsConnected && _pipe.CanRead && _pipe.CanWrite;
 
     public sealed override bool TryDeref(out nint result, nint baseAddress, params int[] offsets)
     {
@@ -22,7 +24,7 @@ public class PipeMemoryManager : MemoryManagerBase
         {
             result = default;
             return false;
-        }
+    }
 
         _pipe.Write(PipeRequestCode.Deref);
 
@@ -33,10 +35,10 @@ public class PipeMemoryManager : MemoryManagerBase
         PipeResponseCode code = _pipe.Read<PipeResponseCode>();
 
         if (code != PipeResponseCode.Success)
-        {
+    {
             result = default;
             return false;
-        }
+    }
 
         result = (nint)_pipe.Read<long>();
         return result != default;
@@ -48,7 +50,7 @@ public class PipeMemoryManager : MemoryManagerBase
         {
             result = default;
             return false;
-        }
+    }
 
         _pipe.Write(PipeRequestCode.Read);
 
@@ -73,9 +75,9 @@ public class PipeMemoryManager : MemoryManagerBase
     public sealed override unsafe bool TryReadSpan<T>(Span<T> buffer, nint baseAddress, params int[] offsets)
     {
         if (!IsConnected)
-        {
+    {
             return false;
-        }
+    }
 
         _pipe.Write(PipeRequestCode.ReadSpan);
 
@@ -88,7 +90,7 @@ public class PipeMemoryManager : MemoryManagerBase
         PipeResponseCode code = _pipe.Read<PipeResponseCode>();
 
         if (code != PipeResponseCode.Success)
-        {
+    {
             return false;
         }
 
@@ -120,7 +122,7 @@ public class PipeMemoryManager : MemoryManagerBase
         PipeResponseCode code = _pipe.Read<PipeResponseCode>();
 
         return code == PipeResponseCode.Success;
-    }
+        }
 
     public sealed override unsafe bool WriteSpan<T>(ReadOnlySpan<T> values, nint baseAddress, params int[] offsets)
     {
