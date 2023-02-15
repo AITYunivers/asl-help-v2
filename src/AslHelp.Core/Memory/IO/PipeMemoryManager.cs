@@ -103,7 +103,8 @@ public sealed class PipeMemoryManager : MemoryManagerBase
 
     public override bool TryReadString(out string result, int length, ReadStringType stringType, bool sized, nint baseAddress, params int[] offsets)
     {
-
+        result = default;
+        return true;
     }
 
     public sealed override unsafe bool Write<T>(T value, nint baseAddress, params int[] offsets)

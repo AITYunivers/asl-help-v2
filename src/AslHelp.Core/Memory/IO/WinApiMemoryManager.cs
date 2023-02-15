@@ -94,18 +94,26 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
 
     public sealed override bool TryReadString(out string result, int length, ReadStringType stringType, bool sized, nint baseAddress, params int[] offsets)
     {
-        if (!TryDeref(out _, baseAddress, offsets))
+        if (!TryDeref(out nint deref, baseAddress, offsets))
         {
             result = null;
             return false;
         }
 
+        Encoding encoding;
+        bool isUnicode;
+        byte charSize;
+
         setEncoding(stringType == ReadStringType.UTF16);
+
+        result = default;
+        return true;
 
         void setEncoding(bool unicode)
         {
-            _ = unicode ? Encoding.Unicode : (stringType == ReadStringType.ASCII ? Encoding.ASCII : Encoding.UTF8);
-            _ = (byte)(unicode ? 2 : 1);
+            encoding = unicode ? Encoding.Unicode : (stringType == ReadStringType.ASCII ? Encoding.ASCII : Encoding.UTF8);
+            isUnicode = unicode;
+            charSize = (byte)(unicode ? 2 : 1);
         }
     }
 

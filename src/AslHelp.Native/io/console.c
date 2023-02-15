@@ -21,7 +21,7 @@ BOOL LogDw(const char* format, DWORD value)
     if (!console)
         return FALSE;
 
-    DWORD len = lstrlenA(format) + 18;
+    const DWORD len = lstrlenA(format) + 18;
     const char* buf = malloc(len);
 
     if (buf == NULL)
@@ -42,8 +42,8 @@ BOOL LogLastErr(const char* format)
     if (!console)
         return FALSE;
 
-    DWORD len = lstrlenA(format) + 18;
-    char* buf = malloc(len);
+    const DWORD len = lstrlenA(format) + 18;
+    const char* buf = malloc(len);
 
     if (buf == NULL)
     {

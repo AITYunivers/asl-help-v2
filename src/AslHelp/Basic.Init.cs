@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using AslHelp.Core.LiveSplitInterop;
+using System.Reflection;
 using System.Windows.Forms;
 
 public partial class Basic
@@ -18,7 +19,7 @@ public partial class Basic
 
         try
         {
-            Timer.Init();
+            AslHelp.Core.LiveSplitInterop.Timer.Init();
             Script.Init();
 
             if (generateCode)

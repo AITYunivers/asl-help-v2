@@ -20,7 +20,6 @@
     <Using Alias="Debug" Include="AslHelp.Core.IO.Debug" />
     <Using Alias="Module" Include="AslHelp.Core.Memory.Models.Module" />
     <Using Alias="Script" Include="AslHelp.Core.LiveSplitInterop.Script" />
-    <Using Alias="Timer" Include="AslHelp.Core.LiveSplitInterop.Timer" />
   </ItemGroup>
 
   <ItemGroup>
