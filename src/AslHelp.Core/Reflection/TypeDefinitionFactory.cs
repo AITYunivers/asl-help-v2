@@ -32,11 +32,6 @@ public static class TypeDefinitionFactory
             TypeDefinitionCompilerException.ThrowIfNoType();
         }
 
-        if (types.Length > 1)
-        {
-            TypeDefinitionCompilerException.ThrowIfMoreThanOneType();
-        }
-
         Type target = types[0];
 
         if (!target.IsValueType)

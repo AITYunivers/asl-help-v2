@@ -8,7 +8,7 @@
 ///     <i><see href="https://learn.microsoft.com/en-us/windows/win32/secauthz/standard-access-rights">Standard Access Rights</see></i>.
 /// </remarks>
 [Flags]
-public enum StandardAccess : uint
+internal enum StandardAccess : uint
 {
     /// <summary>
     ///     Required to delete the object.

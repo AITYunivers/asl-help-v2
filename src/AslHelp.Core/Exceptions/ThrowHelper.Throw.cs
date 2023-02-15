@@ -31,15 +31,15 @@ internal static partial class ThrowHelper
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void InvalidOperation(string message)
+        public static void DirectoryNotFound()
         {
-            throw new InvalidOperationException(message);
+            throw new DirectoryNotFoundException();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void KeyNotFound(string message)
+        public static void DirectoryNotFound(string message)
         {
-            throw new KeyNotFoundException(message);
+            throw new DirectoryNotFoundException(message);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -55,15 +55,21 @@ internal static partial class ThrowHelper
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void DirectoryNotFound()
+        public static void Format(string message)
         {
-            throw new DirectoryNotFoundException();
+            throw new FormatException(message);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void DirectoryNotFound(string message)
+        public static void InvalidOperation(string message)
         {
-            throw new DirectoryNotFoundException(message);
+            throw new InvalidOperationException(message);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void KeyNotFound(string message)
+        {
+            throw new KeyNotFoundException(message);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

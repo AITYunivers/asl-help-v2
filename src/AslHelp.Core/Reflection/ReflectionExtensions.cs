@@ -27,6 +27,11 @@ public static class ReflectionExtensions
         return obj.GetType().GetRuntimeMethods().FirstOrDefault(m => m.Name == methodName);
     }
 
+    public static bool IsType<T>(this object obj)
+    {
+        return obj.GetType() == typeof(T);
+    }
+
     public static Assembly CurrentAssembly
     {
         get

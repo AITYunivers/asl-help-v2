@@ -8,7 +8,7 @@
 ///     <i><see href="https://learn.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights">Process Security and Access Rights</see></i>.
 /// </remarks>
 [Flags]
-public enum ProcessAccess : uint
+internal enum ProcessAccess : uint
 {
     /// <summary>
     ///     Required to terminate a process.

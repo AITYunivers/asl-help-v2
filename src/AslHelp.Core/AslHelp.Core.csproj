@@ -46,14 +46,10 @@
 
     <Reference Include="Irony" HintPath="..\..\ref\Irony.dll" />
     <Reference Include="LiveSplit.Core" HintPath="..\..\ref\LiveSplit.Core.dll" />
+    <Reference Include="LiveSplit.Text" HintPath="..\..\ref\LiveSplit.Text.dll" />
     <Reference Include="LiveSplit.ScriptableAutoSplit" HintPath="..\..\ref\LiveSplit.ScriptableAutoSplit.dll" />
     <Reference Include="LiveSplit.View" HintPath="..\..\ref\LiveSplit.View.dll" />
     <Reference Include="UpdateManager" HintPath="..\..\ref\UpdateManager.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Native.x64.dll" Link="..\..\x64\Release\AslHelp.Native.dll" />
-    <EmbeddedResource Include="Native.x86.dll" Link="..\..\x86\Release\AslHelp.Native.dll" />
   </ItemGroup>
 
 </Project>

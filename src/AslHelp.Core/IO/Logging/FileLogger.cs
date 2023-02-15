@@ -126,7 +126,10 @@ public sealed class FileLogger : LoggerBase, IDisposable
         }
         catch (Exception ex)
         {
-            Debug.Error($"FileLogger was unable to write to the output:\n{ex}");
+            Debug.Error($"""
+                FileLogger was unable to write to the output:
+                {ex}
+                """);
         }
     }
 
@@ -144,7 +147,10 @@ public sealed class FileLogger : LoggerBase, IDisposable
         }
         catch (Exception ex)
         {
-            Debug.Error($"FileLogger failed replacing log file with temporary log file:\n{ex}");
+            Debug.Error($"""
+                FileLogger failed replacing log file with temporary log file:
+                {ex}
+                """);
         }
         finally
         {
@@ -154,7 +160,10 @@ public sealed class FileLogger : LoggerBase, IDisposable
             }
             catch (Exception ex)
             {
-                Debug.Error($"FileLogger failed deleting temporary log file:\n{ex}");
+                Debug.Error($"""
+                    FileLogger failed deleting temporary log file:
+                    {ex}
+                    """);
             }
         }
     }

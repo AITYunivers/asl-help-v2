@@ -20,7 +20,7 @@ public partial class Basic
             {
                 _game = Script.Game;
 
-                UpdateProcData(_game);
+                UpdateGameData();
             }
 
             return _game;
@@ -30,7 +30,7 @@ public partial class Basic
             _game = value;
             Script.Game = value;
 
-            UpdateProcData(value);
+            UpdateGameData();
         }
     }
 
@@ -87,7 +87,8 @@ public partial class Basic
             return;
         }
 
-        string dll = ResourceManager.UnpackResource($"AslHelp.Core.Native.{(Is64Bit ? "x64" : "x86")}.dll", "Components");
+        bool is64Bit = _game.Is64Bit();
+        string dll = ResourceManager.UnpackResource($"AslHelp.Core.Native.{(is64Bit ? "x64" : "x86")}.dll", "Components");
         if (Injector.TryInject(_game, dll))
         {
             _pipe = new("asl-help-pipe");

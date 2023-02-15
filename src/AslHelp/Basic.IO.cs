@@ -1,15 +1,17 @@
 ﻿using AslHelp.Core.Exceptions;
 using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;
+using AslHelp.Core.LiveSplitInterop.Settings;
+using AslHelp.Core.LiveSplitInterop.Texts;
 
 public partial class Basic
 {
     protected DebugLogger _dbgLogger = new();
     protected FileLogger _fileLogger;
 
-    //public TimerControl Timer { get; } = new();
-    //public SettingsCreator Settings { get; } = new();
-    //public TextComponentManager Texts { get; } = new();
+    public TimerController Timer { get; } = new();
+    public SettingsCreator Settings { get; } = new();
+    public TextComponentController Texts { get; } = new();
 
     public void StartFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512)
     {

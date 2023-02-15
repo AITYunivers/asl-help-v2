@@ -28,7 +28,7 @@ internal class TypeDefinitionCompilerException : Exception
 
     public static void ThrowIfNotValueType()
     {
-        throw new TypeDefinitionCompilerException("The defined type was not a value type.");
+        throw new TypeDefinitionCompilerException("The first defined type was not a value type.");
     }
 
     private static string GetMessage(CompilerErrorCollection errors)

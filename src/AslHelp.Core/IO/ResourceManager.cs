@@ -1,5 +1,4 @@
-﻿using System.IO;
-using AslHelp.Core.Exceptions;
+﻿using AslHelp.Core.Exceptions;
 
 namespace AslHelp.Core.IO;
 
@@ -36,7 +35,7 @@ internal static class ResourceManager
 
     public static FileStream OpenWrite(string fileName)
     {
-        if (!Directory.Exists(Path.GetDirectoryName(fileName))
+        if (!Directory.Exists(Path.GetDirectoryName(fileName)))
         {
             ThrowHelper.Throw.DirectoryNotFound();
         }

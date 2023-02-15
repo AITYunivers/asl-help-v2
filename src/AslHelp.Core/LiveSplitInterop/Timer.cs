@@ -9,7 +9,6 @@ internal static class Timer
         Debug.Info("  => Initializing timer data...");
 
         TimerForm form = (TimerForm)Application.OpenForms["TimerForm"];
-
         State = form.CurrentState;
 
         Debug.Info("    => Success.");
