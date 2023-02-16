@@ -40,13 +40,13 @@ public partial class Basic
 
     private void GenerateCode()
     {
-        Script.Vars.Helper = this;
-        Debug.Info("    => Set helper to `vars.Helper`.");
+        Script.Vars.AslHelp = this;
+        Debug.Info("    => Set helper to `vars.AslHelp`.");
 
         Script.Vars.Log = (Action<object>)Log;
         Debug.Info("    => Created the Action<object> `vars.Log`.");
 
-        Methods.shutdown.Prepend("vars.Helper.Dispose();");
+        Methods.shutdown.Prepend("vars.AslHelp.Dispose();");
 
         Script.Vars.StartBench = (Action<string>)StartBench;
         Script.Vars.StopBench = (Action<string>)StopBench;

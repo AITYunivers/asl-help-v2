@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="set out=$(TargetDir)&#xD;&#xA;set out=%25out:~0,-1%25&#xD;&#xA;&#xD;&#xA;set /p lsdir=&lt;$(SolutionDir).lsdir&#xD;&#xA;&#xD;&#xA;$(ILMergeConsolePath) /out:%25out%25\asl-help.dll ^&#xD;&#xA;  %25out%25\AslHelp.dll ^&#xD;&#xA;  %25out%25\AslHelp.Core.dll ^&#xD;&#xA;  %25out%25\AslHelp.Emu.dll ^&#xD;&#xA;  %25out%25\AslHelp.GameMaker.dll ^&#xD;&#xA;  %25out%25\AslHelp.Unity.dll ^&#xD;&#xA;  %25out%25\AslHelp.Unreal.dll ^&#xD;&#xA;  ^&#xD;&#xA;  %25out%25\CommunityToolkit.HighPerformance.dll ^&#xD;&#xA;  %25out%25\System.Runtime.CompilerServices.Unsafe.dll&#xD;&#xA;&#xD;&#xA;if exist %25lsdir%25\Components\ (&#xD;&#xA;  copy %25out%25\asl-help.dll %25lsdir%25\Components\asl-help&#xD;&#xA;)" />
+    <Exec Command="set out=$(TargetDir)&#xD;&#xA;set out=%25out:~0,-1%25&#xD;&#xA;&#xD;&#xA;set /p lsdir=&lt;$(SolutionDir).lsdir&#xD;&#xA;&#xD;&#xA;$(ILMergeConsolePath) /out:%25out%25\asl-help.dll ^&#xD;&#xA;  %25out%25\AslHelp.dll ^&#xD;&#xA;  %25out%25\AslHelp.Core.dll ^&#xD;&#xA;  %25out%25\AslHelp.Emu.dll ^&#xD;&#xA;  %25out%25\AslHelp.GameMaker.dll ^&#xD;&#xA;  %25out%25\AslHelp.Unity.dll ^&#xD;&#xA;  %25out%25\AslHelp.Unreal.dll ^&#xD;&#xA;  ^&#xD;&#xA;  %25out%25\CommunityToolkit.HighPerformance.dll&#xD;&#xA;&#xD;&#xA;if exist %25lsdir%25\Components\ (&#xD;&#xA;  copy %25out%25\asl-help.dll %25lsdir%25\Components\asl-help&#xD;&#xA;)" />
   </Target>
 
 </Project>

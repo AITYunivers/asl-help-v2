@@ -39,7 +39,7 @@ public partial class Basic
 
         if (!closing && removeTexts)
         {
-            //Texts.RemoveAll();
+            Texts.RemoveAll();
         }
     }
 }

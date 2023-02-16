@@ -39,7 +39,6 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.1.0" />
-    <PackageReference Include="System.Text.Json" Version="7.0.1" />
 
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Windows.Forms" />
