@@ -80,6 +80,30 @@ public interface IMemoryReader
     bool TryReadString(out string result, ReadStringType stringType, nint baseAddress, params int[] offsets);
     bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets);
 
+    string ReadSizedString(int baseOffset, params int[] offsets);
+    string ReadSizedString(ReadStringType stringType, int baseOffset, params int[] offsets);
+
+    string ReadSizedString(string module, int baseOffset, params int[] offsets);
+    string ReadSizedString(ReadStringType stringType, string module, int baseOffset, params int[] offsets);
+
+    string ReadSizedString(Module module, int baseOffset, params int[] offsets);
+    string ReadSizedString(ReadStringType stringType, Module module, int baseOffset, params int[] offsets);
+
+    string ReadSizedString(nint baseAddress, params int[] offsets);
+    string ReadSizedString(ReadStringType stringType, nint baseAddress, params int[] offsets);
+
+    bool TryReadSizedString(out string result, int baseOffset, params int[] offsets);
+    bool TryReadSizedString(out string result, ReadStringType stringType, int baseOffset, params int[] offsets);
+
+    bool TryReadSizedString(out string result, string module, int baseOffset, params int[] offsets);
+    bool TryReadSizedString(out string result, ReadStringType stringType, string module, int baseOffset, params int[] offsets);
+
+    bool TryReadSizedString(out string result, Module module, int baseOffset, params int[] offsets);
+    bool TryReadSizedString(out string result, ReadStringType stringType, Module module, int baseOffset, params int[] offsets);
+
+    bool TryReadSizedString(out string result, nint baseAddress, params int[] offsets);
+    bool TryReadSizedString(out string result, ReadStringType stringType, nint baseAddress, params int[] offsets);
+
     dynamic ReadDef(ITypeDefinition definition, int baseOffset, params int[] offsets);
     dynamic ReadDef(ITypeDefinition definition, string module, int baseOffset, params int[] offsets);
     dynamic ReadDef(ITypeDefinition definition, Module module, int baseOffset, params int[] offsets);

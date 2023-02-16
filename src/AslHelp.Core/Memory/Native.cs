@@ -1,4 +1,5 @@
 ﻿using AslHelp.Core.Exceptions;
+using AslHelp.Core.Extensions;
 using AslHelp.Core.Memory.Models;
 using static AslHelp.Core.Memory.WinApi;
 
@@ -6,11 +7,8 @@ namespace AslHelp.Core.Memory;
 
 public static unsafe class Native
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Is64Bit(this Process process)
     {
-        ThrowHelper.ThrowIfNullOrExited(process);
-
         int wow64;
         if (IsWow64Process((void*)process.Handle, &wow64) == 0)
         {
@@ -20,22 +18,16 @@ public static unsafe class Native
         return Environment.Is64BitOperatingSystem && wow64 == 0;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Read(this Process process, nint address, void* buffer, int bufferSize)
     {
-        ThrowHelper.ThrowIfNullOrExited(process);
-
         nuint nSize = (nuint)bufferSize, nRead;
 
         return ReadProcessMemory((void*)process.Handle, (void*)address, buffer, nSize, &nRead) != 0
             && nRead == nSize;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Write(this Process process, nint address, void* data, int dataSize)
     {
-        ThrowHelper.ThrowIfNullOrExited(process);
-
         nuint nSize = (nuint)dataSize, nWritten;
 
         return WriteProcessMemory((void*)process.Handle, (void*)address, data, nSize, &nWritten) != 0
@@ -44,17 +36,15 @@ public static unsafe class Native
 
     public static IEnumerable<Module> Modules(this Process process)
     {
-        ThrowHelper.ThrowIfNullOrExited(process);
-
         nint hProcess = process.Handle;
 
-        if (EnumProcessModulesEx(hProcess, null, 0, out uint cbNeeded))
+        if (!EnumProcessModulesEx(hProcess, null, 0, out uint cbNeeded))
         {
             ThrowHelper.Throw.Win32();
         }
 
-        int numModules = (int)(cbNeeded / Marshal.SizeOf<nint>());
-        nint[] hModule = new nint[numModules];
+        int numModules = (int)(cbNeeded / Unsafe.SizeOf<nint>());
+        nint[] hModule = ArrayPoolExtensions.Rent<nint>(numModules);
 
         if (!EnumProcessModulesEx(hProcess, hModule, cbNeeded, out _))
         {
@@ -65,16 +55,22 @@ public static unsafe class Native
         {
             if (!GetModuleBaseNameW(hProcess, hModule[i], out string baseName))
             {
+                ArrayPoolExtensions.Return(hModule);
+
                 yield break;
             }
 
             if (!GetModuleFileNameExW(hProcess, hModule[i], out string fileName))
             {
+                ArrayPoolExtensions.Return(hModule);
+
                 yield break;
             }
 
             if (!GetModuleInformation(hProcess, hModule[i], out MODULEINFO moduleInfo))
             {
+                ArrayPoolExtensions.Return(hModule);
+
                 yield break;
             }
 
@@ -107,8 +103,6 @@ public static unsafe class Native
 
     public static IEnumerable<MemoryPage> MemoryPages(this Process process, bool is64Bit, bool allPages)
     {
-        ThrowHelper.ThrowIfNullOrExited(process);
-
         nint addr = 0x10000, max = (nint)(is64Bit ? 0x7FFFFFFEFFFF : 0x7FFEFFFF);
 
         while (VirtualQueryEx(process.Handle, addr, out MEMORY_BASIC_INFORMATION mbi))
@@ -141,7 +135,6 @@ public static unsafe class Native
 
     public static Dictionary<string, DebugSymbol> Symbols(this Module module, Process process)
     {
-        ThrowHelper.ThrowIfNullOrExited(process);
         ThrowHelper.ThrowIfNull(module);
 
         nint hProcess = process.Handle;
@@ -180,15 +173,11 @@ public static unsafe class Native
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nint AllocateRemoteString(this Process process, string value)
     {
-        ThrowHelper.ThrowIfNullOrExited(process);
-
         return (nint)AllocateRemoteString((void*)process.Handle, value);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void* AllocateRemoteString(void* hProcess, string value)
     {
         if (hProcess == null)
@@ -223,13 +212,11 @@ public static unsafe class Native
         return memory;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsPointer<T>()
     {
-        return typeof(T) == typeof(nint) || typeof(T) == typeof(nuint) || typeof(T) == typeof(IntPtr) || typeof(T) == typeof(UIntPtr);
+        return typeof(T) == typeof(nint) || typeof(T) == typeof(nuint);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetTypeSize<T>(bool is64Bit) where T : unmanaged
     {
         return IsPointer<T>() ? (is64Bit ? 0x8 : 0x4) : sizeof(T);

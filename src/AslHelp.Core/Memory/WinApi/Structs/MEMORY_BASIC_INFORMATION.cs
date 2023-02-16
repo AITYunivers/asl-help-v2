@@ -45,10 +45,6 @@ internal unsafe struct MEMORY_BASIC_INFORMATION
     /// </summary>
     public MemType Type;
 
-    public static nuint Size
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => (nuint)sizeof(MEMORY_BASIC_INFORMATION);
-    }
+    public static nuint Size => (nuint)sizeof(MEMORY_BASIC_INFORMATION);
 }
 

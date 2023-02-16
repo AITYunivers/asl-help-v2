@@ -7,13 +7,14 @@ public sealed class ModuleCache : CachedEnumerable<string, Module>
     private readonly Process _process;
 
     public ModuleCache(Process process)
+        : base(StringComparer.OrdinalIgnoreCase)
     {
         _process = process;
     }
 
     public override IEnumerator<Module> GetEnumerator()
     {
-        foreach (Module module in _process.Modules())
+        foreach (Module module in _process.ModulesTh32())
         {
             yield return module;
         }
@@ -22,11 +23,6 @@ public sealed class ModuleCache : CachedEnumerable<string, Module>
     protected override string GetKey(Module value)
     {
         return value.Name;
-    }
-
-    protected override bool CompareKeys(string searchedKey, string itemKey)
-    {
-        return searchedKey.Equals(itemKey, StringComparison.OrdinalIgnoreCase);
     }
 
     protected override string KeyNotFoundMessage(string key)

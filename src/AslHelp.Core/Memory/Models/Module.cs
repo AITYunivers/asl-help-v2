@@ -8,8 +8,8 @@ public sealed record Module
     {
         _process = process;
 
-        Name = new(me.szModule);
-        FilePath = new(me.szExePath);
+        Name = new((char*)me.szModule);
+        FilePath = new((char*)me.szExePath);
         Base = (nint)me.modBaseAddr;
         MemorySize = (int)me.modBaseSize;
     }

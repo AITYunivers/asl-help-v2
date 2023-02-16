@@ -2,8 +2,6 @@
 
 internal static unsafe partial class WinApi
 {
-    private const int ListModulesAll = 3;
-
     /// <summary>
     ///     Retrieves a handle for each module in the specified process that meets the specified filter criteria.<br/>
     ///     For further information see:

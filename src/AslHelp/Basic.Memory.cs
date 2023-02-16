@@ -1,10 +1,9 @@
 ﻿using AslHelp.Core.Collections;
 using AslHelp.Core.Exceptions;
-using AslHelp.Core.IO;
+using AslHelp.Core.IO.Logging;
 using AslHelp.Core.Memory;
 using AslHelp.Core.Memory.IO;
 using AslHelp.Core.Memory.Models;
-using AslHelp.Core.Memory.Pipes;
 using System.IO.Pipes;
 
 public partial class Basic
@@ -87,18 +86,18 @@ public partial class Basic
             return;
         }
 
-        bool is64Bit = _game.Is64Bit();
-        string dll = ResourceManager.UnpackResource($"AslHelp.Core.Native.{(is64Bit ? "x64" : "x86")}.dll", "Components");
-        if (Injector.TryInject(_game, dll))
-        {
-            _pipe = new("asl-help-pipe");
-            _pipe.Connect();
+        //bool is64Bit = _game.Is64Bit();
+        //string dll = ResourceManager.UnpackResource($"AslHelp.Core.Native.{(is64Bit ? "x64" : "x86")}.dll", "Components");
+        //if (Injector.TryInject(_game, dll))
+        //{
+        //    _pipe = new("asl-help-pipe");
+        //    _pipe.Connect();
 
-            Memory = new PipeMemoryManager(_game, _fileLogger is not null ? _fileLogger : _dbgLogger, _pipe);
-        }
-        else
-        {
-            Memory = new WinApiMemoryManager(_game, _fileLogger is not null ? _fileLogger : _dbgLogger);
-        }
+        //    Memory = new PipeMemoryManager(_game, _fileLogger is not null ? _fileLogger : _dbgLogger, _pipe);
+        //}
+        //else
+        //{
+        Memory = new WinApiMemoryManager(_game, new MultiLogger(_dbgLogger, _fileLogger));
+        //}
     }
 }

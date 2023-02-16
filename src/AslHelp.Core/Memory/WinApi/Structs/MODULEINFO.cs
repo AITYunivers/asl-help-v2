@@ -27,10 +27,6 @@ internal unsafe struct MODULEINFO
     /// </summary>
     public void* EntryPoint;
 
-    public static uint Size
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => (uint)sizeof(MODULEINFO);
-    }
+    public static uint Size => (uint)sizeof(MODULEINFO);
 }
 

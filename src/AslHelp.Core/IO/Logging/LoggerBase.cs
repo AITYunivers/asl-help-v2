@@ -5,16 +5,13 @@ public abstract class LoggerBase
     private readonly Dictionary<string, Stopwatch> _stopwatches = new();
     private readonly Dictionary<string, List<double>> _averages = new();
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public abstract void Log();
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public abstract void Log(object output);
 
     public abstract void Start();
     public abstract void Stop();
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Benchmark(string id, Action action)
     {
         if (id is null)
@@ -28,7 +25,6 @@ public abstract class LoggerBase
         StopBenchmark(id);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AvgBenchmark(string id, Action action)
     {
         if (id is null)
@@ -42,7 +38,6 @@ public abstract class LoggerBase
         StopAvgBenchmark(id);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void StartBenchmark(string id)
     {
         if (id is null)
@@ -54,7 +49,6 @@ public abstract class LoggerBase
         _stopwatches[id] = Stopwatch.StartNew();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void StopBenchmark(string id)
     {
         if (id is null)
@@ -67,7 +61,6 @@ public abstract class LoggerBase
         Log($"[BENCH] [{id}] :: {_stopwatches[id].Elapsed}");
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void StartAvgBenchmark(string id)
     {
         if (id is null)
@@ -84,7 +77,6 @@ public abstract class LoggerBase
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void StopAvgBenchmark(string id)
     {
         if (id is null)

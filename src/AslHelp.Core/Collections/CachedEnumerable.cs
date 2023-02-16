@@ -1,10 +1,18 @@
-﻿using AslHelp.Core.Exceptions;
-
-namespace AslHelp.Core.Collections;
+﻿namespace AslHelp.Core.Collections;
 
 public abstract class CachedEnumerable<TKey, TValue> : IEnumerable<TValue> where TKey : notnull
 {
-    protected readonly Dictionary<TKey, TValue> _cache = new();
+    private readonly IEqualityComparer<TKey> _comparer;
+    protected readonly Dictionary<TKey, TValue> _cache;
+
+    public CachedEnumerable()
+        : this(EqualityComparer<TKey>.Default) { }
+
+    public CachedEnumerable(IEqualityComparer<TKey> comparer)
+    {
+        _comparer = comparer;
+        _cache = new(comparer);
+    }
 
     public int Count => _cache.Count;
 
@@ -14,11 +22,6 @@ public abstract class CachedEnumerable<TKey, TValue> : IEnumerable<TValue> where
     protected virtual void OnSearch(TKey key) { }
     protected virtual void OnFound(TValue value) { }
     protected virtual void OnNotFound(TKey key) { }
-
-    protected virtual bool CompareKeys(TKey searchedKey, TKey itemKey)
-    {
-        return searchedKey.Equals(itemKey);
-    }
 
     protected virtual string KeyNotFoundMessage(TKey key)
     {
@@ -35,8 +38,7 @@ public abstract class CachedEnumerable<TKey, TValue> : IEnumerable<TValue> where
             }
             else
             {
-                ThrowHelper.Throw.KeyNotFound(KeyNotFoundMessage(key));
-                return default;
+                throw new KeyNotFoundException(KeyNotFoundMessage(key));
             }
         }
         protected set => _cache[key] = value;
@@ -46,8 +48,6 @@ public abstract class CachedEnumerable<TKey, TValue> : IEnumerable<TValue> where
     {
         if (_cache.TryGetValue(key, out value))
         {
-            OnFound(value);
-
             return true;
         }
 
@@ -62,7 +62,7 @@ public abstract class CachedEnumerable<TKey, TValue> : IEnumerable<TValue> where
 
                 _cache[itemKey] = value;
 
-                if (CompareKeys(key, itemKey))
+                if (_comparer.Equals(key, itemKey))
                 {
                     OnFound(value);
 

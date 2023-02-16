@@ -54,17 +54,13 @@ internal unsafe struct MODULEENTRY32W
     /// <summary>
     ///     The module name.
     /// </summary>
-    public fixed char szModule[256];
+    public fixed ushort szModule[256];
 
     /// <summary>
     ///     The module path.
     /// </summary>
-    public fixed char szExePath[260];
+    public fixed ushort szExePath[260];
 
-    public static uint Size
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => (uint)sizeof(MODULEENTRY32W);
-    }
+    public static uint Size => (uint)sizeof(MODULEENTRY32W);
 }
 #pragma warning restore IDE1006

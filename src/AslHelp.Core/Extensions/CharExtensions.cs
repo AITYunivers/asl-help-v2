@@ -2,7 +2,6 @@
 
 internal static class CharExtensions
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ToHexValue(this char c)
     {
         int digit = c - '0';

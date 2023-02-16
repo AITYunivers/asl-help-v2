@@ -1,5 +1,5 @@
-﻿using AslHelp.Core.Reflection;
-using System.Buffers;
+﻿using AslHelp.Core.Extensions;
+using AslHelp.Core.Reflection;
 
 namespace AslHelp.Core.Memory.IO;
 
@@ -9,12 +9,12 @@ public abstract partial class MemoryManagerBase
     {
         int count = values.Count;
 
-        T[] rented = ArrayPool<T>.Shared.Rent(count);
+        T[] rented = ArrayPoolExtensions.Rent<T>(count);
         values.CopyTo(rented, 0);
 
         bool success = WriteSpan<T>(rented.AsSpan(0, count), MainModule, baseOffset, offsets);
 
-        ArrayPool<T>.Shared.Return(rented);
+        ArrayPoolExtensions.Return(rented);
 
         return success;
     }
@@ -23,12 +23,12 @@ public abstract partial class MemoryManagerBase
     {
         int count = values.Count;
 
-        T[] rented = ArrayPool<T>.Shared.Rent(count);
+        T[] rented = ArrayPoolExtensions.Rent<T>(count);
         values.CopyTo(rented, 0);
 
         bool success = WriteSpan<T>(rented.AsSpan(0, count), Modules[module], baseOffset, offsets);
 
-        ArrayPool<T>.Shared.Return(rented);
+        ArrayPoolExtensions.Return(rented);
 
         return success;
     }
@@ -37,12 +37,12 @@ public abstract partial class MemoryManagerBase
     {
         int count = values.Count;
 
-        T[] rented = ArrayPool<T>.Shared.Rent(count);
+        T[] rented = ArrayPoolExtensions.Rent<T>(count);
         values.CopyTo(rented, 0);
 
         bool success = WriteSpan<T>(rented.AsSpan(0, count), module, baseOffset, offsets);
 
-        ArrayPool<T>.Shared.Return(rented);
+        ArrayPoolExtensions.Return(rented);
 
         return success;
     }
@@ -51,12 +51,12 @@ public abstract partial class MemoryManagerBase
     {
         int count = values.Count;
 
-        T[] rented = ArrayPool<T>.Shared.Rent(count);
+        T[] rented = ArrayPoolExtensions.Rent<T>(count);
         values.CopyTo(rented, 0);
 
         bool success = WriteSpan<T>(rented.AsSpan(0, count), baseAddress, offsets);
 
-        ArrayPool<T>.Shared.Return(rented);
+        ArrayPoolExtensions.Return(rented);
 
         return success;
     }

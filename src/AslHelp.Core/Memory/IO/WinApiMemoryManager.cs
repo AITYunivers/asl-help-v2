@@ -1,11 +1,20 @@
-﻿using AslHelp.Core.IO.Logging;
+﻿using AslHelp.Core.Extensions;
+using AslHelp.Core.IO.Logging;
+using CommunityToolkit.HighPerformance.Buffers;
 using LiveSplit.ComponentUtil;
 using System.Text;
+using ArrayPoolExtensions = AslHelp.Core.Extensions.ArrayPoolExtensions;
 
 namespace AslHelp.Core.Memory.IO;
 
 public sealed class WinApiMemoryManager : MemoryManagerBase
 {
+    private const byte AsciiNullChar = 0;
+    private static ReadOnlySpan<byte> UnicodeNullChar => new byte[] { 0, 0 };
+
+    public WinApiMemoryManager(Process process)
+        : base(process, null) { }
+
     public WinApiMemoryManager(Process process, LoggerBase logger)
         : base(process, logger) { }
 
@@ -53,6 +62,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
         {
             if (!Process.Read(deref, pResult, Native.GetTypeSize<T>(Is64Bit)))
             {
+                result = default;
                 return false;
             }
 
@@ -92,7 +102,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
         }
     }
 
-    public sealed override bool TryReadString(out string result, int length, ReadStringType stringType, bool sized, nint baseAddress, params int[] offsets)
+    public sealed override unsafe bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
@@ -100,20 +110,141 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
             return false;
         }
 
-        Encoding encoding;
-        bool isUnicode;
-        byte charSize;
-
-        setEncoding(stringType == ReadStringType.UTF16);
-
-        result = default;
-        return true;
-
-        void setEncoding(bool unicode)
+        if (stringType != ReadStringType.AutoDetect)
         {
-            encoding = unicode ? Encoding.Unicode : (stringType == ReadStringType.ASCII ? Encoding.ASCII : Encoding.UTF8);
-            isUnicode = unicode;
-            charSize = (byte)(unicode ? 2 : 1);
+            (bool isUnicode, byte charSize, Encoding encoding) = stringType.GetEncodingInformation();
+            return TryReadString(out result, deref, isUnicode ? length * 2 : length, charSize, encoding);
+        }
+        else
+        {
+            return TryReadStringAuto(out result, deref, length, length * 2);
+        }
+    }
+
+    private unsafe bool TryReadStringAuto(out string result, nint address, int utf8Length, int unicodeLength)
+    {
+        using ArrayPoolBufferWriter<byte> writer = new(unicodeLength);
+
+        byte[] rented = null;
+        Span<byte> buffer =
+            unicodeLength <= 1024
+            ? stackalloc byte[1024]
+            : (rented = ArrayPoolExtensions.Rent<byte>(unicodeLength));
+
+        fixed (byte* pBuffer = buffer)
+        {
+            if (!Process.Read(address, pBuffer, unicodeLength))
+            {
+                ArrayPoolExtensions.Return(rented);
+
+                result = null;
+                return false;
+            }
+
+            int length;
+            byte charSize;
+            Encoding encoding;
+
+            if (utf8Length >= 2 && pBuffer[1] == '\0')
+            {
+                length = unicodeLength;
+                charSize = 2;
+                encoding = Encoding.Unicode;
+            }
+            else
+            {
+                length = utf8Length;
+                charSize = 1;
+                encoding = Encoding.UTF8;
+            }
+
+            for (int i = 0; i < length; i += charSize)
+            {
+                if (pBuffer[i] == '\0')
+                {
+                    ArrayPoolExtensions.Return(rented);
+
+                    result = encoding.GetString(pBuffer, i);
+                    return true;
+                }
+            }
+
+            ArrayPoolExtensions.Return(rented);
+
+            result = encoding.GetString(pBuffer, length);
+            return true;
+        }
+    }
+
+    private unsafe bool TryReadString(out string result, nint address, int length, byte charSize, Encoding encoding)
+    {
+        byte[] rented = null;
+        Span<byte> buffer =
+            length <= 1024
+            ? stackalloc byte[1024]
+            : (rented = ArrayPoolExtensions.Rent<byte>(length));
+
+        fixed (byte* pBuffer = buffer)
+        {
+            if (!Process.Read(address, pBuffer, length))
+            {
+                ArrayPoolExtensions.Return(rented);
+
+                result = null;
+                return false;
+            }
+
+            for (int i = 0; i < length; i += charSize)
+            {
+                if (pBuffer[i] == '\0')
+                {
+                    ArrayPoolExtensions.Return(rented);
+
+                    result = encoding.GetString(pBuffer, i);
+                    return true;
+                }
+            }
+
+            ArrayPoolExtensions.Return(rented);
+
+            result = encoding.GetString(pBuffer, length);
+            return true;
+        }
+    }
+
+    public override unsafe bool TryReadSizedString(out string result, ReadStringType stringType, nint baseAddress, params int[] offsets)
+    {
+        if (!TryDeref(out nint deref, baseAddress, offsets))
+        {
+            result = null;
+            return false;
+        }
+
+        (_, byte charSize, Encoding encoding) = stringType.GetEncodingInformation();
+
+        int length = Read<int>(deref - 0x4) * charSize;
+
+        byte[] rented = null;
+        Span<byte> chars =
+            length <= 1024
+            ? stackalloc byte[1024]
+            : (rented = ArrayPoolExtensions.Rent<byte>(length));
+
+        fixed (byte* pChars = chars)
+        {
+            if (!Process.Read(deref, pChars, length))
+            {
+                ArrayPoolExtensions.Return(rented);
+
+                result = null;
+                return false;
+            }
+
+            result = encoding.GetString(pChars, length);
+
+            ArrayPoolExtensions.Return(rented);
+
+            return true;
         }
     }
 

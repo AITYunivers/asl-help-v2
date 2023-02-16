@@ -9,27 +9,24 @@ namespace AslHelp.Core.Memory;
 #pragma warning disable IDE1006
 internal static unsafe partial class WinApi
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public const int ListModulesAll = 3;
+    public const int MaxPath = 260;
+
     public static nint OpenProcess(this Process process, uint dwDesiredAccess, bool bInheritHandle = false)
     {
         return (nint)OpenProcess(process.Id, dwDesiredAccess, bInheritHandle);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void* OpenProcess(int dwProcessId, uint dwDesiredAccess, bool bInheritHandle = false)
     {
         return OpenProcess(dwDesiredAccess, bInheritHandle ? 1 : 0, (uint)dwProcessId);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CloseHandle(nint hObject)
     {
         return CloseHandle((void*)hObject) != 0;
     }
 
-    private const int MaxPath = 260;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool EnumProcessModulesEx(nint hProcess, ReadOnlySpan<nint> hModule, uint cb, out uint cbNeeded)
     {
         fixed (nint* lphModule = hModule)
@@ -44,7 +41,6 @@ internal static unsafe partial class WinApi
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool GetModuleBaseNameW(nint hProcess, nint hModule, out string baseName)
     {
         ushort* buffer = stackalloc ushort[MaxPath];
@@ -59,7 +55,6 @@ internal static unsafe partial class WinApi
         return true;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool GetModuleFileNameExW(nint hProcess, nint hModule, out string fileName)
     {
         ushort* buffer = stackalloc ushort[MaxPath];
@@ -74,7 +69,6 @@ internal static unsafe partial class WinApi
         return true;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool GetModuleInformation(nint hProcess, nint hModule, out MODULEINFO moduleInfo)
     {
         fixed (MODULEINFO* lpmodinfo = &moduleInfo)
@@ -83,7 +77,6 @@ internal static unsafe partial class WinApi
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool VirtualQueryEx(nint hProcess, nint address, out MEMORY_BASIC_INFORMATION mbi)
     {
         fixed (MEMORY_BASIC_INFORMATION* lpBuffer = &mbi)
@@ -92,7 +85,6 @@ internal static unsafe partial class WinApi
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool SymInitializeW(nint hProcess, string userSearchPath)
     {
         fixed (char* lpUserSearchPath = userSearchPath)
@@ -101,7 +93,6 @@ internal static unsafe partial class WinApi
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool SymLoadModuleExW(nint hProcess, Module module)
     {
         fixed (char* lpImageName = module.Name)
@@ -110,7 +101,6 @@ internal static unsafe partial class WinApi
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool SymEnumSymbolsW(nint hProcess, Module module, void* pSymbols)
     {
         nint callbackPtr = Marshal.GetFunctionPointerForDelegate(EnumSymbolsCallback);
@@ -132,13 +122,11 @@ internal static unsafe partial class WinApi
         return 1;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nint CreateToolhelp32Snapshot(ThFlags dwFlags, int th32ProcessID)
     {
         return (nint)CreateToolhelp32Snapshot(dwFlags, (uint)th32ProcessID);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Module32FirstW(nint hSnapshot, ref MODULEENTRY32W me)
     {
         fixed (MODULEENTRY32W* lpme = &me)
@@ -147,7 +135,6 @@ internal static unsafe partial class WinApi
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Module32NextW(nint hSnapshot, ref MODULEENTRY32W me)
     {
         fixed (MODULEENTRY32W* lpme = &me)

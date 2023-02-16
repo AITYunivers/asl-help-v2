@@ -2,10 +2,7 @@
 
 public sealed class DebugLogger : LoggerBase
 {
-    public override void Start()
-    {
-        throw new NotImplementedException();
-    }
+    public override void Start() { }
 
     public override void Log()
     {
@@ -17,8 +14,5 @@ public sealed class DebugLogger : LoggerBase
         LiveSplit.Options.Log.Info(output?.ToString());
     }
 
-    public override void Stop()
-    {
-        throw new NotImplementedException();
-    }
+    public override void Stop() { }
 }

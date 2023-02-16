@@ -1,5 +1,4 @@
 ﻿using AslHelp.Core.Collections;
-using AslHelp.Core.Exceptions;
 using AslHelp.Core.IO.Logging;
 
 namespace AslHelp.Core.Memory.IO;
@@ -11,8 +10,6 @@ public abstract partial class MemoryManagerBase
 
     public MemoryManagerBase(Process process, LoggerBase logger)
     {
-        ThrowHelper.ThrowIfNullOrExited(process);
-
         Process = process;
         Is64Bit = process.Is64Bit();
         PtrSize = (byte)(Is64Bit ? 0x8 : 0x4);
