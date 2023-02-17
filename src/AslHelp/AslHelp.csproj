@@ -31,6 +31,10 @@
     <Reference Include="System.Windows.Forms" />
 
     <Reference Include="LiveSplit.Core" HintPath="..\..\ref\LiveSplit.Core.dll" />
+
+    <Reference Include="UpdateManager">
+      <HintPath>..\..\ref\UpdateManager.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

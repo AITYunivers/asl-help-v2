@@ -1,6 +1,6 @@
 ﻿namespace AslHelp.Core.Memory.Models;
 
-public sealed record MemoryPage
+public readonly record struct MemoryPage
 {
     internal unsafe MemoryPage(MEMORY_BASIC_INFORMATION mbi)
     {

@@ -13,7 +13,7 @@ public sealed partial class SettingsCreator
         [XmlAttribute] string ToolTip,
         [XmlElement("Setting")] XmlSetting[] Children);
 
-    public void CreateFromXml(string path, bool defaultValue = true, string defaultParent = null)
+    public void FromXml(string path, bool defaultValue = true, string defaultParent = null)
     {
         using FileStream fs = File.OpenRead(path);
         XmlSerializer ser = new(typeof(XmlSetting[]), new XmlRootAttribute("Settings"));

@@ -39,14 +39,15 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.1.0" />
+    <PackageReference Include="System.Text.Json" Version="7.0.2" />
 
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Windows.Forms" />
 
     <Reference Include="Irony" HintPath="..\..\ref\Irony.dll" />
     <Reference Include="LiveSplit.Core" HintPath="..\..\ref\LiveSplit.Core.dll" />
-    <Reference Include="LiveSplit.Text" HintPath="..\..\ref\LiveSplit.Text.dll" />
     <Reference Include="LiveSplit.ScriptableAutoSplit" HintPath="..\..\ref\LiveSplit.ScriptableAutoSplit.dll" />
+    <Reference Include="LiveSplit.Text" HintPath="..\..\ref\LiveSplit.Text.dll" />
     <Reference Include="LiveSplit.View" HintPath="..\..\ref\LiveSplit.View.dll" />
     <Reference Include="UpdateManager" HintPath="..\..\ref\UpdateManager.dll" />
   </ItemGroup>

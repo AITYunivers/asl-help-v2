@@ -1,4 +1,5 @@
-﻿using AslHelp.Core.LiveSplitInterop;
+﻿using AslHelp.Core.Exceptions;
+using AslHelp.Core.LiveSplitInterop;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -14,8 +15,21 @@ public partial class Basic
 
         Debug.Info("Loading asl-help...");
 
-        AppDomain.CurrentDomain.AssemblyResolve += (sender, e)
-            => Assembly.LoadFrom($"Components/{e.Name.Split(',')[0]}.dll");
+        AppDomain.CurrentDomain.AssemblyResolve += (sender, e) =>
+        {
+            string name = e.Name;
+            int i = name.IndexOf(',');
+            if (i == -1)
+            {
+                ThrowHelper.Throw.Argument(nameof(e.Name), "Assembly name was in an unexpected format.");
+            }
+
+            string file = $"Components/{name[..i]}.dll";
+
+            return File.Exists(file)
+                ? Assembly.LoadFrom(file)
+                : null;
+        };
 
         try
         {
@@ -36,6 +50,8 @@ public partial class Basic
                 {ex}
                 """, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        Debug.Info("  => Complete.");
     }
 
     private void GenerateCode()
