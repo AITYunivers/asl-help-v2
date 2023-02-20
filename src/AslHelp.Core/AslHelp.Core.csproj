@@ -10,23 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Memory\WinApi\Structs\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Memory\WinApi\DbgHelp.cs" />
-    <Compile Remove="Memory\WinApi\HandleApi.cs" />
-    <Compile Remove="Memory\WinApi\LibLoaderApi.cs" />
-    <Compile Remove="Memory\WinApi\MemoryApi.cs" />
-    <Compile Remove="Memory\WinApi\ProcessThreadsApi.cs" />
-    <Compile Remove="Memory\WinApi\PSApi.cs" />
-    <Compile Remove="Memory\WinApi\SynchApi.cs" />
-    <Compile Remove="Memory\WinApi\TlHelp32.cs" />
-    <Compile Remove="Memory\WinApi\WinApi.cs" />
-    <Compile Remove="Memory\WinApi\Wow64ApiSet.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <InternalsVisibleTo Include="AslHelp" />
   </ItemGroup>
 
@@ -72,10 +55,6 @@
   <ItemGroup>
     <EmbeddedResource Include="..\AslHelp.Native\bin\Release\x64\AslHelp.Native.dll" Link="Native.x64.dll" />
     <EmbeddedResource Include="..\AslHelp.Native\bin\Release\Win32\AslHelp.Native.dll" Link="Native.x86.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Memory\WinApi\" />
   </ItemGroup>
 
 </Project>
