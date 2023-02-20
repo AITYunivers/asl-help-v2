@@ -1,57 +1,61 @@
 ﻿using AslHelp.Core.Exceptions;
+using AslHelp.Core.Helping;
+using AslHelp.Core.IO;
 using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;
-using AslHelp.Core.LiveSplitInterop.Settings;
 using AslHelp.Core.LiveSplitInterop.Texts;
 
+namespace AslHelp.Neo;
+
 public partial class Basic
+    : IAslIOStage
 {
-    protected DebugLogger _dbgLogger = new();
-    protected FileLogger _fileLogger;
+    private MultiLogger _logger;
+    public ILogger Logger => _logger;
 
     public TimerController Timer { get; } = new();
-    public SettingsCreator Settings { get; } = new();
     public TextComponentController Texts { get; } = new();
+    public Dictionary<string, FileWatcher> Files { get; private set; }
 
-    public void StartFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512)
+    public IAslIOStage CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512)
     {
-        _fileLogger?.Stop();
-
         if (Methods.CurrentMethod != "startup")
         {
-            string msg = "[IO] The file logger may not be started outside of the 'startup' action.";
+            string msg = "[IO] Attempted to start a file logger outside of the 'startup' action.";
             ThrowHelper.Throw.InvalidOperation(msg);
         }
 
         try
         {
-            _fileLogger = new(filePath, maxLines, linesToErase);
-            _fileLogger.Start();
+            FileLogger logger = new(filePath, maxLines, linesToErase);
+            logger.Start();
+
+            _logger.Add(logger);
         }
         catch (Exception ex)
         {
             Debug.Error($"""
-                [IO] Was unable to create the file logger:
+                [IO] Error creating file logger:
                 {ex}
                 """);
         }
+
+        return this;
     }
 
-    public void StartBench(string id)
+    public IAslIOStage CreateFileWatcher(string filePath)
     {
-        _dbgLogger.StartBenchmark(id);
-        _fileLogger?.StartBenchmark(id);
+        Files ??= new();
+        Files[Path.GetFileName(filePath)] = new(filePath);
+
+        return this;
     }
 
-    public void StopBench(string id)
+    public IAslIOStage CreateFileWatcher(string filePath, string name)
     {
-        _dbgLogger.StopBenchmark(id);
-        _fileLogger?.StopBenchmark(id);
-    }
+        Files ??= new();
+        Files[name] = new(filePath);
 
-    public void Log(object output)
-    {
-        _dbgLogger.Log($"[{GameName}] {output}");
-        _fileLogger?.Log($"[{GameName}] {output}");
+        return this;
     }
 }

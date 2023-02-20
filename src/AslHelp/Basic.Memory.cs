@@ -1,103 +1,58 @@
 ﻿using AslHelp.Core.Collections;
 using AslHelp.Core.Exceptions;
-using AslHelp.Core.IO.Logging;
+using AslHelp.Core.IO;
 using AslHelp.Core.Memory;
 using AslHelp.Core.Memory.IO;
 using AslHelp.Core.Memory.Models;
+using AslHelp.Core.Memory.Pipes;
 using System.IO.Pipes;
+
+namespace AslHelp.Neo;
 
 public partial class Basic
 {
-    private Process _game;
-    public Process Game
-    {
-        get
-        {
-            _game?.Refresh();
-
-            if (_game is null || _game.HasExited)
-            {
-                _game = Script.Game;
-
-                UpdateGameData();
-            }
-
-            return _game;
-        }
-        set
-        {
-            _game = value;
-            Script.Game = value;
-
-            UpdateGameData();
-        }
-    }
-
-    public bool Is64Bit
-    {
-        get
-        {
-            ThrowHelper.ThrowIfNull(Memory);
-            return Memory.Is64Bit;
-        }
-    }
-
-    public byte PtrSize
-    {
-        get
-        {
-            ThrowHelper.ThrowIfNull(Memory);
-            return Memory.PtrSize;
-        }
-    }
-
-    protected NamedPipeClientStream _pipe;
+    private NamedPipeClientStream _pipe;
     public IMemoryManager Memory { get; private set; }
 
-    public Module MainModule
+    public bool Is64Bit => Memory.Is64Bit;
+    public byte PtrSize => Memory.PtrSize;
+
+    public Module MainModule => Memory.MainModule;
+    public ModuleCache Modules => Memory.Modules;
+
+    public IEnumerable<MemoryPage> Pages(bool allPages)
     {
-        get
-        {
-            ThrowHelper.ThrowIfNull(Memory);
-            return Memory.MainModule;
-        }
+        ThrowHelper.ThrowIfNull(Game);
+
+        return Native.MemoryPages(Game.Handle, Is64Bit, allPages);
     }
 
-    public ModuleCache Modules
-    {
-        get
-        {
-            ThrowHelper.ThrowIfNull(Memory);
-            return Memory.Modules;
-        }
-    }
-
-    public IEnumerable<MemoryPage> Pages => Game.MemoryPages(Is64Bit, true);
-
-    private void UpdateGameData()
+    private void InitMemory()
     {
         if (_game is null)
         {
             _pipe?.Dispose();
             _pipe = null;
-
             Memory = null;
 
             return;
         }
 
-        //bool is64Bit = _game.Is64Bit();
-        //string dll = ResourceManager.UnpackResource($"AslHelp.Core.Native.{(is64Bit ? "x64" : "x86")}.dll", "Components");
-        //if (Injector.TryInject(_game, dll))
-        //{
-        //    _pipe = new("asl-help-pipe");
-        //    _pipe.Connect();
+        string dll =
+            _game.Is64Bit()
+            ? ResourceManager.UnpackResource("AslHelp.Core.Native.x64.dll", "x64")
+            : ResourceManager.UnpackResource("AslHelp.Core.Native.x86.dll", "x86");
 
-        //    Memory = new PipeMemoryManager(_game, _fileLogger is not null ? _fileLogger : _dbgLogger, _pipe);
-        //}
-        //else
-        //{
-        Memory = new WinApiMemoryManager(_game, new MultiLogger(_dbgLogger, _fileLogger));
-        //}
+        if (_game.TryInject(dll))
+        {
+            _pipe = new("asl-help-pipe");
+            _pipe.Connect();
+
+            Memory = new PipeMemoryManager(_game, Logger, _pipe);
+        }
+        else
+        {
+            Memory = new WinApiMemoryManager(_game, Logger);
+        }
     }
 }

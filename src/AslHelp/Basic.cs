@@ -1,43 +1,32 @@
-﻿using AslHelp.Core.Reflection;
+﻿using AslHelp.Core.Helping;
+using AslHelp.Core.Reflection;
+
+namespace AslHelp.Neo;
 
 public partial class Basic
+    : IAslHelper
 {
-    internal static Basic Instance { get; private set; }
-
     public Basic()
-        : this(true) { }
-
-    public Basic(bool generateCode)
     {
-        Instance = this;
-
-        Init(generateCode);
-    }
-
-    private string _gameName;
-    public string GameName
-    {
-        get => _gameName ?? Game?.ProcessName ?? "Auto Splitter";
-        set => _gameName = value;
+        InitForAsl();
     }
 
     public void Dispose()
     {
-        Dispose(true);
-    }
+        GC.SuppressFinalize(this);
 
-    public virtual void Dispose(bool removeTexts)
-    {
+        AppDomain.CurrentDomain.AssemblyResolve -= AssemblyResolve;
+
         TypeDefinitionFactory.Dispose();
-        _fileLogger?.Dispose();
-        _fileLogger = null;
+        _logger.DisposeFileLoggers();
+        _logger = null;
 
         bool closing = Debug.Trace.Any(
             "TimerForm.TimerForm_FormClosing",
             "TimerForm.OpenLayoutFromFile",
             "TimerForm.LoadDefaultLayout");
 
-        if (!closing && removeTexts)
+        if (!closing)
         {
             Texts.RemoveAll();
         }

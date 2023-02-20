@@ -40,7 +40,8 @@ public sealed class FileWatcher : IDisposable
 
         if (File.Exists(_filePath))
         {
-            _reader = new(_filePath);
+            FileStream stream = File.Open(_filePath, FileMode.OpenOrCreate);
+            _reader = new(stream);
 
             while (_reader.ReadLine() is string line)
             {

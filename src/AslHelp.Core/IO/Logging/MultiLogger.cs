@@ -1,75 +1,67 @@
-﻿using AslHelp.Core.Exceptions;
+﻿namespace AslHelp.Core.IO.Logging;
 
-namespace AslHelp.Core.IO.Logging;
-
-public sealed class MultiLogger : LoggerBase, IList<LoggerBase>
+public sealed class MultiLogger
+    : ILogger,
+    IList<ILogger>
 {
-    private readonly List<LoggerBase> _loggers;
+    private readonly List<ILogger> _loggers;
 
-    public MultiLogger(params LoggerBase[] loggers)
+    public MultiLogger(params ILogger[] loggers)
     {
-        ThrowHelper.ThrowIfNull(loggers);
-
-        _loggers = new(loggers.Length);
-
-        for (int i = 0; i < loggers.Length; i++)
-        {
-            if (loggers[i] is LoggerBase logger)
-            {
-                _loggers.Add(logger);
-            }
-        }
+        _loggers = new(loggers);
     }
 
-    public int Count => _loggers.Count;
-    public bool IsReadOnly => false;
+    private IEnumerable<FileLogger> FileLoggers => _loggers.OfType<FileLogger>();
 
-    public LoggerBase this[int index]
+    public int Count => _loggers.Count;
+    public bool IsReadOnly => ((ICollection<ILogger>)_loggers).IsReadOnly;
+
+    public ILogger this[int index]
     {
         get => _loggers[index];
         set => _loggers[index] = value;
     }
 
-    public override void Start()
+    public void Start()
     {
         for (int i = 0; i < _loggers.Count; i++)
         {
-            _loggers[i].Start();
+            _loggers[i]?.Start();
         }
     }
 
-    public override void Log()
+    public void Log()
     {
         Log("");
     }
 
-    public override void Log(object output)
+    public void Log(object output)
     {
         for (int i = 0; i < _loggers.Count; i++)
         {
-            _loggers[i].Log(output);
+            _loggers[i]?.Log(output);
         }
     }
 
-    public override void Stop()
+    public void Stop()
     {
         for (int i = 0; i < _loggers.Count; i++)
         {
-            _loggers[i].Stop();
+            _loggers[i]?.Stop();
         }
     }
 
-    public void Add(LoggerBase item)
+    public void Add(ILogger item)
     {
         _loggers.Add(item);
     }
 
-    public void Insert(int index, LoggerBase item)
+    public void Insert(int index, ILogger item)
     {
         _loggers.Insert(index, item);
     }
 
-    public bool Remove(LoggerBase item)
+    public bool Remove(ILogger item)
     {
         return _loggers.Remove(item);
     }
@@ -84,22 +76,22 @@ public sealed class MultiLogger : LoggerBase, IList<LoggerBase>
         _loggers.Clear();
     }
 
-    public bool Contains(LoggerBase item)
+    public bool Contains(ILogger item)
     {
         return _loggers.Contains(item);
     }
 
-    public int IndexOf(LoggerBase item)
+    public int IndexOf(ILogger item)
     {
         return _loggers.IndexOf(item);
     }
 
-    public void CopyTo(LoggerBase[] array, int arrayIndex)
+    public void CopyTo(ILogger[] array, int arrayIndex)
     {
         _loggers.CopyTo(array, arrayIndex);
     }
 
-    public IEnumerator<LoggerBase> GetEnumerator()
+    public IEnumerator<ILogger> GetEnumerator()
     {
         return _loggers.GetEnumerator();
     }
@@ -107,5 +99,13 @@ public sealed class MultiLogger : LoggerBase, IList<LoggerBase>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return _loggers.GetEnumerator();
+    }
+
+    public void DisposeFileLoggers()
+    {
+        foreach (FileLogger logger in FileLoggers)
+        {
+            logger.Dispose();
+        }
     }
 }

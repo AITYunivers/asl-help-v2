@@ -16,7 +16,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
     public WinApiMemoryManager(Process process)
         : this(process, null) { }
 
-    public WinApiMemoryManager(Process process, LoggerBase logger)
+    public WinApiMemoryManager(Process process, ILogger logger)
         : base(process, logger) { }
 
     public override unsafe bool TryDeref(out nint result, nint baseAddress, params int[] offsets)

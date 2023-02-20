@@ -2,16 +2,19 @@
 
 namespace AslHelp.Core.IO.Logging;
 
-public sealed class FileLogger : LoggerBase, IDisposable
+public sealed class FileLogger
+    : ILogger,
+    IDisposable
 {
-    private CancellationTokenSource _cancelSource = new();
-    private readonly string _filePath;
     private readonly Queue<string> _queuedLines = new();
+    private CancellationTokenSource _cancelSource = new();
     private readonly ManualResetEvent _resetEvent = new(false);
 
     private int _lineNumber;
     private readonly int _maximumLines;
     private readonly int _linesToErase;
+
+    private bool _isRunning;
 
     public FileLogger(string path, int maximumLines, int linesToErase)
     {
@@ -33,25 +36,33 @@ public sealed class FileLogger : LoggerBase, IDisposable
             ThrowHelper.Throw.InvalidOperation(msg);
         }
 
-        _filePath = path;
+        FilePath = Path.GetFullPath(path);
         _maximumLines = maximumLines;
         _linesToErase = linesToErase;
     }
 
-    public override void Start()
+    public string FilePath { get; }
+
+    public void Start()
     {
+        if (_isRunning)
+        {
+            return;
+        }
+
         _ = Task.Run(() =>
         {
+            _isRunning = true;
             _cancelSource = new();
             _lineNumber = 0;
 
-            if (!File.Exists(_filePath))
+            if (!File.Exists(FilePath))
             {
-                File.Create(_filePath).Dispose();
+                File.Create(FilePath).Dispose();
             }
             else
             {
-                using StreamReader reader = new(_filePath);
+                using StreamReader reader = new(FilePath);
 
                 while (!_cancelSource.IsCancellationRequested && reader.ReadLine() is not null)
                 {
@@ -85,8 +96,14 @@ public sealed class FileLogger : LoggerBase, IDisposable
         }, _cancelSource.Token);
     }
 
-    public override void Log()
+    public void Log()
     {
+        if (!_isRunning)
+        {
+            string msg = "Logger is not running.";
+            ThrowHelper.Throw.InvalidOperation(msg);
+        }
+
         lock (_queuedLines)
         {
             _queuedLines.Enqueue("");
@@ -94,8 +111,14 @@ public sealed class FileLogger : LoggerBase, IDisposable
         }
     }
 
-    public override void Log(object output)
+    public void Log(object output)
     {
+        if (!_isRunning)
+        {
+            string msg = "Logger is not running.";
+            ThrowHelper.Throw.InvalidOperation(msg);
+        }
+
         lock (_queuedLines)
         {
             _queuedLines.Enqueue($"[{DateTime.Now:dd-MMM-yy HH:mm:ss.fff}] :: {output}");
@@ -103,8 +126,13 @@ public sealed class FileLogger : LoggerBase, IDisposable
         }
     }
 
-    public override void Stop()
+    public void Stop()
     {
+        if (!_isRunning)
+        {
+            return;
+        }
+
         _cancelSource.Cancel();
         _ = _resetEvent.Set();
         _queuedLines.Clear();
@@ -119,7 +147,7 @@ public sealed class FileLogger : LoggerBase, IDisposable
 
         try
         {
-            using StreamWriter writer = new(_filePath, true);
+            using StreamWriter writer = new(FilePath, true);
 
             writer.WriteLine(output);
             _lineNumber++;
@@ -135,14 +163,14 @@ public sealed class FileLogger : LoggerBase, IDisposable
 
     private void FlushLines()
     {
-        string tempFile = $"{_filePath}-temp";
-        string[] lines = File.ReadAllLines(_filePath).Skip(_linesToErase).ToArray();
+        string tempFile = $"{FilePath}-temp";
+        string[] lines = File.ReadAllLines(FilePath).Skip(_linesToErase).ToArray();
 
         File.WriteAllLines(tempFile, lines);
 
         try
         {
-            File.Copy(tempFile, _filePath, true);
+            File.Copy(tempFile, FilePath, true);
             _lineNumber = lines.Length;
         }
         catch (Exception ex)

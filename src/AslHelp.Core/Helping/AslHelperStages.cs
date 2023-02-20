@@ -4,35 +4,17 @@ namespace AslHelp.Core.Helping;
 
 public interface IAslInitStage
 {
-    IAslAfterInitStage InitForAsl();
+    IAslGenerateStage InitForAsl();
 }
 
 public interface IAslGenerateStage
 {
-    IAslAfterGenerateStage GenerateCode();
+    IAslHelper GenerateCode();
 }
 
 public interface IAslIOStage
 {
-    IAslAfterGenerateStage CreateFileLogger(string filePath, int maxLines = 4096, int linesToErates = 512);
-    IAslAfterGenerateStage CreateFileWatcher(string filePath);
-    IAslAfterGenerateStage CreateFileWatcher(string filePath, string name);
+    IAslIOStage CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512);
+    IAslIOStage CreateFileWatcher(string filePath);
+    IAslIOStage CreateFileWatcher(string filePath, string name);
 }
-
-public interface IAslPointersStage
-{
-    PointerFactory Pointers { get; }
-
-    IAslPointersStage
-}
-
-public interface IAslAfterInitStage
-    : IAslGenerateStage,
-    IAslIOStage,
-    IAslPointersStage
-{ }
-
-public interface IAslAfterGenerateStage
-    : IAslIOStage,
-    IAslPointersStage
-{ }

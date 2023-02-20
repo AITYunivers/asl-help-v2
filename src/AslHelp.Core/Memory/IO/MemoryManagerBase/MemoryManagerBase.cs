@@ -7,12 +7,12 @@ namespace AslHelp.Core.Memory.IO;
 public abstract partial class MemoryManagerBase
     : IMemoryManager
 {
-    private readonly LoggerBase _logger;
+    private readonly ILogger _logger;
 
     protected readonly nint _processHandle;
     protected bool _isDisposed;
 
-    public MemoryManagerBase(Process process, LoggerBase logger)
+    public MemoryManagerBase(Process process, ILogger logger)
     {
         ThrowHelper.ThrowIfNull(process);
         if (process.HasExited)

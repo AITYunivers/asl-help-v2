@@ -6,11 +6,8 @@ namespace AslHelp.Core.Helping;
 public interface IHelper
     : IDisposable
 {
-    string GameName { get; set; }
     Process Game { get; set; }
     IMemoryManager Memory { get; }
 
-    LoggerBase Logger { get; }
-
-    Task Load();
+    ILogger Logger { get; }
 }

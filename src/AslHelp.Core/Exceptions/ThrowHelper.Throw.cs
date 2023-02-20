@@ -61,6 +61,12 @@ internal static partial class ThrowHelper
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void InvalidData(string message)
+        {
+            throw new InvalidDataException(message);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void InvalidOperation(string message)
         {
             throw new InvalidOperationException(message);

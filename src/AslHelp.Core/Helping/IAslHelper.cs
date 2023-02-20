@@ -9,13 +9,15 @@ namespace AslHelp.Core.Helping;
 public interface IAslHelper
     : IHelper
 {
+    string GameName { get; set; }
+
     bool Is64Bit { get; }
     byte PtrSize { get; }
 
     Module MainModule { get; }
     ModuleCache Modules { get; }
 
-    IEnumerable<MemoryPage> Pages { get; }
+    IEnumerable<MemoryPage> Pages(bool allPages);
 
     Dictionary<string, FileWatcher> Files { get; }
     TextComponentController Texts { get; }
