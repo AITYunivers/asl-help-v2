@@ -12,7 +12,10 @@ public static unsafe class Injector
             ThrowHelper.Throw.FileNotFound(modulePath, "Unable to find the specified module to inject.");
         }
 
-        foreach (Module module in process.ModulesTh32())
+        nint processHandle = process.Handle;
+        int processId = process.Id;
+
+        foreach (Module module in Native.ModulesTh32(processHandle, processId))
         {
             if (module.FilePath == modulePath)
             {
@@ -20,7 +23,7 @@ public static unsafe class Injector
             }
         }
 
-        void* hProcess = WinApi.OpenProcess(process.Id, (uint)(ProcessAccess.CREATE_THREAD | ProcessAccess.VM_OPERATION | ProcessAccess.VM_WRITE));
+        void* hProcess = WinApi.OpenProcess(processId, (uint)(ProcessAccess.CREATE_THREAD | ProcessAccess.VM_OPERATION | ProcessAccess.VM_WRITE));
         if (hProcess == null)
         {
             return false;

@@ -22,7 +22,7 @@ public sealed class MultiLogger : LoggerBase, IList<LoggerBase>
     }
 
     public int Count => _loggers.Count;
-    public bool IsReadOnly => ((ICollection<LoggerBase>)_loggers).IsReadOnly;
+    public bool IsReadOnly => false;
 
     public LoggerBase this[int index]
     {

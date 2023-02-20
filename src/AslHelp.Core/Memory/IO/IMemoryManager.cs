@@ -3,7 +3,8 @@
 namespace AslHelp.Core.Memory.IO;
 
 public interface IMemoryManager
-    : IMemoryReader,
+    : IDisposable,
+    IMemoryReader,
     IMemoryWriter,
     IMemoryScanner
 {

@@ -1,8 +1,9 @@
-﻿using AslHelp.Core.Extensions;
+﻿using System.Text;
+using AslHelp.Core.Exceptions;
+using AslHelp.Core.Extensions;
 using AslHelp.Core.IO.Logging;
 using CommunityToolkit.HighPerformance.Buffers;
 using LiveSplit.ComponentUtil;
-using System.Text;
 using ArrayPoolExtensions = AslHelp.Core.Extensions.ArrayPoolExtensions;
 
 namespace AslHelp.Core.Memory.IO;
@@ -13,13 +14,18 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
     private static ReadOnlySpan<byte> UnicodeNullChar => new byte[] { 0, 0 };
 
     public WinApiMemoryManager(Process process)
-        : base(process, null) { }
+        : this(process, null) { }
 
     public WinApiMemoryManager(Process process, LoggerBase logger)
         : base(process, logger) { }
 
-    public sealed override unsafe bool TryDeref(out nint result, nint baseAddress, params int[] offsets)
+    public override unsafe bool TryDeref(out nint result, nint baseAddress, params int[] offsets)
     {
+        if (_isDisposed)
+        {
+            ThrowHelper.Throw.InvalidOperation("Cannot interact with the memory of an exited process.");
+        }
+
         if (baseAddress == 0)
         {
             result = default;
@@ -37,7 +43,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
         {
             for (int i = 0; i < offsets.Length; i++)
             {
-                if (!Process.Read(result, pResult, Is64Bit ? 0x8 : 0x4) || result == default)
+                if (!Native.Read(_processHandle, result, pResult, Is64Bit ? 0x8 : 0x4) || result == default)
                 {
                     result = default;
                     return false;
@@ -50,7 +56,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
         }
     }
 
-    public sealed override unsafe bool TryRead<T>(out T result, nint baseAddress, params int[] offsets)
+    public override unsafe bool TryRead<T>(out T result, nint baseAddress, params int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
@@ -60,7 +66,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
 
         fixed (T* pResult = &result)
         {
-            if (!Process.Read(deref, pResult, Native.GetTypeSize<T>(Is64Bit)))
+            if (!Native.Read(_processHandle, deref, pResult, Native.GetTypeSize<T>(Is64Bit)))
             {
                 result = default;
                 return false;
@@ -70,7 +76,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
         }
     }
 
-    public sealed override unsafe bool TryReadSpan<T>(Span<T> buffer, nint baseAddress, params int[] offsets)
+    public override unsafe bool TryReadSpan<T>(Span<T> buffer, nint baseAddress, params int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
@@ -98,11 +104,11 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
 
         fixed (T* pBuffer = buffer)
         {
-            return Process.Read(deref, pBuffer, Native.GetTypeSize<T>(Is64Bit) * buffer.Length);
+            return Native.Read(_processHandle, deref, pBuffer, Native.GetTypeSize<T>(Is64Bit) * buffer.Length);
         }
     }
 
-    public sealed override unsafe bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public override unsafe bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
@@ -133,7 +139,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
 
         fixed (byte* pBuffer = buffer)
         {
-            if (!Process.Read(address, pBuffer, unicodeLength))
+            if (!Native.Read(_processHandle, address, pBuffer, unicodeLength))
             {
                 ArrayPoolExtensions.Return(rented);
 
@@ -186,7 +192,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
 
         fixed (byte* pBuffer = buffer)
         {
-            if (!Process.Read(address, pBuffer, length))
+            if (!Native.Read(_processHandle, address, pBuffer, length))
             {
                 ArrayPoolExtensions.Return(rented);
 
@@ -232,7 +238,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
 
         fixed (byte* pChars = chars)
         {
-            if (!Process.Read(deref, pChars, length))
+            if (!Native.Read(_processHandle, deref, pChars, length))
             {
                 ArrayPoolExtensions.Return(rented);
 
@@ -248,17 +254,17 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
         }
     }
 
-    public sealed override unsafe bool Write<T>(T value, nint baseAddress, params int[] offsets)
+    public override unsafe bool Write<T>(T value, nint baseAddress, params int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
             return false;
         }
 
-        return Process.Write(deref, &value, Native.GetTypeSize<T>(Is64Bit));
+        return Native.Write(_processHandle, deref, &value, Native.GetTypeSize<T>(Is64Bit));
     }
 
-    public sealed override unsafe bool WriteSpan<T>(ReadOnlySpan<T> values, nint baseAddress, params int[] offsets)
+    public override unsafe bool WriteSpan<T>(ReadOnlySpan<T> values, nint baseAddress, params int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
@@ -273,7 +279,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
 
         fixed (T* pValues = values)
         {
-            return Process.Write(baseAddress, pValues, Native.GetTypeSize<T>(Is64Bit) * values.Length);
+            return Native.Write(_processHandle, baseAddress, pValues, Native.GetTypeSize<T>(Is64Bit) * values.Length);
         }
     }
 }

@@ -9,8 +9,13 @@ public static unsafe class Native
 {
     public static bool Is64Bit(this Process process)
     {
+        return Is64Bit(process.Handle);
+    }
+
+    public static bool Is64Bit(nint processHandle)
+    {
         int wow64;
-        if (IsWow64Process((void*)process.Handle, &wow64) == 0)
+        if (IsWow64Process((void*)processHandle, &wow64) == 0)
         {
             ThrowHelper.Throw.Win32();
         }
@@ -20,25 +25,38 @@ public static unsafe class Native
 
     public static bool Read(this Process process, nint address, void* buffer, int bufferSize)
     {
+        return Read(process.Handle, address, buffer, bufferSize);
+    }
+
+    public static bool Read(nint processHandle, nint address, void* buffer, int bufferSize)
+    {
         nuint nSize = (nuint)bufferSize, nRead;
 
-        return ReadProcessMemory((void*)process.Handle, (void*)address, buffer, nSize, &nRead) != 0
+        return ReadProcessMemory((void*)processHandle, (void*)address, buffer, nSize, &nRead) != 0
             && nRead == nSize;
     }
 
     public static bool Write(this Process process, nint address, void* data, int dataSize)
     {
+        return Read(process.Handle, address, data, dataSize);
+    }
+
+    public static bool Write(nint processHandle, nint address, void* data, int dataSize)
+    {
         nuint nSize = (nuint)dataSize, nWritten;
 
-        return WriteProcessMemory((void*)process.Handle, (void*)address, data, nSize, &nWritten) != 0
+        return WriteProcessMemory((void*)processHandle, (void*)address, data, nSize, &nWritten) != 0
             && nWritten == nSize;
     }
 
     public static IEnumerable<Module> Modules(this Process process)
     {
-        nint hProcess = process.Handle;
+        return Modules(process.Handle);
+    }
 
-        if (!EnumProcessModulesEx(hProcess, null, 0, out uint cbNeeded))
+    public static IEnumerable<Module> Modules(nint processHandle)
+    {
+        if (!EnumProcessModulesEx(processHandle, null, 0, out uint cbNeeded))
         {
             ThrowHelper.Throw.Win32();
         }
@@ -46,42 +64,47 @@ public static unsafe class Native
         int numModules = (int)(cbNeeded / Unsafe.SizeOf<nint>());
         nint[] hModule = ArrayPoolExtensions.Rent<nint>(numModules);
 
-        if (!EnumProcessModulesEx(hProcess, hModule, cbNeeded, out _))
+        if (!EnumProcessModulesEx(processHandle, hModule, cbNeeded, out _))
         {
             ThrowHelper.Throw.Win32();
         }
 
         for (int i = 0; i < numModules; i++)
         {
-            if (!GetModuleBaseNameW(hProcess, hModule[i], out string baseName))
+            if (!GetModuleBaseNameW(processHandle, hModule[i], out string baseName))
             {
                 ArrayPoolExtensions.Return(hModule);
 
                 yield break;
             }
 
-            if (!GetModuleFileNameExW(hProcess, hModule[i], out string fileName))
+            if (!GetModuleFileNameExW(processHandle, hModule[i], out string fileName))
             {
                 ArrayPoolExtensions.Return(hModule);
 
                 yield break;
             }
 
-            if (!GetModuleInformation(hProcess, hModule[i], out MODULEINFO moduleInfo))
+            if (!GetModuleInformation(processHandle, hModule[i], out MODULEINFO moduleInfo))
             {
                 ArrayPoolExtensions.Return(hModule);
 
                 yield break;
             }
 
-            yield return new(process, baseName, fileName, moduleInfo);
+            yield return new(processHandle, baseName, fileName, moduleInfo);
         }
     }
 
     public static IEnumerable<Module> ModulesTh32(this Process process)
     {
+        return ModulesTh32(process.Handle, process.Id);
+    }
+
+    public static IEnumerable<Module> ModulesTh32(nint processHandle, int processId)
+    {
         MODULEENTRY32W me = new() { dwSize = MODULEENTRY32W.Size };
-        nint snapshot = CreateToolhelp32Snapshot(ThFlags.TH32CS_SNAPMODULE | ThFlags.TH32CS_SNAPMODULE32, process.Id);
+        nint snapshot = CreateToolhelp32Snapshot(ThFlags.TH32CS_SNAPMODULE | ThFlags.TH32CS_SNAPMODULE32, processId);
 
         try
         {
@@ -92,7 +115,7 @@ public static unsafe class Native
 
             do
             {
-                yield return new(process, me);
+                yield return new(processHandle, me);
             } while (Module32NextW(snapshot, ref me));
         }
         finally
@@ -101,11 +124,22 @@ public static unsafe class Native
         }
     }
 
+    public static IEnumerable<MemoryPage> MemoryPages(this Process process, bool allPages)
+    {
+        nint processHandle = process.Handle;
+        return MemoryPages(processHandle, Is64Bit(processHandle), allPages);
+    }
+
     public static IEnumerable<MemoryPage> MemoryPages(this Process process, bool is64Bit, bool allPages)
+    {
+        return MemoryPages(process.Handle, is64Bit, allPages);
+    }
+
+    public static IEnumerable<MemoryPage> MemoryPages(nint processHandle, bool is64Bit, bool allPages)
     {
         nint addr = 0x10000, max = (nint)(is64Bit ? 0x7FFFFFFEFFFF : 0x7FFEFFFF);
 
-        while (VirtualQueryEx(process.Handle, addr, out MEMORY_BASIC_INFORMATION mbi))
+        while (VirtualQueryEx(processHandle, addr, out MEMORY_BASIC_INFORMATION mbi))
         {
             addr += (nint)mbi.RegionSize;
 
@@ -135,9 +169,12 @@ public static unsafe class Native
 
     public static Dictionary<string, DebugSymbol> Symbols(this Module module, Process process)
     {
-        ThrowHelper.ThrowIfNull(module);
+        return Symbols(module, process.Handle);
+    }
 
-        nint hProcess = process.Handle;
+    public static Dictionary<string, DebugSymbol> Symbols(this Module module, nint processHandle)
+    {
+        ThrowHelper.ThrowIfNull(module);
 
         Dictionary<string, DebugSymbol> syms = new(StringComparer.OrdinalIgnoreCase);
         void* pSyms = Unsafe.AsPointer(ref syms);
@@ -149,37 +186,39 @@ public static unsafe class Native
 
         void getSymbols(string pdbDirectory)
         {
-            if (!SymInitializeW(hProcess, pdbDirectory))
+            if (!SymInitializeW(processHandle, pdbDirectory))
             {
                 ThrowHelper.Throw.Win32();
             }
 
             try
             {
-                if (!SymLoadModuleExW(hProcess, module))
+                if (!SymLoadModuleExW(processHandle, module))
                 {
                     ThrowHelper.Throw.Win32();
                 }
 
-                if (!SymEnumSymbolsW(hProcess, module, pSyms))
+                if (!SymEnumSymbolsW(processHandle, module, pSyms))
                 {
                     ThrowHelper.Throw.Win32();
                 }
             }
             finally
             {
-                _ = SymCleanup((void*)hProcess);
+                _ = SymCleanup((void*)processHandle);
             }
         }
     }
 
     public static nint AllocateRemoteString(this Process process, string value)
     {
-        return (nint)AllocateRemoteString((void*)process.Handle, value);
+        return AllocateRemoteString(process.Handle, value);
     }
 
-    public static void* AllocateRemoteString(void* hProcess, string value)
+    public static nint AllocateRemoteString(nint processHandle, string value)
     {
+        void* hProcess = (void*)processHandle;
+
         if (hProcess == null)
         {
             ThrowHelper.Throw.ArgumentNull(nameof(hProcess));
@@ -209,7 +248,7 @@ public static unsafe class Native
             }
         }
 
-        return memory;
+        return (nint)memory;
     }
 
     public static bool IsPointer<T>()

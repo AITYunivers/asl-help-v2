@@ -168,7 +168,7 @@ public sealed partial class SettingsCreator
         Create(converted, defaultParent);
     }
 
-    public IEnumerable<Setting> EnumerateDynamic(dynamic[][] settings, bool defaultValue, string defaultParent)
+    private IEnumerable<Setting> EnumerateDynamic(dynamic[][] settings, bool defaultValue, string defaultParent)
     {
         int count = settings.Length;
 
@@ -210,7 +210,7 @@ public sealed partial class SettingsCreator
         Create(converted, defaultParent);
     }
 
-    public IEnumerable<Setting> EnumerateCustom(dynamic[,] settings, bool defaultValue, params int[] positions)
+    private IEnumerable<Setting> EnumerateCustom(dynamic[,] settings, bool defaultValue, params int[] positions)
     {
         for (int i = 0; i < positions.Length; i++)
         {

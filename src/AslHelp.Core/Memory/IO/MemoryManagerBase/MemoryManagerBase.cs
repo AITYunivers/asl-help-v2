@@ -1,4 +1,5 @@
 ﻿using AslHelp.Core.Collections;
+using AslHelp.Core.Exceptions;
 using AslHelp.Core.IO.Logging;
 
 namespace AslHelp.Core.Memory.IO;
@@ -8,28 +9,42 @@ public abstract partial class MemoryManagerBase
 {
     private readonly LoggerBase _logger;
 
+    protected readonly nint _processHandle;
+    protected bool _isDisposed;
+
     public MemoryManagerBase(Process process, LoggerBase logger)
     {
-        Process = process;
-        Is64Bit = process.Is64Bit();
-        PtrSize = (byte)(Is64Bit ? 0x8 : 0x4);
-        Modules = new(process);
+        ThrowHelper.ThrowIfNull(process);
+        if (process.HasExited)
+        {
+            ThrowHelper.Throw.InvalidOperation("Cannot interact with the memory of an exited process.");
+        }
 
         _logger = logger;
+
+        _processHandle = process.Handle;
+
+        Process = process;
+        Is64Bit = Native.Is64Bit(_processHandle);
+        PtrSize = (byte)(Is64Bit ? 0x8 : 0x4);
+        Modules = new(process);
+        MainModule = Modules.FirstOrDefault();
+
+        process.Exited += DisposeEvent;
     }
 
     public Process Process { get; }
     public bool Is64Bit { get; }
     public byte PtrSize { get; }
 
-    public Module MainModule => Modules.FirstOrDefault();
+    public Module MainModule { get; }
     public ModuleCache Modules { get; }
 
     public uint Tick { get; private set; }
 
     public virtual void Update()
     {
-        Process?.Refresh();
+        Process.Refresh();
         Tick++;
     }
 
@@ -51,5 +66,29 @@ public abstract partial class MemoryManagerBase
     public void Log(object output)
     {
         _logger?.Log(output);
+    }
+
+    public virtual void Dispose()
+    {
+        if (_isDisposed)
+        {
+            ThrowHelper.Throw.InvalidOperation("Attempted to dispose of resources which were already disposed.");
+        }
+
+        Log("Disposing of memory manager...");
+
+        _isDisposed = true;
+        Process.Dispose();
+    }
+
+    private void DisposeEvent(object sender, EventArgs e)
+    {
+        if (sender is not Process process)
+        {
+            return;
+        }
+
+        Dispose();
+        process.Exited -= DisposeEvent;
     }
 }

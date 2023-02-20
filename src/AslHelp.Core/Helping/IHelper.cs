@@ -4,6 +4,7 @@ using AslHelp.Core.Memory.IO;
 namespace AslHelp.Core.Helping;
 
 public interface IHelper
+    : IDisposable
 {
     string GameName { get; set; }
     Process Game { get; set; }
@@ -11,7 +12,5 @@ public interface IHelper
 
     LoggerBase Logger { get; }
 
-    void Log(object output);
-
-    void Dispose();
+    Task Load();
 }

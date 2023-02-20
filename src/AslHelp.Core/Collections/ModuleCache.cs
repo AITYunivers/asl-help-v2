@@ -4,17 +4,22 @@ namespace AslHelp.Core.Collections;
 
 public sealed class ModuleCache : CachedEnumerable<string, Module>
 {
-    private readonly Process _process;
+    private readonly int _processId;
+    private readonly nint _processHandle;
 
     public ModuleCache(Process process)
+        : this(process.Id, process.Handle) { }
+
+    public ModuleCache(int processId, nint processHandle)
         : base(StringComparer.OrdinalIgnoreCase)
     {
-        _process = process;
+        _processId = processId;
+        _processHandle = processHandle;
     }
 
     public override IEnumerator<Module> GetEnumerator()
     {
-        foreach (Module module in _process.ModulesTh32())
+        foreach (Module module in Native.ModulesTh32(_processHandle, _processId))
         {
             yield return module;
         }

@@ -14,7 +14,7 @@ internal static class ResourceManager
         }
 
         using Stream source = GetResourceStream(resource);
-        using FileStream destination = OpenWrite(outputFile);
+        using FileStream destination = File.OpenWrite(outputFile);
 
         source.CopyTo(destination);
 
@@ -31,15 +31,5 @@ internal static class ResourceManager
         }
 
         return resourceStream;
-    }
-
-    public static FileStream OpenWrite(string fileName)
-    {
-        if (!Directory.Exists(Path.GetDirectoryName(fileName)))
-        {
-            ThrowHelper.Throw.DirectoryNotFound();
-        }
-
-        return File.OpenWrite(fileName);
     }
 }

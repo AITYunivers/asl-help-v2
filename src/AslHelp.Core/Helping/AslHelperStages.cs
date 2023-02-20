@@ -1,23 +1,38 @@
-﻿using AslHelp.Core.LiveSplitInterop.Settings;
+﻿using AslHelp.Core.Memory.Pointers;
 
 namespace AslHelp.Core.Helping;
 
 public interface IAslInitStage
 {
-    IAslGenerateStage InitForAsl();
+    IAslAfterInitStage InitForAsl();
 }
 
 public interface IAslGenerateStage
 {
-    IAslIoStage GenerateCode();
+    IAslAfterGenerateStage GenerateCode();
 }
 
-public interface IAslSettingsPhase
+public interface IAslIOStage
 {
-    SettingsCreator Settings { get; }
+    IAslAfterGenerateStage CreateFileLogger(string filePath, int maxLines = 4096, int linesToErates = 512);
+    IAslAfterGenerateStage CreateFileWatcher(string filePath);
+    IAslAfterGenerateStage CreateFileWatcher(string filePath, string name);
 }
 
-public interface IAslIoStage
+public interface IAslPointersStage
 {
-    IAslIoStage CreateFileLogger(string filePath, int maxLines = 4096, int linesToErates = 512);
+    PointerFactory Pointers { get; }
+
+    IAslPointersStage
 }
+
+public interface IAslAfterInitStage
+    : IAslGenerateStage,
+    IAslIOStage,
+    IAslPointersStage
+{ }
+
+public interface IAslAfterGenerateStage
+    : IAslIOStage,
+    IAslPointersStage
+{ }

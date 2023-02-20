@@ -9,7 +9,7 @@ public partial class Basic
     {
         if (Methods.CurrentMethod != "startup")
         {
-            Debug.Error("asl-help may only be initialized in the `startup` action.");
+            Debug.Error();
             throw new();
         }
 
