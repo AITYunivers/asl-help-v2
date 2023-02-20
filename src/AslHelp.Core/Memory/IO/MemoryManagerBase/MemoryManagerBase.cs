@@ -6,9 +6,9 @@ namespace AslHelp.Core.Memory.IO;
 public abstract partial class MemoryManagerBase
     : IMemoryManager
 {
-    private readonly LoggerBase _logger;
+    private readonly ILogger _logger;
 
-    public MemoryManagerBase(Process process, LoggerBase logger)
+    public MemoryManagerBase(Process process, ILogger logger)
     {
         Process = process;
         Is64Bit = process.Is64Bit();

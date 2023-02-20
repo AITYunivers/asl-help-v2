@@ -9,7 +9,7 @@ public interface IAslInitStage
 
 public interface IAslGenerateStage
 {
-    IAslIoStage GenerateCode();
+    IAslHelper GenerateCode();
 }
 
 public interface IAslSettingsPhase
@@ -17,7 +17,9 @@ public interface IAslSettingsPhase
     SettingsCreator Settings { get; }
 }
 
-public interface IAslIoStage
+public interface IAslIOHelper
 {
-    IAslIoStage CreateFileLogger(string filePath, int maxLines = 4096, int linesToErates = 512);
+    IAslIOHelper CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512);
+    IAslIOHelper CreateFileWatcher(string filePath);
+    IAslIOHelper CreateFileWatcher(string filePath, string name);
 }

@@ -1,18 +1,19 @@
 ﻿namespace AslHelp.Core.IO.Logging;
 
-public sealed class DebugLogger : LoggerBase
+public sealed class DebugLogger
+    : ILogger
 {
-    public override void Start() { }
+    public void Start() { }
 
-    public override void Log()
+    public void Log()
     {
         LiveSplit.Options.Log.Info("");
     }
 
-    public override void Log(object output)
+    public void Log(object output)
     {
         LiveSplit.Options.Log.Info(output?.ToString());
     }
 
-    public override void Stop() { }
+    public void Stop() { }
 }

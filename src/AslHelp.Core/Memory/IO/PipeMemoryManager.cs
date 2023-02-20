@@ -13,7 +13,7 @@ public sealed class PipeMemoryManager : MemoryManagerBase
     public PipeMemoryManager(Process process, NamedPipeClientStream pipe)
         : this(process, null, pipe) { }
 
-    public PipeMemoryManager(Process process, LoggerBase logger, NamedPipeClientStream pipe)
+    public PipeMemoryManager(Process process, ILogger logger, NamedPipeClientStream pipe)
         : base(process, logger)
     {
         _pipe = pipe;

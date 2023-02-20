@@ -37,18 +37,6 @@ public partial class Basic
         }
     }
 
-    public void StartBench(string id)
-    {
-        _dbgLogger.StartBenchmark(id);
-        _fileLogger?.StartBenchmark(id);
-    }
-
-    public void StopBench(string id)
-    {
-        _dbgLogger.StopBenchmark(id);
-        _fileLogger?.StopBenchmark(id);
-    }
-
     public void Log(object output)
     {
         _dbgLogger.Log($"[{GameName}] {output}");
