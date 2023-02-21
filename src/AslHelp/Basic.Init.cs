@@ -37,6 +37,9 @@ public partial class Basic
         {
             AslHelp.Core.LiveSplitInterop.Timer.Init();
             Script.Init();
+
+            Script.Vars.AslHelp = this as IAslGenerateStage;
+            Debug.Info("  => Set helper to `vars.AslHelp`.");
         }
         catch (Exception ex)
         {
@@ -64,9 +67,6 @@ public partial class Basic
         }
 
         Debug.Info("  => Generating code...");
-
-        Script.Vars.AslHelp = this as IAslHelper;
-        Debug.Info("    => Set helper to `vars.AslHelp`.");
 
         Script.Vars.Log = (Action<object>)(output => Logger.Log(output));
         Debug.Info("    => Created the Action<object> `vars.Log`.");
