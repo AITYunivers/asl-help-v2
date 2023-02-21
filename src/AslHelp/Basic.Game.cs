@@ -3,8 +3,6 @@ using AslHelp.Core.Memory;
 using AslHelp.Core.Memory.IO;
 using AslHelp.Core.Memory.Pipes;
 
-namespace AslHelp.Neo;
-
 public partial class Basic
 {
     private string _gameName;

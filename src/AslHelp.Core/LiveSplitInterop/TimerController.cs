@@ -2,9 +2,9 @@
 
 public sealed class TimerController
 {
-    private static readonly TimerModel _model;
+    private readonly TimerModel _model;
 
-    static TimerController()
+    public TimerController()
     {
         _model = new() { CurrentState = Timer.State };
     }

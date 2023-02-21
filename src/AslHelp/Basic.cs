@@ -1,14 +1,20 @@
 ﻿using AslHelp.Core.Helping;
 using AslHelp.Core.Reflection;
 
-namespace AslHelp.Neo;
-
 public partial class Basic
     : IAslHelper
 {
     public Basic()
+        : this(true) { }
+
+    public Basic(bool generateCode)
     {
         InitForAsl();
+
+        if (generateCode)
+        {
+            GenerateCode();
+        }
     }
 
     public void Dispose()

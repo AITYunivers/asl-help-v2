@@ -6,8 +6,6 @@ using AslHelp.Core.LiveSplitInterop;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace AslHelp.Neo;
-
 public partial class Basic
     : IAslInitStage,
     IAslGenerateStage
@@ -67,7 +65,7 @@ public partial class Basic
 
         Debug.Info("  => Generating code...");
 
-        Script.Vars.AslHelp = this;
+        Script.Vars.AslHelp = this as IAslHelper;
         Debug.Info("    => Set helper to `vars.AslHelp`.");
 
         Script.Vars.Log = (Action<object>)(output => Logger.Log(output));

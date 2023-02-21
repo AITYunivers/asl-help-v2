@@ -5,8 +5,6 @@ using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;
 using AslHelp.Core.LiveSplitInterop.Texts;
 
-namespace AslHelp.Neo;
-
 public partial class Basic
     : IAslIOStage
 {

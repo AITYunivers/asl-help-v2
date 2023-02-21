@@ -7,8 +7,6 @@ using AslHelp.Core.Memory.Models;
 using AslHelp.Core.Memory.Pipes;
 using System.IO.Pipes;
 
-namespace AslHelp.Neo;
-
 public partial class Basic
 {
     private NamedPipeClientStream _pipe;

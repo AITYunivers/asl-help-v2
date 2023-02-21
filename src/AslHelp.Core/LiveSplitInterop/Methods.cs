@@ -29,7 +29,7 @@ internal static class Methods
                 }
             }
 
-            return null;
+            throw new Exception("Not in an ASL.");
         }
     }
 
