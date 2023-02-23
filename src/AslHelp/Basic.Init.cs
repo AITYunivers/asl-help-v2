@@ -1,19 +1,17 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System.Reflection;
+using System.Windows.Forms;
+using AslHelp.Core.Exceptions;
 using AslHelp.Core.Helping;
-using AslHelp.Core.IO;
 using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;
-using System.Reflection;
-using System.Windows.Forms;
 
 public partial class Basic
-    : IAslInitStage,
-    IAslGenerateStage
+    : IAslGenerateStage
 {
     private bool _isInitialized;
     private bool _hasGenerated;
 
-    public IAslGenerateStage InitForAsl()
+    private void Init()
     {
         if (_isInitialized)
         {
@@ -39,7 +37,7 @@ public partial class Basic
             Script.Init();
 
             Script.Vars.AslHelp = this as IAslGenerateStage;
-            Debug.Info("  => Set helper to `vars.AslHelp`.");
+            Debug.Info("  => `vars.AslHelp` created!");
         }
         catch (Exception ex)
         {
@@ -55,7 +53,6 @@ public partial class Basic
         Debug.Info("  => Complete.");
 
         _isInitialized = true;
-        return this;
     }
 
     public IAslHelper GenerateCode()

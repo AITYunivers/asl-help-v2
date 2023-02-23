@@ -22,4 +22,6 @@ public interface IAslHelper
     Dictionary<string, FileWatcher> Files { get; }
     TextComponentController Texts { get; }
     TimerController Timer { get; }
+
+    void GenerateCode();
 }

@@ -9,7 +9,7 @@ public partial class Basic
 
     public Basic(bool generateCode)
     {
-        InitForAsl();
+        Init();
 
         if (generateCode)
         {
