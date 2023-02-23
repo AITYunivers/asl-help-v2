@@ -43,10 +43,7 @@ public partial class Basic
 
     public IAslIOStage CreateFileWatcher(string filePath)
     {
-        Files ??= new();
-        Files[Path.GetFileName(filePath)] = new(filePath);
-
-        return this;
+        return CreateFileWatcher(filePath, Path.GetFileName(filePath));
     }
 
     public IAslIOStage CreateFileWatcher(string filePath, string name)
