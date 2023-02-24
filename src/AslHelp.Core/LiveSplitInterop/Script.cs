@@ -63,8 +63,8 @@ internal static class Script
         set => Emissions.SetScriptGame(_script, value);
     }
 
-    public static dynamic Vars { get; private set; }
-    public static IDictionary<string, dynamic> Current => _script.State.Data;
+    public static IDictionary<string, object> Vars { get; private set; }
+    public static IDictionary<string, object> Current => _script.State.Data;
 
     public static ASLSettingsBuilder SettingsBuilder { get; private set; }
 

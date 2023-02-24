@@ -6,7 +6,7 @@ using AslHelp.Core.LiveSplitInterop;
 using AslHelp.Core.LiveSplitInterop.Texts;
 
 public partial class Basic
-    : IAslIOStage
+    : IAslIO
 {
     private MultiLogger _logger;
     public ILogger Logger => _logger;
@@ -15,7 +15,7 @@ public partial class Basic
     public TextComponentController Texts { get; } = new();
     public Dictionary<string, FileWatcher> Files { get; private set; }
 
-    public IAslIOStage CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512)
+    public IAslIO CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512)
     {
         if (Methods.CurrentMethod != "startup")
         {
@@ -41,12 +41,15 @@ public partial class Basic
         return this;
     }
 
-    public IAslIOStage CreateFileWatcher(string filePath)
+    public IAslIO CreateFileWatcher(string filePath)
     {
-        return CreateFileWatcher(filePath, Path.GetFileName(filePath));
+        Files ??= new();
+        Files[Path.GetFileName(filePath)] = new(filePath);
+
+        return this;
     }
 
-    public IAslIOStage CreateFileWatcher(string filePath, string name)
+    public IAslIO CreateFileWatcher(string filePath, string name)
     {
         Files ??= new();
         Files[name] = new(filePath);

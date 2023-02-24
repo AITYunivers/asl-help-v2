@@ -6,7 +6,6 @@ using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;
 
 public partial class Basic
-    : IAslGenerateStage
 {
     private bool _isInitialized;
     private bool _hasGenerated;
@@ -36,8 +35,10 @@ public partial class Basic
             AslHelp.Core.LiveSplitInterop.Timer.Init();
             Script.Init();
 
-            Script.Vars.AslHelp = this as IAslGenerateStage;
+#pragma warning disable IDE0004
+            Script.Vars["AslHelp"] = this as IAslHelper;
             Debug.Info("  => `vars.AslHelp` created!");
+#pragma warning restore IDE0004
         }
         catch (Exception ex)
         {
@@ -65,7 +66,7 @@ public partial class Basic
 
         Debug.Info("  => Generating code...");
 
-        Script.Vars.Log = (Action<object>)(output => Logger.Log(output));
+        Script.Vars["Log"] = (Action<object>)(output => Logger.Log(output));
         Debug.Info("    => Created the Action<object> `vars.Log`.");
 
         Methods.shutdown.Prepend("vars.AslHelp.Dispose();");

@@ -13,7 +13,7 @@ public sealed partial class SettingsCreator
         [XmlAttribute] string ToolTip,
         [XmlElement("Setting")] XmlSetting[] Children);
 
-    public void FromXml(string path, bool defaultValue = true, string defaultParent = null)
+    public SettingsCreator FromXml(string path, bool defaultValue = true, string defaultParent = null)
     {
         using FileStream fs = File.OpenRead(path);
         XmlSerializer ser = new(typeof(XmlSetting[]), new XmlRootAttribute("Settings"));
@@ -23,7 +23,8 @@ public sealed partial class SettingsCreator
             throw new FormatException(msg);
         }
 
-        Create(EnumerateXmlSetting(settings, defaultValue, null), defaultParent);
+        IEnumerable<Setting> converted = EnumerateXmlSetting(settings, defaultValue, null);
+        return Create(converted, defaultParent);
     }
 
     private IEnumerable<Setting> EnumerateXmlSetting(XmlSetting[] nodes, bool defaultValue, string defaultParent)

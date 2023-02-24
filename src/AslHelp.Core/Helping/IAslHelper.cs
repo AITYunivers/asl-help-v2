@@ -1,8 +1,10 @@
 ﻿using AslHelp.Core.Collections;
 using AslHelp.Core.IO;
 using AslHelp.Core.LiveSplitInterop;
+using AslHelp.Core.LiveSplitInterop.Settings;
 using AslHelp.Core.LiveSplitInterop.Texts;
 using AslHelp.Core.Memory.Models;
+using AslHelp.Core.Memory.Pointers;
 
 namespace AslHelp.Core.Helping;
 
@@ -22,6 +24,13 @@ public interface IAslHelper
     Dictionary<string, FileWatcher> Files { get; }
     TextComponentController Texts { get; }
     TimerController Timer { get; }
+    SettingsCreator Settings { get; }
 
-    void GenerateCode();
+    IPointer this[string name] { get; set; }
+
+    IAslHelper GenerateCode();
+
+    IAslHelper CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512);
+    FileWatcher CreateFileWatcher(string filePath);
+    FileWatcher CreateFileWatcher(string filePath, string name);
 }

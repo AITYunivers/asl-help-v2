@@ -4,118 +4,74 @@ namespace AslHelp.Core.LiveSplitInterop.Settings;
 
 public sealed partial class SettingsCreator
 {
-    public void Create(Dictionary<string, string> settings, bool defaultValue = true, string defaultParent = null)
+    public SettingsCreator Create(Dictionary<string, string> settings, bool defaultValue = true, string defaultParent = null)
     {
         IEnumerable<Setting> converted = settings?.Select(kvp => new Setting(kvp.Key, defaultValue, kvp.Value, defaultParent));
-        Create(converted, defaultParent);
+        return Create(converted, defaultParent);
     }
 
-    public void Create(Dictionary<string, bool> settings, string defaultParent = null)
+    public SettingsCreator Create(Dictionary<string, bool> settings, string defaultParent = null)
     {
         IEnumerable<Setting> converted = settings?.Select(kvp => new Setting(kvp.Key, kvp.Value, kvp.Key, defaultParent));
-        Create(converted, defaultParent);
+        return Create(converted, defaultParent);
     }
 
-    public void Create(params string[] settings)
+    public SettingsCreator Create(params string[] settings)
     {
-        Create(settings, true, null);
+        return Create(settings, true, null);
     }
 
-    public void Create(IEnumerable<string> settings, bool defaultValue = true, string defaultParent = null)
+    public SettingsCreator Create(IEnumerable<string> settings, bool defaultValue = true, string defaultParent = null)
     {
         IEnumerable<Setting> converted = settings?.Select(s => new Setting(s, defaultValue, s, defaultParent));
-        Create(converted, defaultParent);
+        return Create(converted, defaultParent);
     }
 
-    public void Create(params (string, string)[] settings)
+    public SettingsCreator Create(params Tuple<string, string>[] settings)
     {
-        Create(settings, true, null);
+        return Create(settings, true, null);
     }
 
-    public void Create(IEnumerable<(string, string)> settings, bool defaultValue = true, string defaultParent = null)
-    {
-        IEnumerable<Setting> converted = settings?.Select(t => new Setting(t.Item1, defaultValue, t.Item2, defaultParent));
-        Create(converted, defaultParent);
-    }
-
-    public void Create(params Tuple<string, string>[] settings)
-    {
-        Create(settings, true, null);
-    }
-
-    public void Create(IEnumerable<Tuple<string, string>> settings, bool defaultValue = true, string defaultParent = null)
+    public SettingsCreator Create(IEnumerable<Tuple<string, string>> settings, bool defaultValue = true, string defaultParent = null)
     {
         IEnumerable<Setting> converted = settings?.Select(t => new Setting(t.Item1, defaultValue, t.Item2, defaultParent));
-        Create(converted, defaultParent);
+        return Create(converted, defaultParent);
     }
 
-    public void Create(params (string, bool, string)[] settings)
+    public SettingsCreator Create(params Tuple<string, bool, string>[] settings)
     {
-        Create(settings, null);
+        return Create(settings, null);
     }
 
-    public void Create(IEnumerable<(string, bool, string)> settings, string defaultParent = null)
-    {
-        IEnumerable<Setting> converted = settings?.Select(t => new Setting(t.Item1, t.Item2, t.Item3, defaultParent));
-        Create(converted, defaultParent);
-    }
-
-    public void Create(params Tuple<string, bool, string>[] settings)
-    {
-        Create(settings, null);
-    }
-
-    public void Create(IEnumerable<Tuple<string, bool, string>> settings, string defaultParent = null)
+    public SettingsCreator Create(IEnumerable<Tuple<string, bool, string>> settings, string defaultParent = null)
     {
         IEnumerable<Setting> converted = settings?.Select(t => new Setting(t.Item1, t.Item2, t.Item3, defaultParent));
-        Create(converted, defaultParent);
+        return Create(converted, defaultParent);
     }
 
-    public void Create(params (string, bool, string, string)[] settings)
+    public SettingsCreator Create(params Tuple<string, bool, string, string>[] settings)
     {
-        Create(settings, null);
+        return Create(settings, null);
     }
 
-    public void Create(IEnumerable<(string, bool, string, string)> settings, string defaultParent = null)
-    {
-        IEnumerable<Setting> converted = settings?.Select(t => new Setting(t.Item1, t.Item2, t.Item3, t.Item4));
-        Create(converted, defaultParent);
-    }
-
-    public void Create(params Tuple<string, bool, string, string>[] settings)
-    {
-        Create(settings, null);
-    }
-
-    public void Create(IEnumerable<Tuple<string, bool, string, string>> settings, string defaultParent = null)
+    public SettingsCreator Create(IEnumerable<Tuple<string, bool, string, string>> settings, string defaultParent = null)
     {
         IEnumerable<Setting> converted = settings?.Select(t => new Setting(t.Item1, t.Item2, t.Item3, t.Item4));
-        Create(converted, defaultParent);
+        return Create(converted, defaultParent);
     }
 
-    public void Create(params (string, bool, string, string, string)[] settings)
+    public SettingsCreator Create(params Tuple<string, bool, string, string, string>[] settings)
     {
-        Create(settings, null);
+        return Create(settings, null);
     }
 
-    public void Create(IEnumerable<(string, bool, string, string, string)> settings, string defaultParent = null)
-    {
-        IEnumerable<Setting> converted = settings?.Select(t => new Setting(t.Item1, t.Item2, t.Item3, t.Item4, t.Item5));
-        Create(converted, defaultParent);
-    }
-
-    public void Create(params Tuple<string, bool, string, string, string>[] settings)
-    {
-        Create(settings, null);
-    }
-
-    public void Create(IEnumerable<Tuple<string, bool, string, string, string>> settings, string defaultParent = null)
+    public SettingsCreator Create(IEnumerable<Tuple<string, bool, string, string, string>> settings, string defaultParent = null)
     {
         IEnumerable<Setting> converted = settings?.Select(t => new Setting(t.Item1, t.Item2, t.Item3, t.Item4, t.Item5));
-        Create(converted, defaultParent);
+        return Create(converted, defaultParent);
     }
 
-    public void Create(IEnumerable<Setting> settings, string defaultParent = null)
+    private SettingsCreator Create(IEnumerable<Setting> settings, string defaultParent = null)
     {
         ThrowHelper.ThrowIfNull(Script.SettingsBuilder, paramName: "ASLScript.SettingsBuilder");
         ThrowHelper.ThrowIfNull(settings);
@@ -131,12 +87,14 @@ public sealed partial class SettingsCreator
                 Script.SettingsBuilder.SetToolTip(setting.Id, setting.ToolTip);
             }
         }
+
+        return this;
     }
 
-    public void Create(dynamic[,] settings, bool defaultValue = true, string defaultParent = null)
+    public SettingsCreator Create(dynamic[,] settings, bool defaultValue = true, string defaultParent = null)
     {
         IEnumerable<Setting> converted = EnumerateDynamic(settings, defaultValue, defaultParent);
-        Create(converted, defaultParent);
+        return Create(converted, defaultParent);
     }
 
     private IEnumerable<Setting> EnumerateDynamic(dynamic[,] settings, bool defaultValue, string defaultParent)
@@ -162,10 +120,10 @@ public sealed partial class SettingsCreator
         }
     }
 
-    public void Create(dynamic[][] settings, bool defaultValue = true, string defaultParent = null)
+    public SettingsCreator Create(dynamic[][] settings, bool defaultValue = true, string defaultParent = null)
     {
         IEnumerable<Setting> converted = EnumerateDynamic(settings, defaultValue, defaultParent);
-        Create(converted, defaultParent);
+        return Create(converted, defaultParent);
     }
 
     private IEnumerable<Setting> EnumerateDynamic(dynamic[][] settings, bool defaultValue, string defaultParent)
@@ -194,20 +152,20 @@ public sealed partial class SettingsCreator
         }
     }
 
-    public void CreateCustom(dynamic[,] settings, params int[] positions)
+    public SettingsCreator CreateCustom(dynamic[,] settings, params int[] positions)
     {
-        CreateCustom(settings, true, null, positions);
+        return CreateCustom(settings, true, null, positions);
     }
 
-    public void CreateCustom(dynamic[,] settings, string defaultParent, params int[] positions)
+    public SettingsCreator CreateCustom(dynamic[,] settings, string defaultParent, params int[] positions)
     {
-        CreateCustom(settings, true, defaultParent, positions);
+        return CreateCustom(settings, true, defaultParent, positions);
     }
 
-    public void CreateCustom(dynamic[,] settings, bool defaultValue, string defaultParent, params int[] positions)
+    public SettingsCreator CreateCustom(dynamic[,] settings, bool defaultValue, string defaultParent, params int[] positions)
     {
         IEnumerable<Setting> converted = EnumerateCustom(settings, defaultValue, positions);
-        Create(converted, defaultParent);
+        return Create(converted, defaultParent);
     }
 
     private IEnumerable<Setting> EnumerateCustom(dynamic[,] settings, bool defaultValue, params int[] positions)

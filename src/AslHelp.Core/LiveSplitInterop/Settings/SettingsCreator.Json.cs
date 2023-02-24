@@ -12,7 +12,7 @@ public sealed partial class SettingsCreator
         string ToolTip,
         JsonSetting[] Children);
 
-    public void FromJson(string path, bool defaultValue = true, string defaultParent = null)
+    public SettingsCreator FromJson(string path, bool defaultValue = true, string defaultParent = null)
     {
         using FileStream fs = File.OpenRead(path);
 
@@ -21,7 +21,7 @@ public sealed partial class SettingsCreator
             JsonSetting[] settings = JsonSerializer.Deserialize<JsonSetting[]>(fs);
 
             IEnumerable<Setting> converted = EnumerateJsonSettings(settings, defaultValue, defaultParent);
-            Create(converted, defaultParent);
+            return Create(converted, defaultParent);
         }
         catch (JsonException)
         {
@@ -29,7 +29,7 @@ public sealed partial class SettingsCreator
             JsonElement[][] settings = JsonSerializer.Deserialize<JsonElement[][]>(fs);
 
             IEnumerable<Setting> converted = EnumerateDynamicJsonSettings(settings, defaultValue, defaultParent);
-            Create(converted, defaultParent);
+            return Create(converted, defaultParent);
         }
     }
 
