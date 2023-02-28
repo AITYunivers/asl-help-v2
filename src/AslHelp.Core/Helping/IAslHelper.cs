@@ -21,7 +21,6 @@ public interface IAslHelper
 
     IEnumerable<MemoryPage> Pages(bool allPages);
 
-    Dictionary<string, FileWatcher> Files { get; }
     TextComponentController Texts { get; }
     TimerController Timer { get; }
     SettingsCreator Settings { get; }
@@ -32,5 +31,4 @@ public interface IAslHelper
 
     IAslHelper CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512);
     FileWatcher CreateFileWatcher(string filePath);
-    FileWatcher CreateFileWatcher(string filePath, string name);
 }

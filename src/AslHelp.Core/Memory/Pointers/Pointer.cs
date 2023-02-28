@@ -7,8 +7,8 @@ public sealed class Pointer<T> : PointerBase<T> where T : unmanaged
     public Pointer(IMemoryManager manager, nint @base, params int[] offsets)
         : base(manager, @base, offsets) { }
 
-    public Pointer(IMemoryManager manager, PointerBase<nint> parent, int baseOffset, params int[] offsets)
-        : base(manager, parent, baseOffset, offsets) { }
+    public Pointer(IMemoryManager manager, PointerBase<nint> parent, int firstOffset, params int[] offsets)
+        : base(manager, parent, firstOffset, offsets) { }
 
     protected override T Default { get; } = default;
 

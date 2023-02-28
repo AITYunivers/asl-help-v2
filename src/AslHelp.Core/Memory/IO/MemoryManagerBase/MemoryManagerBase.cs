@@ -21,7 +21,6 @@ public abstract partial class MemoryManagerBase
         }
 
         _logger = logger;
-
         _processHandle = process.Handle;
 
         Process = process;
@@ -72,7 +71,7 @@ public abstract partial class MemoryManagerBase
     {
         if (_isDisposed)
         {
-            ThrowHelper.Throw.InvalidOperation("Attempted to dispose of resources which were already disposed.");
+            return;
         }
 
         Log("Disposing of memory manager...");

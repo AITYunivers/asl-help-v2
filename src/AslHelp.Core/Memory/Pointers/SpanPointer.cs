@@ -12,8 +12,8 @@ public sealed class SpanPointer<T> : PointerBase<T[]> where T : unmanaged
         _length = length;
     }
 
-    public SpanPointer(IMemoryManager manager, int length, PointerBase<nint> parent, int baseOffset, params int[] offsets)
-        : base(manager, parent, baseOffset, offsets)
+    public SpanPointer(IMemoryManager manager, int length, PointerBase<nint> parent, int firstOffset, params int[] offsets)
+        : base(manager, parent, firstOffset, offsets)
     {
         _length = length;
     }

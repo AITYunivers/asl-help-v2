@@ -3,19 +3,21 @@ using AslHelp.Core.Helping;
 using AslHelp.Core.IO;
 using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;
+using AslHelp.Core.LiveSplitInterop.Settings;
 using AslHelp.Core.LiveSplitInterop.Texts;
 
 public partial class Basic
-    : IAslIO
 {
+    private readonly List<FileWatcher> _files = new();
+
     private MultiLogger _logger;
     public ILogger Logger => _logger;
 
     public TimerController Timer { get; } = new();
     public TextComponentController Texts { get; } = new();
-    public Dictionary<string, FileWatcher> Files { get; private set; }
+    public SettingsCreator Settings { get; } = new();
 
-    public IAslIO CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512)
+    public IAslHelper CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512)
     {
         if (Methods.CurrentMethod != "startup")
         {
@@ -41,19 +43,11 @@ public partial class Basic
         return this;
     }
 
-    public IAslIO CreateFileWatcher(string filePath)
+    public FileWatcher CreateFileWatcher(string filePath)
     {
-        Files ??= new();
-        Files[Path.GetFileName(filePath)] = new(filePath);
+        FileWatcher watcher = new(filePath);
+        _files.Add(watcher);
 
-        return this;
-    }
-
-    public IAslIO CreateFileWatcher(string filePath, string name)
-    {
-        Files ??= new();
-        Files[name] = new(filePath);
-
-        return this;
+        return watcher;
     }
 }

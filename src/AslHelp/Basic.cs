@@ -27,6 +27,11 @@ public partial class Basic
         _logger.DisposeFileLoggers();
         _logger = null;
 
+        for (int i = 0; i < _files.Count; i++)
+        {
+            _files[i].Dispose();
+        }
+
         bool closing = Debug.Trace.Any(
             "TimerForm.TimerForm_FormClosing",
             "TimerForm.OpenLayoutFromFile",

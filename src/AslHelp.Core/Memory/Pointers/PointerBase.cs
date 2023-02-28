@@ -29,7 +29,7 @@ public abstract class PointerBase<T> : IPointer<T>
         _current = Default;
     }
 
-    public PointerBase(IMemoryManager manager, PointerBase<nint> parent, int baseOffset, params int[] offsets)
+    public PointerBase(IMemoryManager manager, PointerBase<nint> parent, int firstOffset, params int[] offsets)
     {
         ThrowHelper.ThrowIfNull(manager);
         ThrowHelper.ThrowIfNull(parent);
@@ -38,7 +38,7 @@ public abstract class PointerBase<T> : IPointer<T>
         _manager = manager;
 
         _parent = parent;
-        _baseOffset = baseOffset;
+        _baseOffset = firstOffset;
         _offsets = offsets;
 
         _old = Default;
