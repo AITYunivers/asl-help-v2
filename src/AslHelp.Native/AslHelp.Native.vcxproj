@@ -38,7 +38,6 @@
     <ClInclude Include="io\console.h" />
     <ClInclude Include="io\pipe.h" />
     <ClInclude Include="pch.h" />
-    <None Include=".clang-format" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
