@@ -7,7 +7,7 @@ public abstract class PointerBase<T> : IPointer<T>
 {
     protected readonly IMemoryManager _manager;
 
-    private readonly PointerBase<nint> _parent;
+    private readonly IPointer<nint> _parent;
     private readonly int _baseOffset;
 
     private readonly nint _base;
@@ -29,7 +29,7 @@ public abstract class PointerBase<T> : IPointer<T>
         _current = Default;
     }
 
-    public PointerBase(IMemoryManager manager, PointerBase<nint> parent, int firstOffset, params int[] offsets)
+    public PointerBase(IMemoryManager manager, IPointer<nint> parent, int firstOffset, params int[] offsets)
     {
         ThrowHelper.ThrowIfNull(manager);
         ThrowHelper.ThrowIfNull(parent);

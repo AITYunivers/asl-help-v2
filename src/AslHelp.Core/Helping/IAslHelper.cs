@@ -27,8 +27,8 @@ public interface IAslHelper
 
     IPointer this[string name] { get; set; }
 
-    IAslHelper GenerateCode();
+    void GenerateCode();
 
-    IAslHelper CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512);
+    void CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512);
     FileWatcher CreateFileWatcher(string filePath);
 }

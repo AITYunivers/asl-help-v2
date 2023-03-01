@@ -35,10 +35,8 @@ public partial class Basic
             AslHelp.Core.LiveSplitInterop.Timer.Init();
             Script.Init();
 
-#pragma warning disable IDE0004
             Script.Vars["AslHelp"] = this as IAslHelper;
             Debug.Info("  => `vars.AslHelp` created!");
-#pragma warning restore IDE0004
         }
         catch (Exception ex)
         {
@@ -56,7 +54,7 @@ public partial class Basic
         _isInitialized = true;
     }
 
-    public IAslHelper GenerateCode()
+    public void GenerateCode()
     {
         if (_hasGenerated)
         {
@@ -66,13 +64,12 @@ public partial class Basic
 
         Debug.Info("  => Generating code...");
 
-        Script.Vars["Log"] = (Action<object>)(output => Logger.Log(output));
+        Script.Vars["Log"] = (Action<object>)(output => _logger.Log(output));
         Debug.Info("    => Created the Action<object> `vars.Log`.");
 
         Methods.shutdown.Prepend("vars.AslHelp.Dispose();");
 
         _hasGenerated = true;
-        return this;
     }
 
     private Assembly AssemblyResolve(object sender, ResolveEventArgs e)

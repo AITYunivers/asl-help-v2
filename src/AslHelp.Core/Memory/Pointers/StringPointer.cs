@@ -15,7 +15,7 @@ public sealed class StringPointer : PointerBase<string>
         _stringType = stringType;
     }
 
-    public StringPointer(IMemoryManager manager, int length, ReadStringType stringType, PointerBase<nint> parent, int firstOffset, params int[] offsets)
+    public StringPointer(IMemoryManager manager, int length, ReadStringType stringType, IPointer<nint> parent, int firstOffset, params int[] offsets)
         : base(manager, parent, firstOffset, offsets)
     {
         _length = length;

@@ -17,7 +17,7 @@ public partial class Basic
     public TextComponentController Texts { get; } = new();
     public SettingsCreator Settings { get; } = new();
 
-    public IAslHelper CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512)
+    public void CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512)
     {
         if (Methods.CurrentMethod != "startup")
         {
@@ -39,8 +39,6 @@ public partial class Basic
                 {ex}
                 """);
         }
-
-        return this;
     }
 
     public FileWatcher CreateFileWatcher(string filePath)

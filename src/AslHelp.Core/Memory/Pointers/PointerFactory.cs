@@ -19,7 +19,7 @@ public class PointerFactory
         return new(_manager, baseOffset, offsets);
     }
 
-    public Pointer<T> Make<T>(PointerBase<nint> parent, int firstOffset, params int[] offsets) where T : unmanaged
+    public Pointer<T> Make<T>(IPointer<nint> parent, int firstOffset, params int[] offsets) where T : unmanaged
     {
         return new(_manager, parent, firstOffset, offsets);
     }
