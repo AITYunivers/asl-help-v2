@@ -1,7 +1,7 @@
 ﻿using AslHelp.Core.Exceptions;
 using AslHelp.Core.Memory.IO;
 
-namespace AslHelp.Core.Memory.Pointers;
+namespace AslHelp.Core.Memory.Pointers.Manufacturing;
 
 public class PointerFactory
 {

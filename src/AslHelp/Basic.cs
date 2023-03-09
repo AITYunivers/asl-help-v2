@@ -1,5 +1,4 @@
 ﻿using AslHelp.Core.Helping;
-using AslHelp.Core.Memory.Pointers;
 using AslHelp.Core.Reflection;
 
 public partial class Basic
