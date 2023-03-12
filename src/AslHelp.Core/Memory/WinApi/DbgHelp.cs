@@ -72,7 +72,7 @@ internal static unsafe partial class WinApi
         void* hProcess,
         ulong BaseOfDll,
         ushort* Mask,
-        void* EnumSymbolsCallback,
+        delegate* unmanaged[Stdcall]<SYMBOL_INFOW*, uint, void*, int> EnumSymbolsCallback,
         void* UserContext);
 
     /// <summary>
