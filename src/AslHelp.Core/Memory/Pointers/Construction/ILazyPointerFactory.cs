@@ -1,7 +1,6 @@
-﻿using AslHelp.Core.Memory.IO;
-using LiveSplit.ComponentUtil;
+﻿using LiveSplit.ComponentUtil;
 
-namespace AslHelp.Core.Memory.Pointers.Manufacturing;
+namespace AslHelp.Core.Memory.Pointers.Construction;
 
 public interface ILazyPointerFactory
 {
@@ -34,33 +33,9 @@ public interface ILazyPointerFactory
     ILazyPointerFactory MakeString(int length, nint baseAddress, params int[] offsets);
     ILazyPointerFactory MakeString(ReadStringType stringType, nint baseAddress, params int[] offsets);
     ILazyPointerFactory MakeString(int length, ReadStringType stringType, nint baseAddress, params int[] offsets);
-}
 
-public interface IParentState
-{
-    IParentState MakeParent();
-    IChildState MakeChild();
-}
-
-public interface IChildState
-{
-    IChildOrNext MakeChild();
-}
-
-public interface IChildOrNext
-    : ILazyPointerFactory,
-    IChildState
-{ }
-
-public class LazyPointerFactory
-{
-    private readonly List<Func<IMemoryManager, IPointer>> _makers = new();
-
-    public LazyPointerFactory Make<T>(string module, int baseOffset, params int[] offsets)
-        where T : unmanaged
-    {
-        _makers.Add(manager => new Pointer<T>(manager, manager.Modules[module].Base + baseOffset, offsets));
-
-        return this;
-    }
+    IParentStage MakeParent(int baseOffset, params int[] offsets);
+    IParentStage MakeParent(string module, int baseOffset, params int[] offsets);
+    IParentStage MakeParent(Module module, int baseOffset, params int[] offsets);
+    IParentStage MakeParent(nint baseAddress, params int[] offsets);
 }

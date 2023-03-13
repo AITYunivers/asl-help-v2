@@ -232,10 +232,6 @@ dotnet_naming_rule.public_static_fields_should_be_pascalcase.severity = warning
 dotnet_naming_rule.public_static_fields_should_be_pascalcase.symbols  = public_static_fields
 dotnet_naming_rule.public_static_fields_should_be_pascalcase.style    = pascalcase
 
-dotnet_naming_rule.private_static_fields_should_be__camelcase.severity = warning
-dotnet_naming_rule.private_static_fields_should_be__camelcase.symbols  = private_static_fields
-dotnet_naming_rule.private_static_fields_should_be__camelcase.style    = _camelcase
-
 dotnet_naming_rule.public_fields_should_be_pascalcase.severity = warning
 dotnet_naming_rule.public_fields_should_be_pascalcase.symbols  = public_fields
 dotnet_naming_rule.public_fields_should_be_pascalcase.style    = pascalcase
@@ -285,10 +281,6 @@ dotnet_naming_symbols.constant_fields.required_modifiers         = const
 dotnet_naming_symbols.public_static_fields.applicable_kinds           = field
 dotnet_naming_symbols.public_static_fields.applicable_accessibilities = public, internal
 dotnet_naming_symbols.public_static_fields.required_modifiers         = static
-
-dotnet_naming_symbols.private_static_fields.applicable_kinds           = field
-dotnet_naming_symbols.private_static_fields.applicable_accessibilities = private, protected, protected_internal, private_protected
-dotnet_naming_symbols.private_static_fields.required_modifiers         = static
 
 dotnet_naming_symbols.public_fields.applicable_kinds           = field
 dotnet_naming_symbols.public_fields.applicable_accessibilities = public, internal
