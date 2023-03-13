@@ -8,8 +8,8 @@ public sealed class StringPointer : PointerBase<string>
     private readonly int _length;
     private readonly ReadStringType _stringType;
 
-    public StringPointer(IMemoryManager manager, int length, ReadStringType stringType, nint @base, params int[] offsets)
-        : base(manager, @base, offsets)
+    public StringPointer(IMemoryManager manager, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
+        : base(manager, baseAddress, offsets)
     {
         _length = length;
         _stringType = stringType;

@@ -4,8 +4,8 @@ namespace AslHelp.Core.Memory.Pointers;
 
 public sealed class Pointer<T> : PointerBase<T> where T : unmanaged
 {
-    public Pointer(IMemoryManager manager, nint @base, params int[] offsets)
-        : base(manager, @base, offsets) { }
+    public Pointer(IMemoryManager manager, nint baseAddress, params int[] offsets)
+        : base(manager, baseAddress, offsets) { }
 
     public Pointer(IMemoryManager manager, IPointer<nint> parent, int firstOffset, params int[] offsets)
         : base(manager, parent, firstOffset, offsets) { }

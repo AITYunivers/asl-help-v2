@@ -4,6 +4,7 @@ using AslHelp.Core.Extensions;
 using AslHelp.Core.IO.Logging;
 using CommunityToolkit.HighPerformance.Buffers;
 using LiveSplit.ComponentUtil;
+
 using ArrayPoolExtensions = AslHelp.Core.Extensions.ArrayPoolExtensions;
 
 namespace AslHelp.Core.Memory.IO;

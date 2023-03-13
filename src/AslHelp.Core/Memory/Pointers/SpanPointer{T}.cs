@@ -6,8 +6,8 @@ public sealed class SpanPointer<T> : PointerBase<T[]> where T : unmanaged
 {
     private readonly int _length;
 
-    public SpanPointer(IMemoryManager manager, int length, nint @base, params int[] offsets)
-        : base(manager, @base, offsets)
+    public SpanPointer(IMemoryManager manager, int length, nint baseAddress, params int[] offsets)
+        : base(manager, baseAddress, offsets)
     {
         _length = length;
     }

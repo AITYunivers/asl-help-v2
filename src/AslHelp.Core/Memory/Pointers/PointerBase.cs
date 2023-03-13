@@ -10,19 +10,19 @@ public abstract class PointerBase<T> : IPointer<T>
     private readonly IPointer<nint> _parent;
     private readonly int _baseOffset;
 
-    private readonly nint _base;
+    private readonly nint _baseAddress;
     private readonly int[] _offsets;
 
     private uint _tick;
 
-    public PointerBase(IMemoryManager manager, nint @base, params int[] offsets)
+    public PointerBase(IMemoryManager manager, nint baseAddress, params int[] offsets)
     {
         ThrowHelper.ThrowIfNull(manager);
         ThrowHelper.ThrowIfNull(offsets);
 
         _manager = manager;
 
-        _base = @base;
+        _baseAddress = baseAddress;
         _offsets = offsets;
 
         _old = Default;
@@ -102,7 +102,7 @@ public abstract class PointerBase<T> : IPointer<T>
         {
             if (_parent is null)
             {
-                return _manager.Deref(_base, _offsets);
+                return _manager.Deref(_baseAddress, _offsets);
             }
             else
             {
@@ -150,6 +150,6 @@ public abstract class PointerBase<T> : IPointer<T>
 
     protected string OffsetsToString()
     {
-        return $"0x{_base.ToString("X")}, {string.Join(", ", _offsets.Select(o => $"0x{o:X}"))}";
+        return $"0x{_baseAddress.ToString("X")}, {string.Join(", ", _offsets.Select(o => $"0x{o:X}"))}";
     }
 }
