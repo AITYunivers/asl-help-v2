@@ -57,8 +57,4 @@
     <EmbeddedResource Include="..\AslHelp.Native\bin\Release\Win32\AslHelp.Native.dll" Link="Native.x86.dll" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Memory\Pointers\Commands\" />
-  </ItemGroup>
-
 </Project>
