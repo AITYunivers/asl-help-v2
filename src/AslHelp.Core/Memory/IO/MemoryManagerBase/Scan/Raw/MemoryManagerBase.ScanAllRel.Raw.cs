@@ -12,14 +12,14 @@ public abstract partial class MemoryManagerBase
         return ScanAll(offset, pattern).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nint> ScanAllRel(string module, int offset, params string[] pattern)
+    public IEnumerable<nint> ScanAllRel(string moduleName, int offset, params string[] pattern)
     {
-        return ScanAll(module, offset, pattern).Select(FromAssemblyAddress);
+        return ScanAll(moduleName, offset, pattern).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nint> ScanAllRel(string module, int offset, params byte[] pattern)
+    public IEnumerable<nint> ScanAllRel(string moduleName, int offset, params byte[] pattern)
     {
-        return ScanAll(module, offset, pattern).Select(FromAssemblyAddress);
+        return ScanAll(moduleName, offset, pattern).Select(FromAssemblyAddress);
     }
 
     public IEnumerable<nint> ScanAllRel(Module module, int offset, params string[] pattern)

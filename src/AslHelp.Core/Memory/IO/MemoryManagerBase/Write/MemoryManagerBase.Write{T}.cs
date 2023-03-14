@@ -7,9 +7,9 @@ public abstract partial class MemoryManagerBase
         return Write<T>(value, MainModule, baseOffset, offsets);
     }
 
-    public bool Write<T>(T value, string module, int baseOffset, params int[] offsets) where T : unmanaged
+    public bool Write<T>(T value, string moduleName, int baseOffset, params int[] offsets) where T : unmanaged
     {
-        return Write<T>(value, Modules[module], baseOffset, offsets);
+        return Write<T>(value, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool Write<T>(T value, Module module, int baseOffset, params int[] offsets) where T : unmanaged

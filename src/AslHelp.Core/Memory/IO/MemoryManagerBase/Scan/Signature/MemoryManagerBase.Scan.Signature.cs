@@ -12,14 +12,14 @@ public abstract partial class MemoryManagerBase
         return ScanAll(signature, size, alignment).FirstOrDefault();
     }
 
-    public nint Scan(Signature signature, string module, int alignment = 1)
+    public nint Scan(Signature signature, string moduleName, int alignment = 1)
     {
-        return ScanAll(signature, module, alignment).FirstOrDefault();
+        return ScanAll(signature, moduleName, alignment).FirstOrDefault();
     }
 
-    public nint Scan(Signature signature, string module, int size, int alignment = 1)
+    public nint Scan(Signature signature, string moduleName, int size, int alignment = 1)
     {
-        return ScanAll(signature, module, size, alignment).FirstOrDefault();
+        return ScanAll(signature, moduleName, size, alignment).FirstOrDefault();
     }
 
     public nint Scan(Signature signature, Module module, int alignment = 1)

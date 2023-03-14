@@ -12,14 +12,14 @@ public abstract partial class MemoryManagerBase
         return ScanAll(MainModule, offset, pattern);
     }
 
-    public IEnumerable<nint> ScanAll(string module, int offset, params string[] pattern)
+    public IEnumerable<nint> ScanAll(string moduleName, int offset, params string[] pattern)
     {
-        return ScanAll(Modules[module], offset, pattern);
+        return ScanAll(Modules[moduleName], offset, pattern);
     }
 
-    public IEnumerable<nint> ScanAll(string module, int offset, params byte[] pattern)
+    public IEnumerable<nint> ScanAll(string moduleName, int offset, params byte[] pattern)
     {
-        return ScanAll(Modules[module], offset, pattern);
+        return ScanAll(Modules[moduleName], offset, pattern);
     }
 
     public IEnumerable<nint> ScanAll(Module module, int offset, params string[] pattern)

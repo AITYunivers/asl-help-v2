@@ -19,14 +19,14 @@ public abstract partial class MemoryManagerBase
         return success;
     }
 
-    public bool WriteSpan<T>(ICollection<T> values, string module, int baseOffset, params int[] offsets) where T : unmanaged
+    public bool WriteSpan<T>(ICollection<T> values, string moduleName, int baseOffset, params int[] offsets) where T : unmanaged
     {
         int count = values.Count;
 
         T[] rented = ArrayPoolExtensions.Rent<T>(count);
         values.CopyTo(rented, 0);
 
-        bool success = WriteSpan<T>(rented.AsSpan(0, count), Modules[module], baseOffset, offsets);
+        bool success = WriteSpan<T>(rented.AsSpan(0, count), Modules[moduleName], baseOffset, offsets);
 
         ArrayPoolExtensions.Return(rented);
 
@@ -67,10 +67,10 @@ public abstract partial class MemoryManagerBase
         return WriteSpan<T>(new ReadOnlySpan<T>(items, 0, size), MainModule, baseOffset, offsets);
     }
 
-    public bool WriteSpan<T>(List<T> values, string module, int baseOffset, params int[] offsets) where T : unmanaged
+    public bool WriteSpan<T>(List<T> values, string moduleName, int baseOffset, params int[] offsets) where T : unmanaged
     {
         (T[] items, int size) = Emissions<T>.GetBackingArray(values);
-        return WriteSpan<T>(new ReadOnlySpan<T>(items, 0, size), Modules[module], baseOffset, offsets);
+        return WriteSpan<T>(new ReadOnlySpan<T>(items, 0, size), Modules[moduleName], baseOffset, offsets);
     }
 
     public bool WriteSpan<T>(List<T> values, Module module, int baseOffset, params int[] offsets) where T : unmanaged
@@ -90,9 +90,9 @@ public abstract partial class MemoryManagerBase
         return WriteSpan<T>(values.AsSpan(), MainModule, baseOffset, offsets);
     }
 
-    public bool WriteSpan<T>(T[] values, string module, int baseOffset, params int[] offsets) where T : unmanaged
+    public bool WriteSpan<T>(T[] values, string moduleName, int baseOffset, params int[] offsets) where T : unmanaged
     {
-        return WriteSpan<T>(values.AsSpan(), Modules[module], baseOffset, offsets);
+        return WriteSpan<T>(values.AsSpan(), Modules[moduleName], baseOffset, offsets);
     }
 
     public bool WriteSpan<T>(T[] values, Module module, int baseOffset, params int[] offsets) where T : unmanaged
@@ -110,9 +110,9 @@ public abstract partial class MemoryManagerBase
         return WriteSpan<T>(values, MainModule, baseOffset, offsets);
     }
 
-    public bool WriteSpan<T>(ReadOnlySpan<T> values, string module, int baseOffset, params int[] offsets) where T : unmanaged
+    public bool WriteSpan<T>(ReadOnlySpan<T> values, string moduleName, int baseOffset, params int[] offsets) where T : unmanaged
     {
-        return WriteSpan<T>(values, Modules[module], baseOffset, offsets);
+        return WriteSpan<T>(values, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool WriteSpan<T>(ReadOnlySpan<T> values, Module module, int baseOffset, params int[] offsets) where T : unmanaged

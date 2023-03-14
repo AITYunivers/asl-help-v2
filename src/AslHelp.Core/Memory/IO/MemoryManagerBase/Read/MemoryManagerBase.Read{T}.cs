@@ -8,9 +8,9 @@ public abstract partial class MemoryManagerBase
         return result;
     }
 
-    public T Read<T>(string module, int baseOffset, params int[] offsets) where T : unmanaged
+    public T Read<T>(string moduleName, int baseOffset, params int[] offsets) where T : unmanaged
     {
-        _ = TryRead<T>(out T result, Modules[module], baseOffset, offsets);
+        _ = TryRead<T>(out T result, Modules[moduleName], baseOffset, offsets);
         return result;
     }
 
@@ -31,9 +31,9 @@ public abstract partial class MemoryManagerBase
         return TryRead<T>(out result, MainModule, baseOffset, offsets);
     }
 
-    public bool TryRead<T>(out T result, string module, int baseOffset, params int[] offsets) where T : unmanaged
+    public bool TryRead<T>(out T result, string moduleName, int baseOffset, params int[] offsets) where T : unmanaged
     {
-        return TryRead<T>(out result, Modules[module], baseOffset, offsets);
+        return TryRead<T>(out result, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool TryRead<T>(out T result, Module module, int baseOffset, params int[] offsets) where T : unmanaged

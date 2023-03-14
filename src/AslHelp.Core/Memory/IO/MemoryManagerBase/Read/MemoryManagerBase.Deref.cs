@@ -8,9 +8,9 @@ public abstract partial class MemoryManagerBase
         return result;
     }
 
-    public nint Deref(string module, int baseOffset, params int[] offsets)
+    public nint Deref(string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryDeref(out nint result, Modules[module], baseOffset, offsets);
+        _ = TryDeref(out nint result, Modules[moduleName], baseOffset, offsets);
         return result;
     }
 
@@ -31,9 +31,9 @@ public abstract partial class MemoryManagerBase
         return TryDeref(out result, MainModule, baseOffset, offsets);
     }
 
-    public bool TryDeref(out nint result, string module, int baseOffset, params int[] offsets)
+    public bool TryDeref(out nint result, string moduleName, int baseOffset, params int[] offsets)
     {
-        return TryDeref(out result, Modules[module], baseOffset, offsets);
+        return TryDeref(out result, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool TryDeref(out nint result, Module module, int baseOffset, params int[] offsets)

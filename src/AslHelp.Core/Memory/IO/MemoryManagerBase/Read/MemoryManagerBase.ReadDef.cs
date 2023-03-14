@@ -10,9 +10,9 @@ public abstract partial class MemoryManagerBase
         return result;
     }
 
-    public dynamic ReadDef(ITypeDefinition definition, string module, int baseOffset, params int[] offsets)
+    public dynamic ReadDef(ITypeDefinition definition, string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadDef(definition, out dynamic result, Modules[module], baseOffset, offsets);
+        _ = TryReadDef(definition, out dynamic result, Modules[moduleName], baseOffset, offsets);
         return result;
     }
 
@@ -33,9 +33,9 @@ public abstract partial class MemoryManagerBase
         return TryReadDef(definition, out result, MainModule, baseOffset, offsets);
     }
 
-    public bool TryReadDef(ITypeDefinition definition, out dynamic result, string module, int baseOffset, params int[] offsets)
+    public bool TryReadDef(ITypeDefinition definition, out dynamic result, string moduleName, int baseOffset, params int[] offsets)
     {
-        return TryReadDef(definition, out result, Modules[module], baseOffset, offsets);
+        return TryReadDef(definition, out result, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool TryReadDef(ITypeDefinition definition, out dynamic result, Module module, int baseOffset, params int[] offsets)

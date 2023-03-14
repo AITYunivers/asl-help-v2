@@ -12,14 +12,14 @@ public abstract partial class MemoryManagerBase
         return ScanAllRel(offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanRel(string module, int offset, params string[] pattern)
+    public nint ScanRel(string moduleName, int offset, params string[] pattern)
     {
-        return ScanAllRel(module, offset, pattern).FirstOrDefault();
+        return ScanAllRel(moduleName, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanRel(string module, int offset, params byte[] pattern)
+    public nint ScanRel(string moduleName, int offset, params byte[] pattern)
     {
-        return ScanAllRel(module, offset, pattern).FirstOrDefault();
+        return ScanAllRel(moduleName, offset, pattern).FirstOrDefault();
     }
 
     public nint ScanRel(Module module, int offset, params string[] pattern)

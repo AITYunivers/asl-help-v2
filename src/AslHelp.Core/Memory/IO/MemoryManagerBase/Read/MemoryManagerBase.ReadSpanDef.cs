@@ -12,10 +12,10 @@ public abstract partial class MemoryManagerBase
         return results;
     }
 
-    public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, string module, int baseOffset, params int[] offsets)
+    public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, string moduleName, int baseOffset, params int[] offsets)
     {
         dynamic[] results = new dynamic[length];
-        _ = TryReadSpanDef(definition, results, Modules[module], baseOffset, offsets);
+        _ = TryReadSpanDef(definition, results, Modules[moduleName], baseOffset, offsets);
 
         return results;
     }
@@ -42,10 +42,10 @@ public abstract partial class MemoryManagerBase
         return TryReadSpanDef(definition, results, MainModule, baseOffset, offsets);
     }
 
-    public bool TryReadSpanDef(ITypeDefinition definition, out dynamic[] results, int length, string module, int baseOffset, params int[] offsets)
+    public bool TryReadSpanDef(ITypeDefinition definition, out dynamic[] results, int length, string moduleName, int baseOffset, params int[] offsets)
     {
         results = new dynamic[length];
-        return TryReadSpanDef(definition, results, Modules[module], baseOffset, offsets);
+        return TryReadSpanDef(definition, results, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool TryReadSpanDef(ITypeDefinition definition, out dynamic[] results, int length, Module module, int baseOffset, params int[] offsets)
@@ -65,9 +65,9 @@ public abstract partial class MemoryManagerBase
         return TryReadSpanDef(definition, buffer, MainModule, baseOffset, offsets);
     }
 
-    public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, string module, int baseOffset, params int[] offsets)
+    public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, string moduleName, int baseOffset, params int[] offsets)
     {
-        return TryReadSpanDef(definition, buffer, Modules[module], baseOffset, offsets);
+        return TryReadSpanDef(definition, buffer, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, Module module, int baseOffset, params int[] offsets)

@@ -16,15 +16,15 @@ public abstract partial class MemoryManagerBase
         return result;
     }
 
-    public string ReadSizedString(string module, int baseOffset, params int[] offsets)
+    public string ReadSizedString(string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, MaxLength, ReadStringType.AutoDetect, Modules[module], baseOffset, offsets);
+        _ = TryReadString(out string result, MaxLength, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
         return result;
     }
 
-    public string ReadSizedString(ReadStringType stringType, string module, int baseOffset, params int[] offsets)
+    public string ReadSizedString(ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, MaxLength, stringType, Modules[module], baseOffset, offsets);
+        _ = TryReadString(out string result, MaxLength, stringType, Modules[moduleName], baseOffset, offsets);
         return result;
     }
 
@@ -62,14 +62,14 @@ public abstract partial class MemoryManagerBase
         return TryReadString(out result, MaxLength, stringType, MainModule, baseOffset, offsets);
     }
 
-    public bool TryReadSizedString(out string result, string module, int baseOffset, params int[] offsets)
+    public bool TryReadSizedString(out string result, string moduleName, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, MaxLength, ReadStringType.AutoDetect, Modules[module], baseOffset, offsets);
+        return TryReadString(out result, MaxLength, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool TryReadSizedString(out string result, ReadStringType stringType, string module, int baseOffset, params int[] offsets)
+    public bool TryReadSizedString(out string result, ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, MaxLength, stringType, Modules[module], baseOffset, offsets);
+        return TryReadString(out result, MaxLength, stringType, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool TryReadSizedString(out string result, Module module, int baseOffset, params int[] offsets)

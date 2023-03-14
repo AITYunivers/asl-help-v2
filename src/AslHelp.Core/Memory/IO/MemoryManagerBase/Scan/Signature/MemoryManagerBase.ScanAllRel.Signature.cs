@@ -12,14 +12,14 @@ public abstract partial class MemoryManagerBase
         return ScanAll(signature, size, alignment).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nint> ScanAllRel(Signature signature, string module, int alignment = 1)
+    public IEnumerable<nint> ScanAllRel(Signature signature, string moduleName, int alignment = 1)
     {
-        return ScanAll(signature, module, alignment).Select(FromAssemblyAddress);
+        return ScanAll(signature, moduleName, alignment).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nint> ScanAllRel(Signature signature, string module, int size, int alignment = 1)
+    public IEnumerable<nint> ScanAllRel(Signature signature, string moduleName, int size, int alignment = 1)
     {
-        return ScanAll(signature, module, size, alignment).Select(FromAssemblyAddress);
+        return ScanAll(signature, moduleName, size, alignment).Select(FromAssemblyAddress);
     }
 
     public IEnumerable<nint> ScanAllRel(Signature signature, Module module, int alignment = 1)

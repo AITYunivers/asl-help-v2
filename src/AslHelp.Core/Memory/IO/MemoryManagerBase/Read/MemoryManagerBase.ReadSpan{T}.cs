@@ -10,10 +10,10 @@ public abstract partial class MemoryManagerBase
         return results;
     }
 
-    public T[] ReadSpan<T>(int length, string module, int baseOffset, params int[] offsets) where T : unmanaged
+    public T[] ReadSpan<T>(int length, string moduleName, int baseOffset, params int[] offsets) where T : unmanaged
     {
         T[] results = new T[length];
-        _ = TryReadSpan<T>(results, Modules[module], baseOffset, offsets);
+        _ = TryReadSpan<T>(results, Modules[moduleName], baseOffset, offsets);
 
         return results;
     }
@@ -40,10 +40,10 @@ public abstract partial class MemoryManagerBase
         return TryReadSpan<T>(results, MainModule, baseOffset, offsets);
     }
 
-    public bool TryReadSpan<T>(out T[] results, int length, string module, int baseOffset, params int[] offsets) where T : unmanaged
+    public bool TryReadSpan<T>(out T[] results, int length, string moduleName, int baseOffset, params int[] offsets) where T : unmanaged
     {
         results = new T[length];
-        return TryReadSpan<T>(results, Modules[module], baseOffset, offsets);
+        return TryReadSpan<T>(results, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool TryReadSpan<T>(out T[] results, int length, Module module, int baseOffset, params int[] offsets) where T : unmanaged
@@ -63,9 +63,9 @@ public abstract partial class MemoryManagerBase
         return TryReadSpan<T>(buffer, MainModule, baseOffset, offsets);
     }
 
-    public bool TryReadSpan<T>(Span<T> buffer, string module, int baseOffset, params int[] offsets) where T : unmanaged
+    public bool TryReadSpan<T>(Span<T> buffer, string moduleName, int baseOffset, params int[] offsets) where T : unmanaged
     {
-        return TryReadSpan<T>(buffer, Modules[module], baseOffset, offsets);
+        return TryReadSpan<T>(buffer, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool TryReadSpan<T>(Span<T> buffer, Module module, int baseOffset, params int[] offsets) where T : unmanaged

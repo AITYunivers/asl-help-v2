@@ -30,27 +30,27 @@ public abstract partial class MemoryManagerBase
         return result;
     }
 
-    public string ReadString(string module, int baseOffset, params int[] offsets)
+    public string ReadString(string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, MaxLength, ReadStringType.AutoDetect, Modules[module], baseOffset, offsets);
+        _ = TryReadString(out string result, MaxLength, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
         return result;
     }
 
-    public string ReadString(int length, string module, int baseOffset, params int[] offsets)
+    public string ReadString(int length, string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, length, ReadStringType.AutoDetect, Modules[module], baseOffset, offsets);
+        _ = TryReadString(out string result, length, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
         return result;
     }
 
-    public string ReadString(ReadStringType stringType, string module, int baseOffset, params int[] offsets)
+    public string ReadString(ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, MaxLength, stringType, Modules[module], baseOffset, offsets);
+        _ = TryReadString(out string result, MaxLength, stringType, Modules[moduleName], baseOffset, offsets);
         return result;
     }
 
-    public string ReadString(int length, ReadStringType stringType, string module, int baseOffset, params int[] offsets)
+    public string ReadString(int length, ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, length, stringType, Modules[module], baseOffset, offsets);
+        _ = TryReadString(out string result, length, stringType, Modules[moduleName], baseOffset, offsets);
         return result;
     }
 
@@ -122,24 +122,24 @@ public abstract partial class MemoryManagerBase
         return TryReadString(out result, length, stringType, MainModule, baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, string module, int baseOffset, params int[] offsets)
+    public bool TryReadString(out string result, string moduleName, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, MaxLength, ReadStringType.AutoDetect, Modules[module], baseOffset, offsets);
+        return TryReadString(out result, MaxLength, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, int length, string module, int baseOffset, params int[] offsets)
+    public bool TryReadString(out string result, int length, string moduleName, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, length, ReadStringType.AutoDetect, Modules[module], baseOffset, offsets);
+        return TryReadString(out result, length, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, ReadStringType stringType, string module, int baseOffset, params int[] offsets)
+    public bool TryReadString(out string result, ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, MaxLength, stringType, Modules[module], baseOffset, offsets);
+        return TryReadString(out result, MaxLength, stringType, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, int length, ReadStringType stringType, string module, int baseOffset, params int[] offsets)
+    public bool TryReadString(out string result, int length, ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, length, stringType, Modules[module], baseOffset, offsets);
+        return TryReadString(out result, length, stringType, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool TryReadString(out string result, Module module, int baseOffset, params int[] offsets)

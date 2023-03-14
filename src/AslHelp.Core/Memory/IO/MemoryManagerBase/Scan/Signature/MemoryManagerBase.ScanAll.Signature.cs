@@ -14,14 +14,14 @@ public abstract partial class MemoryManagerBase
         return ScanAll(signature, MainModule, size, alignment);
     }
 
-    public IEnumerable<nint> ScanAll(Signature signature, string module, int alignment = 1)
+    public IEnumerable<nint> ScanAll(Signature signature, string moduleName, int alignment = 1)
     {
-        return ScanAll(signature, Modules[module], alignment);
+        return ScanAll(signature, Modules[moduleName], alignment);
     }
 
-    public IEnumerable<nint> ScanAll(Signature signature, string module, int size, int alignment = 1)
+    public IEnumerable<nint> ScanAll(Signature signature, string moduleName, int size, int alignment = 1)
     {
-        return ScanAll(signature, Modules[module], size, alignment);
+        return ScanAll(signature, Modules[moduleName], size, alignment);
     }
 
     public IEnumerable<nint> ScanAll(Signature signature, Module module, int alignment = 1)
