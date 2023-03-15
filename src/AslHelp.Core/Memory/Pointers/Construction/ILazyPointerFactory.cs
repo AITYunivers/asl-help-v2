@@ -2,5 +2,5 @@
 
 public interface ILazyPointerFactory
 {
-
+    ILazyPointerFactory MakeParent(nint baseAddress, params int[] offsets);
 }
