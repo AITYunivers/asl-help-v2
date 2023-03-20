@@ -4,19 +4,27 @@ namespace AslHelp.Core.Memory.Pointers.Construction.Commands;
 
 internal interface IMakePointerCommand
 {
-    IMakePointerCommand Parent { get; set; }
     IPointer Result { get; }
 
-    bool TryExecute(IMemoryManager manager, out IPointer pointer);
+    bool TryExecute(IMemoryManager manager);
+}
+
+internal sealed class PointerCommand
+{
+    public static PointerCommand Make<T>(nint baseAddress, int[] offsets)
+    {
+
+    }
 }
 
 internal abstract class MakePointerCommandBase
     : IMakePointerCommand
 {
-    protected readonly IBaseAddressResolver _resolver;
-    protected readonly int[] _offsets;
+    private readonly IBaseAddressResolver _resolver;
+    private readonly IMakePointerCommand _parent;
 
-    protected readonly IMakePointerCommand _parent;
+    protected readonly int _firstOffset;
+    protected readonly int[] _offsets;
 
     public MakePointerCommandBase(nint baseAddress, int[] offsets)
     {
@@ -42,15 +50,40 @@ internal abstract class MakePointerCommandBase
         _offsets = offsets;
     }
 
-    public MakePointerCommandBase(IMakePointerCommand parent, int[] offsets)
+    public MakePointerCommandBase(IMakePointerCommand parent, int firstOffset, int[] offsets)
     {
         _parent = parent;
+        _firstOffset = firstOffset;
         _offsets = offsets;
     }
 
     public IPointer Result { get; protected set; }
 
-    public abstract bool TryExecute(IMemoryManager manager, out IPointer pointer);
+    protected abstract IPointer Make(IMemoryManager manager, nint baseAddress);
+    protected abstract IPointer MakeFromParent(IMemoryManager manager);
+
+    public bool TryExecute(IMemoryManager manager, out IPointer pointer)
+    {
+        if (_parent is not null)
+        {
+            if (_parent.Result is IPointer<nint> parent)
+            {
+                pointer = MakeFromParent(manager, parent);
+                return true;
+            }
+        }
+        else
+        {
+            if (_resolver.TryResolve(manager, out nint baseAddress))
+            {
+                Result = pointer = Make(manager, baseAddress);
+                return true;
+            }
+        }
+
+        pointer = default;
+        return false;
+    }
 }
 
 internal sealed class MakePointerCommand<T>
@@ -69,12 +102,16 @@ internal sealed class MakePointerCommand<T>
     public MakePointerCommand(Module module, int baseOffset, int[] offsets)
         : base(module, baseOffset, offsets) { }
 
-    public override bool TryExecute(IMemoryManager manager, out IPointer pointer)
+    public MakePointerCommand(IMakePointerCommand parent, int firstOffset, int[] offsets)
+        : base(parent, firstOffset, offsets) { }
+
+    protected override IPointer Make(IMemoryManager manager, nint baseAddress)
     {
-        if (!_resolver.TryResolve(manager, out nint baseAddress))
-        {
-            pointer = default;
-            return false;
-        }
+        return new Pointer<T>(manager, baseAddress, _offsets);
+    }
+
+    protected override IPointer MakeFromParent(IMemoryManager manager, IPointer<nint> parent)
+    {
+        return new Pointer<T>(manager, parent, _firstOffset, _offsets);
     }
 }
