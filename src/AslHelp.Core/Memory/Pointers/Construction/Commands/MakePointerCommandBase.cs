@@ -12,8 +12,6 @@ internal abstract class MakePointerCommandBase<TPointer>
     private readonly int _firstOffset;
     private readonly int[] _offsets;
 
-    private IPointer _result;
-
     private string _name;
     private bool _logChange;
     private bool _updateOnFail;
@@ -81,6 +79,10 @@ internal abstract class MakePointerCommandBase<TPointer>
             if (_parent.TryExecute(manager) && _parent.Result is IPointer<nint> parent)
             {
                 Result = MakeFromParent(manager, parent, _firstOffset, _offsets);
+                Result.Name = _name;
+                Result.LogChange = _logChange;
+                Result.UpdateOnFail = _updateOnFail;
+
                 return true;
             }
         }
@@ -89,6 +91,10 @@ internal abstract class MakePointerCommandBase<TPointer>
             if (_resolver.TryResolve(manager, out nint baseAddress))
             {
                 Result = Make(manager, baseAddress, _offsets);
+                Result.Name = _name;
+                Result.LogChange = _logChange;
+                Result.UpdateOnFail = _updateOnFail;
+
                 return true;
             }
         }
