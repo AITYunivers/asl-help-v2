@@ -2,7 +2,9 @@
 
 namespace AslHelp.Core.Memory.Pointers;
 
-public sealed class SpanPointer<T> : PointerBase<T[]> where T : unmanaged
+public sealed class SpanPointer<T>
+    : PointerBase<T[]>
+    where T : unmanaged
 {
     private readonly int _length;
 

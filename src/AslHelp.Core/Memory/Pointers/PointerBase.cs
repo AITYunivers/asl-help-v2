@@ -3,7 +3,8 @@ using AslHelp.Core.Memory.IO;
 
 namespace AslHelp.Core.Memory.Pointers;
 
-public abstract class PointerBase<T> : IPointer<T>
+public abstract class PointerBase<T>
+    : IPointer<T>
 {
     protected readonly IMemoryManager _manager;
 
@@ -29,17 +30,18 @@ public abstract class PointerBase<T> : IPointer<T>
         _current = Default;
     }
 
-    public PointerBase(IMemoryManager manager, IPointer<nint> parent, int nextOffset, params int[] offsets)
+    public PointerBase(IMemoryManager manager, IPointer<nint> parent, int nextOffset, params int[] remainingOffsets)
     {
         ThrowHelper.ThrowIfNull(manager);
         ThrowHelper.ThrowIfNull(parent);
-        ThrowHelper.ThrowIfNull(offsets);
+        ThrowHelper.ThrowIfLessThan(nextOffset, 0);
+        ThrowHelper.ThrowIfNull(remainingOffsets);
 
         _manager = manager;
 
         _parent = parent;
         _baseOffset = nextOffset;
-        _offsets = offsets;
+        _offsets = remainingOffsets;
 
         _old = Default;
         _current = Default;

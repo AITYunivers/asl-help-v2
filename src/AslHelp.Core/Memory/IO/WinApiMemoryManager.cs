@@ -40,11 +40,14 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
             return true;
         }
 
+        nint handle = _processHandle;
+        int size = PtrSize;
+
         fixed (nint* pResult = &result)
         {
             for (int i = 0; i < offsets.Length; i++)
             {
-                if (!Native.Read(_processHandle, result, pResult, Is64Bit ? 0x8 : 0x4) || result == default)
+                if (!Native.Read(handle, result, pResult, size) || result == default)
                 {
                     result = default;
                     return false;

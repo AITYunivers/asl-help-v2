@@ -56,7 +56,7 @@ internal static partial class ThrowHelper
         }
     }
 
-    public static void ThrowIfNotLargerThan<T>(
+    public static void ThrowIfLessThan<T>(
         T value,
         T min,
         string message = null,
@@ -76,7 +76,7 @@ internal static partial class ThrowHelper
         }
     }
 
-    public static void ThrowIfNotLessThan<T>(
+    public static void ThrowIfLargerThan<T>(
         T value,
         T max,
         string message = null,
@@ -100,10 +100,11 @@ internal static partial class ThrowHelper
         T value,
         T min,
         T max,
+        string message = null,
         [CallerArgumentExpression(nameof(value))] string paramName = null)
         where T : unmanaged, IComparable<T>
     {
-        ThrowIfNotLargerThan(value, min, paramName: paramName);
-        ThrowIfNotLessThan(value, max, paramName: paramName);
+        ThrowIfLessThan(value, min, message, paramName);
+        ThrowIfLargerThan(value, max, message, paramName);
     }
 }

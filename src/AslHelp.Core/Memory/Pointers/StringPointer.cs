@@ -3,7 +3,8 @@ using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.Pointers;
 
-public sealed class StringPointer : PointerBase<string>
+public sealed class StringPointer
+    : PointerBase<string>
 {
     private readonly bool _sized;
     private readonly int _length;
