@@ -12,13 +12,10 @@ public interface IPointer
     bool UpdateOnFail { get; set; }
 
     void Reset();
-    bool Write(object value);
 }
 
 public interface IPointer<T> : IPointer
 {
     new T Current { get; set; }
     new T Old { get; set; }
-
-    bool Write(T value);
 }

@@ -40,7 +40,7 @@ public sealed class SpanPointer<T>
         return true;
     }
 
-    public override bool Write(T[] value)
+    protected override bool Write(T[] value)
     {
         return _manager.WriteSpan(value, Address);
     }

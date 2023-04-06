@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Core.Exceptions;
+﻿using System.Net;
+
+namespace AslHelp.Core.Exceptions;
 
 internal static partial class ThrowHelper
 {

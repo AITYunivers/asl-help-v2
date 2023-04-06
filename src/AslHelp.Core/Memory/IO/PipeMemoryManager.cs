@@ -1,8 +1,8 @@
-﻿using System.IO.Pipes;
-using AslHelp.Core.IO.Logging;
+﻿using AslHelp.Core.IO.Logging;
 using AslHelp.Core.Memory.Pipes;
 using CommunityToolkit.HighPerformance;
 using LiveSplit.ComponentUtil;
+using System.IO.Pipes;
 
 namespace AslHelp.Core.Memory.IO;
 

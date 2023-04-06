@@ -34,6 +34,9 @@ public partial class Basic
         {
             AslHelp.Core.LiveSplitInterop.Timer.Init();
             Script.Init();
+
+            Script.Vars["AslHelp"] = this as IAslHelper;
+            Debug.Info("  => `vars.AslHelp` created!");
         }
         catch (Exception ex)
         {
@@ -60,11 +63,6 @@ public partial class Basic
         }
 
         Debug.Info("  => Generating code...");
-
-#pragma warning disable IDE0004
-        Script.Vars["AslHelp"] = (IAslHelper)this;
-#pragma warning restore IDE0004
-        Debug.Info("    => Created `vars.AslHelp`.");
 
         Script.Vars["Log"] = (Action<object>)(output => _logger.Log(output));
         Debug.Info("    => Created the Action<object> `vars.Log`.");

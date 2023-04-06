@@ -1,13 +1,29 @@
-﻿using System.IO.Pipes;
+﻿using AslHelp.Core.Collections;
+using AslHelp.Core.Exceptions;
 using AslHelp.Core.IO;
 using AslHelp.Core.Memory;
 using AslHelp.Core.Memory.IO;
+using AslHelp.Core.Memory.Models;
 using AslHelp.Core.Memory.Pipes;
+using System.IO.Pipes;
 
 public partial class Basic
 {
     private NamedPipeClientStream _pipe;
     public IMemoryManager Memory { get; private set; }
+
+    public bool Is64Bit => Memory.Is64Bit;
+    public byte PtrSize => Memory.PtrSize;
+
+    public Module MainModule => Memory.MainModule;
+    public ModuleCache Modules => Memory.Modules;
+
+    public IEnumerable<MemoryPage> Pages(bool allPages)
+    {
+        ThrowHelper.ThrowIfNull(Game);
+
+        return Native.MemoryPages(Game.Handle, Is64Bit, allPages);
+    }
 
     private void InitMemory()
     {

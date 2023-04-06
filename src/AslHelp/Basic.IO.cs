@@ -1,4 +1,5 @@
 ﻿using AslHelp.Core.Exceptions;
+using AslHelp.Core.Helping;
 using AslHelp.Core.IO;
 using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;

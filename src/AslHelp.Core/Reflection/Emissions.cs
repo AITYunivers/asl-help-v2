@@ -1,5 +1,5 @@
-﻿using System.Reflection.Emit;
-using LiveSplit.ASL;
+﻿using LiveSplit.ASL;
+using System.Reflection.Emit;
 
 namespace AslHelp.Core.Reflection;
 
