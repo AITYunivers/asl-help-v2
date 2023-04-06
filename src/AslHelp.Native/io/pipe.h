@@ -12,7 +12,24 @@ HANDLE pipe;
 BOOL InitPipe(void);
 BOOL PipeValid(void);
 BOOL ConnectPipe(void);
-BOOL Read(void* buffer, DWORD bufferLen);
-BOOL Write(void* data, DWORD dataLen);
+BOOL ReadValue(void* buffer, DWORD bufferLen);
+BOOL WriteValue(void* data, DWORD dataLen);
 BOOL DisconnectPipe(void);
 BOOL DisposePipe(void);
+
+typedef enum
+{
+    ClosePipe,
+
+    Deref,
+    Read,
+    ReadSpan,
+    Write,
+    WriteSpan
+} PipeRequestCode;
+
+typedef enum
+{
+    Success,
+    Failure
+} PipeResponseCode;

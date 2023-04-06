@@ -138,6 +138,24 @@ public abstract class PointerBase<TOut>
         }
     }
 
+    public IPointer SetName(string name)
+    {
+        Name = name;
+        return this;
+    }
+
+    public IPointer SetLogChange()
+    {
+        LogChange = true;
+        return this;
+    }
+
+    public IPointer SetUpdateOnFail()
+    {
+        UpdateOnFail = true;
+        return this;
+    }
+
     public void Reset()
     {
         _old = Default;

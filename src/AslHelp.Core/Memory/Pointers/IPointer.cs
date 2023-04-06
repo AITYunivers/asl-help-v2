@@ -11,6 +11,10 @@ public interface IPointer
     bool LogChange { get; set; }
     bool UpdateOnFail { get; set; }
 
+    IPointer SetName(string name);
+    IPointer SetLogChange();
+    IPointer SetUpdateOnFail();
+
     void Reset();
 }
 

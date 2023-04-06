@@ -8,10 +8,10 @@ internal static class ResourceManager
     {
         string outputFile = $"{directory}/{resource}";
 
-        if (File.Exists(outputFile))
-        {
-            return outputFile;
-        }
+        //if (File.Exists(outputFile))
+        //{
+        //    return outputFile;
+        //}
 
         using Stream source = GetResourceStream(resource);
         using FileStream destination = File.OpenWrite(outputFile);

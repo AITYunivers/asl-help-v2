@@ -12,8 +12,9 @@ public partial class Basic : IAslHelper
         AppDomain.CurrentDomain.AssemblyResolve -= AssemblyResolve;
 
         TypeDefinitionFactory.Dispose();
-        _logger.DisposeFileLoggers();
+        _logger?.DisposeFileLoggers();
         _logger = null;
+        _memory = null;
 
         for (int i = 0; i < _files.Count; i++)
         {

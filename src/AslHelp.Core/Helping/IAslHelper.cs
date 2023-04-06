@@ -21,6 +21,7 @@ public interface IAslHelper
     SettingsCreator Settings { get; }
 
     IPointer this[string name] { get; set; }
+    void MapPointerValuesToCurrent();
 
     void CreateFileLogger(string filePath, int maxLines, int linesToErase);
     FileWatcher CreateFileWatcher(string filePath);
