@@ -5,13 +5,16 @@ namespace AslHelp.Core.LiveSplitInterop.Settings;
 public sealed partial class SettingsCreator
 {
     [XmlType("Setting")]
-    private record struct XmlSetting(
-        [XmlAttribute] string Id,
-        [XmlAttribute] string State,
-        [XmlAttribute] string Label,
-        [XmlAttribute] string Parent,
-        [XmlAttribute] string ToolTip,
-        [XmlElement("Setting")] XmlSetting[] Children);
+    public struct XmlSetting
+    {
+        [XmlAttribute] public string Id;
+        [XmlAttribute] public string State;
+        [XmlAttribute] public string Label;
+        [XmlAttribute] public string Parent;
+        [XmlAttribute] public string ToolTip;
+
+        [XmlElement("Setting")] public XmlSetting[] Children;
+    }
 
     public SettingsCreator FromXml(string path, bool defaultValue = true, string defaultParent = null)
     {

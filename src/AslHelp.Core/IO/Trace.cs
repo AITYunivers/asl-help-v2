@@ -18,7 +18,7 @@ internal class Trace : IEnumerable<string>
         }
     }
 
-    public bool Any(params string[] methodNames)
+    public bool ContainsAny(params string[] methodNames)
     {
         return this.Any(t => methodNames.Any(m => m.Equals(t, StringComparison.OrdinalIgnoreCase)));
     }

@@ -1,8 +1,9 @@
 ﻿using AslHelp.Core.Memory.IO;
+using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.Pointers;
 
-public sealed class Pointer<T>
+public sealed partial class Pointer<T>
     : PointerBase<T>
     where T : unmanaged
 {

@@ -5,12 +5,11 @@ using AslHelp.Core.Helping;
 using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;
 
-public partial class Basic
+public partial class Basic : IAslHelperInitStage
 {
     private bool _isInitialized;
-    private bool _hasGenerated;
 
-    private void Init()
+    public IAslHelper Init(bool generateCode)
     {
         if (_isInitialized)
         {
@@ -35,8 +34,10 @@ public partial class Basic
             AslHelp.Core.LiveSplitInterop.Timer.Init();
             Script.Init();
 
-            Script.Vars["AslHelp"] = this as IAslHelper;
-            Debug.Info("  => `vars.AslHelp` created!");
+            if (generateCode)
+            {
+                GenerateCode();
+            }
         }
         catch (Exception ex)
         {
@@ -50,26 +51,19 @@ public partial class Basic
         }
 
         Debug.Info("  => Complete.");
-
         _isInitialized = true;
+
+        return this;
     }
 
-    public void GenerateCode()
+    private void GenerateCode()
     {
-        if (_hasGenerated)
-        {
-            string msg = "Code has already been generated.";
-            ThrowHelper.Throw.InvalidOperation(msg);
-        }
-
         Debug.Info("  => Generating code...");
 
         Script.Vars["Log"] = (Action<object>)(output => _logger.Log(output));
         Debug.Info("    => Created the Action<object> `vars.Log`.");
 
         Methods.shutdown.Prepend("vars.AslHelp.Dispose();");
-
-        _hasGenerated = true;
     }
 
     private Assembly AssemblyResolve(object sender, ResolveEventArgs e)

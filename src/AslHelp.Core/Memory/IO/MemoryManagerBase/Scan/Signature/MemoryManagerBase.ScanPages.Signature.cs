@@ -31,7 +31,7 @@ public abstract partial class MemoryManagerBase
 
     public IEnumerable<nint> ScanPagesAll(bool allPages, Signature signature, int alignment = 1)
     {
-        foreach (MemoryPage page in Native.MemoryPages(_processHandle, Is64Bit, allPages))
+        foreach (MemoryPage page in Pages(allPages))
         {
             foreach (nint scanResult in ScanAll(signature, page.Base, page.RegionSize))
             {

@@ -1,21 +1,9 @@
 ﻿using AslHelp.Core.Helping;
 using AslHelp.Core.Reflection;
 
-public partial class Basic
-    : IAslHelper
+public partial class Basic : IAslHelper
 {
-    public Basic()
-        : this(true) { }
-
-    public Basic(bool generateCode)
-    {
-        Init();
-
-        if (generateCode)
-        {
-            GenerateCode();
-        }
-    }
+    public Basic() { }
 
     public void Dispose()
     {
@@ -24,15 +12,16 @@ public partial class Basic
         AppDomain.CurrentDomain.AssemblyResolve -= AssemblyResolve;
 
         TypeDefinitionFactory.Dispose();
-        _logger.DisposeFileLoggers();
+        _logger?.DisposeFileLoggers();
         _logger = null;
+        _memory = null;
 
         for (int i = 0; i < _files.Count; i++)
         {
             _files[i].Dispose();
         }
 
-        bool closing = Debug.Trace.Any(
+        bool closing = Debug.Trace.ContainsAny(
             "TimerForm.TimerForm_FormClosing",
             "TimerForm.OpenLayoutFromFile",
             "TimerForm.LoadDefaultLayout");

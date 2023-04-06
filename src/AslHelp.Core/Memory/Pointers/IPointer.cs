@@ -11,11 +11,15 @@ public interface IPointer
     bool LogChange { get; set; }
     bool UpdateOnFail { get; set; }
 
+    IPointer SetName(string name);
+    IPointer SetLogChange();
+    IPointer SetUpdateOnFail();
+
     void Reset();
 }
 
-public interface IPointer<T> : IPointer
+public interface IPointer<TOut> : IPointer
 {
-    new T Current { get; set; }
-    new T Old { get; set; }
+    new TOut Current { get; set; }
+    new TOut Old { get; set; }
 }

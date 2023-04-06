@@ -29,9 +29,6 @@ public static unsafe class Injector
             return false;
         }
 
-        void* nullPtr = (void*)0;
-        int length = (modulePath.Length + 1) * sizeof(char);
-
         try
         {
             void* hModule;
@@ -53,6 +50,9 @@ public static unsafe class Injector
                     return false;
                 }
             }
+
+            void* nullPtr = (void*)0;
+            int length = (modulePath.Length + 1) * sizeof(char);
 
             void* pModuleAlloc = WinApi.VirtualAllocEx(hProcess, nullPtr, (nuint)length, MemState.MEM_COMMIT | MemState.MEM_RESERVE, MemProtect.PAGE_READWRITE);
             if (pModuleAlloc == null)
@@ -79,7 +79,7 @@ public static unsafe class Injector
             uint exitCode;
             try
             {
-                if (WinApi.WaitForSingleObject(hThread, uint.MaxValue) == 0)
+                if (WinApi.WaitForSingleObject(hThread, uint.MaxValue) != 0)
                 {
                     ThrowHelper.Throw.Win32();
                 }

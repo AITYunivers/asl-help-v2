@@ -1,6 +1,7 @@
 ﻿using AslHelp.Core.Collections;
 using AslHelp.Core.Exceptions;
 using AslHelp.Core.IO.Logging;
+using AslHelp.Core.Memory.Models;
 
 namespace AslHelp.Core.Memory.IO;
 
@@ -38,6 +39,11 @@ public abstract partial class MemoryManagerBase
 
     public Module MainModule { get; }
     public ModuleCache Modules { get; }
+
+    public IEnumerable<MemoryPage> Pages(bool allPages)
+    {
+        return Native.MemoryPages(_processHandle, Is64Bit, allPages);
+    }
 
     public uint Tick { get; private set; }
 

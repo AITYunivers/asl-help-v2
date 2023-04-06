@@ -1,5 +1,4 @@
 ﻿using AslHelp.Core.Exceptions;
-using AslHelp.Core.Helping;
 using AslHelp.Core.IO;
 using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;
@@ -25,24 +24,20 @@ public partial class Basic
             ThrowHelper.Throw.InvalidOperation(msg);
         }
 
-        try
-        {
-            FileLogger logger = new(filePath, maxLines, linesToErase);
-            logger.Start();
+        FileLogger logger = new(filePath, maxLines, linesToErase);
+        logger.Start();
 
-            _logger.Add(logger);
-        }
-        catch (Exception ex)
-        {
-            Debug.Error($"""
-                [IO] Error creating file logger:
-                {ex}
-                """);
-        }
+        _logger.Add(logger);
     }
 
     public FileWatcher CreateFileWatcher(string filePath)
     {
+        if (Methods.CurrentMethod is not "startup" or "init")
+        {
+            string msg = "[IO] Attempted to start a file watcher outside of the 'startup' or 'init' actions.";
+            ThrowHelper.Throw.InvalidOperation(msg);
+        }
+
         FileWatcher watcher = new(filePath);
         _files.Add(watcher);
 

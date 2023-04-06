@@ -1,4 +1,5 @@
 #include "pipe.h"
+#include "console.h"
 
 BOOL InitPipe(void)
 {
@@ -29,7 +30,7 @@ BOOL ConnectPipe(void)
     return ConnectNamedPipe(pipe, NULL);
 }
 
-BOOL Read(void* buffer, DWORD bufferLen)
+BOOL ReadValue(void* buffer, DWORD bufferLen)
 {
     DWORD read;
 
@@ -45,7 +46,7 @@ BOOL Read(void* buffer, DWORD bufferLen)
     return read == bufferLen;
 }
 
-BOOL Write(void* data, DWORD dataLen)
+BOOL WriteValue(void* data, DWORD dataLen)
 {
     DWORD written;
 
@@ -68,5 +69,13 @@ BOOL DisconnectPipe(void)
 
 BOOL DisposePipe(void)
 {
-    return DisconnectPipe() && CloseHandle(pipe);
+    if (DisconnectPipe() && CloseHandle(pipe))
+    {
+        pipe = NULL;
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
 }
