@@ -1,9 +1,4 @@
-﻿using AslHelp.Core.IO;
-using AslHelp.Core.Memory;
-using AslHelp.Core.Memory.IO;
-using AslHelp.Core.Memory.Pipes;
-
-public partial class Basic
+﻿public partial class Basic
 {
     private string _gameName;
     public string GameName

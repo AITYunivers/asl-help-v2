@@ -4,13 +4,21 @@ namespace AslHelp.Core.Memory.Pointers.Construction.Commands;
 
 internal static partial class ResolveBaseAddress
 {
-    public readonly record struct FromModuleName(string ModuleName, int BaseOffset) : IBaseAddressResolver
+    private readonly struct MainModuleResolver
+        : IBaseAddressResolver
     {
+        private readonly int _baseOffset;
+
+        public MainModuleResolver(int baseOffset)
+        {
+            _baseOffset = baseOffset;
+        }
+
         public bool TryResolve(IMemoryManager manager, out nint baseAddress)
         {
-            if (manager.Modules[ModuleName] is { Base: > 0 } module)
+            if (manager.MainModule is { Base: > 0 } module)
             {
-                baseAddress = module.Base + BaseOffset;
+                baseAddress = module.Base + _baseOffset;
                 return true;
             }
             else

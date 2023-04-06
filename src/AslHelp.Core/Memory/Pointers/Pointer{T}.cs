@@ -24,7 +24,7 @@ public sealed class Pointer<T>
         return !old.Equals(current);
     }
 
-    protected override bool Write(T value)
+    public override bool Write(T value)
     {
         return _manager.Write(value, Address);
     }

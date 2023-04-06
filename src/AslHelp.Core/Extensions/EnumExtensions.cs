@@ -1,5 +1,5 @@
-﻿using LiveSplit.ComponentUtil;
-using System.Text;
+﻿using System.Text;
+using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Extensions;
 

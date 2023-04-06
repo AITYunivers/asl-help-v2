@@ -147,8 +147,13 @@ public abstract class PointerBase<T>
 
     protected abstract bool TryUpdate(out T result);
     protected abstract bool CheckChanged(T old, T current);
-    protected abstract bool Write(T value);
+
     public abstract override string ToString();
+    public abstract bool Write(T value);
+    bool IPointer.Write(object value)
+    {
+        return Write((T)value);
+    }
 
     protected string OffsetsToString()
     {

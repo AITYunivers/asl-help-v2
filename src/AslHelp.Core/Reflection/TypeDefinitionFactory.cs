@@ -1,6 +1,6 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System.CodeDom.Compiler;
+using AslHelp.Core.Exceptions;
 using Microsoft.CSharp;
-using System.CodeDom.Compiler;
 
 namespace AslHelp.Core.Reflection;
 
@@ -13,7 +13,7 @@ public static class TypeDefinitionFactory
         CompilerParameters parameters = new()
         {
             GenerateInMemory = true,
-            CompilerOptions = "/optimize"
+            CompilerOptions = "-optimize -unsafe -langversion latest"
         };
 
         parameters.ReferencedAssemblies.AddRange(references);

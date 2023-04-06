@@ -1,4 +1,5 @@
 ﻿using AslHelp.Core.Helping;
+using AslHelp.Core.Memory.Pointers;
 using AslHelp.Core.Reflection;
 
 public partial class Basic
@@ -15,6 +16,12 @@ public partial class Basic
         {
             GenerateCode();
         }
+    }
+
+    public IPointer this[string name]
+    {
+        get => null;
+        set { }
     }
 
     public void Dispose()
