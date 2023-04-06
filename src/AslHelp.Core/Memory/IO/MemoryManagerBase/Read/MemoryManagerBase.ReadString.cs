@@ -4,11 +4,9 @@ namespace AslHelp.Core.Memory.IO;
 
 public abstract partial class MemoryManagerBase
 {
-    private const int MaxLength = 256;
-
     public string ReadString(int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, MaxLength, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
+        _ = TryReadString(out string result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
         return result;
     }
 
@@ -20,7 +18,7 @@ public abstract partial class MemoryManagerBase
 
     public string ReadString(ReadStringType stringType, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, MaxLength, stringType, MainModule, baseOffset, offsets);
+        _ = TryReadString(out string result, AHR.MaxStringReadLength, stringType, MainModule, baseOffset, offsets);
         return result;
     }
 
@@ -32,7 +30,7 @@ public abstract partial class MemoryManagerBase
 
     public string ReadString(string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, MaxLength, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
+        _ = TryReadString(out string result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
         return result;
     }
 
@@ -44,7 +42,7 @@ public abstract partial class MemoryManagerBase
 
     public string ReadString(ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, MaxLength, stringType, Modules[moduleName], baseOffset, offsets);
+        _ = TryReadString(out string result, AHR.MaxStringReadLength, stringType, Modules[moduleName], baseOffset, offsets);
         return result;
     }
 
@@ -56,7 +54,7 @@ public abstract partial class MemoryManagerBase
 
     public string ReadString(Module module, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, MaxLength, ReadStringType.AutoDetect, module, baseOffset, offsets);
+        _ = TryReadString(out string result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, module, baseOffset, offsets);
         return result;
     }
 
@@ -68,7 +66,7 @@ public abstract partial class MemoryManagerBase
 
     public string ReadString(ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, MaxLength, stringType, module, baseOffset, offsets);
+        _ = TryReadString(out string result, AHR.MaxStringReadLength, stringType, module, baseOffset, offsets);
         return result;
     }
 
@@ -80,7 +78,7 @@ public abstract partial class MemoryManagerBase
 
     public string ReadString(nint baseAddress, params int[] offsets)
     {
-        _ = TryReadString(out string result, MaxLength, ReadStringType.AutoDetect, baseAddress, offsets);
+        _ = TryReadString(out string result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, baseAddress, offsets);
         return result;
     }
 
@@ -92,7 +90,7 @@ public abstract partial class MemoryManagerBase
 
     public string ReadString(ReadStringType stringType, nint baseAddress, params int[] offsets)
     {
-        _ = TryReadString(out string result, MaxLength, stringType, baseAddress, offsets);
+        _ = TryReadString(out string result, AHR.MaxStringReadLength, stringType, baseAddress, offsets);
         return result;
     }
 
@@ -104,7 +102,7 @@ public abstract partial class MemoryManagerBase
 
     public bool TryReadString(out string result, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, MaxLength, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
+        return TryReadString(out result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
     }
 
     public bool TryReadString(out string result, int length, int baseOffset, params int[] offsets)
@@ -114,7 +112,7 @@ public abstract partial class MemoryManagerBase
 
     public bool TryReadString(out string result, ReadStringType stringType, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, MaxLength, stringType, MainModule, baseOffset, offsets);
+        return TryReadString(out result, AHR.MaxStringReadLength, stringType, MainModule, baseOffset, offsets);
     }
 
     public bool TryReadString(out string result, int length, ReadStringType stringType, int baseOffset, params int[] offsets)
@@ -124,7 +122,7 @@ public abstract partial class MemoryManagerBase
 
     public bool TryReadString(out string result, string moduleName, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, MaxLength, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
+        return TryReadString(out result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool TryReadString(out string result, int length, string moduleName, int baseOffset, params int[] offsets)
@@ -134,7 +132,7 @@ public abstract partial class MemoryManagerBase
 
     public bool TryReadString(out string result, ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, MaxLength, stringType, Modules[moduleName], baseOffset, offsets);
+        return TryReadString(out result, AHR.MaxStringReadLength, stringType, Modules[moduleName], baseOffset, offsets);
     }
 
     public bool TryReadString(out string result, int length, ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
@@ -144,7 +142,7 @@ public abstract partial class MemoryManagerBase
 
     public bool TryReadString(out string result, Module module, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, MaxLength, ReadStringType.AutoDetect, module, baseOffset, offsets);
+        return TryReadString(out result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
     public bool TryReadString(out string result, int length, Module module, int baseOffset, params int[] offsets)
@@ -154,7 +152,7 @@ public abstract partial class MemoryManagerBase
 
     public bool TryReadString(out string result, ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, MaxLength, stringType, module, baseOffset, offsets);
+        return TryReadString(out result, AHR.MaxStringReadLength, stringType, module, baseOffset, offsets);
     }
 
     public bool TryReadString(out string result, int length, ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
@@ -172,7 +170,7 @@ public abstract partial class MemoryManagerBase
 
     public bool TryReadString(out string result, nint baseAddress, params int[] offsets)
     {
-        return TryReadString(out result, MaxLength, ReadStringType.AutoDetect, baseAddress, offsets);
+        return TryReadString(out result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
     public bool TryReadString(out string result, int length, nint baseAddress, params int[] offsets)
@@ -182,7 +180,7 @@ public abstract partial class MemoryManagerBase
 
     public bool TryReadString(out string result, ReadStringType stringType, nint baseAddress, params int[] offsets)
     {
-        return TryReadString(out result, MaxLength, stringType, baseAddress, offsets);
+        return TryReadString(out result, AHR.MaxStringReadLength, stringType, baseAddress, offsets);
     }
 
     public abstract bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets);

@@ -3,8 +3,8 @@ using AslHelp.Core.Memory.IO;
 
 namespace AslHelp.Core.Memory.Pointers;
 
-public abstract class PointerBase<T>
-    : IPointer<T>
+public abstract class PointerBase<TOut>
+    : IPointer<TOut>
 {
     protected readonly IMemoryManager _manager;
 
@@ -47,15 +47,15 @@ public abstract class PointerBase<T>
         _current = Default;
     }
 
-    protected abstract T Default { get; }
+    protected abstract TOut Default { get; }
 
     public string Name { get; set; }
     public bool Enabled { get; set; } = true;
     public bool LogChange { get; set; }
     public bool UpdateOnFail { get; set; }
 
-    private T _current;
-    public T Current
+    private TOut _current;
+    public TOut Current
     {
         get
         {
@@ -72,11 +72,11 @@ public abstract class PointerBase<T>
     object IPointer.Current
     {
         get => Current;
-        set => Current = (T)value;
+        set => Current = (TOut)value;
     }
 
-    private T _old;
-    public T Old
+    private TOut _old;
+    public TOut Old
     {
         get
         {
@@ -93,7 +93,7 @@ public abstract class PointerBase<T>
     object IPointer.Old
     {
         get => Old;
-        set => Old = (T)value;
+        set => Old = (TOut)value;
     }
 
     public bool Changed => CheckChanged(_old, _current);
@@ -118,7 +118,7 @@ public abstract class PointerBase<T>
         _tick = _manager.Tick;
         _old = _current;
 
-        if (!TryUpdate(out T result))
+        if (!TryUpdate(out TOut result))
         {
             if (!UpdateOnFail)
             {
@@ -145,9 +145,9 @@ public abstract class PointerBase<T>
         _tick = 0;
     }
 
-    protected abstract bool TryUpdate(out T result);
-    protected abstract bool CheckChanged(T old, T current);
-    protected abstract bool Write(T value);
+    protected abstract bool TryUpdate(out TOut result);
+    protected abstract bool CheckChanged(TOut old, TOut current);
+    protected abstract bool Write(TOut value);
     public abstract override string ToString();
 
     protected string OffsetsToString()

@@ -1,9 +1,4 @@
-﻿using AslHelp.Core.IO;
-using AslHelp.Core.Memory;
-using AslHelp.Core.Memory.IO;
-using AslHelp.Core.Memory.Pipes;
-
-public partial class Basic
+﻿public partial class Basic
 {
     private string _gameName;
     public string GameName
@@ -17,11 +12,10 @@ public partial class Basic
     {
         get
         {
-            _game?.Refresh();
-
-            if (_game is null || _game.HasExited)
+            if (_game is null)
             {
                 _game = Script.Game;
+                InitMemory();
             }
 
             return _game;
@@ -30,6 +24,8 @@ public partial class Basic
         {
             _game = value;
             Script.Game = value;
+
+            InitMemory();
         }
     }
 }

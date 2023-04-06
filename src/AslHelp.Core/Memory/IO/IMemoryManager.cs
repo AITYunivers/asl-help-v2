@@ -1,4 +1,5 @@
 ﻿using AslHelp.Core.Collections;
+using AslHelp.Core.Memory.Models;
 
 namespace AslHelp.Core.Memory.IO;
 
@@ -14,6 +15,8 @@ public interface IMemoryManager
 
     Module MainModule { get; }
     ModuleCache Modules { get; }
+
+    IEnumerable<MemoryPage> Pages(bool allPages);
 
     void Update();
     uint Tick { get; }
