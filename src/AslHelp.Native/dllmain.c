@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "io/pipe.h"
 #include "io/console.h"
+#include "memory/operations.h"
 
 DWORD WINAPI ThreadMain(void* lpParameter)
 {
     while (TRUE)
     {
-        if (!PipeValid())
+        if (!PipeIsValid())
         {
             break;
         }
@@ -16,35 +17,37 @@ DWORD WINAPI ThreadMain(void* lpParameter)
             continue;
         }
 
+        InitConsole();
+
         while (TRUE)
         {
             PipeRequestCode code;
-            ReadValue(&code, sizeof(PipeRequestCode));
+            ReadFromPipe(&code, sizeof(PipeRequestCode));
 
             switch (code)
             {
-            case Read: {
-                uint8_t* addr;
-                ReadValue(&addr, sizeof(void*));
+            case PipeDeref: {
+                i64 result;
+                PipeResponseCode code = Deref(&result);
 
-                int offsetsLen;
-                ReadValue(&offsetsLen, sizeof(int));
-
-                int* offsets = (int*)malloc(offsetsLen * sizeof(int));
-                ReadValue(offsets, offsetsLen * sizeof(int));
-
-                for (int i = 0; i < offsetsLen; ++i)
+                WriteToPipe(&code, sizeof(PipeResponseCode));
+                if (code == PipeSuccess)
                 {
-                    addr = (uint8_t*)(*(uintptr_t*)addr + offsets[i]);
+                    WriteToPipe(&result, sizeof(i64));
                 }
 
-                int typeSize;
-                ReadValue(&typeSize, sizeof(int));
+                break;
+            }
+            case PipeRead: {
+                iptr result;
+                i32 size;
+                PipeResponseCode code = ReadValue(&result, &size);
 
-                void* data = *addr;
-                WriteValue(data, typeSize);
-
-                free(offsets);
+                WriteToPipe(&code, sizeof(PipeResponseCode));
+                if (code == PipeSuccess)
+                {
+                    WriteToPipe(result, size);
+                }
 
                 break;
             }

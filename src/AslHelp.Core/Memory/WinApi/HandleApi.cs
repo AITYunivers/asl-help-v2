@@ -12,7 +12,7 @@ internal static unsafe partial class WinApi
     ///     A non-zero value if the function succeeds;
     ///     otherwise, 0.
     /// </returns>
-    [DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
+    [DllImport("kernel32", ExactSpelling = true)]
     public static extern int CloseHandle(
         void* hObject);
 }

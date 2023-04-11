@@ -35,9 +35,12 @@
     <ClCompile Include="dllmain.c" />
     <ClCompile Include="io\console.c" />
     <ClCompile Include="io\pipe.c" />
+    <ClCompile Include="memory\operations.c" />
     <ClInclude Include="io\console.h" />
     <ClInclude Include="io\pipe.h" />
+    <ClInclude Include="memory\operations.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="utils\intdef.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

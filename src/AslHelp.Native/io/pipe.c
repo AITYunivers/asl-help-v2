@@ -3,16 +3,23 @@
 
 BOOL InitPipe(void)
 {
-    pipe = CreateNamedPipe(PIPE_NAME, PIPE_ACCESS_DUPLEX, PIPE_MODE_MESSAGE, PIPE_UNLIMITED_INSTANCES, BUFSIZE, BUFSIZE,
-                           NMPWAIT_USE_DEFAULT_WAIT, NULL);
+    s_pipe = CreateNamedPipe(
+        PIPE_NAME,
+        PIPE_ACCESS_DUPLEX,
+        PIPE_MODE_MESSAGE,
+        PIPE_UNLIMITED_INSTANCES,
+        BUFSIZE,
+        BUFSIZE,
+        NMPWAIT_USE_DEFAULT_WAIT,
+        NULL);
 
-    if (pipe == INVALID_HANDLE_VALUE)
+    if (s_pipe == INVALID_HANDLE_VALUE)
     {
         return FALSE;
     }
 
-    DWORD mode = PIPE_READMODE_MESSAGE;
-    if (!SetNamedPipeHandleState(pipe, &mode, NULL, NULL))
+    u32 mode = PIPE_READMODE_MESSAGE;
+    if (!SetNamedPipeHandleState(s_pipe, &mode, NULL, NULL))
     {
         return FALSE;
     }
@@ -20,58 +27,56 @@ BOOL InitPipe(void)
     return TRUE;
 }
 
-BOOL PipeValid(void)
+bool PipeIsValid(void)
 {
-    return pipe != NULL && pipe != INVALID_HANDLE_VALUE;
+    return s_pipe != NULL && s_pipe != INVALID_HANDLE_VALUE;
 }
 
-BOOL ConnectPipe(void)
+bool ConnectPipe(void)
 {
-    return ConnectNamedPipe(pipe, NULL);
+    return ConnectNamedPipe(s_pipe, NULL);
 }
 
-BOOL ReadValue(void* buffer, DWORD bufferLen)
+bool ReadFromPipe(void* buffer, u32 bufferLen)
 {
-    DWORD read;
-
-    if (!ReadFile(pipe, buffer, bufferLen, &read, NULL))
+    u32 read;
+    if (!ReadFile(s_pipe, buffer, bufferLen, &read, NULL))
     {
         return FALSE;
     }
 
     char msg[256];
-    sprintf_s(msg, 256, "Expected: %d, Read: %d\n", bufferLen, read);
+    sprintf_s(msg, 256, "[PIPE  READ] Expected: %03d,  Read: %03d\n", bufferLen, read);
     Log(msg);
 
     return read == bufferLen;
 }
 
-BOOL WriteValue(void* data, DWORD dataLen)
+bool WriteToPipe(void* data, u32 dataLen)
 {
-    DWORD written;
-
-    if (!WriteFile(pipe, data, dataLen, &written, NULL))
+    u32 written;
+    if (!WriteFile(s_pipe, data, dataLen, &written, NULL))
     {
         return FALSE;
     }
 
     char msg[256];
-    sprintf_s(msg, 256, "Expected: %d, Wrote: %d\n", dataLen, written);
+    sprintf_s(msg, 256, "[PIPE WRITE] Expected: %03d, Wrote: %03d\n", dataLen, written);
     Log(msg);
 
     return written == dataLen;
 }
 
-BOOL DisconnectPipe(void)
+bool DisconnectPipe(void)
 {
-    return DisconnectNamedPipe(pipe);
+    return DisconnectNamedPipe(s_pipe);
 }
 
-BOOL DisposePipe(void)
+bool DisposePipe(void)
 {
-    if (DisconnectPipe() && CloseHandle(pipe))
+    if (DisconnectPipe() && CloseHandle(s_pipe))
     {
-        pipe = NULL;
+        s_pipe = NULL;
         return TRUE;
     }
     else

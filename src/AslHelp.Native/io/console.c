@@ -1,27 +1,27 @@
 #include "console.h"
 
-BOOL InitConsole(void)
+bool InitConsole(void)
 {
     AllocConsole();
-    console = GetStdHandle(STD_OUTPUT_HANDLE);
+    s_console = GetStdHandle(STD_OUTPUT_HANDLE);
 
     return TRUE;
 }
 
-BOOL Log(const char* output)
+bool Log(const char* output)
 {
-    if (!console)
+    if (!s_console)
         return FALSE;
 
-    return WriteFile(console, output, lstrlenA(output), NULL, NULL);
+    return WriteFile(s_console, output, lstrlenA(output), NULL, NULL);
 }
 
-BOOL LogDw(const char* format, DWORD value)
+bool LogDw(const char* format, u32 value)
 {
-    if (!console)
+    if (!s_console)
         return FALSE;
 
-    const DWORD len = lstrlenA(format) + 18;
+    const u32 len = lstrlenA(format) + 18;
     const char* buf = malloc(len);
 
     if (buf == NULL)
@@ -37,9 +37,10 @@ BOOL LogDw(const char* format, DWORD value)
     return success;
 }
 
-BOOL LogLastErr(const char* format)
+
+bool LogLastErr(const char* format)
 {
-    if (!console)
+    if (!s_console)
         return FALSE;
 
     const DWORD len = lstrlenA(format) + 18;
@@ -58,10 +59,10 @@ BOOL LogLastErr(const char* format)
     return success;
 }
 
-BOOL DisposeConsole(void)
+bool DisposeConsole(void)
 {
-    if (!console)
+    if (!s_console)
         return TRUE;
 
-    return FreeConsole() && CloseHandle(console);
+    return FreeConsole() && CloseHandle(s_console);
 }

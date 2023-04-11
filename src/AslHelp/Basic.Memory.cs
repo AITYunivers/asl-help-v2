@@ -1,4 +1,5 @@
 ﻿using System.IO.Pipes;
+using AslHelp.Core;
 using AslHelp.Core.IO;
 using AslHelp.Core.Memory;
 using AslHelp.Core.Memory.IO;
@@ -13,34 +14,29 @@ public partial class Basic
     {
         get
         {
-            if (_memory is null)
+            if (_memory is null && Game is Process game)
             {
-                _ = Game;
+                InitMemory(game);
             }
 
             return _memory;
         }
     }
 
-    private void InitMemory()
+    private void InitMemory(Process process)
     {
-        if (_game is null)
-        {
-            _pipe?.Dispose();
-            _pipe = null;
-            _memory = null;
+        (string resource, string dll) = _game.Is64Bit()
+            ? (AHR.NativeLib64, Path.GetFullPath($"./x64/{AHR.NativeLib64}"))
+            : (AHR.NativeLib86, Path.GetFullPath($"./x86/{AHR.NativeLib86}"));
 
-            return;
+        if (!_game.DllIsInjected(dll))
+        {
+            ResourceManager.UnpackResource(resource, dll);
         }
 
-        string dll =
-            _game.Is64Bit()
-            ? ResourceManager.UnpackResource("AslHelp.Core.Native.x64.dll", "x64")
-            : ResourceManager.UnpackResource("AslHelp.Core.Native.x86.dll", "x86");
+        Debug.Info($"Attempting to inject {resource}...");
 
-        Debug.Info($"Attempting to inject {dll}...");
-
-        if (_game.TryInject(dll))
+        if (_game.TryInjectDll(dll))
         {
             Debug.Info("  => Success.");
             Debug.Info("Connecting named pipe...");
@@ -58,6 +54,12 @@ public partial class Basic
 
             _memory = new WinApiMemoryManager(_game, Logger);
         }
+    }
+
+    private void DisposeMemory()
+    {
+        _memory?.Dispose();
+        _pipe?.Dispose();
     }
 
     private readonly Dictionary<string, IPointer> _pointers = new();

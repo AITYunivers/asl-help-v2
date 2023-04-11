@@ -11,8 +11,6 @@ public sealed class MultiLogger
         _loggers = new(loggers);
     }
 
-    private IEnumerable<FileLogger> FileLoggers => _loggers.OfType<FileLogger>();
-
     public int Count => _loggers.Count;
     public bool IsReadOnly => ((ICollection<ILogger>)_loggers).IsReadOnly;
 
@@ -99,13 +97,5 @@ public sealed class MultiLogger
     IEnumerator IEnumerable.GetEnumerator()
     {
         return _loggers.GetEnumerator();
-    }
-
-    public void DisposeFileLoggers()
-    {
-        foreach (FileLogger logger in FileLoggers)
-        {
-            logger.Dispose();
-        }
     }
 }

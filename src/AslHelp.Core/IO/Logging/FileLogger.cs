@@ -3,8 +3,7 @@
 namespace AslHelp.Core.IO.Logging;
 
 public sealed class FileLogger
-    : ILogger,
-    IDisposable
+    : ILogger
 {
     private readonly Queue<string> _queuedLines = new();
     private CancellationTokenSource _cancelSource = new();
@@ -194,10 +193,5 @@ public sealed class FileLogger
                     """);
             }
         }
-    }
-
-    public void Dispose()
-    {
-        Stop();
     }
 }

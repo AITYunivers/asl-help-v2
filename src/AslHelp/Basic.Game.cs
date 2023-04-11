@@ -12,11 +12,7 @@
     {
         get
         {
-            if (_game is null)
-            {
-                _game = Script.Game;
-                InitMemory();
-            }
+            _game ??= Script.Game;
 
             return _game;
         }
@@ -24,8 +20,6 @@
         {
             _game = value;
             Script.Game = value;
-
-            InitMemory();
         }
     }
 }

@@ -4,21 +4,12 @@ namespace AslHelp.Core.IO;
 
 internal static class ResourceManager
 {
-    public static string UnpackResource(string resource, string directory)
+    public static void UnpackResource(string resource, string targetFileName)
     {
-        string outputFile = $"{directory}/{resource}";
-
-        //if (File.Exists(outputFile))
-        //{
-        //    return outputFile;
-        //}
-
         using Stream source = GetResourceStream(resource);
-        using FileStream destination = File.OpenWrite(outputFile);
+        using FileStream destination = File.OpenWrite(targetFileName);
 
         source.CopyTo(destination);
-
-        return outputFile;
     }
 
     public static Stream GetResourceStream(string resourceName)

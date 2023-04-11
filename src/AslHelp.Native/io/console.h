@@ -2,10 +2,10 @@
 
 #include "../pch.h"
 
-HANDLE console;
+void* s_console;
 
-BOOL InitConsole(void);
-BOOL Log(const char* output);
-BOOL LogDw(const char* format, DWORD value);
-BOOL LogLastErr(const char* msg);
-BOOL DisposeConsole(void);
+bool InitConsole(void);
+bool Log(const char* output);
+bool LogDw(const char* format, u32 value);
+bool LogLastErr(const char* msg);
+bool DisposeConsole(void);

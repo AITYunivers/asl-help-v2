@@ -7,29 +7,30 @@
 #define GENERIC_READWRITE GENERIC_READ | GENERIC_WRITE
 #define PIPE_MODE_MESSAGE PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT
 
-HANDLE pipe;
+void* s_pipe;
 
-BOOL InitPipe(void);
-BOOL PipeValid(void);
-BOOL ConnectPipe(void);
-BOOL ReadValue(void* buffer, DWORD bufferLen);
-BOOL WriteValue(void* data, DWORD dataLen);
-BOOL DisconnectPipe(void);
-BOOL DisposePipe(void);
+bool InitPipe(void);
+bool PipeIsValid(void);
+bool ConnectPipe(void);
+bool ReadFromPipe(void* buffer, u32 bufferLen);
+bool WriteToPipe(void* data, u32 dataLen);
+bool DisconnectPipe(void);
+bool DisposePipe(void);
 
-typedef enum
+typedef enum PipeRequestCode
 {
-    ClosePipe,
+    PipeClose,
 
-    Deref,
-    Read,
-    ReadSpan,
-    Write,
-    WriteSpan
+    PipeDeref,
+    PipeRead,
+    PipeReadSpan,
+    PipeWrite,
+    PipeWriteSpan
 } PipeRequestCode;
 
-typedef enum
+typedef enum PipeResponseCode
 {
-    Success,
-    Failure
+    PipeSuccess,
+
+    PipeDerefFailure
 } PipeResponseCode;

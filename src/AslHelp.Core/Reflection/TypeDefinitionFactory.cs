@@ -41,9 +41,4 @@ public static class TypeDefinitionFactory
 
         return (ITypeDefinition)Activator.CreateInstance(typeof(TypeDefinition<>).MakeGenericType(target));
     }
-
-    public static void Dispose()
-    {
-        _codeProvider.Dispose();
-    }
 }
