@@ -2,9 +2,10 @@
 
 public interface ILogger
 {
+    void Start();
+
     void Log();
     void Log(object output);
 
-    void Start();
     void Stop();
 }

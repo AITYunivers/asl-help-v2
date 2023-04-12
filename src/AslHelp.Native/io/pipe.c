@@ -41,16 +41,9 @@ bool ReadFromPipe(void* buffer, u32 bufferLen)
 {
     u32 read;
     if (!ReadFile(s_pipe, buffer, bufferLen, &read, NULL))
-    {
         return FALSE;
-    }
 
-    if (s_console)
-    {
-        char msg[256];
-        sprintf_s(msg, 256, "Pipe :: [READ ] Expected: %03d,  Read: %03d\n", bufferLen, read);
-        Log(msg);
-    }
+    Log("Read", "Expected: %03d,  Read: %03d", bufferLen, read);
 
     return read == bufferLen;
 }
@@ -63,12 +56,7 @@ bool WriteToPipe(void* data, u32 dataLen)
         return FALSE;
     }
 
-    if (s_console)
-    {
-        char msg[256];
-        sprintf_s(msg, 256, "Pipe :: [WRITE] Expected: %03d, Wrote: %03d\n", dataLen, written);
-        Log(msg);
-    }
+    Log("Write", "Expected: %03d, Wrote: %03d", dataLen, written);
 
     return written == dataLen;
 }

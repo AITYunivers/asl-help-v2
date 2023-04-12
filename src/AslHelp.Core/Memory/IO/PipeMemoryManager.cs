@@ -161,9 +161,20 @@ public sealed unsafe class PipeMemoryManager : MemoryManagerBase
             return;
         }
 
-        base.Dispose();
+        try
+        {
+            base.Dispose();
+            _pipe.Write(PipeRequestCode.ClosePipe);
+        }
+        catch { }
 
-        _pipe.Write(PipeRequestCode.ClosePipe);
-        _pipe.Dispose();
+        try
+        {
+            _pipe.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Debug.Error(ex);
+        }
     }
 }

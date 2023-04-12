@@ -26,7 +26,11 @@ public static unsafe class Injector
             return true;
         }
 
-        ResourceManager.UnpackResource(resource, targetFile);
+        try
+        {
+            ResourceManager.UnpackResource(resource, targetFile);
+        }
+        catch (IOException ex) when ((uint)ex.HResult == 0x80070020) { } // File being used by another process.
 
         return process.TryInjectDll(targetFile);
     }

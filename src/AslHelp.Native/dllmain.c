@@ -5,14 +5,6 @@
 
 void HandlePipeCommand(PipeRequestCommand cmd)
 {
-    if (cmd == PipeClose)
-    {
-        DisposeConsole();
-        DisposePipe();
-
-        return;
-    }
-
     switch (cmd)
     {
     case PipeDeref: {
@@ -67,7 +59,7 @@ DWORD WINAPI ThreadMain(void* lpParameter)
             if (cmd == PipeClose)
             {
                 DisposeConsole();
-                DisposePipe();
+                DisconnectPipe();
 
                 break;
             }

@@ -280,11 +280,11 @@ public static unsafe class Native
     public static int GetTypeSize<T>(bool is64Bit)
         where T : unmanaged
     {
-        return GetTypeSize<T>(is64Bit ? 0x8 : 0x4);
+        return GetTypeSize<T>((byte)(is64Bit ? 0x8 : 0x4));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetTypeSize<T>(int ptrSize)
+    public static int GetTypeSize<T>(byte ptrSize)
         where T : unmanaged
     {
         return IsNativeInt<T>() ? ptrSize : sizeof(T);

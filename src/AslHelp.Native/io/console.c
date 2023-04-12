@@ -8,55 +8,60 @@ bool InitConsole(void)
     return TRUE;
 }
 
-bool Log(const char* output)
+void Log(const char* cmd, const char* format, ...)
 {
     if (!s_console)
-        return FALSE;
+        return;
 
-    return WriteFile(s_console, output, lstrlenA(output), NULL, NULL);
-}
+    size_t cmdLen = strlen(cmd);
+    char* cmdConverted;
 
-bool LogDw(const char* format, u32 value)
-{
-    if (!s_console)
-        return FALSE;
-
-    const u32 len = lstrlenA(format) + 18;
-    const char* buf = malloc(len);
-
-    if (buf == NULL)
+    if (cmdLen >= 7)
     {
-        return FALSE;
+        if (!(cmdConverted = malloc(cmdLen + 1)))
+            return;
+
+        strcpy(cmdConverted, cmd);
+    }
+    else
+    {
+        if (!(cmdConverted = malloc(8)))
+            return;
+
+        i32 padLen = 7 - cmdLen, padLeft = padLen / 2, padRight = padLen - padLeft;
+
+        for (i32 i = 0; i < padLeft; ++i)
+            cmdConverted[i] = ' ';
+
+        strncpy(cmdConverted + padLeft, cmd, cmdLen);
+
+        for (i32 i = 0; i < padRight; ++i)
+            cmdConverted[padLeft + cmdLen + i] = ' ';
+
+        cmdConverted[7] = '\0';
     }
 
-    sprintf_s(buf, len, format, value);
+    strupr(cmdConverted);
 
-    BOOL success = Log(buf);
-    free(buf);
+    va_list args;
+    va_start(args, format);
+    size_t logMessageLength = vsnprintf(NULL, 0, format, args);
+    va_end(args);
 
-    return success;
-}
+    char* logMessage = malloc(logMessageLength + 64);
+    if (!logMessage)
+        return;
 
+    snprintf(logMessage, logMessageLength + 64, "Pipe :: [%s] ", cmdConverted);
+    va_start(args, format);
+    vsnprintf(logMessage + strlen(logMessage), logMessageLength + 64 - strlen(logMessage), format, args);
+    va_end(args);
 
-bool LogLastErr(const char* format)
-{
-    if (!s_console)
-        return FALSE;
+    strcat(logMessage, "\n");
+    bool success = WriteFile(s_console, logMessage, strlen(logMessage), NULL, NULL);
 
-    const DWORD len = lstrlenA(format) + 18;
-    const char* buf = malloc(len);
-
-    if (buf == NULL)
-    {
-        return FALSE;
-    }
-
-    sprintf_s(buf, len, format, GetLastError());
-
-    BOOL success = Log(buf);
-    free(buf);
-
-    return success;
+    free(logMessage);
+    free(cmdConverted);
 }
 
 bool DisposeConsole(void)

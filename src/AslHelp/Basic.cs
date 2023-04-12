@@ -1,13 +1,34 @@
-﻿using AslHelp.Core.Helping;
-using AslHelp.Core.Reflection;
+﻿using AslHelp.Core.Exceptions;
+using AslHelp.Core.Helping;
+using AslHelp.Core.LiveSplitInterop;
 
 public partial class Basic : IAslHelper
 {
     public Basic() { }
 
-    public void Dispose()
+    public void Exit()
     {
-        GC.SuppressFinalize(this);
+        if (Methods.CurrentMethod != "exit")
+        {
+            string msg = $"Attempted to call {nameof(Exit)} outside of the 'exit' action.";
+            ThrowHelper.Throw.InvalidOperation(msg);
+        }
+
+        DisposeMemory();
+
+        for (int i = 0; i < _files.Count; i++)
+        {
+            _files[i].Dispose();
+        }
+    }
+
+    public void Shutdown()
+    {
+        if (Methods.CurrentMethod != "shutdown")
+        {
+            string msg = $"Attempted to call {nameof(Shutdown)} outside of the 'shutdown' action.";
+            ThrowHelper.Throw.InvalidOperation(msg);
+        }
 
         AppDomain.CurrentDomain.AssemblyResolve -= AssemblyResolve;
 

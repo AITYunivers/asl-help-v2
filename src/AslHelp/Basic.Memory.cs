@@ -1,7 +1,4 @@
 ﻿using System.IO.Pipes;
-using AslHelp.Core;
-using AslHelp.Core.IO;
-using AslHelp.Core.Memory;
 using AslHelp.Core.Memory.IO;
 using AslHelp.Core.Memory.Pipes;
 using AslHelp.Core.Memory.Pointers;
@@ -14,6 +11,8 @@ public partial class Basic
     {
         get
         {
+            EnsureInitialized();
+
             if (_memory is null && Game is Process game)
             {
                 InitMemory(game);
@@ -25,32 +24,45 @@ public partial class Basic
 
     private void InitMemory(Process process)
     {
-        Debug.Info($"Attempting DLL injection...");
+        Debug.Info("Initiating memory...");
 
-        if (process.TryInjectAslCoreNative())
+        if (_withInjection)
         {
-            Debug.Info("  => Success.");
-            Debug.Info("Connecting named pipe...");
+            Debug.Info("  => Attempting to inject...");
 
-            _pipe = new("asl-help-pipe");
-            _pipe.Connect();
+            if (process.TryInjectAslCoreNative())
+            {
+                Debug.Info("  => Success.");
+                Debug.Info("  => Connecting named pipe...");
 
-            Debug.Info("  => Success.");
+                _pipe = new("asl-help-pipe");
+                _pipe.Connect();
 
-            _memory = new PipeMemoryManager(process, Logger, _pipe);
+                Debug.Info("    => Success.");
+
+                _memory = new PipeMemoryManager(process, Logger, _pipe);
+
+                return;
+            }
+
+            Debug.Info("  => Failure!");
         }
-        else
-        {
-            Debug.Info("  => Failure! Using Win32 API for memory reading.");
 
-            _memory = new WinApiMemoryManager(process, Logger);
-        }
+        Debug.Warn("  => Using Win32 API for memory reading.");
+
+        _memory = new WinApiMemoryManager(process, Logger);
     }
 
     private void DisposeMemory()
     {
         _memory?.Dispose();
+        _memory = null;
+
         _pipe?.Dispose();
+        _pipe = null;
+
+        _game?.Dispose();
+        _game = null;
     }
 
     private readonly Dictionary<string, IPointer> _pointers = new();

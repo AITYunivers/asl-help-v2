@@ -29,8 +29,6 @@ public abstract partial class MemoryManagerBase
         PtrSize = (byte)(Is64Bit ? 0x8 : 0x4);
         Modules = new(process);
         MainModule = Modules.FirstOrDefault();
-
-        process.Exited += DisposeEvent;
     }
 
     public Process Process { get; }
@@ -82,18 +80,8 @@ public abstract partial class MemoryManagerBase
 
         Log("Disposing of memory manager...");
 
-        _isDisposed = true;
         Process.Dispose();
-    }
 
-    private void DisposeEvent(object sender, EventArgs e)
-    {
-        if (sender is not Process process)
-        {
-            return;
-        }
-
-        Dispose();
-        process.Exited -= DisposeEvent;
+        _isDisposed = true;
     }
 }

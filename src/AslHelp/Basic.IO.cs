@@ -12,15 +12,43 @@ public partial class Basic
     private MultiLogger _logger;
     public ILogger Logger => _logger;
 
-    public TimerController Timer { get; } = new();
-    public TextComponentController Texts { get; } = new();
-    public SettingsCreator Settings { get; } = new();
+    private readonly TimerController _timer = new();
+    public TimerController Timer
+    {
+        get
+        {
+            EnsureInitialized();
+            return _timer;
+        }
+    }
+
+    private readonly TextComponentController _texts = new();
+    public TextComponentController Texts
+    {
+        get
+        {
+            EnsureInitialized();
+            return _texts;
+        }
+    }
+
+    private readonly SettingsCreator _settings = new();
+    public SettingsCreator Settings
+    {
+        get
+        {
+            EnsureInitialized();
+            return _settings;
+        }
+    }
 
     public void CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512)
     {
+        EnsureInitialized();
+
         if (Methods.CurrentMethod != "startup")
         {
-            string msg = "[IO] Attempted to start a file logger outside of the 'startup' action.";
+            string msg = "A file logger may only be initialized in the 'startup' action.";
             ThrowHelper.Throw.InvalidOperation(msg);
         }
 
@@ -32,9 +60,11 @@ public partial class Basic
 
     public FileWatcher CreateFileWatcher(string filePath)
     {
+        EnsureInitialized();
+
         if (Methods.CurrentMethod is not "startup" or "init")
         {
-            string msg = "[IO] Attempted to start a file watcher outside of the 'startup' or 'init' actions.";
+            string msg = "A file watcher may only be initialized in the 'startup' or 'init' actions.";
             ThrowHelper.Throw.InvalidOperation(msg);
         }
 

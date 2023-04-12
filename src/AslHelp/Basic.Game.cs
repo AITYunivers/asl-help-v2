@@ -12,9 +12,9 @@
     {
         get
         {
-            _game ??= Script.Game;
+            EnsureInitialized();
 
-            return _game;
+            return _game ??= Script.Game;
         }
         set
         {

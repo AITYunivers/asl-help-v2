@@ -8,11 +8,18 @@ namespace AslHelp.Core.Helping;
 
 public interface IAslHelperInitStage
 {
-    IAslHelper Init(bool generateCode);
+    IAslHelperSetupStage Init();
 }
 
-public interface IAslHelper
-    : IHelper
+public interface IAslHelperSetupStage
+{
+    IAslHelperSetupStage GenerateCode();
+    IAslHelperSetupStage WithInjection();
+
+    IAslHelper Complete();
+}
+
+public interface IAslHelper : IHelper
 {
     string GameName { get; set; }
 
@@ -25,4 +32,7 @@ public interface IAslHelper
 
     void CreateFileLogger(string filePath, int maxLines, int linesToErase);
     FileWatcher CreateFileWatcher(string filePath);
+
+    void Exit();
+    void Shutdown();
 }
