@@ -251,13 +251,42 @@ public static unsafe class Native
         return (nint)memory;
     }
 
-    public static bool IsPointer<T>()
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNativeIntAndZero<T>(T value)
+    {
+        if (typeof(T) == typeof(nint))
+        {
+            nint nValue = Unsafe.As<T, nint>(ref value);
+            return nValue == 0;
+        }
+        else if (typeof(T) == typeof(nuint))
+        {
+            nuint nuValue = Unsafe.As<T, nuint>(ref value);
+            return nuValue == 0;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNativeInt<T>()
     {
         return typeof(T) == typeof(nint) || typeof(T) == typeof(nuint);
     }
 
-    public static int GetTypeSize<T>(bool is64Bit) where T : unmanaged
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetTypeSize<T>(bool is64Bit)
+        where T : unmanaged
     {
-        return IsPointer<T>() ? (is64Bit ? 0x8 : 0x4) : sizeof(T);
+        return GetTypeSize<T>(is64Bit ? 0x8 : 0x4);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetTypeSize<T>(int ptrSize)
+        where T : unmanaged
+    {
+        return IsNativeInt<T>() ? ptrSize : sizeof(T);
     }
 }

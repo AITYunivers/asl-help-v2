@@ -17,7 +17,7 @@ bool WriteToPipe(void* data, u32 dataLen);
 bool DisconnectPipe(void);
 bool DisposePipe(void);
 
-typedef enum PipeRequestCode
+typedef enum PipeRequestCommand
 {
     PipeClose,
 
@@ -26,7 +26,7 @@ typedef enum PipeRequestCode
     PipeReadSpan,
     PipeWrite,
     PipeWriteSpan
-} PipeRequestCode;
+} PipeRequestCommand;
 
 typedef enum PipeResponseCode
 {

@@ -70,13 +70,13 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
 
         fixed (T* pResult = &result)
         {
-            if (!Native.Read(_processHandle, deref, pResult, Native.GetTypeSize<T>(Is64Bit)))
+            if (!Native.Read(_processHandle, deref, pResult, Native.GetTypeSize<T>(PtrSize)))
             {
                 result = default;
                 return false;
             }
 
-            return !Native.IsPointer<T>() || !result.Equals(default(T));
+            return !Native.IsNativeInt<T>() || !result.Equals(default(T));
         }
     }
 
@@ -87,7 +87,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
             return false;
         }
 
-        if (!Is64Bit && Native.IsPointer<T>())
+        if (!Is64Bit && Native.IsNativeInt<T>())
         {
             Span<uint> buf32 = MemoryMarshal.Cast<T, uint>(buffer);
             Span<ulong> buf64 = MemoryMarshal.Cast<T, ulong>(buffer);
@@ -108,7 +108,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
 
         fixed (T* pBuffer = buffer)
         {
-            return Native.Read(_processHandle, deref, pBuffer, Native.GetTypeSize<T>(Is64Bit) * buffer.Length);
+            return Native.Read(_processHandle, deref, pBuffer, Native.GetTypeSize<T>(PtrSize) * buffer.Length);
         }
     }
 
@@ -265,7 +265,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
             return false;
         }
 
-        return Native.Write(_processHandle, deref, &value, Native.GetTypeSize<T>(Is64Bit));
+        return Native.Write(_processHandle, deref, &value, Native.GetTypeSize<T>(PtrSize));
     }
 
     public override unsafe bool WriteSpan<T>(ReadOnlySpan<T> values, nint baseAddress, params int[] offsets)
@@ -275,7 +275,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
             return false;
         }
 
-        if (!Is64Bit && Native.IsPointer<T>())
+        if (!Is64Bit && Native.IsNativeInt<T>())
         {
             ReadOnlySpan<uint> v32 = MemoryMarshal.Cast<T, uint>(values);
             return WriteSpan(v32, deref);
@@ -283,7 +283,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
 
         fixed (T* pValues = values)
         {
-            return Native.Write(_processHandle, baseAddress, pValues, Native.GetTypeSize<T>(Is64Bit) * values.Length);
+            return Native.Write(_processHandle, baseAddress, pValues, Native.GetTypeSize<T>(PtrSize) * values.Length);
         }
     }
 }

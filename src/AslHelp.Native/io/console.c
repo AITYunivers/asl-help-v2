@@ -64,5 +64,13 @@ bool DisposeConsole(void)
     if (!s_console)
         return TRUE;
 
-    return FreeConsole() && CloseHandle(s_console);
+    if (FreeConsole() && CloseHandle(s_console))
+    {
+        s_console = NULL;
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
 }

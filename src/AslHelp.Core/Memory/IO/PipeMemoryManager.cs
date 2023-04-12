@@ -9,68 +9,43 @@ namespace AslHelp.Core.Memory.IO;
 public sealed unsafe class PipeMemoryManager : MemoryManagerBase
 {
     private readonly NamedPipeClientStream _pipe;
-    private readonly nint _hModule;
 
-    public PipeMemoryManager(Process process, NamedPipeClientStream pipe, nint hModule)
-        : this(process, null, pipe, hModule) { }
+    public PipeMemoryManager(Process process, NamedPipeClientStream pipe)
+        : this(process, null, pipe) { }
 
-    public PipeMemoryManager(Process process, ILogger logger, NamedPipeClientStream pipe, nint hModule)
+    public PipeMemoryManager(Process process, ILogger logger, NamedPipeClientStream pipe)
         : base(process, logger)
     {
         _pipe = pipe;
-        _hModule = hModule;
     }
 
     public bool IsConnected => _pipe.IsConnected && _pipe.CanRead && _pipe.CanWrite;
 
     public sealed override bool TryDeref(out nint result, nint baseAddress, params int[] offsets)
     {
-        if (!IsConnected)
+        if (!IsConnected || baseAddress == 0)
         {
             result = default;
             return false;
         }
 
-        DerefRequest req = new()
-        {
-            Code = PipeRequestCode.Deref,
-            BaseAddress = baseAddress,
-            OffsetCount = offsets.Length
-        };
+        _pipe.Write(PipeRequestCode.Deref);
 
-        fixed (int* pOffsets = offsets)
-        {
-            Unsafe.CopyBlock(req.Offsets, pOffsets, (uint)(offsets.Length * sizeof(int)));
-        }
-
-        _pipe.Write(in req);
+        _pipe.Write<long>(baseAddress);
+        _pipe.Write(offsets.Length);
+        _pipe.Write(MemoryMarshal.AsBytes<int>(offsets));
 
         PipeResponseCode code = _pipe.Read<PipeResponseCode>();
         if (code != PipeResponseCode.Success)
         {
+            Log($"Deref failed with code {(int)code}.");
+
             result = default;
             return false;
         }
 
         result = (nint)_pipe.Read<long>();
         return result != default;
-    }
-
-    private unsafe struct DerefRequest
-    {
-        public PipeRequestCode Code;
-        public long BaseAddress;
-        public int OffsetCount;
-        public fixed int Offsets[128];
-    }
-
-    private unsafe struct ReadRequest
-    {
-        public PipeRequestCode Code;
-        public long BaseAddress;
-        public int OffsetCount;
-        public fixed int Offsets[64];
-        public int TypeSize;
     }
 
     public sealed override unsafe bool TryRead<T>(out T result, nint baseAddress, params int[] offsets)
@@ -81,40 +56,27 @@ public sealed unsafe class PipeMemoryManager : MemoryManagerBase
             return false;
         }
 
-        if (baseAddress == 0)
-        {
-            result = default;
-            return false;
-        }
+        _pipe.Write(PipeRequestCode.Read);
 
-        ReadRequest req = new()
-        {
-            Code = PipeRequestCode.Deref,
-            BaseAddress = baseAddress,
-            OffsetCount = offsets.Length,
-            TypeSize = Native.GetTypeSize<T>(Is64Bit)
-        };
-
-        fixed (int* pOffsets = offsets)
-        {
-            Unsafe.CopyBlock(req.Offsets, pOffsets, (uint)(offsets.Length * sizeof(int)));
-        }
-
-        _pipe.Write(in req);
+        _pipe.Write<long>(baseAddress);
+        _pipe.Write(offsets.Length);
+        _pipe.Write(MemoryMarshal.AsBytes<int>(offsets));
+        _pipe.Write(Native.GetTypeSize<T>(PtrSize));
 
         PipeResponseCode code = _pipe.Read<PipeResponseCode>();
-
         if (code != PipeResponseCode.Success)
         {
+            Log($"Read<{typeof(T).Name}> failed with code {(int)code}.");
+
             result = default;
             return false;
         }
 
         result = _pipe.Read<T>();
-        return !Native.IsPointer<T>() || !result.Equals(default(T));
+        return !Native.IsNativeIntAndZero(result);
     }
 
-    public sealed override unsafe bool TryReadSpan<T>(Span<T> buffer, nint baseAddress, params int[] offsets)
+    public sealed override bool TryReadSpan<T>(Span<T> buffer, nint baseAddress, params int[] offsets)
     {
         if (!IsConnected)
         {
@@ -126,13 +88,13 @@ public sealed unsafe class PipeMemoryManager : MemoryManagerBase
         _pipe.Write<long>(baseAddress);
         _pipe.Write(offsets.Length);
         _pipe.Write(MemoryMarshal.AsBytes<int>(offsets));
-
-        _pipe.Write(Native.GetTypeSize<T>(Is64Bit) * buffer.Length);
+        _pipe.Write(Native.GetTypeSize<T>(PtrSize) * buffer.Length);
 
         PipeResponseCode code = _pipe.Read<PipeResponseCode>();
-
         if (code != PipeResponseCode.Success)
         {
+            Log($"ReadSpan<{typeof(T).Name}> failed with code {(int)code}.");
+
             return false;
         }
 
@@ -163,7 +125,7 @@ public sealed unsafe class PipeMemoryManager : MemoryManagerBase
         _pipe.Write(offsets.Length);
         _pipe.Write(MemoryMarshal.AsBytes<int>(offsets));
 
-        _pipe.Write(Native.GetTypeSize<T>(Is64Bit));
+        _pipe.Write(Native.GetTypeSize<T>(PtrSize));
         _pipe.Write(value);
 
         PipeResponseCode code = _pipe.Read<PipeResponseCode>();
@@ -184,7 +146,7 @@ public sealed unsafe class PipeMemoryManager : MemoryManagerBase
         _pipe.Write(offsets.Length);
         _pipe.Write(MemoryMarshal.AsBytes<int>(offsets));
 
-        _pipe.Write(Native.GetTypeSize<T>(Is64Bit) * values.Length);
+        _pipe.Write(Native.GetTypeSize<T>(PtrSize) * values.Length);
         _pipe.Write(MemoryMarshal.AsBytes(values));
 
         PipeResponseCode code = _pipe.Read<PipeResponseCode>();

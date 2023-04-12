@@ -3,6 +3,46 @@
 #include "io/console.h"
 #include "memory/operations.h"
 
+void HandlePipeCommand(PipeRequestCommand cmd)
+{
+    if (cmd == PipeClose)
+    {
+        DisposeConsole();
+        DisposePipe();
+
+        return;
+    }
+
+    switch (cmd)
+    {
+    case PipeDeref: {
+        i64 result;
+        PipeResponseCode code = Deref(&result);
+
+        WriteToPipe(&code, sizeof(PipeResponseCode));
+        if (code == PipeSuccess)
+        {
+            WriteToPipe(&result, sizeof(i64));
+        }
+
+        break;
+    }
+    case PipeRead: {
+        iptr result;
+        i32 size;
+        PipeResponseCode code = ReadValue(&result, &size);
+
+        WriteToPipe(&code, sizeof(PipeResponseCode));
+        if (code == PipeSuccess)
+        {
+            WriteToPipe(result, size);
+        }
+
+        break;
+    }
+    }
+}
+
 DWORD WINAPI ThreadMain(void* lpParameter)
 {
     while (TRUE)
@@ -17,41 +57,22 @@ DWORD WINAPI ThreadMain(void* lpParameter)
             continue;
         }
 
-        InitConsole();
+        // InitConsole();
 
         while (TRUE)
         {
-            PipeRequestCode code;
-            ReadFromPipe(&code, sizeof(PipeRequestCode));
+            PipeRequestCommand cmd;
+            ReadFromPipe(&cmd, sizeof(PipeRequestCommand));
 
-            switch (code)
+            if (cmd == PipeClose)
             {
-            case PipeDeref: {
-                i64 result;
-                PipeResponseCode code = Deref(&result);
-
-                WriteToPipe(&code, sizeof(PipeResponseCode));
-                if (code == PipeSuccess)
-                {
-                    WriteToPipe(&result, sizeof(i64));
-                }
+                DisposeConsole();
+                DisposePipe();
 
                 break;
             }
-            case PipeRead: {
-                iptr result;
-                i32 size;
-                PipeResponseCode code = ReadValue(&result, &size);
 
-                WriteToPipe(&code, sizeof(PipeResponseCode));
-                if (code == PipeSuccess)
-                {
-                    WriteToPipe(result, size);
-                }
-
-                break;
-            }
-            }
+            HandlePipeCommand(cmd);
         }
     }
 

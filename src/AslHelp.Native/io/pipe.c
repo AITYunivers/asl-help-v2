@@ -45,9 +45,12 @@ bool ReadFromPipe(void* buffer, u32 bufferLen)
         return FALSE;
     }
 
-    char msg[256];
-    sprintf_s(msg, 256, "[PIPE  READ] Expected: %03d,  Read: %03d\n", bufferLen, read);
-    Log(msg);
+    if (s_console)
+    {
+        char msg[256];
+        sprintf_s(msg, 256, "Pipe :: [READ ] Expected: %03d,  Read: %03d\n", bufferLen, read);
+        Log(msg);
+    }
 
     return read == bufferLen;
 }
@@ -60,9 +63,12 @@ bool WriteToPipe(void* data, u32 dataLen)
         return FALSE;
     }
 
-    char msg[256];
-    sprintf_s(msg, 256, "[PIPE WRITE] Expected: %03d, Wrote: %03d\n", dataLen, written);
-    Log(msg);
+    if (s_console)
+    {
+        char msg[256];
+        sprintf_s(msg, 256, "Pipe :: [WRITE] Expected: %03d, Wrote: %03d\n", dataLen, written);
+        Log(msg);
+    }
 
     return written == dataLen;
 }
@@ -74,6 +80,9 @@ bool DisconnectPipe(void)
 
 bool DisposePipe(void)
 {
+    if (!s_pipe)
+        return TRUE;
+
     if (DisconnectPipe() && CloseHandle(s_pipe))
     {
         s_pipe = NULL;

@@ -25,18 +25,9 @@ public partial class Basic
 
     private void InitMemory(Process process)
     {
-        (string resource, string dll) = _game.Is64Bit()
-            ? (AHR.NativeLib64, Path.GetFullPath($"./x64/{AHR.NativeLib64}"))
-            : (AHR.NativeLib86, Path.GetFullPath($"./x86/{AHR.NativeLib86}"));
+        Debug.Info($"Attempting DLL injection...");
 
-        if (!_game.DllIsInjected(dll))
-        {
-            ResourceManager.UnpackResource(resource, dll);
-        }
-
-        Debug.Info($"Attempting to inject {resource}...");
-
-        if (_game.TryInjectDll(dll))
+        if (process.TryInjectAslCoreNative())
         {
             Debug.Info("  => Success.");
             Debug.Info("Connecting named pipe...");
@@ -46,13 +37,13 @@ public partial class Basic
 
             Debug.Info("  => Success.");
 
-            _memory = new PipeMemoryManager(_game, Logger, _pipe);
+            _memory = new PipeMemoryManager(process, Logger, _pipe);
         }
         else
         {
             Debug.Info("  => Failure! Using Win32 API for memory reading.");
 
-            _memory = new WinApiMemoryManager(_game, Logger);
+            _memory = new WinApiMemoryManager(process, Logger);
         }
     }
 

@@ -1,20 +1,34 @@
 ﻿using AslHelp.Core.Exceptions;
+using AslHelp.Core.IO;
 
 namespace AslHelp.Core.Memory.Pipes;
 
 public static unsafe class Injector
 {
-    public static bool DllIsInjected(this Process process, string modulePath)
+    public static bool TryInjectAslCoreNative(this Process process)
     {
-        foreach (Module module in Native.ModulesTh32(process.Handle, process.Id))
+        if (process.Is64Bit())
         {
-            if (module.FilePath == modulePath)
-            {
-                return true;
-            }
+            return process.TryInjectDllFromEmbeddedResource(AHR.NativeLib64, "x64");
+        }
+        else
+        {
+            return process.TryInjectDllFromEmbeddedResource(AHR.NativeLib86, "x86");
+        }
+    }
+
+    public static bool TryInjectDllFromEmbeddedResource(this Process process, string resource, string unpackDirectory)
+    {
+        string targetFile = Path.GetFullPath($"{unpackDirectory}/{resource}");
+
+        if (process.DllIsInjected(targetFile))
+        {
+            return true;
         }
 
-        return false;
+        ResourceManager.UnpackResource(resource, targetFile);
+
+        return process.TryInjectDll(targetFile);
     }
 
     public static bool TryInjectDll(this Process process, string modulePath)
@@ -109,5 +123,18 @@ public static unsafe class Injector
         {
             _ = WinApi.CloseHandle(hProcess);
         }
+    }
+
+    public static bool DllIsInjected(this Process process, string modulePath)
+    {
+        foreach (Module module in Native.ModulesTh32(process.Handle, process.Id))
+        {
+            if (module.FilePath == modulePath)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
