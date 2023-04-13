@@ -41,7 +41,7 @@ internal static class Script
 
         if (component is null)
         {
-            Debug.Info("    => Failure! ASLComponent could not be found.");
+            Debug.Error("    => Failure! ASLComponent could not be found.");
             ThrowHelper.Throw.InvalidOperation("ASLComponent not found.");
         }
 

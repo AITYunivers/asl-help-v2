@@ -1,7 +1,7 @@
 #include "pipe.h"
 #include "console.h"
 
-BOOL InitPipe(void)
+bool InitPipe(void)
 {
     s_pipe = CreateNamedPipe(
         PIPE_NAME,
@@ -29,7 +29,7 @@ BOOL InitPipe(void)
 
 bool PipeIsValid(void)
 {
-    return s_pipe != NULL && s_pipe != INVALID_HANDLE_VALUE;
+    return s_pipe != NULL;
 }
 
 bool ConnectPipe(void)
@@ -41,7 +41,9 @@ bool ReadFromPipe(void* buffer, u32 bufferLen)
 {
     u32 read;
     if (!ReadFile(s_pipe, buffer, bufferLen, &read, NULL))
+    {
         return FALSE;
+    }
 
     Log("Read", "Expected: %03d,  Read: %03d", bufferLen, read);
 
@@ -68,8 +70,10 @@ bool DisconnectPipe(void)
 
 bool DisposePipe(void)
 {
-    if (!s_pipe)
+    if (!PipeIsValid())
+    {
         return TRUE;
+    }
 
     if (DisconnectPipe() && CloseHandle(s_pipe))
     {

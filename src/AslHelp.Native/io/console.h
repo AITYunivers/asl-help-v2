@@ -4,6 +4,8 @@
 #include <string.h>
 #include "../pch.h"
 
+#define LOG_TYPE_PAD 7
+
 void* s_console;
 
 bool InitConsole(void);

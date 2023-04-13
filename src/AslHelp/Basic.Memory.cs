@@ -45,10 +45,10 @@ public partial class Basic
                 return;
             }
 
-            Debug.Info("  => Failure!");
+            Debug.Warn("  => Failure!");
         }
 
-        Debug.Warn("  => Using Win32 API for memory reading.");
+        Debug.Info("  => Using Win32 API for memory reading.");
 
         _memory = new WinApiMemoryManager(process, Logger);
     }

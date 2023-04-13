@@ -20,12 +20,12 @@ internal static class Debug
 
     public static void Warn(object output)
     {
-        _logger.Log($"[Warning] {output}");
+        _logger.Log($"[Warning]  {output}");
     }
 
     public static void Error(object output)
     {
-        _logger.Log($"[Error] {output}");
+        _logger.Log($"[Error]    {output}");
     }
 
     public static void Throw(Exception ex)

@@ -7,31 +7,17 @@ void HandlePipeCommand(PipeRequestCommand cmd)
 {
     switch (cmd)
     {
-    case PipeDeref: {
-        i64 result;
-        PipeResponseCode code = Deref(&result);
-
-        WriteToPipe(&code, sizeof(PipeResponseCode));
-        if (code == PipeSuccess)
-        {
-            WriteToPipe(&result, sizeof(i64));
-        }
-
+    case PipeDeref:
+        OpDeref();
         break;
-    }
-    case PipeRead: {
-        iptr result;
-        i32 size;
-        PipeResponseCode code = ReadValue(&result, &size);
-
-        WriteToPipe(&code, sizeof(PipeResponseCode));
-        if (code == PipeSuccess)
-        {
-            WriteToPipe(result, size);
-        }
-
+    case PipeRead:
+    case PipeReadSpan:
+        OpRead();
         break;
-    }
+    case PipeWrite:
+    case PipeWriteSpan:
+        OpWrite();
+        break;
     }
 }
 

@@ -4,4 +4,7 @@
 #include "../io/pipe.h"
 
 PipeResponseCode Deref(iptr* result);
-PipeResponseCode ReadValue(iptr* result, i32* size);
+
+void OpDeref();
+void OpRead();
+void OpWrite();

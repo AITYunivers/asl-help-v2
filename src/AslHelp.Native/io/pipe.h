@@ -32,5 +32,6 @@ typedef enum PipeResponseCode
 {
     PipeSuccess,
 
-    PipeDerefFailure
+    PipeDerefFailure,
+    PipeAllocFailure
 } PipeResponseCode;

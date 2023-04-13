@@ -12,12 +12,20 @@ PipeResponseCode Deref(iptr* result)
     i32* offsets = malloc(bytes);
     ReadFromPipe(offsets, bytes);
 
+    if (offsets == NULL)
+    {
+        *result = 0;
+
+        return PipeAllocFailure;
+    }
+
     for (i32 i = 0; i < offsetCount; ++i)
     {
-        address = *((iptr*)address);
+        address = *(iptr*)address;
 
         if (address == 0)
         {
+            free(offsets);
             *result = 0;
 
             return PipeDerefFailure;
@@ -26,22 +34,60 @@ PipeResponseCode Deref(iptr* result)
         address += offsets[i];
     }
 
+    free(offsets);
     *result = address;
 
     return PipeSuccess;
 }
 
-PipeResponseCode ReadValue(iptr* result, i32* size)
+void OpDeref()
 {
     iptr deref;
     PipeResponseCode code = Deref(&deref);
 
-    ReadFromPipe(size, sizeof(i32));
-
+    WriteToPipe(&code, sizeof(PipeResponseCode));
     if (code == PipeSuccess)
     {
-        *result = deref;
+        i64 result = (i64)deref;
+        WriteToPipe(&result, sizeof(i64));
+    }
+}
+
+void OpRead()
+{
+    iptr deref;
+    PipeResponseCode code = Deref(&deref);
+
+    i32 bytes;
+    ReadFromPipe(&bytes, sizeof(i32));
+
+    WriteToPipe(&code, sizeof(PipeResponseCode));
+    if (code == PipeSuccess)
+    {
+        WriteToPipe(deref, bytes);
+    }
+}
+
+void OpWrite()
+{
+    iptr deref;
+    PipeResponseCode code = Deref(&deref);
+
+    i32 bytes;
+    ReadFromPipe(&bytes, sizeof(i32));
+
+    void* value = malloc(bytes);
+    ReadFromPipe(value, bytes);
+
+    if (value == NULL)
+    {
+        code = PipeAllocFailure;
+    }
+    else if (code == PipeSuccess)
+    {
+        memcpy(deref, value, bytes);
+        free(value);
     }
 
-    return code;
+    WriteToPipe(&code, sizeof(PipeResponseCode));
 }

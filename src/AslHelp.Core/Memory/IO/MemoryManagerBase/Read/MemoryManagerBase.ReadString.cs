@@ -1,9 +1,15 @@
-﻿using LiveSplit.ComponentUtil;
+﻿using AslHelp.Core.Extensions;
+using System.Text;
+using LiveSplit.ComponentUtil;
+using CommunityToolkit.HighPerformance.Buffers;
 
 namespace AslHelp.Core.Memory.IO;
 
 public abstract partial class MemoryManagerBase
 {
+    private const byte AsciiNullChar = 0;
+    private static ReadOnlySpan<byte> UnicodeNullChar => new byte[] { 0, 0 };
+
     public string ReadString(int baseOffset, params int[] offsets)
     {
         _ = TryReadString(out string result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
@@ -183,5 +189,102 @@ public abstract partial class MemoryManagerBase
         return TryReadString(out result, AHR.MaxStringReadLength, stringType, baseAddress, offsets);
     }
 
-    public abstract bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets);
+    public unsafe bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
+    {
+        if (stringType == ReadStringType.AutoDetect)
+        {
+            return InternalTryReadAutoString(out result, length, baseAddress, offsets);
+        }
+        else if (stringType == ReadStringType.UTF16)
+        {
+            return InternalTryReadWideString(out result, length, baseAddress, offsets);
+        }
+        else
+        {
+            return InternalTryReadString(out result, length, baseAddress, offsets);
+        }
+    }
+
+    private unsafe bool InternalTryReadString(out string result, int length, nint baseAddress, int[] offsets)
+    {
+        sbyte[] rented = null;
+        Span<sbyte> buffer =
+            length <= 1024
+            ? stackalloc sbyte[1024]
+            : (rented = ArrayPoolExtensions.Rent<sbyte>(length));
+
+        if (!TryReadSpan(buffer, baseAddress, offsets))
+        {
+            ArrayPoolExtensions.Return(rented);
+
+            result = default;
+            return false;
+        }
+
+        fixed (sbyte* pBuffer = buffer)
+        {
+            result = new string(pBuffer);
+            ArrayPoolExtensions.Return(rented);
+
+            return true;
+        }
+    }
+
+    private unsafe bool InternalTryReadWideString(out string result, int length, nint baseAddress, int[] offsets)
+    {
+        length *= 2;
+
+        char[] rented = null;
+        Span<char> buffer =
+            length <= 512
+            ? stackalloc char[512]
+            : (rented = ArrayPoolExtensions.Rent<char>(length));
+
+        if (!TryReadSpan(buffer, baseAddress, offsets))
+        {
+            ArrayPoolExtensions.Return(rented);
+
+            result = default;
+            return false;
+        }
+
+        fixed (char* pBuffer = buffer)
+        {
+            result = new string(pBuffer);
+            ArrayPoolExtensions.Return(rented);
+
+            return true;
+        }
+    }
+
+    private unsafe bool InternalTryReadAutoString(out string result, int length, nint baseAddress, int[] offsets)
+    {
+        // Assume unicode for the worst-case scenario and just allocate length * 2.
+        byte[] rented = null;
+        Span<byte> buffer =
+            length * 2 <= 1024
+            ? stackalloc byte[1024]
+            : (rented = ArrayPoolExtensions.Rent<byte>(length * 2));
+
+        if (!TryReadSpan(buffer, baseAddress, offsets))
+        {
+            ArrayPoolExtensions.Return(rented);
+
+            result = default;
+            return false;
+        }
+
+        fixed (byte* pBuffer = buffer)
+        {
+            // String ctor stops at the first null terminator.
+            result =
+                length >= 2 && pBuffer[1] == '\0'
+                ? new string((char*)pBuffer)
+                : new string((sbyte*)pBuffer);
+
+            ArrayPoolExtensions.Return(rented);
+
+            return true;
+        }
+    }
 }

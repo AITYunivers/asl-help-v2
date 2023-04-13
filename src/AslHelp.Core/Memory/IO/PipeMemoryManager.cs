@@ -1,4 +1,5 @@
 ﻿using System.IO.Pipes;
+using AslHelp.Core.Exceptions;
 using AslHelp.Core.IO.Logging;
 using AslHelp.Core.Memory.Pipes;
 using CommunityToolkit.HighPerformance;
@@ -16,6 +17,21 @@ public sealed unsafe class PipeMemoryManager : MemoryManagerBase
     public PipeMemoryManager(Process process, ILogger logger, NamedPipeClientStream pipe)
         : base(process, logger)
     {
+        if (!pipe.IsConnected)
+        {
+            ThrowHelper.Throw.InvalidOperation("Pipe was not connected.");
+        }
+
+        if (!pipe.CanRead)
+        {
+            ThrowHelper.Throw.InvalidOperation("Pipe was not readable.");
+        }
+
+        if (!pipe.CanWrite)
+        {
+            ThrowHelper.Throw.InvalidOperation("Pipe was not writable.");
+        }
+
         _pipe = pipe;
     }
 
@@ -102,16 +118,6 @@ public sealed unsafe class PipeMemoryManager : MemoryManagerBase
         return true;
     }
 
-    public override bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override bool TryReadSizedString(out string result, ReadStringType stringType, nint baseAddress, params int[] offsets)
-    {
-        throw new NotImplementedException();
-    }
-
     public sealed override unsafe bool Write<T>(T value, nint baseAddress, params int[] offsets)
     {
         if (!IsConnected)
@@ -129,8 +135,14 @@ public sealed unsafe class PipeMemoryManager : MemoryManagerBase
         _pipe.Write(value);
 
         PipeResponseCode code = _pipe.Read<PipeResponseCode>();
+        if (code != PipeResponseCode.Success)
+        {
+            Log($"Write<{typeof(T).Name}> failed with code {(int)code}.");
 
-        return code == PipeResponseCode.Success;
+            return false;
+        }
+
+        return true;
     }
 
     public sealed override unsafe bool WriteSpan<T>(ReadOnlySpan<T> values, nint baseAddress, params int[] offsets)
@@ -161,20 +173,9 @@ public sealed unsafe class PipeMemoryManager : MemoryManagerBase
             return;
         }
 
-        try
-        {
-            base.Dispose();
-            _pipe.Write(PipeRequestCode.ClosePipe);
-        }
-        catch { }
+        base.Dispose();
 
-        try
-        {
-            _pipe.Dispose();
-        }
-        catch (Exception ex)
-        {
-            Debug.Error(ex);
-        }
+        _pipe.Write(PipeRequestCode.ClosePipe);
+        _pipe.Dispose();
     }
 }
