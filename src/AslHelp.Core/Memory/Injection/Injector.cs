@@ -1,7 +1,7 @@
 ﻿using AslHelp.Core.Exceptions;
 using AslHelp.Core.IO;
 
-namespace AslHelp.Core.Memory.Pipes;
+namespace AslHelp.Core.Memory.Injection;
 
 public static unsafe class Injector
 {

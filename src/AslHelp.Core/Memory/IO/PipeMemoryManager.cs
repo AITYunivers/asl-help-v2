@@ -1,15 +1,24 @@
 ﻿using System.IO.Pipes;
 using AslHelp.Core.Exceptions;
 using AslHelp.Core.IO.Logging;
-using AslHelp.Core.Memory.Pipes;
+using AslHelp.Core.Memory.Injection;
 using CommunityToolkit.HighPerformance;
-using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.IO;
 
 public sealed unsafe class PipeMemoryManager : MemoryManagerBase
 {
     private readonly NamedPipeClientStream _pipe;
+
+    public PipeMemoryManager(Process process, string pipeName)
+        : this(process, null, pipeName) { }
+
+    public PipeMemoryManager(Process process, ILogger logger, string pipeName, int timeout = -1)
+        : base(process, logger)
+    {
+        _pipe = new(pipeName);
+        _pipe.Connect(timeout);
+    }
 
     public PipeMemoryManager(Process process, NamedPipeClientStream pipe)
         : this(process, null, pipe) { }

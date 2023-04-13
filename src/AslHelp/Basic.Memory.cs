@@ -1,11 +1,8 @@
-﻿using System.IO.Pipes;
+﻿using AslHelp.Core.Memory.Injection;
 using AslHelp.Core.Memory.IO;
-using AslHelp.Core.Memory.Pipes;
-using AslHelp.Core.Memory.Pointers;
 
 public partial class Basic
 {
-    private NamedPipeClientStream _pipe;
     private IMemoryManager _memory;
     public IMemoryManager Memory
     {
@@ -35,17 +32,23 @@ public partial class Basic
                 Debug.Info("  => Success.");
                 Debug.Info("  => Connecting named pipe...");
 
-                _pipe = new("asl-help-pipe");
-                _pipe.Connect();
+                try
+                {
+                    _memory = new PipeMemoryManager(process, Logger, "asl-help-pipe", _timeout);
 
-                Debug.Info("    => Success.");
+                    Debug.Info("    => Success.");
 
-                _memory = new PipeMemoryManager(process, Logger, _pipe);
-
-                return;
+                    return;
+                }
+                catch (TimeoutException)
+                {
+                    Debug.Warn("  => Timed out!");
+                }
             }
-
-            Debug.Warn("  => Failure!");
+            else
+            {
+                Debug.Warn("  => Failure!");
+            }
         }
 
         Debug.Info("  => Using Win32 API for memory reading.");
@@ -58,25 +61,9 @@ public partial class Basic
         _memory?.Dispose();
         _memory = null;
 
-        _pipe?.Dispose();
-        _pipe = null;
-
         _game?.Dispose();
         _game = null;
-    }
 
-    private readonly Dictionary<string, IPointer> _pointers = new();
-    public IPointer this[string name]
-    {
-        get => _pointers[name];
-        set => _pointers[name] = value;
-    }
-
-    public void MapPointerValuesToCurrent()
-    {
-        foreach (KeyValuePair<string, IPointer> entry in _pointers)
-        {
-            Script.Current[entry.Key] = entry.Value.Current;
-        }
+        _pointers = null;
     }
 }

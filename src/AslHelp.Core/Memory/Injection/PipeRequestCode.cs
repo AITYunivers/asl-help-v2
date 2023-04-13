@@ -1,4 +1,4 @@
-﻿namespace AslHelp.Core.Memory.Pipes;
+﻿namespace AslHelp.Core.Memory.Injection;
 
 internal enum PipeRequestCode
 {

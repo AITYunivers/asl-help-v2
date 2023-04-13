@@ -4,10 +4,10 @@ using AslHelp.Core.Helping;
 using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;
 
-public partial class Basic
-    : IAslHelperInitStage,
-    IAslHelperSetupStage
+public partial class Basic : IAslHelperInitStage, IAslHelperSetupStage
 {
+    private int _timeout;
+
     private bool _isInitialized;
     private bool _generatedCode;
     private bool _withInjection;
@@ -58,7 +58,7 @@ public partial class Basic
 
         Debug.Info("  => Generating code...");
 
-        Script.Vars["Log"] = (Action<object>)(output => _logger.Log(output));
+        Script.Vars["Log"] = (Action<object>)(output => _logger.Log($"[{GameName}] {output}"));
         Debug.Info("    => Created the Action<object> `vars.Log`.");
 
         Methods.exit.Prepend($"vars.AslHelp.{nameof(Exit)}();");
@@ -69,7 +69,7 @@ public partial class Basic
         return this;
     }
 
-    public virtual IAslHelperSetupStage WithInjection()
+    IAslHelperSetupStage IAslHelperSetupStage.WithInjection(int pipeConnectionTimeout)
     {
         if (_withInjection)
         {
@@ -84,11 +84,12 @@ public partial class Basic
         }
 
         _withInjection = true;
+        _timeout = 3000;
 
         return this;
     }
 
-    public IAslHelper Complete()
+    IAslHelper IAslHelperSetupStage.Complete()
     {
         if (!_isInitialized)
         {

@@ -14,7 +14,7 @@ public interface IAslHelperInitStage
 public interface IAslHelperSetupStage
 {
     IAslHelperSetupStage GenerateCode();
-    IAslHelperSetupStage WithInjection();
+    IAslHelperSetupStage WithInjection(int pipeConnectionTimeout);
 
     IAslHelper Complete();
 }

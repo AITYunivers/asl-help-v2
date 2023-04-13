@@ -1,8 +1,6 @@
 ﻿namespace AslHelp.Core.Memory.Signatures;
 
-public sealed unsafe class ScanEnumerator
-    : IEnumerator<int>,
-    IEnumerable<int>
+public sealed unsafe class ScanEnumerator : IEnumerable<int>, IEnumerator<int>
 {
     private const int UNROLLS = 8;
 
