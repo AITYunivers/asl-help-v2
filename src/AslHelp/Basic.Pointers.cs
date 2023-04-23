@@ -11,7 +11,7 @@ public partial class Basic
         {
             EnsureInitialized();
 
-            if (Methods.CurrentMethod is "startup" or "exit" or "shutdown")
+            if (Actions.CurrentAction is "startup" or "exit" or "shutdown")
             {
                 string msg = "Attempted to access the pointer factory while the game is not running.";
                 ThrowHelper.Throw.InvalidOperation(msg);

@@ -1,12 +1,31 @@
 ﻿namespace AslHelp.Core.IO;
 
-internal class Trace : IEnumerable<string>
+internal class Trace : IReadOnlyCollection<string>
 {
-    public int Depth => new StackTrace().FrameCount;
+    private StackTrace Stack => new();
+    private StackFrame[] Frames => Stack.GetFrames();
+
+    public int Count => Stack.FrameCount;
+
+    public bool ContainsAny(params string[] methodNames)
+    {
+        foreach (string methodName in this)
+        {
+            for (int i = 0; i < methodNames.Length; i++)
+            {
+                if (methodNames[i].Equals(methodName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
     public IEnumerator<string> GetEnumerator()
     {
-        StackFrame[] frames = new StackTrace().GetFrames();
+        StackFrame[] frames = Frames;
 
         for (int i = 0; i < frames.Length; i++)
         {
@@ -16,11 +35,6 @@ internal class Trace : IEnumerable<string>
 
             yield return ret;
         }
-    }
-
-    public bool ContainsAny(params string[] methodNames)
-    {
-        return this.Any(t => methodNames.Any(m => m.Equals(t, StringComparison.OrdinalIgnoreCase)));
     }
 
     IEnumerator IEnumerable.GetEnumerator()

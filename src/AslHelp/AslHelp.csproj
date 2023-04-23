@@ -10,6 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Basic.cs" />
+    <Compile Remove="Basic.Game.cs" />
+    <Compile Remove="Basic.IO.cs" />
+    <Compile Remove="Basic.Memory.cs" />
+    <Compile Remove="Basic.Pointers.cs" />
+    <Compile Remove="Basic.Setup.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="System" />
     <Using Include="System.Collections" />
     <Using Include="System.Collections.Generic" />
@@ -31,10 +40,7 @@
     <Reference Include="System.Windows.Forms" />
 
     <Reference Include="LiveSplit.Core" HintPath="..\..\ref\LiveSplit.Core.dll" />
-
-    <Reference Include="UpdateManager">
-      <HintPath>..\..\ref\UpdateManager.dll</HintPath>
-    </Reference>
+    <Reference Include="UpdateManager" HintPath="..\..\ref\UpdateManager.dll" />
   </ItemGroup>
 
 </Project>

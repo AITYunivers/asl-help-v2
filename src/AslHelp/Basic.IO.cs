@@ -46,7 +46,7 @@ public partial class Basic
     {
         EnsureInitialized();
 
-        if (Methods.CurrentMethod != "startup")
+        if (Actions.CurrentAction != "startup")
         {
             string msg = "A file logger may only be initialized in the 'startup' action.";
             ThrowHelper.Throw.InvalidOperation(msg);
@@ -62,7 +62,7 @@ public partial class Basic
     {
         EnsureInitialized();
 
-        if (Methods.CurrentMethod is not "startup" or "init")
+        if (Actions.CurrentAction is not "startup" or "init")
         {
             string msg = "A file watcher may only be initialized in the 'startup' or 'init' actions.";
             ThrowHelper.Throw.InvalidOperation(msg);

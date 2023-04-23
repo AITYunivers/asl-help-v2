@@ -21,7 +21,7 @@ public partial class Basic : IAslHelperInitStage, IAslHelperSetupStage
             ThrowHelper.Throw.InvalidOperation(msg);
         }
 
-        if (Methods.CurrentMethod != "startup")
+        if (Actions.CurrentAction != "startup")
         {
             string msg = "asl-help may only be initialized in the 'startup' action.";
             ThrowHelper.Throw.InvalidOperation(msg);
@@ -42,7 +42,7 @@ public partial class Basic : IAslHelperInitStage, IAslHelperSetupStage
         return this;
     }
 
-    public virtual IAslHelperSetupStage GenerateCode()
+    private protected virtual IAslHelperSetupStage GenerateCode()
     {
         if (_generatedCode)
         {
@@ -50,7 +50,7 @@ public partial class Basic : IAslHelperInitStage, IAslHelperSetupStage
             ThrowHelper.Throw.InvalidOperation(msg);
         }
 
-        if (Methods.CurrentMethod != "startup")
+        if (Actions.CurrentAction != "startup")
         {
             string msg = "Code may only be generated in the 'startup' action.";
             ThrowHelper.Throw.InvalidOperation(msg);
@@ -61,12 +61,22 @@ public partial class Basic : IAslHelperInitStage, IAslHelperSetupStage
         Script.Vars["Log"] = (Action<object>)(output => _logger.Log($"[{GameName}] {output}"));
         Debug.Info("    => Created the Action<object> `vars.Log`.");
 
-        Methods.exit.Prepend($"vars.AslHelp.{nameof(Exit)}();");
-        Methods.shutdown.Prepend($"vars.AslHelp.{nameof(Shutdown)}();");
+        Actions.exit.Prepend($"vars.AslHelp.{nameof(Exit)}();");
+        Actions.shutdown.Prepend($"vars.AslHelp.{nameof(Shutdown)}();");
 
         _generatedCode = true;
 
         return this;
+    }
+
+    IAslHelperSetupStage IAslHelperSetupStage.GenerateCode()
+    {
+        return GenerateCode();
+    }
+
+    IAslHelperSetupStage IAslHelperSetupStage.WithInjection()
+    {
+        return ((IAslHelperSetupStage)this).WithInjection(3000);
     }
 
     IAslHelperSetupStage IAslHelperSetupStage.WithInjection(int pipeConnectionTimeout)
@@ -77,14 +87,14 @@ public partial class Basic : IAslHelperInitStage, IAslHelperSetupStage
             ThrowHelper.Throw.InvalidOperation(msg);
         }
 
-        if (Methods.CurrentMethod != "startup")
+        if (Actions.CurrentAction != "startup")
         {
             string msg = "Injection may only be enabled in the 'startup' action.";
             ThrowHelper.Throw.InvalidOperation(msg);
         }
 
         _withInjection = true;
-        _timeout = 3000;
+        _timeout = pipeConnectionTimeout;
 
         return this;
     }
@@ -103,7 +113,7 @@ public partial class Basic : IAslHelperInitStage, IAslHelperSetupStage
             ThrowHelper.Throw.InvalidOperation(msg);
         }
 
-        if (Methods.CurrentMethod != "startup")
+        if (Actions.CurrentAction != "startup")
         {
             string msg = "asl-help may only be initialized in the 'startup' action.";
             ThrowHelper.Throw.InvalidOperation(msg);

@@ -51,7 +51,7 @@ internal static class Script
         Vars = _script.Vars;
         SettingsBuilder = _script.GetFieldValue<ASLSettings>("_settings").Builder;
 
-        Methods.Init(_script);
+        Actions.Init(_script);
         LoadMethods();
 
         Debug.Info("    => Success.");
@@ -88,7 +88,7 @@ internal static class Script
             string body = (string)method.ChildNodes[2].Token.Value;
             int line = method.ChildNodes[0].Token.Location.Line + 1;
 
-            typeof(Methods).SetPropertyValue<Methods.Method>(name, new(body, name, line));
+            typeof(Actions).SetPropertyValue<Actions.Action>(name, new(body, name, line));
         }
 
         Debug.Info("      => Success.");

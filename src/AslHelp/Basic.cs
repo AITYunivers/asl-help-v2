@@ -8,7 +8,7 @@ public partial class Basic : IAslHelper
 
     public void Exit()
     {
-        if (Methods.CurrentMethod != "exit")
+        if (Actions.CurrentAction != "exit")
         {
             string msg = $"Attempted to call {nameof(Exit)} outside of the 'exit' action.";
             ThrowHelper.Throw.InvalidOperation(msg);
@@ -24,7 +24,7 @@ public partial class Basic : IAslHelper
 
     public void Shutdown()
     {
-        if (Methods.CurrentMethod != "shutdown")
+        if (Actions.CurrentAction != "shutdown")
         {
             string msg = $"Attempted to call {nameof(Shutdown)} outside of the 'shutdown' action.";
             ThrowHelper.Throw.InvalidOperation(msg);
