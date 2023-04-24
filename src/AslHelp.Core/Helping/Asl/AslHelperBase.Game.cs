@@ -6,22 +6,30 @@ namespace AslHelp.Core.Helping.Asl;
 
 public abstract partial class AslHelperBase
 {
-    private string _gameName;
-
     string IAslHelper.GameName => GameName;
-    protected string GameName
+    protected abstract string GameName
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => _gameName ?? Game?.ProcessName ?? "Auto Splitter";
+        get;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set;
     }
 
     IAslHelper.InitStage IAslHelper.InitStage.GameName(string gameName)
     {
         ThrowHelper.ThrowIfNullOrEmpty(gameName);
 
-        _gameName = gameName;
+        GameName = gameName;
 
         return this;
+    }
+
+    protected abstract Process Game
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set;
     }
 
     Process IAslHelper.Game
@@ -48,13 +56,5 @@ public abstract partial class AslHelperBase
 
             Game = value;
         }
-    }
-
-    protected abstract Process Game
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        set;
     }
 }

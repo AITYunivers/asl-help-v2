@@ -7,14 +7,26 @@ namespace AslHelp.Core.Helping.Asl;
 
 public abstract partial class AslHelperBase
 {
-    private readonly Dictionary<string, IPointer> _ptrCache = new();
-    IPointer IAslHelper.this[string name]
+    protected abstract IPointer this[string name]
     {
-        get => _ptrCache[name];
-        set => _ptrCache[name] = value;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set;
     }
 
-    protected PointerFactory _pointers;
+    IPointer IAslHelper.this[string name]
+    {
+        get => this[name];
+        set => this[name] = value;
+    }
+
+    protected abstract PointerFactory Pointers
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get;
+    }
+
     PointerFactory IAslHelper.Pointers
     {
         get
@@ -26,16 +38,15 @@ public abstract partial class AslHelperBase
                 ThrowHelper.Throw.InvalidOperation(msg);
             }
 
-            return _pointers ??= new(Memory);
+            return Pointers;
         }
     }
 
+    protected abstract void MapPointerValuesToCurrent();
+
     IAslHelper IAslHelper.MapPointerValuesToCurrent()
     {
-        foreach (KeyValuePair<string, IPointer> entry in _ptrCache)
-        {
-            Script.Current[entry.Key] = entry.Value.Current;
-        }
+        MapPointerValuesToCurrent();
 
         return this;
     }

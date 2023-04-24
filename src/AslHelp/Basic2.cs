@@ -6,8 +6,6 @@ public partial class Basic
 {
     protected override void Exit()
     {
-        DisposeMemory();
-
         for (int i = 0; i < _fileWatchers.Count; i++)
         {
             _fileWatchers[i].Dispose();
@@ -18,8 +16,6 @@ public partial class Basic
 
     protected override void Shutdown()
     {
-        DisposeMemory();
-
         _logger?.Stop();
         _logger.Clear();
 
@@ -37,7 +33,7 @@ public partial class Basic
 
         if (!closing)
         {
-            Texts.RemoveAll();
+            //Texts.RemoveAll();
         }
     }
 }

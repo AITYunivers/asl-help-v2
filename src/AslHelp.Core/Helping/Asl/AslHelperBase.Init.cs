@@ -6,10 +6,11 @@ namespace AslHelp.Core.Helping.Asl;
 
 public abstract partial class AslHelperBase
 {
-    protected bool _generateCode;
+    private bool _generateCode;
+    private bool _isCompleted;
+
     protected bool _withInjection;
     protected int _timeout;
-    protected bool _isCompleted;
 
     public IAslHelper.InitStage Init
     {

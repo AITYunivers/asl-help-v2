@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "metadata", "metadata", "{50
 	ProjectSection(SolutionItems) = preProject
 		.clang-format = .clang-format
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AslHelp", "src\AslHelp\AslHelp.csproj", "{7B399498-7E93-4C49-892B-AE1A1EC5F525}"

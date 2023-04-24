@@ -53,8 +53,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\AslHelp.Native\bin\Release\x64\AslHelp.Native.dll" Link="Native.x64.dll" />
-    <EmbeddedResource Include="..\AslHelp.Native\bin\Release\Win32\AslHelp.Native.dll" Link="Native.x86.dll" />
+    <!--<EmbeddedResource Include="..\AslHelp.Native\bin\Release\x64\AslHelp.Native.dll" Link="Native.x64.dll" />-->
+    <!--<EmbeddedResource Include="..\AslHelp.Native\bin\Release\Win32\AslHelp.Native.dll" Link="Native.x86.dll" />-->
   </ItemGroup>
 
 </Project>

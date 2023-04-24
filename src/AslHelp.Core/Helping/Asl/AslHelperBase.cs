@@ -8,8 +8,6 @@ public abstract partial class AslHelperBase
     : IAslHelper,
     IAslHelper.InitStage
 {
-    public AslHelperBase() { }
-
     protected abstract void Exit();
 
     IAslHelper IAslHelper.Exit()
@@ -19,6 +17,8 @@ public abstract partial class AslHelperBase
             string msg = $"Attempted to call {nameof(Exit)} outside of the 'exit' action.";
             ThrowHelper.Throw.InvalidOperation(msg);
         }
+
+        DisposeMemory();
 
         Exit();
 
@@ -36,6 +36,7 @@ public abstract partial class AslHelperBase
         }
 
         AppDomain.CurrentDomain.AssemblyResolve -= AssemblyResolve;
+        DisposeMemory();
 
         Shutdown();
 
