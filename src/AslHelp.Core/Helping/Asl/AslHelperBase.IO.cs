@@ -1,21 +1,55 @@
-﻿using AslHelp.Core.Helping.Asl.Contracts;
+﻿using AslHelp.Core.Exceptions;
+using AslHelp.Core.Helping.Asl.Contracts;
 using AslHelp.Core.IO;
 using AslHelp.Core.IO.Logging;
+using AslHelp.Core.LiveSplitInterop;
 using AslHelp.Core.LiveSplitInterop.Settings;
 using AslHelp.Core.LiveSplitInterop.Texts;
-using AslHelp.Core.LiveSplitInterop;
-using AslHelp.Core.Exceptions;
 
 namespace AslHelp.Core.Helping.Asl;
 
 public abstract partial class AslHelperBase
 {
-    protected readonly MultiLogger _logger = new();
-    ILogger IAslHelper.Logger => _logger;
+    ILogger IAslHelper.Logger => Logger;
+    protected abstract ILogger Logger
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get;
+    }
 
-    TextComponentController IAslHelper.Texts { get; } = new();
-    TimerController IAslHelper.Timer { get; } = new();
-    SettingsCreator IAslHelper.Settings { get; } = new();
+    TextComponentController IAslHelper.Texts => Texts;
+    protected abstract TextComponentController Texts
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get;
+    }
+
+    TimerController IAslHelper.Timer => Timer;
+    protected abstract TimerController Timer
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get;
+    }
+
+    SettingsCreator IAslHelper.Settings
+    {
+        get
+        {
+            if (Actions.CurrentAction != "startup")
+            {
+                string msg = $"Attempted to access the settings creator outside of the 'startup' action.";
+                ThrowHelper.Throw.InvalidOperation(msg);
+            }
+
+            return Settings;
+        }
+    }
+
+    protected abstract SettingsCreator Settings
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get;
+    }
 
     protected abstract void CreateFileLogger(string filePath, int maxLines = 4096, int linesToErase = 512);
 

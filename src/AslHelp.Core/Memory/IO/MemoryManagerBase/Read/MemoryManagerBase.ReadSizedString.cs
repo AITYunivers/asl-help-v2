@@ -1,5 +1,4 @@
 ﻿using AslHelp.Core.Extensions;
-using System.Text;
 using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.IO;

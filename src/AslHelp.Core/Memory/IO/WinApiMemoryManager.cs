@@ -1,10 +1,5 @@
-﻿using System.Text;
-using AslHelp.Core.Exceptions;
-using AslHelp.Core.Extensions;
+﻿using AslHelp.Core.Exceptions;
 using AslHelp.Core.IO.Logging;
-using LiveSplit.ComponentUtil;
-
-using ArrayPoolExtensions = AslHelp.Core.Extensions.ArrayPoolExtensions;
 
 namespace AslHelp.Core.Memory.IO;
 

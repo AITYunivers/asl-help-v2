@@ -1,5 +1,5 @@
-﻿using AslHelp.Core.Exceptions;
-using AslHelp.Core.Reflection;
+﻿using AslHelp.Core.Reflection;
+using CommunityToolkit.HighPerformance;
 using LiveSplit.ASL;
 
 namespace AslHelp.Core.LiveSplitInterop;
@@ -13,30 +13,31 @@ internal static class Actions
         _methods = script.GetFieldValue<ASLScript.Methods>("_methods");
     }
 
-    public static string CurrentAction
+    public static unsafe string CurrentAction
     {
         get
         {
-            const string Prefix = "ASLScript.";
-            const int PrefixLength = 10;
+            ReadOnlySpan<char> prefix = "ASLScript.".AsSpan();
 
             foreach (string trace in Debug.Trace)
             {
-                int i = trace.IndexOf(Prefix);
+                ReadOnlySpan<char> sTrace = trace.AsSpan();
+
+                int i = sTrace.IndexOf(prefix);
                 if (i == -1)
                 {
                     continue;
                 }
 
-                if (trace[i + PrefixLength] == 'D')
+                for (i += prefix.Length + 2; i < sTrace.Length; i++)
                 {
-                    return trace[(i + PrefixLength + 2)..].ToLower();
+                    if (char.IsUpper(sTrace[i]))
+                    {
+                        break;
+                    }
                 }
 
-                if (trace[i + PrefixLength] == 'R')
-                {
-                    return trace[(i + PrefixLength + 3)..].ToLower();
-                }
+                return trace[i..].ToLower();
             }
 
             throw new Exception("Not in an ASL.");

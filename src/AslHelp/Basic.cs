@@ -1,46 +1,31 @@
-﻿using AslHelp.Core.Exceptions;
-using AslHelp.Core.Helping;
-using AslHelp.Core.LiveSplitInterop;
+﻿using AslHelp.Core.Helping.Asl;
 
-public partial class Basic : IAslHelper
+public partial class Basic
+    : AslHelperBase
 {
-    public Basic() { }
-
-    public void Exit()
+    protected override void Exit()
     {
-        if (Actions.CurrentAction != "exit")
+        for (int i = 0; i < _fileWatchers.Count; i++)
         {
-            string msg = $"Attempted to call {nameof(Exit)} outside of the 'exit' action.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            _fileWatchers[i].Dispose();
         }
 
-        DisposeMemory();
-
-        for (int i = 0; i < _files.Count; i++)
-        {
-            _files[i].Dispose();
-        }
+        _fileWatchers.Clear();
     }
 
-    public void Shutdown()
+    protected override void Shutdown()
     {
-        if (Actions.CurrentAction != "shutdown")
-        {
-            string msg = $"Attempted to call {nameof(Shutdown)} outside of the 'shutdown' action.";
-            ThrowHelper.Throw.InvalidOperation(msg);
-        }
-
         AppDomain.CurrentDomain.AssemblyResolve -= AssemblyResolve;
 
-        DisposeMemory();
-
         _logger?.Stop();
-        _logger = null;
+        _logger.Clear();
 
-        for (int i = 0; i < _files.Count; i++)
+        for (int i = 0; i < _fileWatchers.Count; i++)
         {
-            _files[i].Dispose();
+            _fileWatchers[i].Dispose();
         }
+
+        _fileWatchers.Clear();
 
         bool closing = Debug.Trace.ContainsAny(
             "TimerForm.TimerForm_FormClosing",
@@ -49,7 +34,7 @@ public partial class Basic : IAslHelper
 
         if (!closing)
         {
-            Texts.RemoveAll();
+            //Texts.RemoveAll();
         }
     }
 }

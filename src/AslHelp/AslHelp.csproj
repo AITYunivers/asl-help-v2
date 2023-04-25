@@ -10,11 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Basic.cs" />
-    <Compile Remove="Basic.Game.cs" />
-    <Compile Remove="Basic.IO.cs" />
-    <Compile Remove="Basic.Memory.cs" />
-    <Compile Remove="Basic.Pointers.cs" />
     <Compile Remove="Basic.Setup.cs" />
   </ItemGroup>
 

@@ -87,7 +87,6 @@ public abstract partial class AslHelperBase
 
         Debug.Info("Initializing asl-help...");
 
-        AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
         Complete();
 
         if (_generateCode)
@@ -101,19 +100,5 @@ public abstract partial class AslHelperBase
         _isCompleted = true;
 
         return this;
-    }
-
-    protected static Assembly AssemblyResolve(object sender, ResolveEventArgs e)
-    {
-        string name = e.Name;
-        int i = name.IndexOf(',');
-        if (i == -1)
-        {
-            ThrowHelper.Throw.Argument(nameof(e.Name), "Assembly name was in an unexpected format.");
-        }
-
-        string file = $"Components/{name[..i]}.dll";
-
-        return File.Exists(file) ? Assembly.LoadFrom(file) : null;
     }
 }

@@ -1,10 +1,10 @@
 ﻿using AslHelp.Core.IO;
+using AslHelp.Core.IO.Logging;
+using AslHelp.Core.LiveSplitInterop;
 using AslHelp.Core.LiveSplitInterop.Settings;
 using AslHelp.Core.LiveSplitInterop.Texts;
-using AslHelp.Core.LiveSplitInterop;
-using AslHelp.Core.Memory.Pointers;
-using AslHelp.Core.IO.Logging;
 using AslHelp.Core.Memory.IO;
+using AslHelp.Core.Memory.Pointers;
 
 namespace AslHelp.Core.Helping.Asl.Contracts;
 

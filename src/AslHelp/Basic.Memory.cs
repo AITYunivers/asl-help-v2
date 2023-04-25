@@ -4,12 +4,10 @@ using AslHelp.Core.Memory.IO;
 public partial class Basic
 {
     private IMemoryManager _memory;
-    public IMemoryManager Memory
+    protected override IMemoryManager Memory
     {
         get
         {
-            EnsureInitialized();
-
             if (_memory is null && Game is Process game)
             {
                 InitMemory(game);
@@ -19,7 +17,7 @@ public partial class Basic
         }
     }
 
-    private void InitMemory(Process process)
+    protected override void InitMemory(Process process)
     {
         Debug.Info("Initiating memory...");
 
@@ -29,12 +27,12 @@ public partial class Basic
 
             if (process.TryInjectAslCoreNative())
             {
-                Debug.Info("  => Success.");
+                Debug.Info("    => Success.");
                 Debug.Info("  => Connecting named pipe...");
 
                 try
                 {
-                    _memory = new PipeMemoryManager(process, Logger, "asl-help-pipe", _timeout);
+                    _memory = new PipeMemoryManager(process, _logger, "asl-help-pipe", _timeout);
 
                     Debug.Info("    => Success.");
 
@@ -42,21 +40,21 @@ public partial class Basic
                 }
                 catch (TimeoutException)
                 {
-                    Debug.Warn("  => Timed out!");
+                    Debug.Warn("    => Timed out!");
                 }
             }
             else
             {
-                Debug.Warn("  => Failure!");
+                Debug.Warn("    => Failure!");
             }
         }
 
         Debug.Info("  => Using Win32 API for memory reading.");
 
-        _memory = new WinApiMemoryManager(process, Logger);
+        _memory = new WinApiMemoryManager(process, _logger);
     }
 
-    private void DisposeMemory()
+    protected override void DisposeMemory()
     {
         _memory?.Dispose();
         _memory = null;

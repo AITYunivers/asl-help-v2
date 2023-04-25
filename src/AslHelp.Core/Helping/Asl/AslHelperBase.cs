@@ -35,7 +35,6 @@ public abstract partial class AslHelperBase
             ThrowHelper.Throw.InvalidOperation(msg);
         }
 
-        AppDomain.CurrentDomain.AssemblyResolve -= AssemblyResolve;
         DisposeMemory();
 
         Shutdown();

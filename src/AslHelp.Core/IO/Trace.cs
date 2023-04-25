@@ -2,7 +2,7 @@
 
 internal class Trace : IReadOnlyCollection<string>
 {
-    private StackTrace Stack => new();
+    private StackTrace Stack => new(6);
     private StackFrame[] Frames => Stack.GetFrames();
 
     public int Count => Stack.FrameCount;
