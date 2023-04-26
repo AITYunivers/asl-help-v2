@@ -1,19 +1,38 @@
 ﻿namespace AslHelp.Core.Collections;
 
+/// <summary>
+///     The <see cref="CachedEnumerable{TKey, TValue}"/> class
+///     provides an abstract interface for enumerable collections with an internal cache.<br/>
+///     The cache is populated during enumeration and can be accessed using a key corresponding to the value.
+/// </summary>
+/// <typeparam name="TKey">The type of the keys for the <see cref="CachedEnumerable{TKey, TValue}"/>.</typeparam>
+/// <typeparam name="TValue">The type of the values in the <see cref="CachedEnumerable{TKey, TValue}"/>.</typeparam>
 public abstract class CachedEnumerable<TKey, TValue> : IEnumerable<TValue> where TKey : notnull
 {
     private readonly IEqualityComparer<TKey> _comparer;
     protected readonly Dictionary<TKey, TValue> _cache;
 
-    public CachedEnumerable()
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CachedEnumerable{TKey, TValue}"/> class
+    ///     with the default equality comparer for <typeparamref name="TKey"/>.
+    /// </summary>
+    protected CachedEnumerable()
         : this(EqualityComparer<TKey>.Default) { }
 
-    public CachedEnumerable(IEqualityComparer<TKey> comparer)
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CachedEnumerable{TKey, TValue}"/> class
+    ///     with the specified equality comparer for <typeparamref name="TKey"/>.
+    /// </summary>
+    /// <param name="comparer"></param>
+    protected CachedEnumerable(IEqualityComparer<TKey> comparer)
     {
         _comparer = comparer;
         _cache = new(comparer);
     }
 
+    /// <summary>
+    ///     Gets the number of elements contained in the <see cref="CachedEnumerable{TKey, TValue}"/>'s cache.
+    /// </summary>
     public int Count => _cache.Count;
 
     public abstract IEnumerator<TValue> GetEnumerator();

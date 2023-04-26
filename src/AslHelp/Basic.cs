@@ -34,7 +34,7 @@ public partial class Basic
 
         if (!closing)
         {
-            //Texts.RemoveAll();
+            Texts.RemoveAll();
         }
     }
 }
