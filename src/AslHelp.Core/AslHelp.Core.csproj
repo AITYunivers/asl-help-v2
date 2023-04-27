@@ -1,25 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <LangVersion>latest</LangVersion>
-    <TargetFramework>net481</TargetFramework>
-
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
-
   <ItemGroup>
     <InternalsVisibleTo Include="AslHelp" />
+    <InternalsVisibleTo Include="AslHelp.Emu" />
+    <InternalsVisibleTo Include="AslHelp.GameMaker" />
+    <InternalsVisibleTo Include="AslHelp.Unity" />
+    <InternalsVisibleTo Include="AslHelp.Unreal" />
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="System" />
-    <Using Include="System.Collections" />
-    <Using Include="System.Collections.Generic" />
-    <Using Include="System.Diagnostics" />
-    <Using Include="System.IO" />
-    <Using Include="System.Linq" />
     <Using Include="System.Reflection" />
     <Using Include="System.Runtime.CompilerServices" />
     <Using Include="System.Runtime.InteropServices" />

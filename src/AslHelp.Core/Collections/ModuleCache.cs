@@ -7,9 +7,26 @@ public sealed class ModuleCache : CachedEnumerable<string, Module>
     private readonly int _processId;
     private readonly nint _processHandle;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ModuleCache"/> class
+    ///     with the specified <see cref="Process"/>.
+    /// </summary>
+    /// <param name="process">The target <see cref="Process"/> whose modules are to be enumerated.</param>
     public ModuleCache(Process process)
         : this(process.Id, process.Handle) { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ModuleCache"/> class
+    ///     with the specified process ID and handle.
+    /// </summary>
+    /// <param name="processId">
+    ///     The <see cref="Process.Id"/> of the target <see cref="Process"/>
+    ///     whose modules are to be enumerated.
+    /// </param>
+    /// <param name="processHandle">
+    ///     The <see cref="Process.Handle"/> of the target <see cref="Process"/>
+    ///     whose modules are to be enumerated.
+    /// </param>
     public ModuleCache(int processId, nint processHandle)
         : base(StringComparer.OrdinalIgnoreCase)
     {
@@ -17,6 +34,9 @@ public sealed class ModuleCache : CachedEnumerable<string, Module>
         _processHandle = processHandle;
     }
 
+    /// <summary>
+    ///     Returns an enumerator that iterates through the <see cref="ModuleCache"/>.
+    /// </summary>
     public override IEnumerator<Module> GetEnumerator()
     {
         foreach (Module module in Native.ModulesTh32(_processHandle, _processId))
