@@ -4,8 +4,19 @@ namespace AslHelp.Core.Exceptions;
 
 internal static partial class ThrowHelper
 {
+    /// <summary>
+    ///     The <see cref="Throw"/> class
+    ///     provides wrapper methods for throwing exceptions. This reduces codegen for unlikely branches.
+    /// </summary>
     public static class Throw
     {
+        /// <summary>
+        ///     Throws an <see cref="ArgumentException"/> with a specified error message
+        ///     and the name of the parameter that causes this exception.
+        /// </summary>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
+        /// <param name="message">The error message that explains the reason for the exception.</param>
+        /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void Argument(string paramName, string message)
         {
