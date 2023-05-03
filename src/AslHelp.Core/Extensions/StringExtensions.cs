@@ -2,8 +2,22 @@
 
 namespace AslHelp.Core.Extensions;
 
+/// <summary>
+///     The <see cref="StringExtensions"/> class
+///     provides useful extension methods for the <see cref="string"/> type.
+/// </summary>
 internal static class StringExtensions
 {
+    /// <summary>
+    ///     Provides an optimized method for removing all whitespace from a string.
+    /// </summary>
+    /// <param name="value">The string to remove the whitespace characters from.</param>
+    /// <returns>
+    ///     The string with all whitespace removed.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when <paramref name="value"/> is <see langword="null"/>.
+    /// </exception>
     public static unsafe string RemoveWhiteSpace(this string value)
     {
         ThrowHelper.ThrowIfNull(value);
@@ -26,17 +40,32 @@ internal static class StringExtensions
         }
     }
 
-    public static string Concat(this string[] source)
+    /// <summary>
+    ///     Provides an optimized method to concatenate the elements of a specified <see cref="string"/> array.
+    /// </summary>
+    /// <param name="values">The collection of strings to concatenate.</param>
+    /// <returns>
+    ///     The concatenated elements of <paramref name="values"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when <paramref name="values"/> is <see langword="null"/>.
+    /// </exception>
+    public static string Concat(this string[] values)
     {
-        ThrowHelper.ThrowIfNullOrEmpty(source);
+        ThrowHelper.ThrowIfNull(values);
+
+        if (values.Length == 0)
+        {
+            return "";
+        }
 
         int length = 0;
-        foreach (string s in source)
+        foreach (string s in values)
         {
             length += s.Length;
         }
 
-        ReadOnlySpan<string> strings = source;
+        ReadOnlySpan<string> strings = values;
         Span<char> buffer = stackalloc char[length];
 
         for (int i = 0, offset = 0; i < strings.Length; i++)

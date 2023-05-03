@@ -4,7 +4,7 @@ namespace AslHelp.Core.Extensions;
 
 /// <summary>
 ///     The <see cref="ArrayPoolExtensions"/> class
-///     provides useful extension methods for the <see cref="ArrayPool{T}"/> class.
+///     provides useful extension methods for the <see cref="ArrayPool{T}"/> type.
 /// </summary>
 internal static class ArrayPoolExtensions
 {
@@ -14,7 +14,7 @@ internal static class ArrayPoolExtensions
     /// <typeparam name="T">The type of the objects that are in the resource pool.</typeparam>
     /// <param name="minimumLength">The minimum length of the array.</param>
     /// <returns>
-    ///     An array of type <typeparamref name="T"/>[] that is at least <paramref name="minimumLength"/> in length.
+    ///     An array of type <typeparamref name="T"/> that is at least <paramref name="minimumLength"/> in length.
     /// </returns>
     public static T[] Rent<T>(int minimumLength)
     {
@@ -23,7 +23,7 @@ internal static class ArrayPoolExtensions
 
     /// <summary>
     ///     If <paramref name="array"/> is not <see langword="null"/>,
-    ///     returns an array to the pool that was previously obtained using the <see cref="ArrayPool{T}.Rent(int)"/>
+    ///     returns it to the pool that it was previously obtained from using the <see cref="ArrayPool{T}.Rent(int)"/>
     ///     method on the same <see cref="ArrayPool{T}"/> instance.
     /// </summary>
     /// <typeparam name="T">The type of the objects that are in the resource pool.</typeparam>

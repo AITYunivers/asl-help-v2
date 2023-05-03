@@ -34,8 +34,8 @@ internal static partial class ThrowHelper
     }
 
     /// <summary>
-    ///     Throws an <see cref="ArgumentNullException"/> if <paramref name="argument"/> is <see langword="null"/>.<br/>
-    ///     Throws an <see cref="ArgumentException"/> if <paramref name="argument"/> is empty.
+    ///     Throws an <see cref="ArgumentNullException"/> if <paramref name="collection"/> is <see langword="null"/>.<br/>
+    ///     Throws an <see cref="ArgumentException"/> if <paramref name="collection"/> is empty.
     /// </summary>
     /// <param name="collection">The collection argument to validate as non-<see langword="null"/> and non-empty.</param>
     /// <param name="message">An optional message to include in the exception.</param>

@@ -1,7 +1,19 @@
 ﻿namespace AslHelp.Core.Extensions;
 
+/// <summary>
+///     The <see cref="CharExtensions"/> class
+///     provides useful extension methods for the <see cref="char"/> type.
+/// </summary>
 internal static class CharExtensions
 {
+    /// <summary>
+    ///     Converts a hexadecimal character to its decimal value.
+    /// </summary>
+    /// <param name="c">The hexadecimal character to convert.</param>
+    /// <returns>
+    ///     The decimal value of <paramref name="c"/> if it is a valid hexadecimal character;
+    ///     otherwise, <c>0xFF</c>.
+    /// </returns>
     public static byte ToHexValue(this char c)
     {
         int digit = c - '0';

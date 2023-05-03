@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Core.Collections;
+﻿using AslHelp.Core.Exceptions;
+
+namespace AslHelp.Core.Collections;
 
 /// <summary>
 ///     The <see cref="CachedEnumerable{TKey, TValue}"/> class
@@ -25,8 +27,13 @@ public abstract class CachedEnumerable<TKey, TValue> : IEnumerable<TValue>
     ///     with the specified equality comparer for <typeparamref name="TKey"/>.
     /// </summary>
     /// <param name="comparer"></param>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when <paramref name="comparer"/> is <see langword="null"/>.
+    /// </exception>
     protected CachedEnumerable(IEqualityComparer<TKey> comparer)
     {
+        ThrowHelper.ThrowIfNull(comparer);
+
         _comparer = comparer;
         _cache = new(comparer);
     }
@@ -75,8 +82,7 @@ public abstract class CachedEnumerable<TKey, TValue> : IEnumerable<TValue>
     ///     Retrieves a custom message for when <see cref="this[TKey]"/> is called
     ///     with a key that is not present in the <see cref="CachedEnumerable{TKey, TValue}"/>.
     /// </summary>
-    /// <param name="key"></param>
-    /// <returns></returns>
+    /// <param name="key">The <typeparamref name="TKey"/> that was searched for.</param>
     protected virtual string KeyNotFoundMessage(TKey key)
     {
         return $"The given key '{key}' was not present in the cached collection.";

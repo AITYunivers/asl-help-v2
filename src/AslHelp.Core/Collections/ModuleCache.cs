@@ -45,11 +45,23 @@ public sealed class ModuleCache : CachedEnumerable<string, Module>
         }
     }
 
+    /// <summary>
+    ///     Gets a unique identifier for the given <see cref="Module"/>.
+    /// </summary>
+    /// <param name="value">The <see cref="Module"/> whose unique identifier is to be gotten.</param>
+    /// <returns>
+    ///     The <see cref="Module.Name"/> property of the given <see cref="Module"/>.
+    /// </returns>
     protected override string GetKey(Module value)
     {
         return value.Name;
     }
 
+    /// <summary>
+    ///     Retrieves a custom message for when <see cref="this[string]"/> is called
+    ///     with the name of a <see cref="Module"/> that is not present in the target process.
+    /// </summary>
+    /// <param name="key">The name that was searched for.</param>
     protected override string KeyNotFoundMessage(string key)
     {
         return $"The given module '{key}' was not present in the process.";
