@@ -16,7 +16,7 @@ public sealed partial class Pointer<T>
 
     protected override bool TryUpdate(out T result)
     {
-        return _manager.TryRead(out result, Address);
+        return _manager.TryRead(out result, DerefOffsets());
     }
 
     protected override bool CheckChanged(T old, T current)
@@ -26,7 +26,7 @@ public sealed partial class Pointer<T>
 
     protected override bool Write(T value)
     {
-        return _manager.Write(value, Address);
+        return _manager.Write(value, DerefOffsets());
     }
 
     public override string ToString()

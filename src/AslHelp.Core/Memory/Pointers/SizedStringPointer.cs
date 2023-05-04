@@ -24,7 +24,7 @@ public sealed class SizedStringPointer
 
     protected override bool TryUpdate(out string result)
     {
-        return _manager.TryReadSizedString(out result, _stringType, Address);
+        return _manager.TryReadSizedString(out result, _stringType, DerefOffsets());
     }
 
     protected override bool CheckChanged(string old, string current)

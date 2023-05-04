@@ -1,7 +1,6 @@
 ﻿namespace AslHelp.Core.Reflection;
 
-public sealed class TypeDefinition<T>
-    : ITypeDefinition<T>
+public sealed class TypeDefinition<T> : ITypeDefinition<T>
     where T : unmanaged
 {
     public T Default { get; } = default;

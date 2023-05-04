@@ -98,18 +98,15 @@ public abstract class PointerBase<TOut>
 
     public bool Changed => CheckChanged(_old, _current);
 
-    protected nint Address
+    protected nint DerefOffsets()
     {
-        get
+        if (_parent is null)
         {
-            if (_parent is null)
-            {
-                return _manager.Deref(_baseAddress, _offsets);
-            }
-            else
-            {
-                return _manager.Deref(_parent.Current + _baseOffset, _offsets);
-            }
+            return _manager.Deref(_baseAddress, _offsets);
+        }
+        else
+        {
+            return _manager.Deref(_parent.Current + _baseOffset, _offsets);
         }
     }
 
@@ -163,10 +160,10 @@ public abstract class PointerBase<TOut>
         _tick = 0;
     }
 
+    public abstract override string ToString();
     protected abstract bool TryUpdate(out TOut result);
     protected abstract bool CheckChanged(TOut old, TOut current);
     protected abstract bool Write(TOut value);
-    public abstract override string ToString();
 
     protected string OffsetsToString()
     {
