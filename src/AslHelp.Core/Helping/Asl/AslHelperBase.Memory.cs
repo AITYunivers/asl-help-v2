@@ -1,4 +1,6 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using AslHelp.Common.Exceptions;
 using AslHelp.Core.Helping.Asl.Contracts;
 using AslHelp.Core.LiveSplitInterop;
 using AslHelp.Core.Memory.IO;
@@ -15,7 +17,7 @@ public abstract partial class AslHelperBase
             if (action is "startup" or "exit" or "shutdown")
             {
                 string msg = $"Attempted to access the memory manager in the '{action}' action.";
-                ThrowHelper.Throw.InvalidOperation(msg);
+                ThrowHelper.ThrowInvalidOperationException(msg);
             }
 
             return Memory;

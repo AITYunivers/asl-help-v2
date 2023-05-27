@@ -1,4 +1,7 @@
-﻿using LiveSplit.ComponentUtil;
+﻿using System;
+using System.Runtime.CompilerServices;
+using AslHelp.Common.Resources;
+using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.Pointers;
 

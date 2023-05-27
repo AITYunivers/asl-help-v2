@@ -1,5 +1,7 @@
-﻿using System.Reflection;
-using AslHelp.Core.Exceptions;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using AslHelp.Common.Exceptions;
 using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;
 
@@ -30,7 +32,7 @@ public partial class Basic
         int i = name.IndexOf(',');
         if (i == -1)
         {
-            ThrowHelper.Throw.Argument(nameof(e.Name), "Assembly name was in an unexpected format.");
+            ThrowHelper.ThrowArgumentException(nameof(e.Name), "Assembly name was in an unexpected format.");
         }
 
         string file = $"Components/{name[..i]}.dll";

@@ -1,7 +1,6 @@
 ﻿namespace AslHelp.Core.IO.Logging;
 
-public sealed class DebugLogger
-    : ILogger
+public sealed class DebugLogger : ILogger
 {
     public void Start() { }
 

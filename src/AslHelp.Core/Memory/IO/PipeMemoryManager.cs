@@ -1,7 +1,10 @@
-﻿using System.IO.Pipes;
-using AslHelp.Core.Exceptions;
+﻿using System;
+using System.Diagnostics;
+using System.IO.Pipes;
+using System.Runtime.InteropServices;
+using AslHelp.Common.Exceptions;
+using AslHelp.Common.Pipes;
 using AslHelp.Core.IO.Logging;
-using AslHelp.Core.Memory.Injection;
 using CommunityToolkit.HighPerformance;
 
 namespace AslHelp.Core.Memory.IO;
@@ -28,17 +31,17 @@ public sealed unsafe class PipeMemoryManager : MemoryManagerBase
     {
         if (!pipe.IsConnected)
         {
-            ThrowHelper.Throw.InvalidOperation("Pipe was not connected.");
+            ThrowHelper.ThrowInvalidOperationException("Pipe was not connected.");
         }
 
         if (!pipe.CanRead)
         {
-            ThrowHelper.Throw.InvalidOperation("Pipe was not readable.");
+            ThrowHelper.ThrowInvalidOperationException("Pipe was not readable.");
         }
 
         if (!pipe.CanWrite)
         {
-            ThrowHelper.Throw.InvalidOperation("Pipe was not writable.");
+            ThrowHelper.ThrowInvalidOperationException("Pipe was not writable.");
         }
 
         _pipe = pipe;

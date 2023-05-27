@@ -1,4 +1,4 @@
-﻿namespace AslHelp.Core.Memory.Injection;
+﻿namespace AslHelp.Common.Pipes;
 
 public enum PipeResponseCode
 {

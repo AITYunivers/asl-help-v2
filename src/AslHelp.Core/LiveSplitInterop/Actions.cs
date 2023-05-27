@@ -1,4 +1,5 @@
-﻿using AslHelp.Core.Reflection;
+﻿using System;
+using AslHelp.Core.Reflection;
 using CommunityToolkit.HighPerformance;
 using LiveSplit.ASL;
 
@@ -94,7 +95,7 @@ internal static class Actions
             Debug.Info($"       `{code}`");
         }
 
-        private void Update()
+        private readonly void Update()
         {
             ASLMethod method = new(Body, Name, Line);
             _methods.SetFieldValue(Name, method);

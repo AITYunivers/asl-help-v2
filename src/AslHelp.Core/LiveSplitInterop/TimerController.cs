@@ -1,4 +1,7 @@
-﻿namespace AslHelp.Core.LiveSplitInterop;
+﻿using System;
+using LiveSplit.Model;
+
+namespace AslHelp.Core.LiveSplitInterop;
 
 public sealed class TimerController
 {

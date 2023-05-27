@@ -1,9 +1,14 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AslHelp.Common.Exceptions;
 
 namespace AslHelp.Core.IO.Logging;
 
-public sealed class FileLogger
-    : ILogger
+public sealed class FileLogger : ILogger
 {
     private readonly Queue<string> _queuedLines = new();
     private CancellationTokenSource _cancelSource = new();
@@ -17,23 +22,17 @@ public sealed class FileLogger
 
     public FileLogger(string path, int maximumLines, int linesToErase)
     {
-        if (maximumLines < 1)
-        {
-            string msg = "The file logger must allow at least 1 line.";
-            ThrowHelper.Throw.ArgumentOutOfRange(nameof(maximumLines), msg);
-        }
+        ThrowHelper.ThrowIfLessThan(
+            maximumLines, 1,
+            "The file logger must allow at least 1 line.");
 
-        if (linesToErase < 1)
-        {
-            string msg = "File logger must erase at least 1 line.";
-            ThrowHelper.Throw.ArgumentOutOfRange(nameof(linesToErase), msg);
-        }
+        ThrowHelper.ThrowIfLessThan(
+            linesToErase, 1,
+            "File logger must erase at least 1 line.");
 
-        if (linesToErase > maximumLines)
-        {
-            string msg = "The file logger's maximum lines must be greater or equal to the amount of lines to erase.";
-            ThrowHelper.Throw.InvalidOperation(msg);
-        }
+        ThrowHelper.ThrowIfLargerThan(
+            linesToErase, maximumLines,
+            "The file logger's maximum lines must be greater or equal to the amount of lines to erase.");
 
         FilePath = Path.GetFullPath(path);
         _maximumLines = maximumLines;
@@ -100,7 +99,7 @@ public sealed class FileLogger
         if (!_isRunning)
         {
             string msg = "Logger is not running.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         lock (_queuedLines)
@@ -115,7 +114,7 @@ public sealed class FileLogger
         if (!_isRunning)
         {
             string msg = "Logger is not running.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         lock (_queuedLines)

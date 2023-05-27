@@ -1,4 +1,5 @@
-﻿using AslHelp.Core.Memory.Pointers;
+﻿using System.Collections.Generic;
+using AslHelp.Core.Memory.Pointers;
 
 public partial class Basic
 {

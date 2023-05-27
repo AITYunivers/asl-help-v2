@@ -1,4 +1,7 @@
-﻿using LiveSplit.View;
+﻿using System.Windows.Forms;
+using LiveSplit.Model;
+using LiveSplit.UI;
+using LiveSplit.View;
 
 namespace AslHelp.Core.LiveSplitInterop;
 

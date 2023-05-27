@@ -2,8 +2,7 @@
 
 namespace AslHelp.Core.Memory.Pointers;
 
-public sealed partial class Pointer<T>
-    : PointerBase<T>
+public sealed partial class Pointer<T> : PointerBase<T>
     where T : unmanaged
 {
     public Pointer(IMemoryManager manager, nint baseAddress, params int[] offsets)

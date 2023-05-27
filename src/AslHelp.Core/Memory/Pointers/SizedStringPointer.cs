@@ -1,10 +1,10 @@
-﻿using AslHelp.Core.Memory.IO;
+﻿using System;
+using AslHelp.Core.Memory.IO;
 using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.Pointers;
 
-public sealed class SizedStringPointer
-    : PointerBase<string>
+public sealed class SizedStringPointer : PointerBase<string>
 {
     private readonly ReadStringType _stringType;
 

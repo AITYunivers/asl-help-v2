@@ -1,4 +1,7 @@
-﻿using AslHelp.Core.Memory;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using AslHelp.Core.Memory;
 
 namespace AslHelp.Core.Collections;
 

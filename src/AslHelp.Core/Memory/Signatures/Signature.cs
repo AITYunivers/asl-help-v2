@@ -1,5 +1,7 @@
-﻿using AslHelp.Core.Exceptions;
-using AslHelp.Core.Extensions;
+﻿using System;
+using System.Runtime.InteropServices;
+using AslHelp.Common.Exceptions;
+using AslHelp.Common.Extensions;
 
 namespace AslHelp.Core.Memory.Signatures;
 
@@ -19,7 +21,7 @@ public sealed class Signature
         if (signature.Length % 2 != 0)
         {
             string msg = "Signature was not in the expected format. All bytes must be fully specified.";
-            ThrowHelper.Throw.Argument(nameof(signature), msg);
+            ThrowHelper.ThrowArgumentException(nameof(signature), msg);
         }
 
         int bytes = signature.Length / 2;

@@ -1,4 +1,4 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using AslHelp.Common.Exceptions;
 using AslHelp.Core.Helping.Asl.Contracts;
 using AslHelp.Core.LiveSplitInterop;
 
@@ -15,7 +15,7 @@ public abstract partial class AslHelperBase
         if (Actions.CurrentAction != "exit")
         {
             string msg = $"Attempted to call {nameof(Exit)} outside of the 'exit' action.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         DisposeMemory();
@@ -32,7 +32,7 @@ public abstract partial class AslHelperBase
         if (Actions.CurrentAction != "shutdown")
         {
             string msg = $"Attempted to call {nameof(Shutdown)} outside of the 'shutdown' action.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         DisposeMemory();

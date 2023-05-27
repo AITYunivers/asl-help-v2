@@ -1,4 +1,10 @@
-﻿namespace AslHelp.Core.IO;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
+
+namespace AslHelp.Core.IO;
 
 internal class Trace : IReadOnlyCollection<string>
 {

@@ -1,4 +1,5 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System.Runtime.CompilerServices;
+using AslHelp.Common.Exceptions;
 using AslHelp.Core.Helping.Asl.Contracts;
 using AslHelp.Core.IO;
 using AslHelp.Core.IO.Logging;
@@ -38,7 +39,7 @@ public abstract partial class AslHelperBase
             if (Actions.CurrentAction != "startup")
             {
                 string msg = $"Attempted to access the settings creator outside of the 'startup' action.";
-                ThrowHelper.Throw.InvalidOperation(msg);
+                ThrowHelper.ThrowInvalidOperationException(msg);
             }
 
             return Settings;
@@ -58,7 +59,7 @@ public abstract partial class AslHelperBase
         if (Actions.CurrentAction != "startup")
         {
             string msg = "A file logger may only be initialized in the 'startup' action.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         CreateFileLogger(filePath);
@@ -71,7 +72,7 @@ public abstract partial class AslHelperBase
         if (Actions.CurrentAction != "startup")
         {
             string msg = "A file logger may only be initialized in the 'startup' action.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         CreateFileLogger(filePath, maxLines);
@@ -84,7 +85,7 @@ public abstract partial class AslHelperBase
         if (Actions.CurrentAction != "startup")
         {
             string msg = "A file logger may only be initialized in the 'startup' action.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         CreateFileLogger(filePath, maxLines, linesToErase);
@@ -99,7 +100,7 @@ public abstract partial class AslHelperBase
         if (Actions.CurrentAction is not "startup" or "init")
         {
             string msg = "A file watcher may only be initialized in the 'startup' or 'init' actions.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         return CreateFileWatcher(filePath);

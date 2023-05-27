@@ -1,4 +1,6 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using AslHelp.Common.Exceptions;
 using AslHelp.Core.Helping.Asl.Contracts;
 using AslHelp.Core.LiveSplitInterop;
 
@@ -40,7 +42,7 @@ public abstract partial class AslHelperBase
             if (action is "startup" or "exit" or "shutdown")
             {
                 string msg = $"Attempted to access game process in the '{action}' action.";
-                ThrowHelper.Throw.InvalidOperation(msg);
+                ThrowHelper.ThrowInvalidOperationException(msg);
             }
 
             return Game;
@@ -51,7 +53,7 @@ public abstract partial class AslHelperBase
             if (action is "startup" or "exit" or "shutdown")
             {
                 string msg = $"Attempted to set game process in the '{action}' action.";
-                ThrowHelper.Throw.InvalidOperation(msg);
+                ThrowHelper.ThrowInvalidOperationException(msg);
             }
 
             Game = value;

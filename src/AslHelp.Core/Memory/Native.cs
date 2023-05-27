@@ -1,5 +1,10 @@
-﻿using AslHelp.Core.Exceptions;
-using AslHelp.Core.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.CompilerServices;
+using AslHelp.Common.Exceptions;
+using AslHelp.Common.Extensions;
 using AslHelp.Core.Memory.Models;
 using static AslHelp.Core.Memory.WinApi;
 
@@ -17,7 +22,7 @@ public static unsafe class Native
         int wow64;
         if (IsWow64Process((void*)processHandle, &wow64) == 0)
         {
-            ThrowHelper.Throw.Win32();
+            ThrowHelper.ThrowWin32Exception();
         }
 
         return Environment.Is64BitOperatingSystem && wow64 == 0;
@@ -58,7 +63,7 @@ public static unsafe class Native
     {
         if (!EnumProcessModulesEx(processHandle, null, 0, out uint cbNeeded))
         {
-            ThrowHelper.Throw.Win32();
+            ThrowHelper.ThrowWin32Exception();
         }
 
         int numModules = (int)(cbNeeded / Unsafe.SizeOf<nint>());
@@ -66,28 +71,28 @@ public static unsafe class Native
 
         if (!EnumProcessModulesEx(processHandle, hModule, cbNeeded, out _))
         {
-            ThrowHelper.Throw.Win32();
+            ThrowHelper.ThrowWin32Exception();
         }
 
         for (int i = 0; i < numModules; i++)
         {
             if (!GetModuleBaseNameW(processHandle, hModule[i], out string baseName))
             {
-                ArrayPoolExtensions.Return(hModule);
+                ArrayPoolExtensions.ReturnIfNotNull(hModule);
 
                 yield break;
             }
 
             if (!GetModuleFileNameExW(processHandle, hModule[i], out string fileName))
             {
-                ArrayPoolExtensions.Return(hModule);
+                ArrayPoolExtensions.ReturnIfNotNull(hModule);
 
                 yield break;
             }
 
             if (!GetModuleInformation(processHandle, hModule[i], out MODULEINFO moduleInfo))
             {
-                ArrayPoolExtensions.Return(hModule);
+                ArrayPoolExtensions.ReturnIfNotNull(hModule);
 
                 yield break;
             }
@@ -110,7 +115,7 @@ public static unsafe class Native
         {
             if (!Module32FirstW(snapshot, ref me))
             {
-                ThrowHelper.Throw.Win32();
+                ThrowHelper.ThrowWin32Exception();
             }
 
             do
@@ -188,19 +193,19 @@ public static unsafe class Native
         {
             if (!SymInitializeW(processHandle, pdbDirectory))
             {
-                ThrowHelper.Throw.Win32();
+                ThrowHelper.ThrowWin32Exception();
             }
 
             try
             {
                 if (!SymLoadModuleExW(processHandle, module))
                 {
-                    ThrowHelper.Throw.Win32();
+                    ThrowHelper.ThrowWin32Exception();
                 }
 
                 if (!SymEnumSymbolsW(processHandle, module, pSyms))
                 {
-                    ThrowHelper.Throw.Win32();
+                    ThrowHelper.ThrowWin32Exception();
                 }
             }
             finally
@@ -221,7 +226,7 @@ public static unsafe class Native
 
         if (hProcess == null)
         {
-            ThrowHelper.Throw.ArgumentNull(nameof(hProcess));
+            ThrowHelper.ThrowArgumentNullException(nameof(hProcess));
         }
 
         uint length = (uint)((value.Length + 1) * sizeof(char));
@@ -234,7 +239,7 @@ public static unsafe class Native
 
         if (memory == null)
         {
-            ThrowHelper.Throw.Win32();
+            ThrowHelper.ThrowWin32Exception();
         }
 
         fixed (char* pValue = value)
@@ -244,7 +249,7 @@ public static unsafe class Native
             if (WriteProcessMemory(hProcess, memory, pValue, length, &nWritten) == 0
                 || nWritten != length)
             {
-                ThrowHelper.Throw.Win32();
+                ThrowHelper.ThrowWin32Exception();
             }
         }
 

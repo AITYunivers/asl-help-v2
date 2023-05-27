@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace AslHelp.Core.Memory;
 
 internal static unsafe partial class WinApi

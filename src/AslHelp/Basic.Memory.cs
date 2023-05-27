@@ -1,4 +1,6 @@
-﻿using AslHelp.Core.Memory.Injection;
+﻿using System;
+using System.Diagnostics;
+using AslHelp.Core.Memory.Injection;
 using AslHelp.Core.Memory.IO;
 
 public partial class Basic

@@ -1,4 +1,5 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System.Runtime.CompilerServices;
+using AslHelp.Common.Exceptions;
 using AslHelp.Core.Helping.Asl.Contracts;
 using AslHelp.Core.LiveSplitInterop;
 using AslHelp.Core.Memory.Pointers;
@@ -35,7 +36,7 @@ public abstract partial class AslHelperBase
             if (action is "startup" or "exit" or "shutdown")
             {
                 string msg = $"Attempted to access the pointer factory in the '{action}' action.";
-                ThrowHelper.Throw.InvalidOperation(msg);
+                ThrowHelper.ThrowInvalidOperationException(msg);
             }
 
             return Pointers;

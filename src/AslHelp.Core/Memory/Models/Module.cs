@@ -1,6 +1,9 @@
-﻿namespace AslHelp.Core.Memory.Models;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 
-public sealed record Module
+namespace AslHelp.Core.Memory.Models;
+
+public sealed class Module
 {
     private readonly nint _processHandle;
 

@@ -1,4 +1,5 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System.Collections.Generic;
+using AslHelp.Common.Exceptions;
 using LiveSplit.UI.Components;
 
 namespace AslHelp.Core.LiveSplitInterop.Texts;
@@ -82,7 +83,7 @@ public sealed class TextComponentController
         if (empty1 && empty2)
         {
             string msg = "At least one text must be provided.";
-            ThrowHelper.Throw.Argument("text1_text2", msg);
+            ThrowHelper.ThrowArgumentException("text1_text2", msg);
         }
 
         IList<ILayoutComponent> components = Timer.Layout.LayoutComponents;

@@ -1,4 +1,6 @@
-﻿public partial class Basic
+﻿using System.Diagnostics;
+
+public partial class Basic
 {
     private string _gameName;
     protected override string GameName

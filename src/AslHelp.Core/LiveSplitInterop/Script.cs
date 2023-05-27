@@ -1,4 +1,8 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using AslHelp.Common.Exceptions;
 using AslHelp.Core.Reflection;
 using Irony.Parsing;
 using LiveSplit.ASL;
@@ -42,7 +46,7 @@ internal static class Script
         if (component is null)
         {
             Debug.Error("    => Failure! ASLComponent could not be found.");
-            ThrowHelper.Throw.InvalidOperation("ASLComponent not found.");
+            ThrowHelper.ThrowInvalidOperationException("ASLComponent not found.");
         }
 
         _component = component;

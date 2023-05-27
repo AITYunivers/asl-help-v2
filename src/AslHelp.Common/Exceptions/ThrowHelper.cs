@@ -1,10 +1,15 @@
-﻿namespace AslHelp.Core.Exceptions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+
+namespace AslHelp.Common.Exceptions;
 
 /// <summary>
 ///     The <see cref="ThrowHelper"/> class
 ///     provides helper methods for throwing exceptions.
 /// </summary>
-internal static partial class ThrowHelper
+public static partial class ThrowHelper
 {
     /// <summary>
     ///     Throws an <see cref="ArgumentNullException"/> if <paramref name="argument"/> is <see langword="null"/>.
@@ -24,11 +29,11 @@ internal static partial class ThrowHelper
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                Throw.ArgumentNull(paramName);
+                ThrowArgumentNullException(paramName);
             }
             else
             {
-                Throw.ArgumentNull(paramName, message);
+                ThrowArgumentNullException(paramName, message);
             }
         }
     }
@@ -50,18 +55,18 @@ internal static partial class ThrowHelper
     {
         if (collection is null)
         {
-            Throw.ArgumentNull(paramName);
+            ThrowArgumentNullException(paramName);
         }
 
         if (!collection.Any())
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                Throw.Argument(paramName, "Collection cannot be empty.");
+                ThrowArgumentException(paramName, "Collection cannot be empty.");
             }
             else
             {
-                Throw.Argument(paramName, message);
+                ThrowArgumentException(paramName, message);
             }
         }
     }
@@ -82,7 +87,7 @@ internal static partial class ThrowHelper
     {
         if (address <= 0)
         {
-            Throw.ArgumentOutOfRange(paramName, message);
+            ThrowArgumentOutOfRangeException(paramName, message);
         }
     }
 
@@ -107,11 +112,11 @@ internal static partial class ThrowHelper
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                Throw.ArgumentOutOfRange(paramName, $"'{paramName}' must be larger than {min}.");
+                ThrowArgumentOutOfRangeException(paramName, $"'{paramName}' must be larger than {min}.");
             }
             else
             {
-                Throw.ArgumentOutOfRange(paramName, message);
+                ThrowArgumentOutOfRangeException(paramName, message);
             }
         }
     }
@@ -137,11 +142,11 @@ internal static partial class ThrowHelper
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                Throw.ArgumentOutOfRange(paramName, $"'{paramName}' must be less than {max}.");
+                ThrowArgumentOutOfRangeException(paramName, $"'{paramName}' must be less than {max}.");
             }
             else
             {
-                Throw.ArgumentOutOfRange(paramName, message);
+                ThrowArgumentOutOfRangeException(paramName, message);
             }
         }
     }

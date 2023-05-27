@@ -1,6 +1,6 @@
-﻿namespace AslHelp.Core.Memory.Injection;
+﻿namespace AslHelp.Common.Pipes;
 
-internal enum PipeRequestCode
+public enum PipeRequestCode
 {
     ClosePipe,
 

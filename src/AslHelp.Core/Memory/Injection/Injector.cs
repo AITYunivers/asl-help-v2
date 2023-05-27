@@ -1,4 +1,7 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System.Diagnostics;
+using System.IO;
+using AslHelp.Common.Exceptions;
+using AslHelp.Common.Resources;
 using AslHelp.Core.IO;
 
 namespace AslHelp.Core.Memory.Injection;
@@ -40,7 +43,7 @@ public static unsafe class Injector
         modulePath = Path.GetFullPath(modulePath);
         if (!File.Exists(modulePath))
         {
-            ThrowHelper.Throw.FileNotFound(modulePath, "Unable to find the specified module to inject.");
+            ThrowHelper.ThrowFileNotFoundException(modulePath, "Unable to find the specified module to inject.");
         }
 
         int processId = process.Id;
@@ -103,12 +106,12 @@ public static unsafe class Injector
             {
                 if (WinApi.WaitForSingleObject(hThread, uint.MaxValue) != 0)
                 {
-                    ThrowHelper.Throw.Win32();
+                    ThrowHelper.ThrowWin32Exception();
                 }
 
                 if (WinApi.GetExitCodeThread(hThread, &exitCode) == 0)
                 {
-                    ThrowHelper.Throw.Win32();
+                    ThrowHelper.ThrowWin32Exception();
                 }
             }
             finally
@@ -118,7 +121,7 @@ public static unsafe class Injector
 
             if (WinApi.VirtualFreeEx(hProcess, pModuleAlloc, 0, MemState.MEM_RELEASE) == 0)
             {
-                ThrowHelper.Throw.Win32();
+                ThrowHelper.ThrowWin32Exception();
             }
 
             return exitCode != 0;

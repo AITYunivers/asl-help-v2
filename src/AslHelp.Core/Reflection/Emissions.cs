@@ -1,4 +1,8 @@
-﻿using System.Reflection.Emit;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
+using System.Reflection.Emit;
 using LiveSplit.ASL;
 
 namespace AslHelp.Core.Reflection;
@@ -67,10 +71,10 @@ internal static class Emissions<T>
 
             DynamicMethod dm = new(nameof(GetBackingArray), typeof((T[], int)), new[] { typeof(List<T>) }, true);
 
-            FieldInfo fiItems = typeof(List<T>).GetField("_items", BindingFlags.Instance | BindingFlags.NonPublic)!;
-            FieldInfo fiSize = typeof(List<T>).GetField("_size", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            FieldInfo fiItems = typeof(List<T>).GetField("_items", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo fiSize = typeof(List<T>).GetField("_size", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            ConstructorInfo ctor = typeof((T[], int)).GetConstructor(new[] { typeof(T[]), typeof(int) })!;
+            ConstructorInfo ctor = typeof((T[], int)).GetConstructor(new[] { typeof(T[]), typeof(int) });
 
             ILGenerator il = dm.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);

@@ -1,4 +1,7 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AslHelp.Common.Exceptions;
 
 namespace AslHelp.Core.LiveSplitInterop.Settings;
 
@@ -176,7 +179,7 @@ public sealed partial class SettingsCreator
             if (pos is not (>= 0 and <= 4))
             {
                 string msg = $"All positions must be in range 0 - 4 (position {i} was {pos}).";
-                ThrowHelper.Throw.ArgumentOutOfRange(nameof(positions), msg);
+                ThrowHelper.ThrowArgumentOutOfRangeException(nameof(positions), msg);
             }
         }
 
@@ -184,7 +187,7 @@ public sealed partial class SettingsCreator
         if (positions.Length != innerCount)
         {
             string msg = $"Amount of positions for settings ({positions.Length}) did not equal collection's inner elements' count ({innerCount}).";
-            ThrowHelper.Throw.Argument(nameof(positions), msg);
+            ThrowHelper.ThrowArgumentException(nameof(positions), msg);
         }
 
         for (int i = 0; i < outerCount; i++)

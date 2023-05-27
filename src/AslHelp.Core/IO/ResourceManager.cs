@@ -1,4 +1,6 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System.IO;
+using System.Reflection;
+using AslHelp.Common.Exceptions;
 
 namespace AslHelp.Core.IO;
 
@@ -18,7 +20,7 @@ internal static class ResourceManager
 
         if (resourceStream is null)
         {
-            ThrowHelper.Throw.FileNotFound(resourceName, "Unable to find the specified resource.");
+            ThrowHelper.ThrowFileNotFoundException(resourceName, "Unable to find the specified resource.");
         }
 
         return resourceStream;

@@ -8,8 +8,7 @@ public interface ITypeDefinition
     unsafe object CreateInstance(byte* buffer);
 }
 
-public interface ITypeDefinition<T>
-    : ITypeDefinition
+public interface ITypeDefinition<T> : ITypeDefinition
 {
     new T Default { get; }
 

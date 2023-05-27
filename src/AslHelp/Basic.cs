@@ -1,7 +1,7 @@
-﻿using AslHelp.Core.Helping.Asl;
+﻿using System;
+using AslHelp.Core.Helping.Asl;
 
-public partial class Basic
-    : AslHelperBase
+public partial class Basic : AslHelperBase
 {
     protected override void Exit()
     {

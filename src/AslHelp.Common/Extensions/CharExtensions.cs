@@ -1,10 +1,10 @@
-﻿namespace AslHelp.Core.Extensions;
+﻿namespace AslHelp.Common.Extensions;
 
 /// <summary>
 ///     The <see cref="CharExtensions"/> class
 ///     provides useful extension methods for the <see cref="char"/> type.
 /// </summary>
-internal static class CharExtensions
+public static class CharExtensions
 {
     /// <summary>
     ///     Converts a hexadecimal character to its decimal value.

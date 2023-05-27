@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Core.Memory;
+﻿using System.Runtime.InteropServices;
+
+namespace AslHelp.Core.Memory;
 
 /// <summary>
 ///     Describes an entry from a list of the modules belonging to the specified process.

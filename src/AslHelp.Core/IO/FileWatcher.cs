@@ -1,4 +1,7 @@
-﻿namespace AslHelp.Core.IO;
+﻿using System;
+using System.IO;
+
+namespace AslHelp.Core.IO;
 
 public sealed class FileWatcher : IDisposable
 {

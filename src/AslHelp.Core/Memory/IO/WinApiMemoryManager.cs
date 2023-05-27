@@ -1,4 +1,7 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using AslHelp.Common.Exceptions;
 using AslHelp.Core.IO.Logging;
 
 namespace AslHelp.Core.Memory.IO;
@@ -15,7 +18,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
     {
         if (_isDisposed)
         {
-            ThrowHelper.Throw.InvalidOperation("Cannot interact with the memory of an exited process.");
+            ThrowHelper.ThrowInvalidOperationException("Cannot interact with the memory of an exited process.");
         }
 
         if (baseAddress == 0)

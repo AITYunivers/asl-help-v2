@@ -1,4 +1,6 @@
-﻿using AslHelp.Core.IO.Logging;
+﻿using System;
+using System.Windows.Forms;
+using AslHelp.Core.IO.Logging;
 
 namespace AslHelp.Core.IO;
 

@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Core.Memory;
+﻿using System.Runtime.InteropServices;
+
+namespace AslHelp.Core.Memory;
 
 #pragma warning disable IDE1006
 internal static unsafe partial class WinApi

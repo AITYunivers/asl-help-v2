@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Core.Memory.IO;
+﻿using System.Collections.Generic;
+
+namespace AslHelp.Core.Memory.IO;
 
 public interface IMemoryScanner
 {

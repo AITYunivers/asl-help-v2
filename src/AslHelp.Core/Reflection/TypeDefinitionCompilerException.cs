@@ -1,8 +1,10 @@
-﻿using System.CodeDom.Compiler;
+﻿using System;
+using System.CodeDom.Compiler;
+using System.Runtime.CompilerServices;
 using System.Text;
-using AslHelp.Core.Reflection;
+using AslHelp.Common.Exceptions;
 
-namespace AslHelp.Core.Exceptions;
+namespace AslHelp.Core.Reflection;
 
 /// <summary>
 ///     The exception that is thrown when the <see cref="TypeDefinitionFactory"/> encounters an error.

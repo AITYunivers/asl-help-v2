@@ -1,4 +1,7 @@
-﻿namespace AslHelp.Core.IO.Logging;
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace AslHelp.Core.IO.Logging;
 
 public sealed class MultiLogger
     : ILogger,

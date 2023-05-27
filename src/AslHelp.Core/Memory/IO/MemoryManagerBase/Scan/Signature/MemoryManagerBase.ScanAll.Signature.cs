@@ -1,4 +1,6 @@
-﻿using AslHelp.Core.Memory.Signatures;
+﻿using System.Collections.Generic;
+using System.Linq;
+using AslHelp.Core.Memory.Signatures;
 
 namespace AslHelp.Core.Memory.IO;
 

@@ -1,4 +1,5 @@
-﻿using AslHelp.Core.IO;
+﻿using System.Collections.Generic;
+using AslHelp.Core.IO;
 using AslHelp.Core.IO.Logging;
 using AslHelp.Core.LiveSplitInterop;
 using AslHelp.Core.LiveSplitInterop.Settings;

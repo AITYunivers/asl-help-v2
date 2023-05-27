@@ -1,4 +1,4 @@
-﻿using AslHelp.Core.Extensions;
+﻿using AslHelp.Common.Extensions;
 using AslHelp.Core.Reflection;
 
 namespace AslHelp.Core.Memory.IO;
@@ -14,7 +14,7 @@ public abstract partial class MemoryManagerBase
 
         bool success = WriteSpan<T>(rented.AsSpan(0, count), MainModule, baseOffset, offsets);
 
-        ArrayPoolExtensions.Return(rented);
+        ArrayPoolExtensions.ReturnIfNotNull(rented);
 
         return success;
     }
@@ -28,7 +28,7 @@ public abstract partial class MemoryManagerBase
 
         bool success = WriteSpan<T>(rented.AsSpan(0, count), Modules[moduleName], baseOffset, offsets);
 
-        ArrayPoolExtensions.Return(rented);
+        ArrayPoolExtensions.ReturnIfNotNull(rented);
 
         return success;
     }
@@ -42,7 +42,7 @@ public abstract partial class MemoryManagerBase
 
         bool success = WriteSpan<T>(rented.AsSpan(0, count), module, baseOffset, offsets);
 
-        ArrayPoolExtensions.Return(rented);
+        ArrayPoolExtensions.ReturnIfNotNull(rented);
 
         return success;
     }
@@ -56,7 +56,7 @@ public abstract partial class MemoryManagerBase
 
         bool success = WriteSpan<T>(rented.AsSpan(0, count), baseAddress, offsets);
 
-        ArrayPoolExtensions.Return(rented);
+        ArrayPoolExtensions.ReturnIfNotNull(rented);
 
         return success;
     }

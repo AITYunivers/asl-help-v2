@@ -1,4 +1,6 @@
-﻿using AslHelp.Core.Extensions;
+﻿using System;
+using AslHelp.Common.Extensions;
+using AslHelp.Common.Resources;
 using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.IO;
@@ -213,7 +215,7 @@ public abstract partial class MemoryManagerBase
 
         if (!TryReadSpan(buffer, baseAddress, offsets))
         {
-            ArrayPoolExtensions.Return(rented);
+            ArrayPoolExtensions.ReturnIfNotNull(rented);
 
             result = default;
             return false;
@@ -222,7 +224,7 @@ public abstract partial class MemoryManagerBase
         fixed (sbyte* pBuffer = buffer)
         {
             result = new string(pBuffer);
-            ArrayPoolExtensions.Return(rented);
+            ArrayPoolExtensions.ReturnIfNotNull(rented);
 
             return true;
         }
@@ -240,7 +242,7 @@ public abstract partial class MemoryManagerBase
 
         if (!TryReadSpan(buffer, baseAddress, offsets))
         {
-            ArrayPoolExtensions.Return(rented);
+            ArrayPoolExtensions.ReturnIfNotNull(rented);
 
             result = default;
             return false;
@@ -249,7 +251,7 @@ public abstract partial class MemoryManagerBase
         fixed (char* pBuffer = buffer)
         {
             result = new string(pBuffer);
-            ArrayPoolExtensions.Return(rented);
+            ArrayPoolExtensions.ReturnIfNotNull(rented);
 
             return true;
         }
@@ -266,7 +268,7 @@ public abstract partial class MemoryManagerBase
 
         if (!TryReadSpan(buffer, baseAddress, offsets))
         {
-            ArrayPoolExtensions.Return(rented);
+            ArrayPoolExtensions.ReturnIfNotNull(rented);
 
             result = default;
             return false;
@@ -280,7 +282,7 @@ public abstract partial class MemoryManagerBase
                 ? new string((char*)pBuffer)
                 : new string((sbyte*)pBuffer);
 
-            ArrayPoolExtensions.Return(rented);
+            ArrayPoolExtensions.ReturnIfNotNull(rented);
 
             return true;
         }

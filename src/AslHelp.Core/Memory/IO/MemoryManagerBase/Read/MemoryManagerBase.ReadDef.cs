@@ -1,4 +1,5 @@
-﻿using AslHelp.Core.Reflection;
+﻿using System;
+using AslHelp.Core.Reflection;
 
 namespace AslHelp.Core.Memory.IO;
 

@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Core.Memory;
+﻿using System;
+
+namespace AslHelp.Core.Memory;
 
 /// <summary>
 ///     Provides process-specific access rights.

@@ -1,4 +1,7 @@
-﻿namespace AslHelp.Core.Memory.Signatures;
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace AslHelp.Core.Memory.Signatures;
 
 public sealed unsafe class ScanEnumerator : IEnumerable<int>, IEnumerator<int>
 {

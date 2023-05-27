@@ -1,4 +1,4 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using AslHelp.Common.Exceptions;
 using AslHelp.Core.Helping.Asl.Contracts;
 using AslHelp.Core.LiveSplitInterop;
 
@@ -19,7 +19,7 @@ public abstract partial class AslHelperBase
             if (Actions.CurrentAction != "startup")
             {
                 string msg = "asl-help may only be initialized in the 'startup' action.";
-                ThrowHelper.Throw.InvalidOperation(msg);
+                ThrowHelper.ThrowInvalidOperationException(msg);
             }
 
             return this;
@@ -33,7 +33,7 @@ public abstract partial class AslHelperBase
         if (Actions.CurrentAction != "startup")
         {
             string msg = "Code may only be generated in the 'startup' action.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         _generateCode = true;
@@ -46,7 +46,7 @@ public abstract partial class AslHelperBase
         if (Actions.CurrentAction != "startup")
         {
             string msg = "Injection may only be enabled in the 'startup' action.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         _withInjection = true;
@@ -60,7 +60,7 @@ public abstract partial class AslHelperBase
         if (Actions.CurrentAction != "startup")
         {
             string msg = "Injection may only be enabled in the 'startup' action.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         _withInjection = true;
@@ -76,13 +76,13 @@ public abstract partial class AslHelperBase
         if (_isCompleted)
         {
             string msg = "asl-help is already initialized.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         if (Actions.CurrentAction != "startup")
         {
             string msg = "asl-help may only be initialized in the 'startup' action.";
-            ThrowHelper.Throw.InvalidOperation(msg);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         Debug.Info("Initializing asl-help...");

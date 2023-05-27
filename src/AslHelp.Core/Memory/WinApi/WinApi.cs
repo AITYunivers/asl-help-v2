@@ -1,4 +1,9 @@
-﻿using AslHelp.Core.Memory.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using AslHelp.Core.Memory.Models;
 
 namespace AslHelp.Core.Memory;
 

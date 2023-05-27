@@ -1,12 +1,14 @@
-﻿using AslHelp.Core.Collections;
-using AslHelp.Core.Exceptions;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using AslHelp.Common.Exceptions;
+using AslHelp.Core.Collections;
 using AslHelp.Core.IO.Logging;
 using AslHelp.Core.Memory.Models;
 
 namespace AslHelp.Core.Memory.IO;
 
-public abstract partial class MemoryManagerBase
-    : IMemoryManager
+public abstract partial class MemoryManagerBase : IMemoryManager
 {
     private readonly ILogger _logger;
 
@@ -18,7 +20,7 @@ public abstract partial class MemoryManagerBase
         ThrowHelper.ThrowIfNull(process);
         if (process.HasExited)
         {
-            ThrowHelper.Throw.InvalidOperation("Cannot interact with the memory of an exited process.");
+            ThrowHelper.ThrowInvalidOperationException("Cannot interact with the memory of an exited process.");
         }
 
         _logger = logger;

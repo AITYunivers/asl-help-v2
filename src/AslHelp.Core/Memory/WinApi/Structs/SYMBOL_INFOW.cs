@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Core.Memory;
+﻿using System.Runtime.InteropServices;
+
+namespace AslHelp.Core.Memory;
 
 /// <summary>
 ///     Contains symbol information.

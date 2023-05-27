@@ -1,12 +1,13 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System;
+using AslHelp.Common.Exceptions;
 
-namespace AslHelp.Core.Extensions;
+namespace AslHelp.Common.Extensions;
 
 /// <summary>
 ///     The <see cref="StringExtensions"/> class
 ///     provides useful extension methods for the <see cref="string"/> type.
 /// </summary>
-internal static class StringExtensions
+public static class StringExtensions
 {
     /// <summary>
     ///     Provides an optimized method for removing all whitespace from a string.

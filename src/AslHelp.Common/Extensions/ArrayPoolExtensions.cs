@@ -1,12 +1,12 @@
 ﻿using System.Buffers;
 
-namespace AslHelp.Core.Extensions;
+namespace AslHelp.Common.Extensions;
 
 /// <summary>
 ///     The <see cref="ArrayPoolExtensions"/> class
 ///     provides useful extension methods for the <see cref="ArrayPool{T}"/> type.
 /// </summary>
-internal static class ArrayPoolExtensions
+public static class ArrayPoolExtensions
 {
     /// <summary>
     ///     Retrieves a buffer that is at least the requested length.
@@ -28,7 +28,7 @@ internal static class ArrayPoolExtensions
     /// </summary>
     /// <typeparam name="T">The type of the objects that are in the resource pool.</typeparam>
     /// <param name="array">The buffer to return to the pool.</param>
-    public static void Return<T>(T[] array)
+    public static void ReturnIfNotNull<T>(T[] array)
     {
         if (array is not null)
         {

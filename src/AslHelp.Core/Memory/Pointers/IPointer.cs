@@ -18,8 +18,8 @@ public interface IPointer
     void Reset();
 }
 
-public interface IPointer<TOut> : IPointer
+public interface IPointer<T> : IPointer
 {
-    new TOut Current { get; set; }
-    new TOut Old { get; set; }
+    new T Current { get; set; }
+    new T Old { get; set; }
 }

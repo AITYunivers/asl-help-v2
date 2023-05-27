@@ -1,10 +1,10 @@
-﻿using AslHelp.Core.Exceptions;
+﻿using System.Linq;
+using AslHelp.Common.Exceptions;
 using AslHelp.Core.Memory.IO;
 
 namespace AslHelp.Core.Memory.Pointers;
 
-public abstract class PointerBase<TOut>
-    : IPointer<TOut>
+public abstract class PointerBase<T> : IPointer<T>
 {
     protected readonly IMemoryManager _manager;
 
@@ -47,15 +47,15 @@ public abstract class PointerBase<TOut>
         _current = Default;
     }
 
-    protected abstract TOut Default { get; }
+    protected abstract T Default { get; }
 
     public string Name { get; set; }
     public bool Enabled { get; set; } = true;
     public bool LogChange { get; set; }
     public bool UpdateOnFail { get; set; }
 
-    private TOut _current;
-    public TOut Current
+    private T _current;
+    public T Current
     {
         get
         {
@@ -72,11 +72,11 @@ public abstract class PointerBase<TOut>
     object IPointer.Current
     {
         get => Current;
-        set => Current = (TOut)value;
+        set => Current = (T)value;
     }
 
-    private TOut _old;
-    public TOut Old
+    private T _old;
+    public T Old
     {
         get
         {
@@ -93,7 +93,7 @@ public abstract class PointerBase<TOut>
     object IPointer.Old
     {
         get => Old;
-        set => Old = (TOut)value;
+        set => Old = (T)value;
     }
 
     public bool Changed => CheckChanged(_old, _current);
@@ -118,7 +118,7 @@ public abstract class PointerBase<TOut>
         _tick = _manager.Tick;
         _old = _current;
 
-        if (!TryUpdate(out TOut result))
+        if (!TryUpdate(out T result))
         {
             if (!UpdateOnFail)
             {
@@ -163,9 +163,9 @@ public abstract class PointerBase<TOut>
         _tick = 0;
     }
 
-    protected abstract bool TryUpdate(out TOut result);
-    protected abstract bool CheckChanged(TOut old, TOut current);
-    protected abstract bool Write(TOut value);
+    protected abstract bool TryUpdate(out T result);
+    protected abstract bool CheckChanged(T old, T current);
+    protected abstract bool Write(T value);
     public abstract override string ToString();
 
     protected string OffsetsToString()
