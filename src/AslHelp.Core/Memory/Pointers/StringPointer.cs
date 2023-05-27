@@ -27,7 +27,7 @@ public sealed class StringPointer : PointerBase<string>
 
     protected override bool TryUpdate(out string result)
     {
-        return _manager.TryReadString(out result, _length, _stringType, Address);
+        return _manager.TryReadString(out result, _length, _stringType, DerefOffsets());
     }
 
     protected override bool CheckChanged(string old, string current)

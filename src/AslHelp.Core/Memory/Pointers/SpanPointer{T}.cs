@@ -24,7 +24,7 @@ public sealed class SpanPointer<T> : PointerBase<T[]>
 
     protected override bool TryUpdate(out T[] result)
     {
-        return _manager.TryReadSpan(out result, _length, Address);
+        return _manager.TryReadSpan(out result, _length, DerefOffsets());
     }
 
     protected override bool CheckChanged(T[] old, T[] current)
@@ -42,7 +42,7 @@ public sealed class SpanPointer<T> : PointerBase<T[]>
 
     protected override bool Write(T[] value)
     {
-        return _manager.WriteSpan(value, Address);
+        return _manager.WriteSpan(value, DerefOffsets());
     }
 
     public override string ToString()

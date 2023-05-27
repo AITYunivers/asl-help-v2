@@ -98,18 +98,15 @@ public abstract class PointerBase<T> : IPointer<T>
 
     public bool Changed => CheckChanged(_old, _current);
 
-    protected nint Address
+    protected nint DerefOffsets()
     {
-        get
+        if (_parent is null)
         {
-            if (_parent is null)
-            {
-                return _manager.Deref(_baseAddress, _offsets);
-            }
-            else
-            {
-                return _manager.Deref(_parent.Current + _baseOffset, _offsets);
-            }
+            return _manager.Deref(_baseAddress, _offsets);
+        }
+        else
+        {
+            return _manager.Deref(_parent.Current + _baseOffset, _offsets);
         }
     }
 

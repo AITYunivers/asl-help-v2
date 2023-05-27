@@ -74,7 +74,7 @@ public sealed partial class Pointer<T>
         }
         else
         {
-            string msg = $"Attempted to create a child from a non-{nameof(IPointer<nint>)} parent.";
+            string msg = $"Cannot create children from a non-{nameof(IPointer<nint>)} parent.";
             throw new InvalidOperationException(msg);
         }
     }
