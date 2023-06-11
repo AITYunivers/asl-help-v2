@@ -1,6 +1,6 @@
-﻿namespace AslHelp.Common.Pipes;
+﻿namespace AslHelp.Native.Commands;
 
-public enum PipeRequestCode
+public enum PipeRequestCode : byte
 {
     ClosePipe,
 

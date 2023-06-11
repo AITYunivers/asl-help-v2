@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using AslHelp.Common.Exceptions;
 using CommunityToolkit.HighPerformance;
 
@@ -21,17 +22,37 @@ public static class StreamExtensions
     public static unsafe bool TryRead<T>(this Stream stream, out T value)
         where T : unmanaged
     {
-        fixed (T* pValue = &value)
+        T lValue;
+        if (stream.ReadAtLeast(new(&lValue, sizeof(T)), sizeof(T)) == sizeof(T))
         {
-            if (stream.ReadAtLeast(new(pValue, sizeof(T)), sizeof(T)) == sizeof(T))
-            {
-                return true;
-            }
-            else
-            {
-                value = default;
-                return false;
-            }
+            value = lValue;
+            return true;
+        }
+        else
+        {
+            value = default;
+            return false;
+        }
+    }
+
+    public static void Read<T>(this Stream stream, Span<T> buffer)
+        where T : unmanaged
+    {
+        stream.ReadExactly(MemoryMarshal.AsBytes(buffer));
+    }
+
+    public static unsafe bool TryRead<T>(this Stream stream, Span<T> buffer)
+        where T : unmanaged
+    {
+        int minimumBytes = buffer.Length * sizeof(T);
+        if (stream.ReadAtLeast(MemoryMarshal.AsBytes(buffer), minimumBytes) == minimumBytes)
+        {
+            return true;
+        }
+        else
+        {
+            buffer.Clear();
+            return false;
         }
     }
 
@@ -79,14 +100,14 @@ public static class StreamExtensions
     }
 
 #if !NET7_0_OR_GREATER
-    public static void ReadExactly(this Stream stream, Span<byte> buffer)
+    private static void ReadExactly(this Stream stream, Span<byte> buffer)
     {
         ThrowHelper.ThrowIfNull(stream);
 
         _ = ReadAtLeastCore(stream, buffer, buffer.Length, throwOnEndOfStream: true);
     }
 
-    public static int ReadAtLeast(this Stream stream, Span<byte> buffer, int minimumBytes, bool throwOnEndOfStream = true)
+    private static int ReadAtLeast(this Stream stream, Span<byte> buffer, int minimumBytes, bool throwOnEndOfStream = true)
     {
         ThrowHelper.ThrowIfNull(stream);
 

@@ -1,4 +1,6 @@
-﻿using AslHelp.Common.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using AslHelp.Common.Extensions;
 using AslHelp.Core.Reflection;
 
 namespace AslHelp.Core.Memory.IO;

@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using AslHelp.Common.Exceptions;
-using AslHelp.Common.Pipes;
 using AslHelp.Core.IO.Logging;
+using AslHelp.Native.Commands;
 using CommunityToolkit.HighPerformance;
 
 namespace AslHelp.Core.Memory.IO;
@@ -157,7 +157,7 @@ public sealed unsafe class PipeMemoryManager : MemoryManagerBase
         return true;
     }
 
-    public sealed override unsafe bool WriteSpan<T>(ReadOnlySpan<T> values, nint baseAddress, params int[] offsets)
+    public override bool WriteSpan<T>(ReadOnlySpan<T> values, nint baseAddress, params int[] offsets)
     {
         if (!IsConnected)
         {

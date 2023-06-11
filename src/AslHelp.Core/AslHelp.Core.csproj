@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AslHelp.Common\AslHelp.Common.csproj" />
+    <ProjectReference Include="..\AslHelp.Native\AslHelp.Native.csproj" />
 
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.*" />
     <PackageReference Include="PolySharp" Version="1.*" PrivateAssets="all" />
