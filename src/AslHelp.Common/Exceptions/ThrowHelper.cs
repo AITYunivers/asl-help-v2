@@ -22,8 +22,8 @@ public static partial class ThrowHelper
     /// </param>
     public static void ThrowIfNull(
         object argument,
-        string message = null,
-        [CallerArgumentExpression(nameof(argument))] string paramName = null)
+        string? message = null,
+        [CallerArgumentExpression(nameof(argument))] string paramName = "")
     {
         if (argument is null)
         {
@@ -33,7 +33,7 @@ public static partial class ThrowHelper
             }
             else
             {
-                ThrowArgumentNullException(paramName, message);
+                ThrowArgumentNullException(paramName, message!);
             }
         }
     }
@@ -50,8 +50,8 @@ public static partial class ThrowHelper
     /// </param>
     public static void ThrowIfNullOrEmpty<T>(
         IEnumerable<T> collection,
-        string message = null,
-        [CallerArgumentExpression(nameof(collection))] string paramName = null)
+        string? message = null,
+        [CallerArgumentExpression(nameof(collection))] string paramName = "")
     {
         if (collection is null)
         {
@@ -66,7 +66,7 @@ public static partial class ThrowHelper
             }
             else
             {
-                ThrowArgumentException(paramName, message);
+                ThrowArgumentException(paramName, message!);
             }
         }
     }
@@ -83,7 +83,7 @@ public static partial class ThrowHelper
     public static void ThrowIfAddressInvalid(
         nint address,
         string message,
-        [CallerArgumentExpression(nameof(address))] string paramName = null)
+        [CallerArgumentExpression(nameof(address))] string paramName = "")
     {
         if (address <= 0)
         {
@@ -104,8 +104,8 @@ public static partial class ThrowHelper
     public static void ThrowIfLessThan<T>(
         T value,
         T min,
-        string message = null,
-        [CallerArgumentExpression(nameof(value))] string paramName = null)
+        string? message = null,
+        [CallerArgumentExpression(nameof(value))] string paramName = "")
         where T : unmanaged, IComparable<T>
     {
         if (value.CompareTo(min) < 0)
@@ -116,7 +116,7 @@ public static partial class ThrowHelper
             }
             else
             {
-                ThrowArgumentOutOfRangeException(paramName, message);
+                ThrowArgumentOutOfRangeException(paramName, message!);
             }
         }
     }
@@ -134,8 +134,8 @@ public static partial class ThrowHelper
     public static void ThrowIfLargerThan<T>(
         T value,
         T max,
-        string message = null,
-        [CallerArgumentExpression(nameof(value))] string paramName = null)
+        string? message = null,
+        [CallerArgumentExpression(nameof(value))] string paramName = "")
         where T : unmanaged, IComparable<T>
     {
         if (value.CompareTo(max) > 0)
@@ -146,7 +146,7 @@ public static partial class ThrowHelper
             }
             else
             {
-                ThrowArgumentOutOfRangeException(paramName, message);
+                ThrowArgumentOutOfRangeException(paramName, message!);
             }
         }
     }
@@ -167,8 +167,8 @@ public static partial class ThrowHelper
         T value,
         T min,
         T max,
-        string message = null,
-        [CallerArgumentExpression(nameof(value))] string paramName = null)
+        string? message = null,
+        [CallerArgumentExpression(nameof(value))] string paramName = "")
         where T : unmanaged, IComparable<T>
     {
         ThrowIfLessThan(value, min, message, paramName);

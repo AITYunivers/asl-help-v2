@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using AslHelp.Common.Exceptions;
 using AslHelp.Core.Collections;
 using AslHelp.Core.IO.Logging;
-using AslHelp.Core.Memory.Models;
 
 namespace AslHelp.Core.Memory.IO;
 

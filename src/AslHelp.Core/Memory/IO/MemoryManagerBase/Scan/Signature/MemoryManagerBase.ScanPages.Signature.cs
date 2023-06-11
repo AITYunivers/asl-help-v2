@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AslHelp.Core.Memory.Models;
 
 namespace AslHelp.Core.Memory.IO;
 

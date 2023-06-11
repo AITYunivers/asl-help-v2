@@ -5,7 +5,7 @@
 .idea/
 
 # Build results
-.artifacts/
+artifacts/
 bin/
 obj/
 

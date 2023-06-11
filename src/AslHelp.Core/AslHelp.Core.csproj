@@ -3,45 +3,27 @@
   <PropertyGroup>
     <TargetFramework>net481</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-
-    <PolySharpIncludeRuntimeSupportedAttributes>true</PolySharpIncludeRuntimeSupportedAttributes>
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="AslHelp" />
-    <InternalsVisibleTo Include="AslHelp.Emu" />
-    <InternalsVisibleTo Include="AslHelp.GameMaker" />
-    <InternalsVisibleTo Include="AslHelp.Unity" />
-    <InternalsVisibleTo Include="AslHelp.Unreal" />
+    <InternalsVisibleTo Include="AslHelp.Build" />
   </ItemGroup>
 
   <ItemGroup>
-    <Using Alias="Debug" Include="AslHelp.Core.IO.Debug" />
-    <Using Alias="Module" Include="AslHelp.Core.Memory.Models.Module" />
-    <Using Alias="Script" Include="AslHelp.Core.LiveSplitInterop.Script" />
-    <Using Alias="Signature" Include="AslHelp.Core.Memory.Signatures.Signature" />
-    <Using Alias="Timer" Include="AslHelp.Core.LiveSplitInterop.Timer" />
+    <PackageReference Include="System.Memory" Version="4.*" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AslHelp.Common\AslHelp.Common.csproj" />
-    <ProjectReference Include="..\AslHelp.Native\AslHelp.Native.csproj" />
-
-    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.*" />
-    <PackageReference Include="PolySharp" Version="1.*" PrivateAssets="all" />
-    <PackageReference Include="System.Text.Json" Version="7.*" />
-
-    <Reference Include="Irony" HintPath="..\..\ref\Irony.dll" />
-    <Reference Include="LiveSplit.Core" HintPath="..\..\ref\LiveSplit.Core.dll" />
-    <Reference Include="LiveSplit.ScriptableAutoSplit" HintPath="..\..\ref\LiveSplit.ScriptableAutoSplit.dll" />
-    <Reference Include="LiveSplit.Text" HintPath="..\..\ref\LiveSplit.Text.dll" />
-    <Reference Include="LiveSplit.View" HintPath="..\..\ref\LiveSplit.View.dll" />
-    <Reference Include="UpdateManager" HintPath="..\..\ref\UpdateManager.dll" />
   </ItemGroup>
 
-  <ItemGroup>
-    <!--<EmbeddedResource Include="..\AslHelp.Native\bin\Release\x64\AslHelp.Native.dll" Link="Native.x64.dll" />-->
-    <!--<EmbeddedResource Include="..\AslHelp.Native\bin\Release\Win32\AslHelp.Native.dll" Link="Native.x86.dll" />-->
+  <ItemGroup Label="GlobalUsings">
+    <Using Alias="Debug" Include="AslHelp.Core.Diagnostics.Debug" />
+    <Using Alias="Timer" Include="AslHelp.Core.LiveSplitInterop.Timer" />
+  </ItemGroup>
+
+  <ItemGroup Label="References">
+    <Reference Include="../../ref/*.dll" />
   </ItemGroup>
 
 </Project>

@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+
 using AslHelp.Core.Memory;
+using AslHelp.Core.Memory.Native;
+using AslHelp.Core.Memory.Native.Enums;
+using AslHelp.Core.Memory.Native.Structs;
 
 namespace AslHelp.Core.Collections;
 
-public sealed class ModuleCache : CachedEnumerable<string, Module>
+public sealed class ModuleCache : LazyDictionary<string, Module>
 {
-    private readonly int _processId;
-    private readonly nint _processHandle;
+    private readonly uint _processId;
+    private readonly nuint _processHandle;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ModuleCache"/> class
@@ -16,7 +20,7 @@ public sealed class ModuleCache : CachedEnumerable<string, Module>
     /// </summary>
     /// <param name="process">The target <see cref="Process"/> whose modules are to be enumerated.</param>
     public ModuleCache(Process process)
-        : this(process.Id, process.Handle) { }
+        : this((uint)process.Id, (nuint)(nint)process.Handle) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ModuleCache"/> class
@@ -30,7 +34,7 @@ public sealed class ModuleCache : CachedEnumerable<string, Module>
     ///     The <see cref="Process.Handle"/> of the target <see cref="Process"/>
     ///     whose modules are to be enumerated.
     /// </param>
-    public ModuleCache(int processId, nint processHandle)
+    public ModuleCache(uint processId, nuint processHandle)
         : base(StringComparer.OrdinalIgnoreCase)
     {
         _processId = processId;
@@ -42,9 +46,9 @@ public sealed class ModuleCache : CachedEnumerable<string, Module>
     /// </summary>
     public override IEnumerator<Module> GetEnumerator()
     {
-        foreach (Module module in Native.ModulesTh32(_processHandle, _processId))
+        foreach (MODULEENTRY32W me in WinInteropWrapper.EnumerateModulesTh32(_processId))
         {
-            yield return module;
+            yield return new(_processHandle, me);
         }
     }
 

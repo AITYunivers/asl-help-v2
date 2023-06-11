@@ -1,26 +1,54 @@
-﻿using System;
-using AslHelp.Core.Reflection;
-using CommunityToolkit.HighPerformance;
+﻿#nullable disable
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+
+using AslHelp.Common.Extensions;
+
 using LiveSplit.ASL;
 
 namespace AslHelp.Core.LiveSplitInterop;
 
+/// <summary>
+///     The <see cref="Actions"/> class
+///     contains the actions as they were defined in the <see cref="ASLScript"/>.
+/// </summary>
 internal static class Actions
 {
     private static ASLScript.Methods _methods;
 
+    /// <summary>
+    ///     Retrieves an <see cref="ASLScript"/>'s actions.
+    /// </summary>
     public static void Init(ASLScript script)
     {
         _methods = script.GetFieldValue<ASLScript.Methods>("_methods");
     }
 
+    /// <summary>
+    ///     Finds the name of the action which this currently being executed.<br/>
+    ///     This is done by traversing the stack trace and finding which method in the <see cref="ASLScript"/> we are being called from.
+    /// </summary>
     public static unsafe string CurrentAction
     {
         get
         {
             ReadOnlySpan<char> prefix = "ASLScript.".AsSpan();
 
-            foreach (string trace in Debug.Trace)
+            IEnumerable<string> traces =
+                new StackTrace().GetFrames()
+                .Select(f =>
+                {
+                    MethodBase method = f.GetMethod();
+                    Type decl = method.DeclaringType;
+
+                    return decl is null ? method.Name : $"{decl.Name}.{method.Name}";
+                });
+
+            foreach (string trace in traces)
             {
                 ReadOnlySpan<char> sTrace = trace.AsSpan();
 
@@ -61,21 +89,13 @@ internal static class Actions
     public static Action onReset { get; set; } = new("onReset");
 #pragma warning restore IDE1006
 
-    internal struct Action
+    internal record struct Action(
+        string Body,
+        string Name,
+        int Line)
     {
         public Action(string name)
             : this("", name, 0) { }
-
-        public Action(string body, string name, int line)
-        {
-            Body = body;
-            Name = name;
-            Line = line;
-        }
-
-        public string Body { get; private set; }
-        public string Name { get; }
-        public int Line { get; }
 
         public void Append(string code)
         {

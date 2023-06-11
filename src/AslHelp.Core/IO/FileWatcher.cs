@@ -8,15 +8,15 @@ public sealed class FileWatcher : IDisposable
     private readonly string _filePath;
 
     private bool _isConnected;
-    private StreamReader _reader;
+    private StreamReader? _reader;
 
     public FileWatcher(string filePath)
     {
         _filePath = filePath;
     }
 
-    private string _line;
-    public string Line
+    private string? _line;
+    public string? Line
     {
         get
         {
@@ -25,7 +25,7 @@ public sealed class FileWatcher : IDisposable
                 return null;
             }
 
-            if (_reader.ReadLine() is string line)
+            if (_reader?.ReadLine() is string line)
             {
                 _line = line;
             }
