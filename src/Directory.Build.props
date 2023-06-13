@@ -13,14 +13,12 @@
     <ArtifactsPath>$(MSBuildThisFileDirectory)../artifacts</ArtifactsPath>
   </PropertyGroup>
 
-  <!-- .NET Framework 4.8.1-specific properties. -->
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net481'">
+  <PropertyGroup>
     <PolySharpIncludeRuntimeSupportedAttributes>true</PolySharpIncludeRuntimeSupportedAttributes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PolySharp" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="PolySharp" Version="1.13.2" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
