@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -15,6 +14,43 @@ namespace AslHelp.Core;
 
 internal static unsafe class WinInteropWrapper
 {
+    public static bool ProcessIs64Bit(this Process process)
+    {
+        return ProcessIs64Bit((nuint)(nint)process.Handle);
+    }
+
+    public static bool ProcessIs64Bit(nuint processHandle)
+    {
+        if (!WinInterop.IsWow64Process(processHandle, out bool isWow64))
+        {
+            ThrowHelper.ThrowWin32Exception();
+        }
+
+        return Environment.Is64BitOperatingSystem && !isWow64;
+    }
+
+    public static bool Read(this Process process, nuint address, void* buffer, uint bufferSize)
+    {
+        return Read((nuint)(nint)process.Handle, address, buffer, bufferSize);
+    }
+
+    public static bool Read(nuint processHandle, nuint address, void* buffer, uint bufferSize)
+    {
+        return WinInterop.ReadProcessMemory(processHandle, address, buffer, bufferSize, out nuint nRead)
+            && nRead == bufferSize;
+    }
+
+    public static bool Write(this Process process, nuint address, void* data, uint dataSize)
+    {
+        return Read((nuint)(nint)process.Handle, address, data, dataSize);
+    }
+
+    public static bool Write(nuint processHandle, nuint address, void* data, uint dataSize)
+    {
+        return WinInterop.ReadProcessMemory(processHandle, address, data, dataSize, out nuint nWritten)
+            && nWritten == dataSize;
+    }
+
     public static IEnumerable<MODULEENTRY32W> EnumerateModulesTh32(this Process process)
     {
         return EnumerateModulesTh32((uint)process.Id);
@@ -36,6 +72,42 @@ internal static unsafe class WinInteropWrapper
         } while (WinInterop.Module32Next(snapshot, ref me));
     }
 
+    public static IEnumerable<MemoryPage> EnumerateMemoryPages(this Process process, bool allPages)
+    {
+        return EnumerateMemoryPages((nuint)(nint)process.Handle, process.ProcessIs64Bit(), allPages);
+    }
+
+    public static IEnumerable<MemoryPage> EnumerateMemoryPages(nuint processHandle, bool is64Bit, bool allPages)
+    {
+        nuint address = 0x10000, max = (nuint)(is64Bit ? 0x7FFFFFFEFFFF : 0x7FFEFFFF);
+
+        while (WinInterop.VirtualQuery(processHandle, address, out MEMORY_BASIC_INFORMATION mbi) != 0)
+        {
+            if (mbi.State != MemState.MEM_COMMIT)
+            {
+                continue;
+            }
+
+            if (!allPages && (mbi.Protect & MemProtect.PAGE_GUARD) != 0)
+            {
+                continue;
+            }
+
+            if (!allPages && mbi.Type != MemType.MEM_PRIVATE)
+            {
+                continue;
+            }
+
+            yield return new(mbi);
+
+            address += mbi.RegionSize;
+            if (address >= max)
+            {
+                break;
+            }
+        }
+    }
+
     public static List<SYMBOL_INFOW> GetSymbols(this Module module, nuint processHandle, string? mask = "*", string? pdbDirectory = null)
     {
         var callback =
@@ -51,7 +123,8 @@ internal static unsafe class WinInteropWrapper
 
         try
         {
-            nuint symLoadBase = WinInterop.SymLoadModule(processHandle, 0, module.FileName, null, module.Base, module.MemorySize, null, 0);
+            nuint symLoadBase =
+                WinInterop.SymLoadModule(processHandle, 0, module.FileName, null, (nuint)module.Base, (uint)module.MemorySize, null, 0);
 
             if (symLoadBase == 0)
             {

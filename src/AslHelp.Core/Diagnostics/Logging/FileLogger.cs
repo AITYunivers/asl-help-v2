@@ -49,6 +49,7 @@ public sealed class FileLogger : ILogger
             return;
         }
 
+        // We simply fire and forget and wait for new lines to be added to the queue.
         _ = Task.Run(() =>
         {
             _isRunning = true;
