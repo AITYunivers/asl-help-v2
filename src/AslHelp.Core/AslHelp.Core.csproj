@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <Folder Include="Memory\Ipc\MemoryManagerBase\Write\" />
+    <Folder Include="Memory\Pointers\" />
   </ItemGroup>
 
 </Project>
