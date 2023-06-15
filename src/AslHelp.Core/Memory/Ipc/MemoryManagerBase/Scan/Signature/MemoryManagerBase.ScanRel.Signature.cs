@@ -1,8 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+
+using AslHelp.Common.Exceptions;
+using AslHelp.Core.Memory.SignatureScanning;
 
 namespace AslHelp.Core.Memory.Ipc;
 
-public abstract partial class MemoryManagerBase
+public partial class MemoryManagerBase
 {
     public nint ScanRel(Signature signature, int alignment = 1)
     {
@@ -16,12 +20,26 @@ public abstract partial class MemoryManagerBase
 
     public nint ScanRel(Signature signature, string moduleName, int alignment = 1)
     {
-        return ScanAllRel(signature, moduleName, alignment).FirstOrDefault();
+        Module? module = Modules[moduleName];
+        if (module is null)
+        {
+            string msg = $"[ScanRel] Module '{moduleName}' could not be found.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return ScanAllRel(signature, module, alignment).FirstOrDefault();
     }
 
     public nint ScanRel(Signature signature, string moduleName, int size, int alignment = 1)
     {
-        return ScanAllRel(signature, moduleName, size, alignment).FirstOrDefault();
+        Module? module = Modules[moduleName];
+        if (module is null)
+        {
+            string msg = $"[ScanRel] Module '{moduleName}' could not be found.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return ScanAllRel(signature, module, size, alignment).FirstOrDefault();
     }
 
     public nint ScanRel(Signature signature, Module module, int alignment = 1)

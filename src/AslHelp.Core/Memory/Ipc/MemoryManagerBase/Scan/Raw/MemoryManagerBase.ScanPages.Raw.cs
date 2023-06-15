@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using AslHelp.Core.Memory.SignatureScanning;
+
 namespace AslHelp.Core.Memory.Ipc;
 
-public abstract partial class MemoryManagerBase
+public partial class MemoryManagerBase
 {
     public nint ScanPages(int offset, params string[] pattern)
     {

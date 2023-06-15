@@ -74,15 +74,6 @@ public static class StreamExtensions
     public static unsafe void Write<T>(this Stream stream, in T value)
         where T : unmanaged
     {
-#if NETSTANDARD2_1_OR_GREATER
-        ref T r0 = ref Unsafe.AsRef(value);
-        ref byte r1 = ref Unsafe.As<T, byte>(ref r0);
-        int length = sizeof(T);
-
-        ReadOnlySpan<byte> span = MemoryMarshal.CreateReadOnlySpan(ref r1, length);
-
-        stream.Write(span);
-#else
         int length = sizeof(T);
         byte[] buffer = ArrayPool<byte>.Shared.Rent(length);
 
@@ -96,10 +87,8 @@ public static class StreamExtensions
         {
             ArrayPool<byte>.Shared.Return(buffer);
         }
-#endif
     }
 
-#if !NET7_0_OR_GREATER
     private static void ReadExactly(this Stream stream, Span<byte> buffer)
     {
         ThrowHelper.ThrowIfNull(stream);
@@ -159,5 +148,4 @@ public static class StreamExtensions
     {
         throw new EndOfStreamException();
     }
-#endif
 }

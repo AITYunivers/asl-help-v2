@@ -9,11 +9,12 @@
     </PropertyGroup>
 
     <!-- Execute ILMerge with the necessary dependencies. -->
-    <Exec Command="
-          $(ILMergeConsolePath) ^
-          /out:$(OutDir)\$(LibraryName).dll ^
-          $(ILMergeThisProject) ^
-          $(ILMergeProjectReferences)
+    <Exec WorkingDirectory="$(OutDir)"
+          Command="
+      $(ILMergeConsolePath) ^
+      /out:$(OutDir)\$(LibraryName).dll ^
+      $(ILMergeThisProject) ^
+      $(ILMergeProjectReferences)
     " />
 
     <!-- Find LiveSplit directory from .lsdir (if existent). -->

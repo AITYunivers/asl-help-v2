@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
-using AslHelp.Core.Memory.Signatures;
+using AslHelp.Common.Exceptions;
+using AslHelp.Core.Memory.SignatureScanning;
 
 namespace AslHelp.Core.Memory.Ipc;
 
-public abstract partial class MemoryManagerBase
+public partial class MemoryManagerBase
 {
     public IEnumerable<nint> ScanAll(Signature signature, int alignment = 1)
     {
@@ -19,35 +19,35 @@ public abstract partial class MemoryManagerBase
 
     public IEnumerable<nint> ScanAll(Signature signature, string moduleName, int alignment = 1)
     {
-        return ScanAll(signature, Modules[moduleName], alignment);
+        Module? module = Modules[moduleName];
+        if (module is null)
+        {
+            string msg = $"[ScanAll] Module '{moduleName}' could not be found.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return ScanAll(signature, module, alignment);
     }
 
     public IEnumerable<nint> ScanAll(Signature signature, string moduleName, int size, int alignment = 1)
     {
-        return ScanAll(signature, Modules[moduleName], size, alignment);
+        Module? module = Modules[moduleName];
+        if (module is null)
+        {
+            string msg = $"[ScanAll] Module '{moduleName}' could not be found.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return ScanAll(signature, module, size, alignment);
     }
 
     public IEnumerable<nint> ScanAll(Signature signature, Module module, int alignment = 1)
     {
-        if (module is null)
-        {
-            Debug.Warn("[Scan] Module could not be found.");
-
-            return Enumerable.Empty<nint>();
-        }
-
         return ScanAll(signature, module.Base, module.MemorySize, alignment);
     }
 
     public IEnumerable<nint> ScanAll(Signature signature, Module module, int size, int alignment = 1)
     {
-        if (module is null)
-        {
-            Debug.Warn("[Scan] Module could not be found.");
-
-            return Enumerable.Empty<nint>();
-        }
-
         return ScanAll(signature, module.Base, size, alignment);
     }
 

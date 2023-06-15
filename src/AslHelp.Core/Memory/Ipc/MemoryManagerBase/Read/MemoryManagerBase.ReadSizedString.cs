@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Common.Extensions;
@@ -9,55 +10,158 @@ using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.Ipc;
 
-public abstract partial class MemoryManagerBase
+public partial class MemoryManagerBase
 {
-    public string? ReadSizedString(int baseOffset, params int[] offsets)
+    // ReadSizedString
+
+    public string ReadSizedString(int baseOffset, params int[] offsets)
     {
-        return ReadSizedString(ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
+        return ReadSizedString(ReadStringType.AutoDetect, baseOffset, offsets);
     }
 
-    public string? ReadSizedString(ReadStringType stringType, int baseOffset, params int[] offsets)
+    public string ReadSizedString(ReadStringType stringType, int baseOffset, params int[] offsets)
     {
-        return ReadSizedString(stringType, MainModule, baseOffset, offsets);
+        Module? module = MainModule;
+        if (module is null)
+        {
+            string msg = "[ReadSizedString] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return ReadSizedString(stringType, module, baseOffset, offsets);
     }
 
-    public string? ReadSizedString(string moduleName, int baseOffset, params int[] offsets)
+    public string ReadSizedString(string moduleName, int baseOffset, params int[] offsets)
     {
-        return ReadSizedString(ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
+        return ReadSizedString(ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
     }
 
-    public string? ReadSizedString(ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
+    public string ReadSizedString(ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
     {
-        return ReadSizedString(stringType, Modules[moduleName], baseOffset, offsets);
+        Module? module = Modules[moduleName];
+        if (module is null)
+        {
+            string msg = $"[ReadSizedString] Module '{moduleName}' could not be found.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return ReadSizedString(stringType, module, baseOffset, offsets);
     }
 
-    public string? ReadSizedString(Module? module, int baseOffset, params int[] offsets)
+    public string ReadSizedString(Module module, int baseOffset, params int[] offsets)
     {
-        ThrowHelper.ThrowIfNull(module, nameof(module));
-
         return ReadSizedString(ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
-    public string? ReadSizedString(ReadStringType stringType, Module? module, int baseOffset, params int[] offsets)
+    public string ReadSizedString(ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
     {
-        ThrowHelper.ThrowIfNull(module, nameof(module));
-
-
+        return ReadSizedString(stringType, module.Base + baseOffset, offsets);
     }
 
-    public string? ReadSizedString(nint baseAddress, params int[] offsets)
+    public string ReadSizedString(nint baseAddress, params int[] offsets)
     {
         return ReadSizedString(ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
-    public string? ReadSizedString(ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public string ReadSizedString(ReadStringType stringType, nint baseAddress, params int[] offsets)
     {
-
+        if (stringType == ReadStringType.AutoDetect)
+        {
+            return InternalReadSizedAutoString(baseAddress, offsets);
+        }
+        else if (stringType == ReadStringType.UTF16)
+        {
+            return InternalReadSizedWideString(baseAddress, offsets);
+        }
+        else
+        {
+            return InternalReadSizedString(baseAddress, offsets);
+        }
     }
+
+    private unsafe string InternalReadSizedString(nint baseAddress, int[] offsets)
+    {
+        nint deref = Deref(baseAddress, offsets);
+        int length = Read<int>(deref - 0x4);
+
+        sbyte[]? rented = null;
+        Span<sbyte> buffer =
+            length <= 1024
+            ? stackalloc sbyte[1024]
+            : (rented = ArrayPool<sbyte>.Shared.Rent(length));
+
+        ReadSpan(buffer, deref);
+
+        fixed (sbyte* pBuffer = buffer)
+        {
+            // String ctor stops at the first null terminator.
+            string result = new(pBuffer);
+            ArrayPool<sbyte>.Shared.ReturnIfNotNull(rented);
+
+            return result;
+        }
+    }
+
+    private unsafe string InternalReadSizedWideString(nint baseAddress, int[] offsets)
+    {
+        nint deref = Deref(baseAddress, offsets);
+        int length = Read<int>(deref - 0x4);
+
+        char[]? rented = null;
+        Span<char> buffer =
+            length <= 1024
+            ? stackalloc char[1024]
+            : (rented = ArrayPool<char>.Shared.Rent(length));
+
+        ReadSpan(buffer, deref);
+
+        string result = buffer[..length].ToString();
+        ArrayPool<char>.Shared.ReturnIfNotNull(rented);
+
+        return result;
+    }
+
+    private unsafe string InternalReadSizedAutoString(nint baseAddress, int[] offsets)
+    {
+        nint deref = Deref(baseAddress, offsets);
+        int size = Read<int>(deref - 0x4);
+
+        int utf8Length = size, unicodeLength = size * 2;
+
+        // Assume unicode for the worst-case scenario and just allocate length * 2.
+        byte[]? rented = null;
+        Span<byte> buffer =
+            unicodeLength <= 1024
+            ? stackalloc byte[1024]
+            : (rented = ArrayPool<byte>.Shared.Rent(unicodeLength));
+
+        ReadSpan(buffer, deref);
+
+        fixed (byte* pBuffer = buffer)
+        {
+            if (utf8Length >= 2 && pBuffer[1] == '\0')
+            {
+                string result = new ReadOnlySpan<char>(pBuffer, size).ToString();
+                ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
+
+                return result;
+            }
+            else
+            {
+                // String ctor stops at the first null terminator.
+                string result = new((sbyte*)pBuffer);
+                ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
+
+                return result;
+            }
+        }
+    }
+
+    // TryReadSizedString
 
     public bool TryReadSizedString([NotNullWhen(true)] out string? result, int baseOffset, params int[] offsets)
     {
-        return TryReadSizedString(out result, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
+        return TryReadSizedString(out result, ReadStringType.AutoDetect, baseOffset, offsets);
     }
 
     public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, int baseOffset, params int[] offsets)
@@ -65,32 +169,36 @@ public abstract partial class MemoryManagerBase
         return TryReadSizedString(out result, stringType, MainModule, baseOffset, offsets);
     }
 
-    public bool TryReadSizedString([NotNullWhen(true)] out string? result, string moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadSizedString([NotNullWhen(true)] out string? result, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
     {
-        return TryReadSizedString(out result, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
+        return TryReadSizedString(out result, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
     }
 
-    public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
     {
+        if (moduleName is null)
+        {
+            result = default;
+            return false;
+        }
+
         return TryReadSizedString(out result, stringType, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool TryReadSizedString([NotNullWhen(true)] out string? result, Module? module, int baseOffset, params int[] offsets)
+    public bool TryReadSizedString([NotNullWhen(true)] out string? result, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
     {
         return TryReadSizedString(out result, ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
-    public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, Module? module, int baseOffset, params int[] offsets)
+    public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
     {
         if (module is null)
         {
-            Debug.Warn("[TryReadString] Module could not be found.");
-
-            result = null;
+            result = default;
             return false;
         }
 
-        return TryReadSizedString(out result, stringType, module, baseOffset, offsets);
+        return TryReadSizedString(out result, stringType, module.Base + baseOffset, offsets);
     }
 
     public bool TryReadSizedString([NotNullWhen(true)] out string? result, nint baseAddress, params int[] offsets)
@@ -114,7 +222,7 @@ public abstract partial class MemoryManagerBase
         }
     }
 
-    private unsafe bool InternalTryReadSizedString([NotNullWhen(true)] out string? result, nint baseAddress, int[] offsets)
+    private unsafe bool InternalTryReadSizedString(out string? result, nint baseAddress, int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
@@ -122,13 +230,11 @@ public abstract partial class MemoryManagerBase
             return false;
         }
 
-        if (!TryRead(out int size, deref - 0x4))
+        if (!TryRead(out int length, deref - 0x4))
         {
             result = default;
             return false;
         }
-
-        int length = size;
 
         sbyte[]? rented = null;
         Span<sbyte> buffer =
@@ -144,14 +250,15 @@ public abstract partial class MemoryManagerBase
 
         fixed (sbyte* pBuffer = buffer)
         {
-            result = new string(pBuffer);
+            // String ctor stops at the first null terminator.
+            result = new(pBuffer);
             ArrayPool<sbyte>.Shared.ReturnIfNotNull(rented);
 
             return true;
         }
     }
 
-    private unsafe bool InternalTryReadSizedWideString([NotNullWhen(true)] out string? result, nint baseAddress, int[] offsets)
+    private unsafe bool InternalTryReadSizedWideString(out string? result, nint baseAddress, int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
@@ -179,14 +286,15 @@ public abstract partial class MemoryManagerBase
 
         fixed (char* pBuffer = buffer)
         {
-            result = new string(pBuffer);
+            // String ctor stops at the first null terminator.
+            result = new(pBuffer);
             ArrayPool<char>.Shared.ReturnIfNotNull(rented);
 
             return true;
         }
     }
 
-    private unsafe bool InternalTryReadSizedAutoString([NotNullWhen(true)] out string? result, nint baseAddress, int[] offsets)
+    private unsafe bool InternalTryReadSizedAutoString(out string? result, nint baseAddress, int[] offsets)
     {
         if (!TryDeref(out nint deref, baseAddress, offsets))
         {
@@ -209,7 +317,7 @@ public abstract partial class MemoryManagerBase
             ? stackalloc byte[1024]
             : (rented = ArrayPool<byte>.Shared.Rent(unicodeLength));
 
-        if (!TryReadSpan(buffer, baseAddress, offsets))
+        if (!TryReadSpan(buffer, deref))
         {
             ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
 
@@ -219,15 +327,21 @@ public abstract partial class MemoryManagerBase
 
         fixed (byte* pBuffer = buffer)
         {
-            // String ctor stops at the first null terminator.
-            result =
-                utf8Length >= 2 && pBuffer[1] == '\0'
-                ? new string((char*)pBuffer)
-                : new string((sbyte*)pBuffer);
+            if (utf8Length >= 2 && pBuffer[1] == '\0')
+            {
+                result = new ReadOnlySpan<char>(pBuffer, unicodeLength).ToString();
+                ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
 
-            ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
+                return true;
+            }
+            else
+            {
+                // String ctor stops at the first null terminator.
+                result = new((sbyte*)pBuffer);
+                ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
 
-            return true;
+                return true;
+            }
         }
     }
 }

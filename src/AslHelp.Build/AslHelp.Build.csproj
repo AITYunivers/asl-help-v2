@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AslHelp.Core\AslHelp.Core.csproj" />
     <ProjectReference Include="..\AslHelp.Basic\AslHelp.Basic.csproj" />
+    <ProjectReference Include="..\AslHelp.Core\AslHelp.Core.csproj" />
   </ItemGroup>
 
   <Import Project="PreBuild.targets" />

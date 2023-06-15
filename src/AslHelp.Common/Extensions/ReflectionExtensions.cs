@@ -27,7 +27,7 @@ public static class ReflectionExtensions
         obj.GetType().GetRuntimeProperties().FirstOrDefault(pi => pi.Name == propertyName)?.SetValue(obj, value);
     }
 
-    public static MethodInfo GetMethod(this object obj, string methodName)
+    public static MethodInfo? GetMethod(this object obj, string methodName)
     {
         return obj.GetType().GetRuntimeMethods().FirstOrDefault(m => m.Name == methodName);
     }
@@ -45,7 +45,7 @@ public static class ReflectionExtensions
 
             foreach (StackFrame frame in frames)
             {
-                Type decl = frame.GetMethod().DeclaringType;
+                Type? decl = frame.GetMethod()?.DeclaringType;
 
                 if (decl?.Name == "CompiledScript")
                 {

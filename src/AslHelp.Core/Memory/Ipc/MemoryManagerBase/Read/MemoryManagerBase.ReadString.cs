@@ -1,195 +1,279 @@
-﻿using System;
+using System;
 using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
+
+using AslHelp.Common.Exceptions;
+using AslHelp.Common.Extensions;
+using AslHelp.Common.Resources;
 
 using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.Ipc;
 
-public abstract partial class MemoryManagerBase
+public partial class MemoryManagerBase
 {
-    private const byte AsciiNullChar = 0;
-    private static ReadOnlySpan<byte> UnicodeNullChar => new byte[] { 0, 0 };
+    // ReadString
 
     public string ReadString(int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
-        return result;
+        return ReadString(Mem.DefaultStringLength, ReadStringType.AutoDetect, baseOffset, offsets);
     }
 
     public string ReadString(int length, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, length, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
-        return result;
+        return ReadString(length, ReadStringType.AutoDetect, baseOffset, offsets);
     }
 
     public string ReadString(ReadStringType stringType, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, AHR.MaxStringReadLength, stringType, MainModule, baseOffset, offsets);
-        return result;
+        return ReadString(Mem.DefaultStringLength, stringType, baseOffset, offsets);
     }
 
     public string ReadString(int length, ReadStringType stringType, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, length, stringType, MainModule, baseOffset, offsets);
-        return result;
+        Module? module = MainModule;
+        if (module is null)
+        {
+            string msg = "[ReadString] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return ReadString(length, stringType, module, baseOffset, offsets);
     }
 
     public string ReadString(string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
-        return result;
+        return ReadString(Mem.DefaultStringLength, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
     }
 
     public string ReadString(int length, string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, length, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
-        return result;
+        return ReadString(length, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
     }
 
     public string ReadString(ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, AHR.MaxStringReadLength, stringType, Modules[moduleName], baseOffset, offsets);
-        return result;
+        return ReadString(Mem.DefaultStringLength, stringType, moduleName, baseOffset, offsets);
     }
 
     public string ReadString(int length, ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, length, stringType, Modules[moduleName], baseOffset, offsets);
-        return result;
+        Module? module = Modules[moduleName];
+        if (module is null)
+        {
+            string msg = $"[ReadString] Module '{moduleName}' could not be found.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return ReadString(length, stringType, module, baseOffset, offsets);
     }
 
     public string ReadString(Module module, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, module, baseOffset, offsets);
-        return result;
+        return ReadString(Mem.DefaultStringLength, ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
     public string ReadString(int length, Module module, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, length, ReadStringType.AutoDetect, module, baseOffset, offsets);
-        return result;
+        return ReadString(length, ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
     public string ReadString(ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, AHR.MaxStringReadLength, stringType, module, baseOffset, offsets);
-        return result;
+        return ReadString(Mem.DefaultStringLength, stringType, module, baseOffset, offsets);
     }
 
     public string ReadString(int length, ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
     {
-        _ = TryReadString(out string result, length, stringType, module, baseOffset, offsets);
-        return result;
+        return ReadString(length, stringType, module.Base + baseOffset, offsets);
     }
 
     public string ReadString(nint baseAddress, params int[] offsets)
     {
-        _ = TryReadString(out string result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, baseAddress, offsets);
-        return result;
+        return ReadString(Mem.DefaultStringLength, ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
     public string ReadString(int length, nint baseAddress, params int[] offsets)
     {
-        _ = TryReadString(out string result, length, ReadStringType.AutoDetect, baseAddress, offsets);
-        return result;
+        return ReadString(length, ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
     public string ReadString(ReadStringType stringType, nint baseAddress, params int[] offsets)
     {
-        _ = TryReadString(out string result, AHR.MaxStringReadLength, stringType, baseAddress, offsets);
-        return result;
+        return ReadString(Mem.DefaultStringLength, stringType, baseAddress, offsets);
     }
 
     public string ReadString(int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
     {
-        _ = TryReadString(out string result, length, stringType, baseAddress, offsets);
-        return result;
+        if (stringType == ReadStringType.AutoDetect)
+        {
+            return InternalReadAutoString(length, baseAddress, offsets);
+        }
+        else if (stringType == ReadStringType.UTF16)
+        {
+            return InternalReadWideString(length, baseAddress, offsets);
+        }
+        else
+        {
+            return InternalReadString(length, baseAddress, offsets);
+        }
     }
 
-    public bool TryReadString(out string result, int baseOffset, params int[] offsets)
+    private unsafe string InternalReadString(int length, nint baseAddress, int[] offsets)
     {
-        return TryReadString(out result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
+        sbyte[]? rented = null;
+        Span<sbyte> buffer =
+            length <= 1024
+            ? stackalloc sbyte[1024]
+            : (rented = ArrayPool<sbyte>.Shared.Rent(length));
+
+        ReadSpan(buffer, baseAddress, offsets);
+
+        fixed (sbyte* pBuffer = buffer[..length])
+        {
+            string result = new(pBuffer);
+            ArrayPool<sbyte>.Shared.ReturnIfNotNull(rented);
+
+            return result;
+        }
     }
 
-    public bool TryReadString(out string result, int length, int baseOffset, params int[] offsets)
+    private unsafe string InternalReadWideString(int length, nint baseAddress, int[] offsets)
     {
-        return TryReadString(out result, length, ReadStringType.AutoDetect, MainModule, baseOffset, offsets);
+        length *= 2;
+
+        char[]? rented = null;
+        Span<char> buffer =
+            length <= 512
+            ? stackalloc char[512]
+            : (rented = ArrayPool<char>.Shared.Rent(length));
+
+        ReadSpan(buffer, baseAddress, offsets);
+
+        fixed (char* pBuffer = buffer[..length])
+        {
+            string result = new(pBuffer);
+            ArrayPool<char>.Shared.ReturnIfNotNull(rented);
+
+            return result;
+        }
     }
 
-    public bool TryReadString(out string result, ReadStringType stringType, int baseOffset, params int[] offsets)
+    private unsafe string InternalReadAutoString(int length, nint baseAddress, int[] offsets)
     {
-        return TryReadString(out result, AHR.MaxStringReadLength, stringType, MainModule, baseOffset, offsets);
+        // Assume unicode for the worst-case scenario and just allocate length * 2.
+        byte[]? rented = null;
+        Span<byte> buffer =
+            length * 2 <= 1024
+            ? stackalloc byte[1024]
+            : (rented = ArrayPool<byte>.Shared.Rent(length * 2));
+
+        ReadSpan(buffer, baseAddress, offsets);
+
+        fixed (byte* pBuffer = buffer[..length])
+        {
+            // String ctor stops at the first null terminator.
+            string result =
+                length >= 2 && pBuffer[1] == '\0'
+                ? new((char*)pBuffer)
+                : new((sbyte*)pBuffer);
+
+            ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
+
+            return result;
+        }
     }
 
-    public bool TryReadString(out string result, int length, ReadStringType stringType, int baseOffset, params int[] offsets)
+    // TryReadString
+
+    public bool TryReadString([NotNullWhen(true)] out string? result, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, length, stringType, MainModule, baseOffset, offsets);
+        return TryReadString(out result, Mem.DefaultStringLength, ReadStringType.AutoDetect, baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, string moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
+        return TryReadString(out result, length, ReadStringType.AutoDetect, baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, int length, string moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, length, ReadStringType.AutoDetect, Modules[moduleName], baseOffset, offsets);
+        return TryReadString(out result, Mem.DefaultStringLength, stringType, baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, AHR.MaxStringReadLength, stringType, Modules[moduleName], baseOffset, offsets);
+        return TryReadString(out result, length, stringType, baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, int length, ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
     {
+        return TryReadString(out result, Mem.DefaultStringLength, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
+    }
+
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
+    {
+        return TryReadString(out result, length, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
+    }
+
+    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
+    {
+        return TryReadString(out result, Mem.DefaultStringLength, stringType, moduleName, baseOffset, offsets);
+    }
+
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
+    {
+        if (moduleName is null)
+        {
+            result = default;
+            return false;
+        }
+
         return TryReadString(out result, length, stringType, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, Module module, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, module, baseOffset, offsets);
+        return TryReadString(out result, Mem.DefaultStringLength, ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, int length, Module module, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
     {
         return TryReadString(out result, length, ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, AHR.MaxStringReadLength, stringType, module, baseOffset, offsets);
+        return TryReadString(out result, Mem.DefaultStringLength, stringType, module, baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, int length, ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
     {
         if (module is null)
         {
-            Debug.Warn($"[ReadString] Module could not be found.");
-
-            result = null;
+            result = default;
             return false;
         }
 
         return TryReadString(out result, length, stringType, module.Base + baseOffset, offsets);
     }
 
-    public bool TryReadString(out string result, nint baseAddress, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, nint baseAddress, params int[] offsets)
     {
-        return TryReadString(out result, AHR.MaxStringReadLength, ReadStringType.AutoDetect, baseAddress, offsets);
+        return TryReadString(out result, Mem.DefaultStringLength, ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
-    public bool TryReadString(out string result, int length, nint baseAddress, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, nint baseAddress, params int[] offsets)
     {
         return TryReadString(out result, length, ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
-    public bool TryReadString(out string result, ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, nint baseAddress, params int[] offsets)
     {
-        return TryReadString(out result, AHR.MaxStringReadLength, stringType, baseAddress, offsets);
+        return TryReadString(out result, Mem.DefaultStringLength, stringType, baseAddress, offsets);
     }
 
-    public unsafe bool TryReadString(out string result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
     {
         if (stringType == ReadStringType.AutoDetect)
         {
@@ -205,9 +289,9 @@ public abstract partial class MemoryManagerBase
         }
     }
 
-    private unsafe bool InternalTryReadString(out string result, int length, nint baseAddress, int[] offsets)
+    private unsafe bool InternalTryReadString(out string? result, int length, nint baseAddress, int[] offsets)
     {
-        sbyte[] rented = null;
+        sbyte[]? rented = null;
         Span<sbyte> buffer =
             length <= 1024
             ? stackalloc sbyte[1024]
@@ -221,68 +305,68 @@ public abstract partial class MemoryManagerBase
             return false;
         }
 
-        fixed (sbyte* pBuffer = buffer)
+        fixed (sbyte* pBuffer = buffer[..length])
         {
-            result = new string(pBuffer);
+            result = new(pBuffer);
             ArrayPool<sbyte>.Shared.ReturnIfNotNull(rented);
 
             return true;
         }
     }
 
-    private unsafe bool InternalTryReadWideString(out string result, int length, nint baseAddress, int[] offsets)
+    private unsafe bool InternalTryReadWideString(out string? result, int length, nint baseAddress, int[] offsets)
     {
         length *= 2;
 
-        char[] rented = null;
+        char[]? rented = null;
         Span<char> buffer =
             length <= 512
             ? stackalloc char[512]
-            : (rented = ArrayPoolExtensions.Rent<char>(length));
+            : (rented = ArrayPool<char>.Shared.Rent(length));
 
         if (!TryReadSpan(buffer, baseAddress, offsets))
         {
-            ArrayPoolExtensions.ReturnIfNotNull(rented);
+            ArrayPool<char>.Shared.ReturnIfNotNull(rented);
 
             result = default;
             return false;
         }
 
-        fixed (char* pBuffer = buffer)
+        fixed (char* pBuffer = buffer[..length])
         {
-            result = new string(pBuffer);
-            ArrayPoolExtensions.ReturnIfNotNull(rented);
+            result = new(pBuffer);
+            ArrayPool<char>.Shared.ReturnIfNotNull(rented);
 
             return true;
         }
     }
 
-    private unsafe bool InternalTryReadAutoString(out string result, int length, nint baseAddress, int[] offsets)
+    private unsafe bool InternalTryReadAutoString(out string? result, int length, nint baseAddress, int[] offsets)
     {
         // Assume unicode for the worst-case scenario and just allocate length * 2.
-        byte[] rented = null;
+        byte[]? rented = null;
         Span<byte> buffer =
             length * 2 <= 1024
             ? stackalloc byte[1024]
-            : (rented = ArrayPoolExtensions.Rent<byte>(length * 2));
+            : (rented = ArrayPool<byte>.Shared.Rent(length * 2));
 
         if (!TryReadSpan(buffer, baseAddress, offsets))
         {
-            ArrayPoolExtensions.ReturnIfNotNull(rented);
+            ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
 
             result = default;
             return false;
         }
 
-        fixed (byte* pBuffer = buffer)
+        fixed (byte* pBuffer = buffer[..length])
         {
             // String ctor stops at the first null terminator.
             result =
                 length >= 2 && pBuffer[1] == '\0'
-                ? new string((char*)pBuffer)
-                : new string((sbyte*)pBuffer);
+                ? new((char*)pBuffer)
+                : new((sbyte*)pBuffer);
 
-            ArrayPoolExtensions.ReturnIfNotNull(rented);
+            ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
 
             return true;
         }

@@ -34,10 +34,15 @@ public interface IMemoryReader
     T[] ReadSpan<T>(int length, Module module, int baseOffset, params int[] offsets) where T : unmanaged;
     T[] ReadSpan<T>(int length, nint baseAddress, params int[] offsets) where T : unmanaged;
 
-    bool TryReadSpan<T>(out T[] results, int length, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool TryReadSpan<T>(out T[] results, int length, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool TryReadSpan<T>(out T[] results, int length, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool TryReadSpan<T>(out T[] results, int length, nint baseAddress, params int[] offsets) where T : unmanaged;
+    void ReadSpan<T>(Span<T> buffer, int baseOffset, params int[] offsets) where T : unmanaged;
+    void ReadSpan<T>(Span<T> buffer, string moduleName, int baseOffset, params int[] offsets) where T : unmanaged;
+    void ReadSpan<T>(Span<T> buffer, Module module, int baseOffset, params int[] offsets) where T : unmanaged;
+    void ReadSpan<T>(Span<T> buffer, nint baseAddress, params int[] offsets) where T : unmanaged;
+
+    bool TryReadSpan<T>([NotNullWhen(true)] out T[]? results, int length, int baseOffset, params int[] offsets) where T : unmanaged;
+    bool TryReadSpan<T>([NotNullWhen(true)] out T[]? results, int length, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets) where T : unmanaged;
+    bool TryReadSpan<T>([NotNullWhen(true)] out T[]? results, int length, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets) where T : unmanaged;
+    bool TryReadSpan<T>([NotNullWhen(true)] out T[]? results, int length, nint baseAddress, params int[] offsets) where T : unmanaged;
 
     bool TryReadSpan<T>(Span<T> buffer, int baseOffset, params int[] offsets) where T : unmanaged;
     bool TryReadSpan<T>(Span<T> buffer, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets) where T : unmanaged;
@@ -123,10 +128,15 @@ public interface IMemoryReader
     dynamic?[] ReadSpanDef(ITypeDefinition definition, int length, Module module, int baseOffset, params int[] offsets);
     dynamic?[] ReadSpanDef(ITypeDefinition definition, int length, nint baseAddress, params int[] offsets);
 
-    bool TryReadSpanDef(ITypeDefinition definition, out dynamic[] results, int length, int baseOffset, params int[] offsets);
-    bool TryReadSpanDef(ITypeDefinition definition, out dynamic[] results, int length, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets);
-    bool TryReadSpanDef(ITypeDefinition definition, out dynamic[] results, int length, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets);
-    bool TryReadSpanDef(ITypeDefinition definition, out dynamic[] results, int length, nint baseAddress, params int[] offsets);
+    void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, int baseOffset, params int[] offsets);
+    void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, string moduleName, int baseOffset, params int[] offsets);
+    void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, Module module, int baseOffset, params int[] offsets);
+    void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nint baseAddress, params int[] offsets);
+
+    bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, int baseOffset, params int[] offsets);
+    bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets);
+    bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets);
+    bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, nint baseAddress, params int[] offsets);
 
     bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, int baseOffset, params int[] offsets);
     bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets);

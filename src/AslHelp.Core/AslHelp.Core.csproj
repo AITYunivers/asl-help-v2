@@ -26,4 +26,8 @@
     <Reference Include="../../ref/*.dll" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Memory\Ipc\MemoryManagerBase\Write\" />
+  </ItemGroup>
+
 </Project>

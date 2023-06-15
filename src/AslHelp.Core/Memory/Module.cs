@@ -13,7 +13,7 @@ public sealed class Module
 
     public Module(nint processHandle, string name, string fileName, nint @base, int memorySize)
     {
-        _processHandle = processHandle;
+        _processHandle = (nuint)processHandle;
 
         Name = name;
         FileName = fileName;
