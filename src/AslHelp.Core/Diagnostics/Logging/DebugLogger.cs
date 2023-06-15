@@ -27,7 +27,7 @@ public sealed class DebugLogger : ILogger
     {
         LiveSplit.Options.Log.Info(output?.ToString());
     }
-    
+
     /// <summary>
     ///     Not implemented.
     /// </summary>
