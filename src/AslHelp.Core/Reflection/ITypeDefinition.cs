@@ -3,7 +3,7 @@
 public interface ITypeDefinition
 {
     int Size { get; }
-    object Default { get; }
+    object? Default { get; }
 
     unsafe object CreateInstance(void* buffer);
 }

@@ -22,7 +22,7 @@ public abstract partial class MemoryManagerBase
         return results;
     }
 
-    public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, Module module, int baseOffset, params int[] offsets)
+    public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, Module? module, int baseOffset, params int[] offsets)
     {
         dynamic[] results = new dynamic[length];
         _ = TryReadSpanDef(definition, results, module, baseOffset, offsets);

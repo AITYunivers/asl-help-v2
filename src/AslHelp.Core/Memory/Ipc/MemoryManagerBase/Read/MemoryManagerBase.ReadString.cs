@@ -1,7 +1,5 @@
 ﻿using System;
-
-using AslHelp.Common.Extensions;
-using AslHelp.Common.Resources;
+using System.Buffers;
 
 using LiveSplit.ComponentUtil;
 
@@ -213,11 +211,11 @@ public abstract partial class MemoryManagerBase
         Span<sbyte> buffer =
             length <= 1024
             ? stackalloc sbyte[1024]
-            : (rented = ArrayPoolExtensions.Rent<sbyte>(length));
+            : (rented = ArrayPool<sbyte>.Shared.Rent(length));
 
         if (!TryReadSpan(buffer, baseAddress, offsets))
         {
-            ArrayPoolExtensions.ReturnIfNotNull(rented);
+            ArrayPool<sbyte>.Shared.ReturnIfNotNull(rented);
 
             result = default;
             return false;
@@ -226,7 +224,7 @@ public abstract partial class MemoryManagerBase
         fixed (sbyte* pBuffer = buffer)
         {
             result = new string(pBuffer);
-            ArrayPoolExtensions.ReturnIfNotNull(rented);
+            ArrayPool<sbyte>.Shared.ReturnIfNotNull(rented);
 
             return true;
         }

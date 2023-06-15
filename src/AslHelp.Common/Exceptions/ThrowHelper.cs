@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -21,7 +22,7 @@ public static partial class ThrowHelper
     ///     If this parameter is omitted, the name of <paramref name="argument"/> is used.
     /// </param>
     public static void ThrowIfNull(
-        object argument,
+        [NotNull] object? argument,
         string? message = null,
         [CallerArgumentExpression(nameof(argument))] string paramName = "")
     {
@@ -49,7 +50,7 @@ public static partial class ThrowHelper
     ///     If this parameter is omitted, the name of <paramref name="collection"/> is used.
     /// </param>
     public static void ThrowIfNullOrEmpty<T>(
-        IEnumerable<T> collection,
+        [NotNull] IEnumerable<T>? collection,
         string? message = null,
         [CallerArgumentExpression(nameof(collection))] string paramName = "")
     {
