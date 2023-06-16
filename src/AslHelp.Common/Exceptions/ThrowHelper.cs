@@ -82,7 +82,7 @@ public static partial class ThrowHelper
     ///     If this parameter is omitted, the name of <paramref name="address"/> is used.
     /// </param>
     public static void ThrowIfAddressInvalid(
-        nint address,
+        nuint address,
         string message,
         [CallerArgumentExpression(nameof(address))] string paramName = "")
     {

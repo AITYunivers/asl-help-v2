@@ -51,22 +51,22 @@ public partial class MemoryManagerBase
         return ScanAll(module, offset, pattern).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nint> ScanAllRel(nint startAddress, nint endAddress, int offset, params string[] pattern)
+    public IEnumerable<nint> ScanAllRel(nuint startAddress, nuint endAddress, int offset, params string[] pattern)
     {
         return ScanAll(startAddress, endAddress, offset, pattern).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nint> ScanAllRel(nint startAddress, nint endAddress, int offset, params byte[] pattern)
+    public IEnumerable<nint> ScanAllRel(nuint startAddress, nuint endAddress, int offset, params byte[] pattern)
     {
         return ScanAll(startAddress, endAddress, offset, pattern).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nint> ScanAllRel(nint startAddress, int size, int offset, params string[] pattern)
+    public IEnumerable<nint> ScanAllRel(nuint startAddress, int size, int offset, params string[] pattern)
     {
         return ScanAll(startAddress, size, offset, pattern).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nint> ScanAllRel(nint startAddress, int size, int offset, params byte[] pattern)
+    public IEnumerable<nint> ScanAllRel(nuint startAddress, int size, int offset, params byte[] pattern)
     {
         return ScanAll(startAddress, size, offset, pattern).Select(FromAssemblyAddress);
     }

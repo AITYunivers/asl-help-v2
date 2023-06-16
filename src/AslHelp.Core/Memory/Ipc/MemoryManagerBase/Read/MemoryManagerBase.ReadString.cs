@@ -14,22 +14,22 @@ public partial class MemoryManagerBase
 {
     // ReadString
 
-    public string ReadString(int baseOffset, params int[] offsets)
+    public string ReadString(uint baseOffset, params int[] offsets)
     {
         return ReadString(Mem.DefaultStringLength, ReadStringType.AutoDetect, baseOffset, offsets);
     }
 
-    public string ReadString(int length, int baseOffset, params int[] offsets)
+    public string ReadString(int length, uint baseOffset, params int[] offsets)
     {
         return ReadString(length, ReadStringType.AutoDetect, baseOffset, offsets);
     }
 
-    public string ReadString(ReadStringType stringType, int baseOffset, params int[] offsets)
+    public string ReadString(ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
         return ReadString(Mem.DefaultStringLength, stringType, baseOffset, offsets);
     }
 
-    public string ReadString(int length, ReadStringType stringType, int baseOffset, params int[] offsets)
+    public string ReadString(int length, ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
         Module? module = MainModule;
         if (module is null)
@@ -41,22 +41,22 @@ public partial class MemoryManagerBase
         return ReadString(length, stringType, module, baseOffset, offsets);
     }
 
-    public string ReadString(string moduleName, int baseOffset, params int[] offsets)
+    public string ReadString(string moduleName, uint baseOffset, params int[] offsets)
     {
         return ReadString(Mem.DefaultStringLength, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
     }
 
-    public string ReadString(int length, string moduleName, int baseOffset, params int[] offsets)
+    public string ReadString(int length, string moduleName, uint baseOffset, params int[] offsets)
     {
         return ReadString(length, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
     }
 
-    public string ReadString(ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
+    public string ReadString(ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets)
     {
         return ReadString(Mem.DefaultStringLength, stringType, moduleName, baseOffset, offsets);
     }
 
-    public string ReadString(int length, ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
+    public string ReadString(int length, ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets)
     {
         Module? module = Modules[moduleName];
         if (module is null)
@@ -68,42 +68,42 @@ public partial class MemoryManagerBase
         return ReadString(length, stringType, module, baseOffset, offsets);
     }
 
-    public string ReadString(Module module, int baseOffset, params int[] offsets)
+    public string ReadString(Module module, uint baseOffset, params int[] offsets)
     {
         return ReadString(Mem.DefaultStringLength, ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
-    public string ReadString(int length, Module module, int baseOffset, params int[] offsets)
+    public string ReadString(int length, Module module, uint baseOffset, params int[] offsets)
     {
         return ReadString(length, ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
-    public string ReadString(ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
+    public string ReadString(ReadStringType stringType, Module module, uint baseOffset, params int[] offsets)
     {
         return ReadString(Mem.DefaultStringLength, stringType, module, baseOffset, offsets);
     }
 
-    public string ReadString(int length, ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
+    public string ReadString(int length, ReadStringType stringType, Module module, uint baseOffset, params int[] offsets)
     {
         return ReadString(length, stringType, module.Base + baseOffset, offsets);
     }
 
-    public string ReadString(nint baseAddress, params int[] offsets)
+    public string ReadString(nuint baseAddress, params int[] offsets)
     {
         return ReadString(Mem.DefaultStringLength, ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
-    public string ReadString(int length, nint baseAddress, params int[] offsets)
+    public string ReadString(int length, nuint baseAddress, params int[] offsets)
     {
         return ReadString(length, ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
-    public string ReadString(ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public string ReadString(ReadStringType stringType, nuint baseAddress, params int[] offsets)
     {
         return ReadString(Mem.DefaultStringLength, stringType, baseAddress, offsets);
     }
 
-    public string ReadString(int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public string ReadString(int length, ReadStringType stringType, nuint baseAddress, params int[] offsets)
     {
         if (stringType == ReadStringType.AutoDetect)
         {
@@ -119,7 +119,7 @@ public partial class MemoryManagerBase
         }
     }
 
-    private unsafe string InternalReadString(int length, nint baseAddress, int[] offsets)
+    private unsafe string InternalReadString(int length, nuint baseAddress, int[] offsets)
     {
         sbyte[]? rented = null;
         Span<sbyte> buffer =
@@ -138,7 +138,7 @@ public partial class MemoryManagerBase
         }
     }
 
-    private unsafe string InternalReadWideString(int length, nint baseAddress, int[] offsets)
+    private unsafe string InternalReadWideString(int length, nuint baseAddress, int[] offsets)
     {
         length *= 2;
 
@@ -159,7 +159,7 @@ public partial class MemoryManagerBase
         }
     }
 
-    private unsafe string InternalReadAutoString(int length, nint baseAddress, int[] offsets)
+    private unsafe string InternalReadAutoString(int length, nuint baseAddress, int[] offsets)
     {
         // Assume unicode for the worst-case scenario and just allocate length * 2.
         byte[]? rented = null;
@@ -186,42 +186,42 @@ public partial class MemoryManagerBase
 
     // TryReadString
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, Mem.DefaultStringLength, ReadStringType.AutoDetect, baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, int length, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, length, ReadStringType.AutoDetect, baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, Mem.DefaultStringLength, stringType, baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, length, stringType, baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, Mem.DefaultStringLength, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, int length, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, length, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, Mem.DefaultStringLength, stringType, moduleName, baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
     {
         if (moduleName is null)
         {
@@ -232,22 +232,22 @@ public partial class MemoryManagerBase
         return TryReadString(out result, length, stringType, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, Mem.DefaultStringLength, ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, int length, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, length, ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, Mem.DefaultStringLength, stringType, module, baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
     {
         if (module is null)
         {
@@ -258,22 +258,22 @@ public partial class MemoryManagerBase
         return TryReadString(out result, length, stringType, module.Base + baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, nint baseAddress, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, nuint baseAddress, params int[] offsets)
     {
         return TryReadString(out result, Mem.DefaultStringLength, ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, int length, nint baseAddress, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, nuint baseAddress, params int[] offsets)
     {
         return TryReadString(out result, length, ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, nuint baseAddress, params int[] offsets)
     {
         return TryReadString(out result, Mem.DefaultStringLength, stringType, baseAddress, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, nuint baseAddress, params int[] offsets)
     {
         if (stringType == ReadStringType.AutoDetect)
         {
@@ -289,7 +289,7 @@ public partial class MemoryManagerBase
         }
     }
 
-    private unsafe bool InternalTryReadString(out string? result, int length, nint baseAddress, int[] offsets)
+    private unsafe bool InternalTryReadString(out string? result, int length, nuint baseAddress, int[] offsets)
     {
         sbyte[]? rented = null;
         Span<sbyte> buffer =
@@ -314,7 +314,7 @@ public partial class MemoryManagerBase
         }
     }
 
-    private unsafe bool InternalTryReadWideString(out string? result, int length, nint baseAddress, int[] offsets)
+    private unsafe bool InternalTryReadWideString(out string? result, int length, nuint baseAddress, int[] offsets)
     {
         length *= 2;
 
@@ -341,7 +341,7 @@ public partial class MemoryManagerBase
         }
     }
 
-    private unsafe bool InternalTryReadAutoString(out string? result, int length, nint baseAddress, int[] offsets)
+    private unsafe bool InternalTryReadAutoString(out string? result, int length, nuint baseAddress, int[] offsets)
     {
         // Assume unicode for the worst-case scenario and just allocate length * 2.
         byte[]? rented = null;

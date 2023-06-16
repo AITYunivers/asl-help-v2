@@ -7,42 +7,42 @@ namespace AslHelp.Core.Memory.Ipc;
 
 public partial class MemoryManagerBase
 {
-    public nint ScanPages(int offset, params string[] pattern)
+    public nuint ScanPages(int offset, params string[] pattern)
     {
         return ScanPagesAll(false, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanPages(int offset, params byte[] pattern)
+    public nuint ScanPages(int offset, params byte[] pattern)
     {
         return ScanPagesAll(false, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanPages(bool allPages, int offset, params string[] pattern)
+    public nuint ScanPages(bool allPages, int offset, params string[] pattern)
     {
         return ScanPagesAll(allPages, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanPages(bool allPages, int offset, params byte[] pattern)
+    public nuint ScanPages(bool allPages, int offset, params byte[] pattern)
     {
         return ScanPagesAll(allPages, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanPagesRel(int offset, params string[] pattern)
+    public nuint ScanPagesRel(int offset, params string[] pattern)
     {
         return ScanPagesAllRel(false, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanPagesRel(int offset, params byte[] pattern)
+    public nuint ScanPagesRel(int offset, params byte[] pattern)
     {
         return ScanPagesAllRel(false, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanPagesRel(bool allPages, int offset, params string[] pattern)
+    public nuint ScanPagesRel(bool allPages, int offset, params string[] pattern)
     {
         return ScanPagesAllRel(allPages, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanPagesRel(bool allPages, int offset, params byte[] pattern)
+    public nuint ScanPagesRel(bool allPages, int offset, params byte[] pattern)
     {
         return ScanPagesAllRel(allPages, offset, pattern).FirstOrDefault();
     }

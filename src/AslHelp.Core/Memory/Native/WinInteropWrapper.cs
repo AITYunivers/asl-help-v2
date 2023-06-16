@@ -29,25 +29,25 @@ internal static unsafe class WinInteropWrapper
         return Environment.Is64BitOperatingSystem && !isWow64;
     }
 
-    public static bool Read(this Process process, nuint address, void* buffer, uint bufferSize)
+    public static bool ReadMemory(this Process process, nuint address, void* buffer, uint bufferSize)
     {
-        return Read((nuint)(nint)process.Handle, address, buffer, bufferSize);
+        return ReadMemory((nuint)(nint)process.Handle, address, buffer, bufferSize);
     }
 
-    public static bool Read(nuint processHandle, nuint address, void* buffer, uint bufferSize)
+    public static bool ReadMemory(nuint processHandle, nuint address, void* buffer, uint bufferSize)
     {
         return WinInterop.ReadProcessMemory(processHandle, address, buffer, bufferSize, out nuint nRead)
             && nRead == bufferSize;
     }
 
-    public static bool Write(this Process process, nuint address, void* data, uint dataSize)
+    public static bool WriteMemory(this Process process, nuint address, void* data, uint dataSize)
     {
-        return Read((nuint)(nint)process.Handle, address, data, dataSize);
+        return WriteMemory((nuint)(nint)process.Handle, address, data, dataSize);
     }
 
-    public static bool Write(nuint processHandle, nuint address, void* data, uint dataSize)
+    public static bool WriteMemory(nuint processHandle, nuint address, void* data, uint dataSize)
     {
-        return WinInterop.ReadProcessMemory(processHandle, address, data, dataSize, out nuint nWritten)
+        return WinInterop.WriteProcessMemory(processHandle, address, data, dataSize, out nuint nWritten)
             && nWritten == dataSize;
     }
 

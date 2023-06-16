@@ -7,22 +7,22 @@ namespace AslHelp.Core.Memory.Ipc;
 
 public partial class MemoryManagerBase
 {
-    public nint ScanPages(Signature signature, int alignment = 1)
+    public nuint ScanPages(Signature signature, int alignment = 1)
     {
         return ScanPagesAll(false, signature, alignment).FirstOrDefault();
     }
 
-    public nint ScanPages(bool allPages, Signature signature, int alignment = 1)
+    public nuint ScanPages(bool allPages, Signature signature, int alignment = 1)
     {
         return ScanPagesAll(allPages, signature, alignment).FirstOrDefault();
     }
 
-    public nint ScanPagesRel(Signature signature, int alignment = 1)
+    public nuint ScanPagesRel(Signature signature, int alignment = 1)
     {
         return ScanPagesAllRel(false, signature, alignment).FirstOrDefault();
     }
 
-    public nint ScanPagesRel(bool allPages, Signature signature, int alignment = 1)
+    public nuint ScanPagesRel(bool allPages, Signature signature, int alignment = 1)
     {
         return ScanPagesAllRel(allPages, signature, alignment).FirstOrDefault();
     }
@@ -36,7 +36,7 @@ public partial class MemoryManagerBase
     {
         foreach (MemoryPage page in Pages(allPages))
         {
-            foreach (nint scanResult in ScanAll(signature, page.Base, page.RegionSize))
+            foreach (nuint scanResult in ScanAll(signature, page.Base, page.RegionSize))
             {
                 yield return scanResult;
             }

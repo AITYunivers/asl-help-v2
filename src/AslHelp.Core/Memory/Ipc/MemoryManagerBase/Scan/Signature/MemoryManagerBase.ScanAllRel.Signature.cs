@@ -52,12 +52,12 @@ public partial class MemoryManagerBase
         return ScanAll(signature, module, size, alignment).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nint> ScanAllRel(Signature signature, nint startAddress, nint endAddress, int alignment = 1)
+    public IEnumerable<nint> ScanAllRel(Signature signature, nuint startAddress, nuint endAddress, int alignment = 1)
     {
         return ScanAll(signature, startAddress, endAddress, alignment).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nint> ScanAllRel(Signature signature, nint startAddress, int size, int alignment = 1)
+    public IEnumerable<nint> ScanAllRel(Signature signature, nuint startAddress, int size, int alignment = 1)
     {
         return ScanAll(signature, startAddress, size, alignment).Select(FromAssemblyAddress);
     }

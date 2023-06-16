@@ -11,7 +11,7 @@ public sealed class Module
 {
     private readonly nuint _processHandle;
 
-    public Module(nint processHandle, string name, string fileName, nint @base, int memorySize)
+    public Module(nuint processHandle, string name, string fileName, nuint @base, int memorySize)
     {
         _processHandle = (nuint)processHandle;
 
@@ -21,7 +21,7 @@ public sealed class Module
         MemorySize = memorySize;
     }
 
-    internal unsafe Module(nint processHandle, string baseName, string fileName, MODULEINFO moduleInfo)
+    internal unsafe Module(nuint processHandle, string baseName, string fileName, MODULEINFO moduleInfo)
     {
         _processHandle = (nuint)processHandle;
 
@@ -31,7 +31,7 @@ public sealed class Module
         MemorySize = (int)moduleInfo.SizeOfImage;
     }
 
-    internal unsafe Module(nint processHandle, MODULEENTRY32W me)
+    internal unsafe Module(nuint processHandle, MODULEENTRY32W me)
     {
         _processHandle = (nuint)processHandle;
 
@@ -43,7 +43,7 @@ public sealed class Module
 
     public string Name { get; }
     public string FileName { get; }
-    public nint Base { get; }
+    public nuint Base { get; }
     public int MemorySize { get; }
 
     private Dictionary<string, DebugSymbol>? _symbols;

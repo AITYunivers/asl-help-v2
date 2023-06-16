@@ -6,17 +6,17 @@ namespace AslHelp.Core.Memory.Ipc;
 
 public partial class MemoryManagerBase
 {
-    public nint ScanRel(int offset, params string[] pattern)
+    public nuint ScanRel(int offset, params string[] pattern)
     {
         return ScanAllRel(offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanRel(int offset, params byte[] pattern)
+    public nuint ScanRel(int offset, params byte[] pattern)
     {
         return ScanAllRel(offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanRel(string moduleName, int offset, params string[] pattern)
+    public nuint ScanRel(string moduleName, int offset, params string[] pattern)
     {
         Module? module = Modules[moduleName];
         if (module is null)
@@ -28,7 +28,7 @@ public partial class MemoryManagerBase
         return ScanAllRel(module, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanRel(string moduleName, int offset, params byte[] pattern)
+    public nuint ScanRel(string moduleName, int offset, params byte[] pattern)
     {
         Module? module = Modules[moduleName];
         if (module is null)
@@ -40,32 +40,32 @@ public partial class MemoryManagerBase
         return ScanAllRel(module, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanRel(Module module, int offset, params string[] pattern)
+    public nuint ScanRel(Module module, int offset, params string[] pattern)
     {
         return ScanAllRel(module, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanRel(Module module, int offset, params byte[] pattern)
+    public nuint ScanRel(Module module, int offset, params byte[] pattern)
     {
         return ScanAllRel(module, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanRel(nint startAddress, nint endAddress, int offset, params string[] pattern)
+    public nuint ScanRel(nuint startAddress, nuint endAddress, int offset, params string[] pattern)
     {
         return ScanAllRel(startAddress, endAddress, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanRel(nint startAddress, nint endAddress, int offset, params byte[] pattern)
+    public nuint ScanRel(nuint startAddress, nuint endAddress, int offset, params byte[] pattern)
     {
         return ScanAllRel(startAddress, endAddress, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanRel(nint startAddress, int size, int offset, params string[] pattern)
+    public nuint ScanRel(nuint startAddress, int size, int offset, params string[] pattern)
     {
         return ScanAllRel(startAddress, size, offset, pattern).FirstOrDefault();
     }
 
-    public nint ScanRel(nint startAddress, int size, int offset, params byte[] pattern)
+    public nuint ScanRel(nuint startAddress, int size, int offset, params byte[] pattern)
     {
         return ScanAllRel(startAddress, size, offset, pattern).FirstOrDefault();
     }

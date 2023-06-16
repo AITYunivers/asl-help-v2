@@ -51,13 +51,13 @@ public partial class MemoryManagerBase
         return ScanAll(signature, module.Base, size, alignment);
     }
 
-    public IEnumerable<nint> ScanAll(Signature signature, nint startAddress, nint endAddress, int alignment = 1)
+    public IEnumerable<nint> ScanAll(Signature signature, nuint startAddress, nuint endAddress, int alignment = 1)
     {
         int size = (int)(endAddress - startAddress);
         return ScanAll(signature, startAddress, size, alignment);
     }
 
-    public IEnumerable<nint> ScanAll(Signature signature, nint startAddress, int size, int alignment = 1)
+    public IEnumerable<nint> ScanAll(Signature signature, nuint startAddress, int size, int alignment = 1)
     {
         if (size <= 0)
         {

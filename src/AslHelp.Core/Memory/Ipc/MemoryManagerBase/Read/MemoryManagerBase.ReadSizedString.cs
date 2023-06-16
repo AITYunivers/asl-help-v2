@@ -14,12 +14,12 @@ public partial class MemoryManagerBase
 {
     // ReadSizedString
 
-    public string ReadSizedString(int baseOffset, params int[] offsets)
+    public string ReadSizedString(uint baseOffset, params int[] offsets)
     {
         return ReadSizedString(ReadStringType.AutoDetect, baseOffset, offsets);
     }
 
-    public string ReadSizedString(ReadStringType stringType, int baseOffset, params int[] offsets)
+    public string ReadSizedString(ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
         Module? module = MainModule;
         if (module is null)
@@ -31,12 +31,12 @@ public partial class MemoryManagerBase
         return ReadSizedString(stringType, module, baseOffset, offsets);
     }
 
-    public string ReadSizedString(string moduleName, int baseOffset, params int[] offsets)
+    public string ReadSizedString(string moduleName, uint baseOffset, params int[] offsets)
     {
         return ReadSizedString(ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
     }
 
-    public string ReadSizedString(ReadStringType stringType, string moduleName, int baseOffset, params int[] offsets)
+    public string ReadSizedString(ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets)
     {
         Module? module = Modules[moduleName];
         if (module is null)
@@ -48,22 +48,22 @@ public partial class MemoryManagerBase
         return ReadSizedString(stringType, module, baseOffset, offsets);
     }
 
-    public string ReadSizedString(Module module, int baseOffset, params int[] offsets)
+    public string ReadSizedString(Module module, uint baseOffset, params int[] offsets)
     {
         return ReadSizedString(ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
-    public string ReadSizedString(ReadStringType stringType, Module module, int baseOffset, params int[] offsets)
+    public string ReadSizedString(ReadStringType stringType, Module module, uint baseOffset, params int[] offsets)
     {
         return ReadSizedString(stringType, module.Base + baseOffset, offsets);
     }
 
-    public string ReadSizedString(nint baseAddress, params int[] offsets)
+    public string ReadSizedString(nuint baseAddress, params int[] offsets)
     {
         return ReadSizedString(ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
-    public string ReadSizedString(ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public string ReadSizedString(ReadStringType stringType, nuint baseAddress, params int[] offsets)
     {
         if (stringType == ReadStringType.AutoDetect)
         {
@@ -79,9 +79,9 @@ public partial class MemoryManagerBase
         }
     }
 
-    private unsafe string InternalReadSizedString(nint baseAddress, int[] offsets)
+    private unsafe string InternalReadSizedString(nuint baseAddress, int[] offsets)
     {
-        nint deref = Deref(baseAddress, offsets);
+        nuint deref = Deref(baseAddress, offsets);
         int length = Read<int>(deref - 0x4);
 
         sbyte[]? rented = null;
@@ -102,9 +102,9 @@ public partial class MemoryManagerBase
         }
     }
 
-    private unsafe string InternalReadSizedWideString(nint baseAddress, int[] offsets)
+    private unsafe string InternalReadSizedWideString(nuint baseAddress, int[] offsets)
     {
-        nint deref = Deref(baseAddress, offsets);
+        nuint deref = Deref(baseAddress, offsets);
         int length = Read<int>(deref - 0x4);
 
         char[]? rented = null;
@@ -121,9 +121,9 @@ public partial class MemoryManagerBase
         return result;
     }
 
-    private unsafe string InternalReadSizedAutoString(nint baseAddress, int[] offsets)
+    private unsafe string InternalReadSizedAutoString(nuint baseAddress, int[] offsets)
     {
-        nint deref = Deref(baseAddress, offsets);
+        nuint deref = Deref(baseAddress, offsets);
         int size = Read<int>(deref - 0x4);
 
         int utf8Length = size, unicodeLength = size * 2;
@@ -159,22 +159,22 @@ public partial class MemoryManagerBase
 
     // TryReadSizedString
 
-    public bool TryReadSizedString([NotNullWhen(true)] out string? result, int baseOffset, params int[] offsets)
+    public bool TryReadSizedString([NotNullWhen(true)] out string? result, uint baseOffset, params int[] offsets)
     {
         return TryReadSizedString(out result, ReadStringType.AutoDetect, baseOffset, offsets);
     }
 
-    public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, int baseOffset, params int[] offsets)
+    public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
         return TryReadSizedString(out result, stringType, MainModule, baseOffset, offsets);
     }
 
-    public bool TryReadSizedString([NotNullWhen(true)] out string? result, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadSizedString([NotNullWhen(true)] out string? result, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
     {
         return TryReadSizedString(out result, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
     }
 
-    public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
     {
         if (moduleName is null)
         {
@@ -185,12 +185,12 @@ public partial class MemoryManagerBase
         return TryReadSizedString(out result, stringType, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool TryReadSizedString([NotNullWhen(true)] out string? result, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
+    public bool TryReadSizedString([NotNullWhen(true)] out string? result, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
     {
         return TryReadSizedString(out result, ReadStringType.AutoDetect, module, baseOffset, offsets);
     }
 
-    public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
+    public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
     {
         if (module is null)
         {
@@ -201,12 +201,12 @@ public partial class MemoryManagerBase
         return TryReadSizedString(out result, stringType, module.Base + baseOffset, offsets);
     }
 
-    public bool TryReadSizedString([NotNullWhen(true)] out string? result, nint baseAddress, params int[] offsets)
+    public bool TryReadSizedString([NotNullWhen(true)] out string? result, nuint baseAddress, params int[] offsets)
     {
         return TryReadSizedString(out result, ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
-    public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, nint baseAddress, params int[] offsets)
+    public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, nuint baseAddress, params int[] offsets)
     {
         if (stringType == ReadStringType.AutoDetect)
         {
@@ -222,9 +222,9 @@ public partial class MemoryManagerBase
         }
     }
 
-    private unsafe bool InternalTryReadSizedString(out string? result, nint baseAddress, int[] offsets)
+    private unsafe bool InternalTryReadSizedString(out string? result, nuint baseAddress, int[] offsets)
     {
-        if (!TryDeref(out nint deref, baseAddress, offsets))
+        if (!TryDeref(out nuint deref, baseAddress, offsets))
         {
             result = default;
             return false;
@@ -258,9 +258,9 @@ public partial class MemoryManagerBase
         }
     }
 
-    private unsafe bool InternalTryReadSizedWideString(out string? result, nint baseAddress, int[] offsets)
+    private unsafe bool InternalTryReadSizedWideString(out string? result, nuint baseAddress, int[] offsets)
     {
-        if (!TryDeref(out nint deref, baseAddress, offsets))
+        if (!TryDeref(out nuint deref, baseAddress, offsets))
         {
             result = default;
             return false;
@@ -294,9 +294,9 @@ public partial class MemoryManagerBase
         }
     }
 
-    private unsafe bool InternalTryReadSizedAutoString(out string? result, nint baseAddress, int[] offsets)
+    private unsafe bool InternalTryReadSizedAutoString(out string? result, nuint baseAddress, int[] offsets)
     {
-        if (!TryDeref(out nint deref, baseAddress, offsets))
+        if (!TryDeref(out nuint deref, baseAddress, offsets))
         {
             result = default;
             return false;

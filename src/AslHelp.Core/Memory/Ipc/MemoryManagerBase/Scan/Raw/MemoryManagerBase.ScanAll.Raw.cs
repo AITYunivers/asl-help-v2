@@ -51,25 +51,25 @@ public partial class MemoryManagerBase
         return ScanAll(module.Base, module.MemorySize, offset, pattern);
     }
 
-    public IEnumerable<nint> ScanAll(nint startAddress, nint endAddress, int offset, params string[] pattern)
+    public IEnumerable<nint> ScanAll(nuint startAddress, nuint endAddress, int offset, params string[] pattern)
     {
         int size = (int)(endAddress - startAddress);
         return ScanAll(startAddress, size, offset, pattern);
     }
 
-    public IEnumerable<nint> ScanAll(nint startAddress, nint endAddress, int offset, params byte[] pattern)
+    public IEnumerable<nint> ScanAll(nuint startAddress, nuint endAddress, int offset, params byte[] pattern)
     {
         int size = (int)(endAddress - startAddress);
         return ScanAll(startAddress, size, offset, pattern);
     }
 
-    public IEnumerable<nint> ScanAll(nint startAddress, int size, int offset, params string[] pattern)
+    public IEnumerable<nint> ScanAll(nuint startAddress, int size, int offset, params string[] pattern)
     {
         Signature signature = new(offset, pattern);
         return ScanAll(signature, startAddress, size);
     }
 
-    public IEnumerable<nint> ScanAll(nint startAddress, int size, int offset, params byte[] pattern)
+    public IEnumerable<nint> ScanAll(nuint startAddress, int size, int offset, params byte[] pattern)
     {
         Signature signature = new(offset, pattern);
         return ScanAll(signature, startAddress, size);

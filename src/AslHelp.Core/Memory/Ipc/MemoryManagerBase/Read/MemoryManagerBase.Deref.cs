@@ -6,7 +6,7 @@ namespace AslHelp.Core.Memory.Ipc;
 
 public partial class MemoryManagerBase
 {
-    public nint Deref(int baseOffset, params int[] offsets)
+    public nuint Deref(uint baseOffset, params int[] offsets)
     {
         Module? module = MainModule;
         if (module is null)
@@ -18,7 +18,7 @@ public partial class MemoryManagerBase
         return Deref(module, baseOffset, offsets);
     }
 
-    public nint Deref(string moduleName, int baseOffset, params int[] offsets)
+    public nuint Deref(string moduleName, uint baseOffset, params int[] offsets)
     {
         Module? module = Modules[moduleName];
         if (module is null)
@@ -30,19 +30,19 @@ public partial class MemoryManagerBase
         return Deref(module, baseOffset, offsets);
     }
 
-    public nint Deref(Module module, int baseOffset, params int[] offsets)
+    public nuint Deref(Module module, uint baseOffset, params int[] offsets)
     {
         return Deref(module.Base + baseOffset, offsets);
     }
 
-    public abstract nint Deref(nint baseAddress, params int[] offsets);
+    public abstract nuint Deref(nuint baseAddress, params int[] offsets);
 
-    public bool TryDeref(out nint result, int baseOffset, params int[] offsets)
+    public bool TryDeref(out nuint result, uint baseOffset, params int[] offsets)
     {
         return TryDeref(out result, MainModule, baseOffset, offsets);
     }
 
-    public bool TryDeref(out nint result, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
+    public bool TryDeref(out nuint result, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
     {
         if (moduleName is null)
         {
@@ -53,7 +53,7 @@ public partial class MemoryManagerBase
         return TryDeref(out result, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool TryDeref(out nint result, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
+    public bool TryDeref(out nuint result, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
     {
         if (module is null)
         {
@@ -64,5 +64,5 @@ public partial class MemoryManagerBase
         return TryDeref(out result, module.Base + baseOffset, offsets);
     }
 
-    public abstract bool TryDeref(out nint result, nint baseAddress, params int[] offsets);
+    public abstract bool TryDeref(out nuint result, nuint baseAddress, params int[] offsets);
 }

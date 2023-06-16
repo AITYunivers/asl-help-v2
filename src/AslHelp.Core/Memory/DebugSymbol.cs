@@ -6,7 +6,7 @@ namespace AslHelp.Core.Memory;
 
 public readonly record struct DebugSymbol
 {
-    public DebugSymbol(string name, nint address, int size)
+    public DebugSymbol(string name, nuint address, int size)
     {
         Name = name;
         Address = address;
@@ -23,7 +23,7 @@ public readonly record struct DebugSymbol
     }
 
     public string Name { get; }
-    public nint Address { get; }
+    public nuint Address { get; }
     public int Size { get; }
 
     public override string ToString()

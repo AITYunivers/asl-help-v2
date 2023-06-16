@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Core.Collections;
@@ -10,12 +11,12 @@ namespace AslHelp.Core.Memory.Ipc;
 
 public abstract partial class MemoryManagerBase : IMemoryManager
 {
-    private readonly ILogger _logger;
+    private readonly ILogger? _logger;
 
     protected readonly nuint _processHandle;
     protected bool _isDisposed;
 
-    public MemoryManagerBase(Process process, ILogger logger)
+    public MemoryManagerBase(Process process, ILogger? logger)
     {
         ThrowHelper.ThrowIfNull(process);
         if (process.HasExited)
@@ -49,21 +50,21 @@ public abstract partial class MemoryManagerBase : IMemoryManager
 
     public virtual void Update()
     {
-        Process.Refresh();
+        // Process.Refresh();
         Tick++;
     }
 
-    public nint FromAbsoluteAddress(nint address)
+    public nuint FromAbsoluteAddress(nuint address)
     {
-        return Read<nint>(address);
+        return Read<nuint>(address);
     }
 
-    public nint FromRelativeAddress(nint address)
+    public nuint FromRelativeAddress(nuint address)
     {
-        return address + 0x4 + Read<int>(address);
+        return address + 0x4 + Read<uint>(address);
     }
 
-    public nint FromAssemblyAddress(nint address)
+    public nuint FromAssemblyAddress(nuint address)
     {
         return Is64Bit ? FromRelativeAddress(address) : FromAbsoluteAddress(address);
     }
@@ -85,5 +86,18 @@ public abstract partial class MemoryManagerBase : IMemoryManager
         Process.Dispose();
 
         _isDisposed = true;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static bool IsNativeInt<T>()
+    {
+        return typeof(T) == typeof(nint) || typeof(T) == typeof(nuint);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected unsafe uint GetNativeSizeOf<T>()
+        where T : unmanaged
+    {
+        return (uint)(IsNativeInt<T>() ? PtrSize : sizeof(T));
     }
 }

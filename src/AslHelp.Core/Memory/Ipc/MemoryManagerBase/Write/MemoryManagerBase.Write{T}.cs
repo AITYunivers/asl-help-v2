@@ -4,12 +4,12 @@ namespace AslHelp.Core.Memory.Ipc;
 
 public partial class MemoryManagerBase
 {
-    public bool Write<T>(T value, int baseOffset, params int[] offsets) where T : unmanaged
+    public bool Write<T>(T value, uint baseOffset, params int[] offsets) where T : unmanaged
     {
         return Write<T>(value, MainModule, baseOffset, offsets);
     }
 
-    public bool Write<T>(T value, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets) where T : unmanaged
+    public bool Write<T>(T value, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
     {
         if (moduleName is null)
         {
@@ -19,7 +19,7 @@ public partial class MemoryManagerBase
         return Write<T>(value, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool Write<T>(T value, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets) where T : unmanaged
+    public bool Write<T>(T value, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged
     {
         if (module is null)
         {
@@ -29,5 +29,5 @@ public partial class MemoryManagerBase
         return Write<T>(value, module.Base + baseOffset, offsets);
     }
 
-    public abstract bool Write<T>(T value, nint baseAddress, params int[] offsets) where T : unmanaged;
+    public abstract bool Write<T>(T value, nuint baseAddress, params int[] offsets) where T : unmanaged;
 }

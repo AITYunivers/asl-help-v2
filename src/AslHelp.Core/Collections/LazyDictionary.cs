@@ -137,7 +137,7 @@ public abstract class LazyDictionary<TKey, TValue> : IEnumerable<TValue>
     ///     with the specified <paramref name="key"/>;
     ///     otherwise, <see langword="false"/>.
     /// </returns>
-    public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue? value)
+    public bool TryGetValue(TKey key, [MaybeNullWhen(true)] out TValue? value)
     {
         if (_cache.TryGetValue(key, out value))
         {

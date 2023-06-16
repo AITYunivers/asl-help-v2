@@ -6,28 +6,28 @@ namespace AslHelp.Core.Memory.Ipc;
 
 public interface IMemoryWriter
 {
-    bool Write<T>(T value, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool Write<T>(T value, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool Write<T>(T value, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool Write<T>(T value, nint baseAddress, params int[] offsets) where T : unmanaged;
+    bool Write<T>(T value, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool Write<T>(T value, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool Write<T>(T value, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool Write<T>(T value, nuint baseAddress, params int[] offsets) where T : unmanaged;
 
-    bool WriteSpan<T>(ICollection<T> values, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool WriteSpan<T>(ICollection<T> values, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool WriteSpan<T>(ICollection<T> values, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool WriteSpan<T>(ICollection<T> values, nint baseAddress, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(ICollection<T> values, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(ICollection<T> values, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(ICollection<T> values, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(ICollection<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged;
 
-    bool WriteSpan<T>(List<T> values, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool WriteSpan<T>(List<T> values, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool WriteSpan<T>(List<T> values, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool WriteSpan<T>(List<T> values, nint baseAddress, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(List<T> values, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(List<T> values, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(List<T> values, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(List<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged;
 
-    bool WriteSpan<T>(T[] values, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool WriteSpan<T>(T[] values, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool WriteSpan<T>(T[] values, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool WriteSpan<T>(T[] values, nint baseAddress, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(T[] values, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(T[] values, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(T[] values, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(T[] values, nuint baseAddress, params int[] offsets) where T : unmanaged;
 
-    bool WriteSpan<T>(ReadOnlySpan<T> values, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool WriteSpan<T>(ReadOnlySpan<T> values, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool WriteSpan<T>(ReadOnlySpan<T> values, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets) where T : unmanaged;
-    bool WriteSpan<T>(ReadOnlySpan<T> values, nint baseAddress, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(ReadOnlySpan<T> values, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(ReadOnlySpan<T> values, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(ReadOnlySpan<T> values, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged;
+    bool WriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged;
 }

@@ -10,7 +10,7 @@ namespace AslHelp.Core.Memory.Ipc;
 
 public partial class MemoryManagerBase
 {
-    public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, int baseOffset, params int[] offsets)
+    public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, uint baseOffset, params int[] offsets)
     {
         Module? module = MainModule;
         if (module is null)
@@ -22,7 +22,7 @@ public partial class MemoryManagerBase
         return ReadSpanDef(definition, length, module, baseOffset, offsets);
     }
 
-    public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, string moduleName, int baseOffset, params int[] offsets)
+    public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, string moduleName, uint baseOffset, params int[] offsets)
     {
         Module? module = Modules[moduleName];
         if (module is null)
@@ -34,12 +34,12 @@ public partial class MemoryManagerBase
         return ReadSpanDef(definition, length, module, baseOffset, offsets);
     }
 
-    public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, Module module, int baseOffset, params int[] offsets)
+    public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, Module module, uint baseOffset, params int[] offsets)
     {
         return ReadSpanDef(definition, length, module.Base + baseOffset, offsets);
     }
 
-    public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, nint baseAddress, params int[] offsets)
+    public dynamic[] ReadSpanDef(ITypeDefinition definition, int length, nuint baseAddress, params int[] offsets)
     {
         ThrowHelper.ThrowIfLessThan(length, 0);
 
@@ -49,7 +49,7 @@ public partial class MemoryManagerBase
         return results;
     }
 
-    public void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, int baseOffset, params int[] offsets)
+    public void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, uint baseOffset, params int[] offsets)
     {
         Module? module = MainModule;
         if (module is null)
@@ -61,7 +61,7 @@ public partial class MemoryManagerBase
         ReadSpanDef(definition, buffer, module, baseOffset, offsets);
     }
 
-    public void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, string moduleName, int baseOffset, params int[] offsets)
+    public void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, string moduleName, uint baseOffset, params int[] offsets)
     {
         Module? module = Modules[moduleName];
         if (module is null)
@@ -73,19 +73,19 @@ public partial class MemoryManagerBase
         ReadSpanDef(definition, buffer, module, baseOffset, offsets);
     }
 
-    public void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, Module module, int baseOffset, params int[] offsets)
+    public void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, Module module, uint baseOffset, params int[] offsets)
     {
         ReadSpanDef(definition, buffer, module.Base + baseOffset, offsets);
     }
 
-    public unsafe void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nint baseAddress, params int[] offsets)
+    public unsafe void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nuint baseAddress, params int[] offsets)
     {
         if (buffer.Length == 0)
         {
             return;
         }
 
-        nint deref = Deref(baseAddress, offsets);
+        nuint deref = Deref(baseAddress, offsets);
 
         int size = definition.Size;
         int bytes = size * buffer.Length;
@@ -109,12 +109,12 @@ public partial class MemoryManagerBase
         ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
     }
 
-    public bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, int baseOffset, params int[] offsets)
+    public bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, uint baseOffset, params int[] offsets)
     {
         return TryReadSpanDef(definition, out results, length, MainModule, baseOffset, offsets);
     }
 
-    public bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
     {
         if (moduleName is null)
         {
@@ -125,7 +125,7 @@ public partial class MemoryManagerBase
         return TryReadSpanDef(definition, out results, length, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
+    public bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
     {
         if (module is null)
         {
@@ -136,7 +136,7 @@ public partial class MemoryManagerBase
         return TryReadSpanDef(definition, out results, length, module.Base + baseOffset, offsets);
     }
 
-    public bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, nint baseAddress, params int[] offsets)
+    public bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, nuint baseAddress, params int[] offsets)
     {
         ThrowHelper.ThrowIfLessThan(length, 0);
 
@@ -144,12 +144,12 @@ public partial class MemoryManagerBase
         return TryReadSpanDef(definition, results, baseAddress, offsets);
     }
 
-    public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, int baseOffset, params int[] offsets)
+    public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, uint baseOffset, params int[] offsets)
     {
         return TryReadSpanDef(definition, buffer, MainModule, baseOffset, offsets);
     }
 
-    public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, [MaybeNullWhen(false)] string? moduleName, int baseOffset, params int[] offsets)
+    public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
     {
         if (moduleName is null)
         {
@@ -159,7 +159,7 @@ public partial class MemoryManagerBase
         return TryReadSpanDef(definition, buffer, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, [MaybeNullWhen(false)] Module? module, int baseOffset, params int[] offsets)
+    public bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
     {
         if (module is null)
         {
@@ -169,9 +169,9 @@ public partial class MemoryManagerBase
         return TryReadSpanDef(definition, buffer, module.Base + baseOffset, offsets);
     }
 
-    public unsafe bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nint baseAddress, params int[] offsets)
+    public unsafe bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nuint baseAddress, params int[] offsets)
     {
-        if (!TryDeref(out nint deref, baseAddress, offsets))
+        if (!TryDeref(out nuint deref, baseAddress, offsets))
         {
             return false;
         }
