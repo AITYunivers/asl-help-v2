@@ -5,7 +5,7 @@ using AslHelp.Core.Diagnostics.Logging;
 
 namespace AslHelp.Core.Diagnostics;
 
-public static class Debug
+internal static class Debug
 {
     private static readonly DebugLogger _logger = new();
 

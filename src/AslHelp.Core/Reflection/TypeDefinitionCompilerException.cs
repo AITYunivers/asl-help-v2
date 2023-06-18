@@ -84,12 +84,12 @@ internal class TypeDefinitionCompilerException : Exception
         foreach (CompilerError error in errors)
         {
             _ = sb
-            .Append(Environment.NewLine)
-            .Append("Line").Append(error.Line).Append(", ")
-            .Append("Col").Append(error.Column).Append(": ")
-            .Append(error.IsWarning ? "warning" : "error").Append(" ")
-            .Append(error.ErrorNumber).Append(": ")
-            .Append(error.ErrorText);
+                .Append(Environment.NewLine)
+                .Append("Line").Append(error.Line).Append(", ")
+                .Append("Col").Append(error.Column).Append(": ")
+                .Append(error.IsWarning ? "warning" : "error").Append(" ")
+                .Append(error.ErrorNumber).Append(": ")
+                .Append(error.ErrorText);
         }
 
         return sb.ToString();

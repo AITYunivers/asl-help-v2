@@ -2,7 +2,7 @@
 
 using LiveSplit.Model;
 
-namespace AslHelp.Core.LiveSplitInterop;
+namespace AslHelp.Core.LiveSplitInterop.Control;
 
 /// <summary>
 ///     The <see cref="TimerController"/> class

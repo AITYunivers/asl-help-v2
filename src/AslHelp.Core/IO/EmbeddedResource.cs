@@ -5,7 +5,7 @@ using AslHelp.Common.Exceptions;
 
 namespace AslHelp.Core.IO;
 
-public static class EmbeddedResource
+internal static class EmbeddedResource
 {
     public static void UnpackResource(string resource, string targetFile)
     {
