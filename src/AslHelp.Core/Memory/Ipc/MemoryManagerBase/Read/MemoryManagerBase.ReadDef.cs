@@ -1,3 +1,5 @@
+using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 
 using AslHelp.Common.Exceptions;
@@ -36,7 +38,24 @@ public partial class MemoryManagerBase
         return ReadDef(definition, module.Base + baseOffset, offsets);
     }
 
-    public abstract dynamic ReadDef(ITypeDefinition definition, nuint baseAddress, params int[] offsets);
+    public unsafe dynamic ReadDef(ITypeDefinition definition, nuint baseAddress, params int[] offsets)
+    {
+        nuint handle = _processHandle;
+        uint size = definition.Size;
+
+        byte[]? rented = null;
+        Span<byte> buffer =
+            size <= 1024
+            ? stackalloc byte[1024]
+            : (rented = ArrayPool<byte>.Shared.Rent((int)size));
+
+        ReadSpan(buffer, baseAddress, offsets);
+
+        fixed (byte* pBuffer = buffer)
+        {
+            return definition.CreateInstance(pBuffer);
+        }
+    }
 
     public bool TryReadDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic? result, uint baseOffset, params int[] offsets)
     {
@@ -65,5 +84,27 @@ public partial class MemoryManagerBase
         return TryReadDef(definition, out result, module.Base + baseOffset, offsets);
     }
 
-    public abstract bool TryReadDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic? result, nuint baseAddress, params int[] offsets);
+    public unsafe bool TryReadDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic? result, nuint baseAddress, params int[] offsets)
+    {
+        nuint handle = _processHandle;
+        uint size = definition.Size;
+
+        byte[]? rented = null;
+        Span<byte> buffer =
+            size <= 1024
+            ? stackalloc byte[1024]
+            : (rented = ArrayPool<byte>.Shared.Rent((int)size));
+
+        if (!TryReadSpan(buffer, baseAddress, offsets))
+        {
+            result = default;
+            return false;
+        }
+
+        fixed (byte* pBuffer = buffer)
+        {
+            result = definition.CreateInstance(pBuffer);
+            return true;
+        }
+    }
 }

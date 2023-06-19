@@ -2,7 +2,7 @@
 
 public interface ITypeDefinition
 {
-    int Size { get; }
+    uint Size { get; }
     object? Default { get; }
 
     unsafe object CreateInstance(void* buffer);

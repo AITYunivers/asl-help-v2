@@ -1,4 +1,4 @@
-namespace AslHelp.Common.Resources;
+namespace AslHelp.Common.Memory;
 
 public static class Lib
 {

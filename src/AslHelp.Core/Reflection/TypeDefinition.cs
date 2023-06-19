@@ -7,8 +7,10 @@ namespace AslHelp.Core;
 public readonly struct TypeDefinition<T> : ITypeDefinition<T>
     where T : unmanaged
 {
-    public T Default => default;
-    public unsafe int Size => sizeof(T);
+    public TypeDefinition() { }
+
+    public T Default { get; } = default;
+    public unsafe uint Size { get; } = (uint)sizeof(T);
 
     object ITypeDefinition.Default => Default;
 

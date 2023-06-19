@@ -80,23 +80,21 @@ public partial class MemoryManagerBase
 
     public unsafe void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nuint baseAddress, params int[] offsets)
     {
-        if (buffer.Length == 0)
+        if (buffer.IsEmpty)
         {
             return;
         }
 
-        nuint deref = Deref(baseAddress, offsets);
-
-        int size = definition.Size;
-        int bytes = size * buffer.Length;
+        uint size = definition.Size;
+        long bytes = size * buffer.Length;
 
         byte[]? rented = null;
         Span<byte> bBuffer =
             bytes <= 1024
             ? stackalloc byte[1024]
-            : (rented = ArrayPool<byte>.Shared.Rent(bytes));
+            : (rented = ArrayPool<byte>.Shared.Rent((int)bytes));
 
-        ReadSpan(bBuffer, deref);
+        ReadSpan(bBuffer, baseAddress, offsets);
 
         fixed (byte* pBuffer = bBuffer)
         {
@@ -171,21 +169,16 @@ public partial class MemoryManagerBase
 
     public unsafe bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nuint baseAddress, params int[] offsets)
     {
-        if (!TryDeref(out nuint deref, baseAddress, offsets))
-        {
-            return false;
-        }
-
-        int size = definition.Size;
-        int bytes = size * buffer.Length;
+        uint size = definition.Size;
+        long bytes = size * buffer.Length;
 
         byte[]? rented = null;
         Span<byte> bBuffer =
             bytes <= 1024
             ? stackalloc byte[1024]
-            : (rented = ArrayPool<byte>.Shared.Rent(bytes));
+            : (rented = ArrayPool<byte>.Shared.Rent((int)bytes));
 
-        if (!TryReadSpan(bBuffer, deref))
+        if (!TryReadSpan(bBuffer, baseAddress, offsets))
         {
             return false;
         }

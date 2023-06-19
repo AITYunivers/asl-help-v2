@@ -45,15 +45,7 @@ public static class StreamExtensions
         where T : unmanaged
     {
         int minimumBytes = buffer.Length * sizeof(T);
-        if (stream.ReadAtLeast(MemoryMarshal.AsBytes(buffer), minimumBytes) == minimumBytes)
-        {
-            return true;
-        }
-        else
-        {
-            buffer.Clear();
-            return false;
-        }
+        return stream.ReadAtLeast(MemoryMarshal.AsBytes(buffer), minimumBytes) == minimumBytes;
     }
 
     // Polyfilled from CommunityToolkit.HighPerformance.StreamExtensions.
@@ -77,16 +69,10 @@ public static class StreamExtensions
         int length = sizeof(T);
         byte[] buffer = ArrayPool<byte>.Shared.Rent(length);
 
-        try
-        {
-            Unsafe.WriteUnaligned(ref buffer[0], value);
+        Unsafe.WriteUnaligned(ref buffer[0], value);
+        stream.Write(buffer, 0, length);
 
-            stream.Write(buffer, 0, length);
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(buffer);
-        }
+        ArrayPool<byte>.Shared.Return(buffer);
     }
 
     private static void ReadExactly(this Stream stream, Span<byte> buffer)
