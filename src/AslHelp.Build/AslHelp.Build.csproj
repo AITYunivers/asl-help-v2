@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AslHelp.Basic\AslHelp.Basic.csproj" />
+    <ProjectReference Include="..\..\impl\AslHelp.Basic\AslHelp.Basic.csproj" />
     <ProjectReference Include="..\AslHelp.Core\AslHelp.Core.csproj" />
   </ItemGroup>
 
