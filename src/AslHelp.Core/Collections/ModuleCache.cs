@@ -18,7 +18,7 @@ public sealed class ModuleCache : LazyDictionary<string, Module>
     /// </summary>
     /// <param name="process">The target <see cref="Process"/> whose modules are to be enumerated.</param>
     public ModuleCache(Process process)
-        : this(process.Id, (nuint)(nint)process.Handle) { }
+        : this((uint)process.Id, (nuint)(nint)process.Handle) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ModuleCache"/> class

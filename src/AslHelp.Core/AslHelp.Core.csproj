@@ -10,10 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.*" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\AslHelp.Common\AslHelp.Common.csproj" />
   </ItemGroup>
 
@@ -24,6 +20,8 @@
 
   <ItemGroup Label="References">
     <Reference Include="../../ref/*.dll" />
+
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
   <ItemGroup>

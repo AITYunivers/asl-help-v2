@@ -10,19 +10,19 @@ public sealed class Pointer<T> : PointerBase<T>
     public Pointer(IMemoryManager manager, nuint baseAddress, params int[] offsets)
         : base(manager, baseAddress, offsets) { }
 
-    public Pointer(IMemoryManager manager, IPointer<nint> parent, int nextOffset, params int[] remainingOffsets)
+    public Pointer(IMemoryManager manager, IPointer<nuint> parent, int nextOffset, params int[] remainingOffsets)
         : base(manager, parent, nextOffset, remainingOffsets) { }
 
     protected override T Default { get; } = default;
 
-    protected override bool TryUpdate(nuint address, [NotNullWhen(true)] out T result)
+    protected override bool TryUpdate([NotNullWhen(true)] out T result, nuint address)
     {
         return _manager.TryRead(out result, address);
     }
 
-    protected override bool Write(nuint address, T value)
+    protected override bool Write(T value, nuint address)
     {
-        return _manager.Write(value, address);
+        return _manager.TryWrite(value, address);
     }
 
     protected override bool HasChanged(T old, T current)

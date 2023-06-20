@@ -56,7 +56,7 @@ public abstract partial class MemoryManagerBase : IMemoryManager
     public bool Is64Bit { get; }
     public byte PtrSize { get; }
 
-    public Module MainModule { get; }
+    public Module? MainModule { get; }
     public ModuleCache Modules { get; }
 
     public IEnumerable<MemoryPage> Pages(bool allPages)

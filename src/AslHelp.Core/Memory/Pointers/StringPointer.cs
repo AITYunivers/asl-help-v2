@@ -23,7 +23,7 @@ public sealed class StringPointer : PointerBase<string>
         IMemoryManager manager,
         int length,
         ReadStringType stringType,
-        IPointer<nint> parent,
+        IPointer<nuint> parent,
         int nextOffset,
         params int[] remainingOffsets)
         : base(manager, parent, nextOffset, remainingOffsets)
@@ -34,12 +34,12 @@ public sealed class StringPointer : PointerBase<string>
 
     protected override string? Default { get; }
 
-    protected override bool TryUpdate(nuint address, [NotNullWhen(true)] out string? result)
+    protected override bool TryUpdate([NotNullWhen(true)] out string? result, nuint address)
     {
         return _manager.TryReadSizedString(out result, address);
     }
 
-    protected override bool Write(nuint address, string value)
+    protected override bool Write(string value, nuint address)
     {
         throw new NotImplementedException();
     }

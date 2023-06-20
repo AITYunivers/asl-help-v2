@@ -11,9 +11,9 @@ public sealed class Module
 {
     private readonly nuint _processHandle;
 
-    public Module(nuint processHandle, string name, string fileName, nuint @base, int memorySize)
+    public Module(nuint processHandle, string name, string fileName, nuint @base, uint memorySize)
     {
-        _processHandle = (nuint)processHandle;
+        _processHandle = processHandle;
 
         Name = name;
         FileName = fileName;
@@ -23,28 +23,28 @@ public sealed class Module
 
     internal unsafe Module(nuint processHandle, string baseName, string fileName, MODULEINFO moduleInfo)
     {
-        _processHandle = (nuint)processHandle;
+        _processHandle = processHandle;
 
         Name = baseName;
         FileName = fileName;
-        Base = (nint)moduleInfo.lpBaseOfDll;
-        MemorySize = (int)moduleInfo.SizeOfImage;
+        Base = (nuint)moduleInfo.lpBaseOfDll;
+        MemorySize = moduleInfo.SizeOfImage;
     }
 
     internal unsafe Module(nuint processHandle, MODULEENTRY32W me)
     {
-        _processHandle = (nuint)processHandle;
+        _processHandle = processHandle;
 
         Name = new((char*)me.szModule);
         FileName = new((char*)me.szExePath);
-        Base = (nint)me.modBaseAddr;
-        MemorySize = (int)me.modBaseSize;
+        Base = (nuint)me.modBaseAddr;
+        MemorySize = me.modBaseSize;
     }
 
     public string Name { get; }
     public string FileName { get; }
     public nuint Base { get; }
-    public int MemorySize { get; }
+    public uint MemorySize { get; }
 
     private Dictionary<string, DebugSymbol>? _symbols;
     public Dictionary<string, DebugSymbol> Symbols

@@ -12,7 +12,7 @@ public class Signature
     public Signature(params string[] pattern)
         : this(0, pattern) { }
 
-    public unsafe Signature(int offset, params string[] pattern)
+    public unsafe Signature(uint offset, params string[] pattern)
     {
         ThrowHelper.ThrowIfNullOrEmpty(pattern);
 
@@ -71,7 +71,7 @@ public class Signature
     public Signature(params byte[] pattern)
         : this(0, pattern) { }
 
-    public Signature(int offset, params byte[] pattern)
+    public Signature(uint offset, params byte[] pattern)
     {
         ThrowHelper.ThrowIfNullOrEmpty(pattern);
 
@@ -85,7 +85,7 @@ public class Signature
         Values = MemoryMarshal.Cast<byte, ulong>(pattern).ToArray();
     }
 
-    public int Offset { get; }
+    public uint Offset { get; }
     public int Length { get; }
 
     public ulong[] Values { get; }

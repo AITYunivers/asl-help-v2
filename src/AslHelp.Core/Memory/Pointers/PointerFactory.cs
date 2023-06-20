@@ -1,5 +1,5 @@
 using AslHelp.Common.Exceptions;
-using AslHelp.Common.Resources;
+using AslHelp.Common.Memory;
 using AslHelp.Core.Memory.Ipc;
 using AslHelp.Core.Reflection;
 
@@ -25,7 +25,14 @@ public class PointerFactory
     public Pointer<T> Make<T>(uint baseOffset, params int[] offsets)
         where T : unmanaged
     {
-        return new(_manager, _manager.MainModule.Base + baseOffset, offsets);
+        Module? module = _manager.MainModule;
+        if (module is null)
+        {
+            string msg = $"[Make<{typeof(T).Name}>] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return new(_manager, module.Base + baseOffset, offsets);
     }
 
     public Pointer<T> Make<T>(string moduleName, uint baseOffset, params int[] offsets)
@@ -56,7 +63,14 @@ public class PointerFactory
     public SpanPointer<T> MakeSpan<T>(int length, uint baseOffset, params int[] offsets)
         where T : unmanaged
     {
-        return new(_manager, length, _manager.MainModule.Base + baseOffset, offsets);
+        Module? module = _manager.MainModule;
+        if (module is null)
+        {
+            string msg = $"[MakeSpan<{typeof(T).Name}>] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return new(_manager, length, module.Base + baseOffset, offsets);
     }
 
     public SpanPointer<T> MakeSpan<T>(int length, string moduleName, uint baseOffset, params int[] offsets)
@@ -80,12 +94,19 @@ public class PointerFactory
 
     public StringPointer MakeString(nuint baseAddress, params int[] offsets)
     {
-        return new(_manager, Mem.DefaultStringLength, ReadStringType.AutoDetect, baseAddress, offsets);
+        return new(_manager, IOR.DefaultStringReadLength, ReadStringType.AutoDetect, baseAddress, offsets);
     }
 
     public StringPointer MakeString(uint baseOffset, params int[] offsets)
     {
-        return new(_manager, Mem.DefaultStringLength, ReadStringType.AutoDetect, _manager.MainModule.Base + baseOffset, offsets);
+        Module? module = _manager.MainModule;
+        if (module is null)
+        {
+            string msg = "[MakeString] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return new(_manager, IOR.DefaultStringReadLength, ReadStringType.AutoDetect, module.Base + baseOffset, offsets);
     }
 
     public StringPointer MakeString(string moduleName, uint baseOffset, params int[] offsets)
@@ -97,12 +118,12 @@ public class PointerFactory
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
-        return new(_manager, Mem.DefaultStringLength, ReadStringType.AutoDetect, module.Base + baseOffset, offsets);
+        return new(_manager, IOR.DefaultStringReadLength, ReadStringType.AutoDetect, module.Base + baseOffset, offsets);
     }
 
     public StringPointer MakeString(Module module, uint baseOffset, params int[] offsets)
     {
-        return new(_manager, Mem.DefaultStringLength, ReadStringType.AutoDetect, module.Base + baseOffset, offsets);
+        return new(_manager, IOR.DefaultStringReadLength, ReadStringType.AutoDetect, module.Base + baseOffset, offsets);
     }
 
     public StringPointer MakeString(int length, nuint baseAddress, params int[] offsets)
@@ -112,7 +133,14 @@ public class PointerFactory
 
     public StringPointer MakeString(int length, uint baseOffset, params int[] offsets)
     {
-        return new(_manager, length, ReadStringType.AutoDetect, _manager.MainModule.Base + baseOffset, offsets);
+        Module? module = _manager.MainModule;
+        if (module is null)
+        {
+            string msg = "[MakeString] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return new(_manager, length, ReadStringType.AutoDetect, module.Base + baseOffset, offsets);
     }
 
     public StringPointer MakeString(int length, string moduleName, uint baseOffset, params int[] offsets)
@@ -134,12 +162,19 @@ public class PointerFactory
 
     public StringPointer MakeString(ReadStringType stringType, nuint baseAddress, params int[] offsets)
     {
-        return new(_manager, Mem.DefaultStringLength, stringType, baseAddress, offsets);
+        return new(_manager, IOR.DefaultStringReadLength, stringType, baseAddress, offsets);
     }
 
     public StringPointer MakeString(ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
-        return new(_manager, Mem.DefaultStringLength, stringType, _manager.MainModule.Base + baseOffset, offsets);
+        Module? module = _manager.MainModule;
+        if (module is null)
+        {
+            string msg = "[MakeString] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return new(_manager, IOR.DefaultStringReadLength, stringType, module.Base + baseOffset, offsets);
     }
 
     public StringPointer MakeString(ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets)
@@ -151,12 +186,12 @@ public class PointerFactory
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
-        return new(_manager, Mem.DefaultStringLength, stringType, module.Base + baseOffset, offsets);
+        return new(_manager, IOR.DefaultStringReadLength, stringType, module.Base + baseOffset, offsets);
     }
 
     public StringPointer MakeString(ReadStringType stringType, Module module, uint baseOffset, params int[] offsets)
     {
-        return new(_manager, Mem.DefaultStringLength, stringType, module.Base + baseOffset, offsets);
+        return new(_manager, IOR.DefaultStringReadLength, stringType, module.Base + baseOffset, offsets);
     }
 
     public StringPointer MakeString(int length, ReadStringType stringType, nuint baseAddress, params int[] offsets)
@@ -166,7 +201,14 @@ public class PointerFactory
 
     public StringPointer MakeString(int length, ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
-        return new(_manager, length, stringType, _manager.MainModule.Base + baseOffset, offsets);
+        Module? module = _manager.MainModule;
+        if (module is null)
+        {
+            string msg = "[MakeString] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return new(_manager, length, stringType, module.Base + baseOffset, offsets);
     }
 
     public StringPointer MakeString(int length, ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets)
@@ -193,7 +235,14 @@ public class PointerFactory
 
     public SizedStringPointer MakeSizedString(uint baseOffset, params int[] offsets)
     {
-        return new(_manager, ReadStringType.AutoDetect, _manager.MainModule.Base + baseOffset, offsets);
+        Module? module = _manager.MainModule;
+        if (module is null)
+        {
+            string msg = "[MakeSizedString] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return new(_manager, ReadStringType.AutoDetect, module.Base + baseOffset, offsets);
     }
 
     public SizedStringPointer MakeSizedString(string moduleName, uint baseOffset, params int[] offsets)
@@ -220,7 +269,14 @@ public class PointerFactory
 
     public SizedStringPointer MakeSizedString(ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
-        return new(_manager, stringType, _manager.MainModule.Base + baseOffset, offsets);
+        Module? module = _manager.MainModule;
+        if (module is null)
+        {
+            string msg = "[MakeSizedString] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return new(_manager, stringType, module.Base + baseOffset, offsets);
     }
 
     public SizedStringPointer MakeSizedString(ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets)
@@ -242,7 +298,14 @@ public class PointerFactory
 
     public TypeDefinitionPointer MakeDef(ITypeDefinition definition, uint baseOffset, params int[] offsets)
     {
-        return new(_manager, definition, _manager.MainModule.Base + baseOffset, offsets);
+        Module? module = _manager.MainModule;
+        if (module is null)
+        {
+            string msg = "[MakeDef] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        return new(_manager, definition, module.Base + baseOffset, offsets);
     }
 
     public TypeDefinitionPointer MakeDef(ITypeDefinition definition, string moduleName, uint baseOffset, params int[] offsets)

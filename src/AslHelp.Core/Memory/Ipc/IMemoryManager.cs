@@ -16,7 +16,7 @@ public interface IMemoryManager
     bool Is64Bit { get; }
     byte PtrSize { get; }
 
-    Module MainModule { get; }
+    Module? MainModule { get; }
     ModuleCache Modules { get; }
 
     IEnumerable<MemoryPage> Pages(bool allPages);

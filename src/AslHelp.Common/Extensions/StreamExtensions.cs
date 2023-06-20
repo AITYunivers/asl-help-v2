@@ -75,6 +75,22 @@ public static class StreamExtensions
         ArrayPool<byte>.Shared.Return(buffer);
     }
 
+    public static TResponse Transact<TRequest, TResponse>(this Stream stream, TRequest request)
+        where TRequest : unmanaged
+        where TResponse : unmanaged
+    {
+        stream.Write(request);
+        return stream.Read<TResponse>();
+    }
+
+    public static bool TryTransact<TRequest, TResponse>(this Stream stream, TRequest request, out TResponse response)
+        where TRequest : unmanaged
+        where TResponse : unmanaged
+    {
+        stream.Write(request);
+        return stream.TryRead(out response);
+    }
+
     private static void ReadExactly(this Stream stream, Span<byte> buffer)
     {
         ThrowHelper.ThrowIfNull(stream);

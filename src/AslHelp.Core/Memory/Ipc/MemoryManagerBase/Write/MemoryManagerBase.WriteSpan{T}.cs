@@ -4,128 +4,262 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
+using AslHelp.Common.Exceptions;
 using AslHelp.Core.Reflection;
 
 namespace AslHelp.Core.Memory.Ipc;
 
 public partial class MemoryManagerBase
 {
-    public bool WriteSpan<T>(ICollection<T> values, uint baseOffset, params int[] offsets) where T : unmanaged
+    public void WriteSpan<T>(ICollection<T> values, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        return WriteSpan<T>(values, MainModule, baseOffset, offsets);
+        Module? module = MainModule;
+        if (module is null)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        WriteSpan<T>(values, module, baseOffset, offsets);
     }
 
-    public bool WriteSpan<T>(ICollection<T> values, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
+    public void WriteSpan<T>(ICollection<T> values, string moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        Module? module = Modules[moduleName];
+        if (module is null)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] Module '{moduleName}' could not be found.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        WriteSpan<T>(values, module, baseOffset, offsets);
+    }
+
+    public void WriteSpan<T>(ICollection<T> values, Module module, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        WriteSpan<T>(values, module.Base + baseOffset, offsets);
+    }
+
+    public void WriteSpan<T>(ICollection<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged
+    {
+        WriteSpan<T>(values.ToArray(), baseAddress, offsets);
+    }
+
+    public bool TryWriteSpan<T>(ICollection<T> values, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        return TryWriteSpan<T>(values, MainModule, baseOffset, offsets);
+    }
+
+    public bool TryWriteSpan<T>(ICollection<T> values, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
     {
         if (moduleName is null)
         {
             return false;
         }
 
-        return WriteSpan<T>(values, Modules[moduleName], baseOffset, offsets);
+        return TryWriteSpan<T>(values, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool WriteSpan<T>(ICollection<T> values, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged
+    public bool TryWriteSpan<T>(ICollection<T> values, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged
     {
         if (module is null)
         {
             return false;
         }
 
-        return WriteSpan<T>(values, module.Base + baseOffset, offsets);
+        return TryWriteSpan<T>(values, module.Base + baseOffset, offsets);
     }
 
-    public bool WriteSpan<T>(ICollection<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged
+    public bool TryWriteSpan<T>(ICollection<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged
     {
-        return WriteSpan<T>(values.ToArray(), baseAddress, offsets);
+        return TryWriteSpan<T>(values.ToArray(), baseAddress, offsets);
     }
 
-    public bool WriteSpan<T>(List<T> values, uint baseOffset, params int[] offsets) where T : unmanaged
+    public void WriteSpan<T>(List<T> values, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        return WriteSpan<T>(values, MainModule, baseOffset, offsets);
-    }
-
-    public bool WriteSpan<T>(List<T> values, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
-    {
-        if (moduleName is null)
-        {
-            return false;
-        }
-
-        return WriteSpan<T>(values, Modules[moduleName], baseOffset, offsets);
-    }
-
-    public bool WriteSpan<T>(List<T> values, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged
-    {
+        Module? module = MainModule;
         if (module is null)
         {
-            return false;
+            string msg = $"[WriteSpan<{typeof(T).Name}>] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
-        return WriteSpan<T>(values, module.Base + baseOffset, offsets);
+        WriteSpan<T>(values, module, baseOffset, offsets);
     }
 
-    public bool WriteSpan<T>(List<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged
+    public void WriteSpan<T>(List<T> values, string moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        Module? module = Modules[moduleName];
+        if (module is null)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] Module '{moduleName}' could not be found.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        WriteSpan<T>(values, module, baseOffset, offsets);
+    }
+
+    public void WriteSpan<T>(List<T> values, Module module, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        WriteSpan<T>(values, module.Base + baseOffset, offsets);
+    }
+
+    public void WriteSpan<T>(List<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged
     {
         (T[] array, int count) = Emissions<T>.GetBackingArray(values);
-
-        return WriteSpan<T>(array.AsSpan(0, count), baseAddress, offsets);
+        WriteSpan<T>(array.AsSpan(0, count), baseAddress, offsets);
     }
 
-    public bool WriteSpan<T>(T[] values, uint baseOffset, params int[] offsets) where T : unmanaged
+    public bool TryWriteSpan<T>(List<T> values, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        return WriteSpan<T>(values, MainModule, baseOffset, offsets);
+        return TryWriteSpan<T>(values, MainModule, baseOffset, offsets);
     }
 
-    public bool WriteSpan<T>(T[] values, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
-    {
-        if (moduleName is null)
-        {
-            return false;
-        }
-
-        return WriteSpan<T>(values, Modules[moduleName], baseOffset, offsets);
-    }
-
-    public bool WriteSpan<T>(T[] values, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged
-    {
-        if (module is null)
-        {
-            return false;
-        }
-
-        return WriteSpan<T>(values, module.Base + baseOffset, offsets);
-    }
-
-    public bool WriteSpan<T>(T[] values, nuint baseAddress, params int[] offsets) where T : unmanaged
-    {
-        return WriteSpan<T>(values.AsSpan(), baseAddress, offsets);
-    }
-
-    public bool WriteSpan<T>(ReadOnlySpan<T> values, uint baseOffset, params int[] offsets) where T : unmanaged
-    {
-        return WriteSpan<T>(values, MainModule, baseOffset, offsets);
-    }
-
-    public bool WriteSpan<T>(ReadOnlySpan<T> values, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
+    public bool TryWriteSpan<T>(List<T> values, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
     {
         if (moduleName is null)
         {
             return false;
         }
 
-        return WriteSpan<T>(values, Modules[moduleName], baseOffset, offsets);
+        return TryWriteSpan<T>(values, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool WriteSpan<T>(ReadOnlySpan<T> values, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged
+    public bool TryWriteSpan<T>(List<T> values, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged
     {
         if (module is null)
         {
             return false;
         }
 
-        return WriteSpan<T>(values, module.Base + baseOffset, offsets);
+        return TryWriteSpan<T>(values, module.Base + baseOffset, offsets);
     }
 
-    public abstract bool WriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged;
+    public bool TryWriteSpan<T>(List<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged
+    {
+        (T[] array, int count) = Emissions<T>.GetBackingArray(values);
+        return TryWriteSpan<T>(array.AsSpan(0, count), baseAddress, offsets);
+    }
+
+    public void WriteSpan<T>(T[] values, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        Module? module = MainModule;
+        if (module is null)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        WriteSpan<T>(values, module, baseOffset, offsets);
+    }
+
+    public void WriteSpan<T>(T[] values, string moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        Module? module = Modules[moduleName];
+        if (module is null)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] Module '{moduleName}' could not be found.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        WriteSpan<T>(values, module, baseOffset, offsets);
+    }
+
+    public void WriteSpan<T>(T[] values, Module module, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        WriteSpan<T>(values, module.Base + baseOffset, offsets);
+    }
+
+    public void WriteSpan<T>(T[] values, nuint baseAddress, params int[] offsets) where T : unmanaged
+    {
+        WriteSpan<T>(values.AsSpan(), baseAddress, offsets);
+    }
+
+    public bool TryWriteSpan<T>(T[] values, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        return TryWriteSpan<T>(values, MainModule, baseOffset, offsets);
+    }
+
+    public bool TryWriteSpan<T>(T[] values, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        if (moduleName is null)
+        {
+            return false;
+        }
+
+        return TryWriteSpan<T>(values, Modules[moduleName], baseOffset, offsets);
+    }
+
+    public bool TryWriteSpan<T>(T[] values, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        if (module is null)
+        {
+            return false;
+        }
+
+        return TryWriteSpan<T>(values, module.Base + baseOffset, offsets);
+    }
+
+    public bool TryWriteSpan<T>(T[] values, nuint baseAddress, params int[] offsets) where T : unmanaged
+    {
+        return TryWriteSpan<T>(values.AsSpan(), baseAddress, offsets);
+    }
+
+    public void WriteSpan<T>(ReadOnlySpan<T> values, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        Module? module = MainModule;
+        if (module is null)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        WriteSpan<T>(values, module, baseOffset, offsets);
+    }
+
+    public void WriteSpan<T>(ReadOnlySpan<T> values, string moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        Module? module = Modules[moduleName];
+        if (module is null)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] Module '{moduleName}' could not be found.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        WriteSpan<T>(values, module, baseOffset, offsets);
+    }
+
+    public void WriteSpan<T>(ReadOnlySpan<T> values, Module module, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        WriteSpan<T>(values, module.Base + baseOffset, offsets);
+    }
+
+    public abstract void WriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged;
+
+    public bool TryWriteSpan<T>(ReadOnlySpan<T> values, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        return TryWriteSpan<T>(values, MainModule, baseOffset, offsets);
+    }
+
+    public bool TryWriteSpan<T>(ReadOnlySpan<T> values, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        if (moduleName is null)
+        {
+            return false;
+        }
+
+        return TryWriteSpan<T>(values, Modules[moduleName], baseOffset, offsets);
+    }
+
+    public bool TryWriteSpan<T>(ReadOnlySpan<T> values, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        if (module is null)
+        {
+            return false;
+        }
+
+        return TryWriteSpan<T>(values, module.Base + baseOffset, offsets);
+    }
+
+    public abstract bool TryWriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged;
 }

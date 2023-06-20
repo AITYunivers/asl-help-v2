@@ -5,7 +5,7 @@ namespace AslHelp.Core.Memory;
 
 public readonly record struct MemoryPage
 {
-    public MemoryPage(nuint @base, int regionSize, MemProtect protect, MemState state, MemType type)
+    public MemoryPage(nuint @base, uint regionSize, MemProtect protect, MemState state, MemType type)
     {
         Base = @base;
         RegionSize = regionSize;
@@ -16,15 +16,15 @@ public readonly record struct MemoryPage
 
     internal unsafe MemoryPage(MEMORY_BASIC_INFORMATION mbi)
     {
-        Base = (nint)mbi.BaseAddress;
-        RegionSize = (int)mbi.RegionSize;
+        Base = (nuint)mbi.BaseAddress;
+        RegionSize = (uint)mbi.RegionSize;
         Protect = mbi.Protect;
         State = mbi.State;
         Type = mbi.Type;
     }
 
     public nuint Base { get; }
-    public int RegionSize { get; }
+    public uint RegionSize { get; }
 
     public MemProtect Protect { get; }
     public MemState State { get; }

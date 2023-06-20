@@ -21,7 +21,7 @@ public sealed class TypeDefinitionPointer : PointerBase<dynamic>
     public TypeDefinitionPointer(
         IMemoryManager manager,
         ITypeDefinition typeDefinition,
-        IPointer<nint> parent,
+        IPointer<nuint> parent,
         int nextOffset,
         params int[] remainingOffsets)
         : base(manager, parent, nextOffset, remainingOffsets)
@@ -33,12 +33,12 @@ public sealed class TypeDefinitionPointer : PointerBase<dynamic>
 
     protected override dynamic? Default { get; }
 
-    protected override bool TryUpdate(nuint address, [NotNullWhen(true)] out dynamic? result)
+    protected override bool TryUpdate([NotNullWhen(true)] out dynamic? result, nuint address)
     {
         return _manager.TryReadDef(_typeDefinition, out result, address);
     }
 
-    protected override bool Write(nuint address, dynamic value)
+    protected override bool Write(dynamic value, nuint address)
     {
         throw new NotImplementedException();
     }

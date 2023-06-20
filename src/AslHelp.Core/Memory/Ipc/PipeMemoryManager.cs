@@ -4,8 +4,7 @@ using System.IO.Pipes;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Common.Extensions;
-using AslHelp.Common.Memory.Ipc.Requests;
-using AslHelp.Common.Memory.Ipc.Responses;
+using AslHelp.Common.Memory.Ipc;
 using AslHelp.Core.Diagnostics.Logging;
 
 namespace AslHelp.Core.Memory.Ipc;
@@ -92,16 +91,23 @@ public sealed class PipeMemoryManager : MemoryManagerBase
 
         fixed (int* pOffsets = offsets)
         {
-            DerefRequest request = new(PipeRequest.Deref, baseAddress, offsets.Length, pOffsets);
-            DerefResponse response = _pipe.Transact<DerefRequest, DerefResponse>(request);
+            nuint result;
 
-            if (response.Code != PipeResponse.Success)
+            _pipe.Write(PipeRequest.Deref);
+            _pipe.Write<DerefRequest>(new(
+                baseAddress,
+                (ulong)pOffsets,
+                (uint)offsets.Length,
+                (ulong)&result));
+
+            PipeResponse response = _pipe.Read<PipeResponse>();
+            if (response != PipeResponse.Success)
             {
-                string msg = $"[Deref] Failed to dereference pointer. Response: {response}";
+                string msg = $"[Deref] Failed to dereference pointer ({response} {(int)response}).";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             }
 
-            return response.Result;
+            return result;
         }
     }
 
@@ -109,13 +115,13 @@ public sealed class PipeMemoryManager : MemoryManagerBase
     {
         if (_isDisposed)
         {
-            string msg = "[Deref] Cannot interact with the memory of an exited process.";
+            string msg = "[TryDeref] Cannot interact with the memory of an exited process.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         if (!_pipe.IsConnected)
         {
-            string msg = "[Deref] Pipe was not connected.";
+            string msg = "[TryDeref] Pipe was not connected.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -126,49 +132,317 @@ public sealed class PipeMemoryManager : MemoryManagerBase
         }
 
         fixed (int* pOffsets = offsets)
+        fixed (nuint* pResult = &result)
         {
-            DerefRequest request = new(PipeRequest.Deref, baseAddress, offsets.Length, pOffsets);
-            DerefResponse response = _pipe.Transact<DerefRequest, DerefResponse>(request);
+            _pipe.Write(PipeRequest.Deref);
+            _pipe.Write<DerefRequest>(new(
+                baseAddress,
+                (ulong)pOffsets,
+                (uint)offsets.Length,
+                (ulong)pResult));
 
-            if (response.Code != PipeResponse.Success)
-            {
-                result = default;
-                return false;
-            }
-
-            result = response.Result;
-            return true;
+            return _pipe.TryRead(out PipeResponse response) && response == PipeResponse.Success;
         }
     }
 
-    public override T Read<T>(nuint baseAddress, params int[] offsets)
+    public override unsafe T Read<T>(nuint baseAddress, params int[] offsets)
     {
-        throw new NotImplementedException();
+        if (_isDisposed)
+        {
+            string msg = $"[Read<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = $"[Read<{typeof(T).Name}>] Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (baseAddress == 0)
+        {
+            string msg = $"[Read<{typeof(T).Name}>] Attempted to dereference a null pointer.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        fixed (int* pOffsets = offsets)
+        {
+            T result;
+
+            _pipe.Write(PipeRequest.Read);
+            _pipe.Write<ReadRequest>(new(
+                baseAddress,
+                (ulong)pOffsets,
+                (uint)offsets.Length,
+                (ulong)&result,
+                GetNativeSizeOf<T>()));
+
+            PipeResponse response = _pipe.Read<PipeResponse>();
+            if (response != PipeResponse.Success)
+            {
+                string msg = $"[Read<{typeof(T).Name}>] Failed to read value ({response} {(int)response}).";
+                ThrowHelper.ThrowInvalidOperationException(msg);
+            }
+
+            return result;
+        }
     }
 
-    public override bool TryRead<T>(out T result, nuint baseAddress, params int[] offsets)
+    public override unsafe bool TryRead<T>(out T result, nuint baseAddress, params int[] offsets)
     {
-        throw new NotImplementedException();
+        if (_isDisposed)
+        {
+            string msg = $"[TryRead<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = $"[TryRead<{typeof(T).Name}>] Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (baseAddress == 0)
+        {
+            result = default;
+            return false;
+        }
+
+        fixed (int* pOffsets = offsets)
+        fixed (T* pResult = &result)
+        {
+            _pipe.Write(PipeRequest.Read);
+            _pipe.Write<ReadRequest>(new(
+                baseAddress,
+                (ulong)pOffsets,
+                (uint)offsets.Length,
+                (ulong)pResult,
+                GetNativeSizeOf<T>()));
+
+            return _pipe.TryRead(out PipeResponse response) && response == PipeResponse.Success;
+        }
     }
 
-    public override void ReadSpan<T>(Span<T> buffer, nuint baseAddress, params int[] offsets)
+    public override unsafe void ReadSpan<T>(Span<T> buffer, nuint baseAddress, params int[] offsets)
     {
-        throw new NotImplementedException();
+        if (_isDisposed)
+        {
+            string msg = $"[ReadSpan<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = $"[ReadSpan<{typeof(T).Name}>] Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (baseAddress == 0)
+        {
+            string msg = $"[ReadSpan<{typeof(T).Name}>] Attempted to dereference a null pointer.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        fixed (int* pOffsets = offsets)
+        fixed (T* pBuffer = buffer)
+        {
+            _pipe.Write(PipeRequest.Read);
+            _pipe.Write<ReadRequest>(new(
+                baseAddress,
+                (ulong)pOffsets,
+                (uint)offsets.Length,
+                (ulong)pBuffer,
+                GetNativeSizeOf<T>() * (uint)buffer.Length));
+
+            PipeResponse response = _pipe.Read<PipeResponse>();
+            if (response != PipeResponse.Success)
+            {
+                string msg = $"[ReadSpan<{typeof(T).Name}>] Failed to read values ({response} {(int)response}).";
+                ThrowHelper.ThrowInvalidOperationException(msg);
+            }
+        }
     }
 
-    public override bool TryReadSpan<T>(Span<T> buffer, nuint baseAddress, params int[] offsets)
+    public override unsafe bool TryReadSpan<T>(Span<T> buffer, nuint baseAddress, params int[] offsets)
     {
-        throw new NotImplementedException();
+        if (_isDisposed)
+        {
+            string msg = $"[TryRead<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = $"[TryRead<{typeof(T).Name}>] Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (baseAddress == 0)
+        {
+            return false;
+        }
+
+        fixed (int* pOffsets = offsets)
+        fixed (T* pBuffer = buffer)
+        {
+            _pipe.Write(PipeRequest.Read);
+            _pipe.Write<ReadRequest>(new(
+                baseAddress,
+                (ulong)pOffsets,
+                (uint)offsets.Length,
+                (ulong)pBuffer,
+                GetNativeSizeOf<T>() * (uint)buffer.Length));
+
+            return _pipe.TryRead(out PipeResponse response) && response == PipeResponse.Success;
+        }
     }
 
-    public override bool Write<T>(T value, nuint baseAddress, params int[] offsets)
+    public override unsafe void Write<T>(T value, nuint baseAddress, params int[] offsets)
     {
-        throw new NotImplementedException();
+        if (_isDisposed)
+        {
+            string msg = $"[Write<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = $"[Write<{typeof(T).Name}>] Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (baseAddress == 0)
+        {
+            string msg = $"[Write<{typeof(T).Name}>] Attempted to dereference a null pointer.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        fixed (int* pOffsets = offsets)
+        {
+            _pipe.Write(PipeRequest.Read);
+            _pipe.Write<WriteRequest>(new(
+                baseAddress,
+                (ulong)pOffsets,
+                (uint)offsets.Length,
+                (ulong)&value,
+                GetNativeSizeOf<T>()));
+
+            PipeResponse response = _pipe.Read<PipeResponse>();
+            if (response != PipeResponse.Success)
+            {
+                string msg = $"[Write<{typeof(T).Name}>] Failed to write value ({response} {(int)response}).";
+                ThrowHelper.ThrowInvalidOperationException(msg);
+            }
+        }
     }
 
-    public override bool WriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets)
+    public override unsafe bool TryWrite<T>(T value, nuint baseAddress, params int[] offsets)
     {
-        throw new NotImplementedException();
+        if (_isDisposed)
+        {
+            string msg = $"[Write<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = $"[Write<{typeof(T).Name}>] Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (baseAddress == 0)
+        {
+            string msg = $"[Write<{typeof(T).Name}>] Attempted to dereference a null pointer.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        fixed (int* pOffsets = offsets)
+        {
+            _pipe.Write(PipeRequest.Read);
+            _pipe.Write<WriteRequest>(new(
+                baseAddress,
+                (ulong)pOffsets,
+                (uint)offsets.Length,
+                (ulong)&value,
+                GetNativeSizeOf<T>()));
+
+            return _pipe.TryRead(out PipeResponse response) && response == PipeResponse.Success;
+        }
+    }
+
+    public override unsafe void WriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets)
+    {
+        if (_isDisposed)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (baseAddress == 0)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] Attempted to dereference a null pointer.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        fixed (int* pOffsets = offsets)
+        fixed (T* pValues = values)
+        {
+            _pipe.Write(PipeRequest.Write);
+            _pipe.Write<WriteRequest>(new(
+                baseAddress,
+                (ulong)pOffsets,
+                (uint)offsets.Length,
+                (ulong)pValues,
+                GetNativeSizeOf<T>() * (uint)values.Length));
+
+            PipeResponse response = _pipe.Read<PipeResponse>();
+            if (response != PipeResponse.Success)
+            {
+                string msg = $"[WriteSpan<{typeof(T).Name}>] Failed to write values ({response} {(int)response}).";
+                ThrowHelper.ThrowInvalidOperationException(msg);
+            }
+        }
+    }
+
+    public override unsafe bool TryWriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets)
+    {
+        if (_isDisposed)
+        {
+            string msg = $"[Write<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = $"[Write<{typeof(T).Name}>] Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (baseAddress == 0)
+        {
+            string msg = $"[Write<{typeof(T).Name}>] Attempted to dereference a null pointer.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        fixed (int* pOffsets = offsets)
+        fixed (T* pValues = values)
+        {
+            _pipe.Write(PipeRequest.Read);
+            _pipe.Write<WriteRequest>(new(
+                baseAddress,
+                (ulong)pOffsets,
+                (uint)offsets.Length,
+                (ulong)pValues,
+                GetNativeSizeOf<T>() * (uint)values.Length));
+
+            return _pipe.TryRead(out PipeResponse response) && response == PipeResponse.Success;
+        }
     }
 
     public override void Dispose()

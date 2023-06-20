@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-using AslHelp.Common.Resources;
+using AslHelp.Common.Memory;
 using AslHelp.Core.Memory.Native.Structs;
 
 namespace AslHelp.Core.Memory.Native;

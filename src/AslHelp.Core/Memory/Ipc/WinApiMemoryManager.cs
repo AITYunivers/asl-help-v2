@@ -95,7 +95,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
         T result;
         if (!WinInteropWrapper.ReadMemory(handle, deref, &result, size))
         {
-            string msg = $"[Read<{typeof(T).Name}>] Failed to read memory.";
+            string msg = $"[Read<{typeof(T).Name}>] Failed to read value.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -145,7 +145,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
         {
             if (!WinInteropWrapper.ReadMemory(handle, deref, pBuffer, size))
             {
-                string msg = $"[ReadSpan<{typeof(T).Name}>] Failed to read memory.";
+                string msg = $"[ReadSpan<{typeof(T).Name}>] Failed to read values.";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             }
         }
@@ -178,7 +178,25 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
         }
     }
 
-    public override unsafe bool Write<T>(T value, nuint baseAddress, params int[] offsets)
+    public override unsafe void Write<T>(T value, nuint baseAddress, params int[] offsets)
+    {
+        if (_isDisposed)
+        {
+            string msg = $"[Write<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        nuint deref = Deref(baseAddress, offsets), handle = _processHandle;
+        uint size = GetNativeSizeOf<T>();
+
+        if (!WinInteropWrapper.ReadMemory(handle, deref, &value, size))
+        {
+            string msg = $"[ReadSpan<{typeof(T).Name}>] Failed to write value.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+    }
+
+    public override unsafe bool TryWrite<T>(T value, nuint baseAddress, params int[] offsets)
     {
         if (_isDisposed)
         {
@@ -192,7 +210,33 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
         return WinInteropWrapper.ReadMemory(handle, deref, &value, size);
     }
 
-    public override unsafe bool WriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets)
+    public override unsafe void WriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets)
+    {
+        if (_isDisposed)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (values.IsEmpty)
+        {
+            return;
+        }
+
+        nuint deref = Deref(baseAddress, offsets), handle = _processHandle;
+        uint size = GetNativeSizeOf<T>() * (uint)values.Length;
+
+        fixed (T* pValues = values)
+        {
+            if (!WinInteropWrapper.ReadMemory(handle, deref, pValues, size))
+            {
+                string msg = $"[ReadSpan<{typeof(T).Name}>] Failed to write values.";
+                ThrowHelper.ThrowInvalidOperationException(msg);
+            }
+        }
+    }
+
+    public override unsafe bool TryWriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets)
     {
         if (_isDisposed)
         {
@@ -210,7 +254,7 @@ public sealed class WinApiMemoryManager : MemoryManagerBase
 
         fixed (T* pValues = values)
         {
-            return WinInteropWrapper.WriteMemory(handle, deref, pValues, size);
+            return WinInteropWrapper.ReadMemory(handle, deref, pValues, size);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AslHelp.Core.Memory.SignatureScanning;
 
-public sealed unsafe class ScanEnumerator : IEnumerable<int>, IEnumerator<int>
+public sealed unsafe class ScanEnumerator : IEnumerable<uint>, IEnumerator<uint>
 {
     private const int UNROLLS = 8;
 
@@ -15,11 +15,11 @@ public sealed unsafe class ScanEnumerator : IEnumerable<int>, IEnumerator<int>
     private readonly int _length;
     private readonly int _end;
 
-    private readonly int[] _align = new int[9];
+    private readonly uint[] _align = new uint[9];
 
-    private int _next;
+    private uint _next;
 
-    public ScanEnumerator(byte[] memory, Signature signature, int alignment = 1)
+    public ScanEnumerator(byte[] memory, Signature signature, uint alignment = 1)
     {
         _memory = memory;
         _values = signature.Values;
@@ -29,13 +29,13 @@ public sealed unsafe class ScanEnumerator : IEnumerable<int>, IEnumerator<int>
         _length = signature.Values.Length;
         _end = memory.Length - _length - UNROLLS;
 
-        for (int i = 1; i <= 8; i++)
+        for (uint i = 1; i <= 8; i++)
         {
             _align[i] = alignment * i;
         }
     }
 
-    public int Current { get; private set; }
+    public uint Current { get; private set; }
     object IEnumerator.Current => Current;
 
     public bool MoveNext()
@@ -45,10 +45,11 @@ public sealed unsafe class ScanEnumerator : IEnumerable<int>, IEnumerator<int>
 
     private unsafe bool NextPattern()
     {
-        int length = _length, end = _end, next = _next;
+        int length = _length, end = _end;
+        uint next = _next;
 
         fixed (byte* pMemory = _memory)
-        fixed (int* pAlign = _align)
+        fixed (uint* pAlign = _align)
         fixed (ulong* pValues = _values, pMasks = _masks)
         {
             ulong value0 = pValues[0], mask0 = pMasks[0];
@@ -110,7 +111,7 @@ public sealed unsafe class ScanEnumerator : IEnumerable<int>, IEnumerator<int>
                     }
                 }
 
-                int match = next + sizeof(ulong);
+                uint match = next + sizeof(ulong);
 
                 for (int i = 1; i < length; i++)
                 {
@@ -137,10 +138,11 @@ public sealed unsafe class ScanEnumerator : IEnumerable<int>, IEnumerator<int>
 
     private unsafe bool NextBytes()
     {
-        int length = _length, end = _end, next = _next;
+        int length = _length, end = _end;
+        uint next = _next;
 
         fixed (byte* pMemory = _memory)
-        fixed (int* pAlign = _align)
+        fixed (uint* pAlign = _align)
         fixed (ulong* pValues = _values)
         {
             ulong value0 = pValues[0];
@@ -202,7 +204,7 @@ public sealed unsafe class ScanEnumerator : IEnumerable<int>, IEnumerator<int>
                     }
                 }
 
-                int match = next + sizeof(ulong);
+                uint match = next + sizeof(ulong);
 
                 for (int i = 1; i < length; i++)
                 {
@@ -232,7 +234,7 @@ public sealed unsafe class ScanEnumerator : IEnumerable<int>, IEnumerator<int>
         _next = 0;
     }
 
-    IEnumerator<int> IEnumerable<int>.GetEnumerator()
+    IEnumerator<uint> IEnumerable<uint>.GetEnumerator()
     {
         return this;
     }

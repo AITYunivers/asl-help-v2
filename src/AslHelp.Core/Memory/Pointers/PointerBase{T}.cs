@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
@@ -10,8 +11,8 @@ public abstract class PointerBase<T> : IPointer<T>
 {
     protected readonly IMemoryManager _manager;
 
-    private readonly IPointer<nint>? _parent;
-    private readonly int _baseOffset;
+    private readonly IPointer<nuint>? _parent;
+    private readonly uint _baseOffset;
 
     private readonly nuint _baseAddress;
     private readonly int[] _offsets;
@@ -32,7 +33,7 @@ public abstract class PointerBase<T> : IPointer<T>
         _current = Default;
     }
 
-    public PointerBase(IMemoryManager manager, IPointer<nint> parent, int nextOffset, params int[] remainingOffsets)
+    public PointerBase(IMemoryManager manager, IPointer<nuint> parent, int nextOffset, params int[] remainingOffsets)
     {
         ThrowHelper.ThrowIfNull(manager);
         ThrowHelper.ThrowIfNull(parent);
@@ -42,7 +43,7 @@ public abstract class PointerBase<T> : IPointer<T>
         _manager = manager;
 
         _parent = parent;
-        _baseOffset = nextOffset;
+        _baseOffset = (uint)nextOffset;
         _offsets = remainingOffsets;
 
         _old = Default;
@@ -119,7 +120,7 @@ public abstract class PointerBase<T> : IPointer<T>
 
     public bool Write(T? value)
     {
-        return value is not null && Write(Deref(), value);
+        return value is not null && Write(value, Deref());
     }
 
     private void Update()
@@ -132,7 +133,7 @@ public abstract class PointerBase<T> : IPointer<T>
         _tick = _manager.Tick;
         _old = _current;
 
-        if (!TryUpdate(Deref(), out T? result))
+        if (!TryUpdate(out T? result, Deref()))
         {
             if (!UpdateOnFail)
             {
@@ -177,13 +178,13 @@ public abstract class PointerBase<T> : IPointer<T>
         _tick = 0;
     }
 
-    protected abstract bool TryUpdate(nuint address, [NotNullWhen(true)] out T? result);
-    protected abstract bool Write(nuint address, T value);
+    protected abstract bool TryUpdate([NotNullWhen(true)] out T? result, nuint address);
+    protected abstract bool Write(T value, nuint address);
     protected abstract bool HasChanged(T? old, T? current);
     public abstract override string ToString();
 
     protected string OffsetsToString()
     {
-        return $"0x{_baseAddress.ToString("X")}, {string.Join(", ", _offsets.Select(o => $"0x{o:X}"))}";
+        return $"0x{((nint)_baseAddress).ToString("X")}, {string.Join(", ", _offsets.Select(o => $"0x{o:X}"))}";
     }
 }

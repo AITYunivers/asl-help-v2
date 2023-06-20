@@ -16,7 +16,7 @@ public sealed class SpanPointer<T> : PointerBase<T[]>
         _length = length;
     }
 
-    public SpanPointer(IMemoryManager manager, int length, IPointer<nint> parent, int nextOffset, params int[] remainingOffsets)
+    public SpanPointer(IMemoryManager manager, int length, IPointer<nuint> parent, int nextOffset, params int[] remainingOffsets)
         : base(manager, parent, nextOffset, remainingOffsets)
     {
         _length = length;
@@ -24,14 +24,14 @@ public sealed class SpanPointer<T> : PointerBase<T[]>
 
     protected override T[] Default { get; } = Array.Empty<T>();
 
-    protected override bool TryUpdate(nuint address, [NotNullWhen(true)] out T[]? result)
+    protected override bool TryUpdate([NotNullWhen(true)] out T[]? result, nuint address)
     {
         return _manager.TryReadSpan(out result, _length, address);
     }
 
-    protected override bool Write(nuint address, T[] value)
+    protected override bool Write(T[] values, nuint address)
     {
-        return _manager.WriteSpan(value, address);
+        return _manager.TryWriteSpan(values, address);
     }
 
     protected override bool HasChanged(T[]? old, T[]? current)
