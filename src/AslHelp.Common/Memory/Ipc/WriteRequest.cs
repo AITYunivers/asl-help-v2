@@ -1,7 +1,7 @@
 namespace AslHelp.Common.Memory.Ipc;
 
 public unsafe record struct WriteRequest(
-    nuint BaseAddress,
+    ulong BaseAddress,
     ulong Offsets,
     uint OffsetsLength,
     ulong Data,

@@ -2,5 +2,11 @@ namespace AslHelp.Common.Memory.Ipc;
 
 public enum PipeResponse
 {
-    Success
+    Success,
+
+    ReceiveFailure,
+    DerefFailure,
+
+    PipeClosed,
+    UnknownCommand
 }

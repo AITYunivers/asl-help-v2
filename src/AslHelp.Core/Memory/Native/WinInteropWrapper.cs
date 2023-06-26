@@ -60,16 +60,23 @@ internal static unsafe class WinInteropWrapper
     {
         nuint snapshot = WinInterop.CreateToolhelp32Snapshot(processId, ThFlags.TH32CS_SNAPMODULE | ThFlags.TH32CS_SNAPMODULE32);
 
-        MODULEENTRY32W me = new() { dwSize = MODULEENTRY32W.Size };
-        if (!WinInterop.Module32First(snapshot, ref me))
+        try
         {
-            yield break;
-        }
+            MODULEENTRY32W me = new() { dwSize = MODULEENTRY32W.Size };
+            if (!WinInterop.Module32First(snapshot, ref me))
+            {
+                yield break;
+            }
 
-        do
+            do
+            {
+                yield return me;
+            } while (WinInterop.Module32Next(snapshot, ref me));
+        }
+        finally
         {
-            yield return me;
-        } while (WinInterop.Module32Next(snapshot, ref me));
+            WinInterop.CloseHandle(snapshot);
+        }
     }
 
     public static IEnumerable<MemoryPage> EnumerateMemoryPages(this Process process, bool allPages)

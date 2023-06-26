@@ -167,7 +167,7 @@ internal static unsafe partial class WinInterop
     public static nuint VirtualAlloc(
         nuint processHandle,
         nuint baseAddress,
-        uint size,
+        nuint size,
         MemState allocationType,
         MemProtect memoryProtection)
     {

@@ -2,12 +2,13 @@
 using System.Reflection;
 
 using AslHelp.Common.Exceptions;
+using AslHelp.Core.Memory.Ipc;
 
 namespace AslHelp.Core.IO;
 
 internal static class EmbeddedResource
 {
-    public static void UnpackResource(string resource, string targetFile)
+    public static void Unpack(string resource, string targetFile)
     {
         using Stream source = GetResourceStream(resource);
         using FileStream destination = File.OpenWrite(targetFile);
@@ -15,15 +16,36 @@ internal static class EmbeddedResource
         source.CopyTo(destination);
     }
 
-    public static Stream GetResourceStream(string resourceName)
+    public static Stream GetResourceStream(string resource)
     {
-        Stream resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+        Stream resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
 
         if (resourceStream is null)
         {
-            ThrowHelper.ThrowFileNotFoundException(resourceName, "Unable to find the specified resource.");
+            ThrowHelper.ThrowFileNotFoundException(resource, "Unable to find the specified resource.");
         }
 
         return resourceStream;
+    }
+
+    public static bool TryInjectDllFromEmbeddedResource(IMemoryInjector injector, string resource, string unpackDirectory, string? entryPoint = null)
+    {
+        string targetFile = Path.GetFullPath($"{unpackDirectory}/{resource}");
+
+        if (injector.IsInjected(targetFile))
+        {
+            return true;
+        }
+
+        try
+        {
+            Unpack(resource, targetFile);
+        }
+        catch (IOException ex) when ((uint)ex.HResult == 0x80070020)
+        {
+            return false;
+        }
+
+        return injector.TryInjectDll(targetFile, entryPoint);
     }
 }

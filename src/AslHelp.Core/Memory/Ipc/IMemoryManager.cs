@@ -10,7 +10,8 @@ public interface IMemoryManager
     : IDisposable,
     IMemoryReader,
     IMemoryWriter,
-    IMemoryScanner
+    IMemoryScanner,
+    IMemoryInjector
 {
     Process Process { get; }
     bool Is64Bit { get; }
