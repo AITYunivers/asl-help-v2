@@ -1,27 +1,46 @@
 using System;
 using System.Linq;
 
+using AslHelp.Common.Exceptions;
 using AslHelp.Core.Diagnostics;
-using AslHelp.Core.Helping.Asl;
+using AslHelp.Core.LiveSplitInterop;
 
-public partial class Basic : AslHelperBase
+public partial class Basic
 {
-    protected override void Exit()
+    public Basic Exit()
     {
+        if (Actions.CurrentAction != "exit")
+        {
+            string msg = $"Attempted to call {nameof(Exit)} outside of the 'exit' action.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        DisposeMemory();
+
         for (int i = 0; i < _fileWatchers.Count; i++)
         {
             _fileWatchers[i].Dispose();
         }
 
         _fileWatchers.Clear();
+
+        return this;
     }
 
-    protected override void Shutdown()
+    public Basic Shutdown()
     {
+        if (Actions.CurrentAction != "shutdown")
+        {
+            string msg = $"Attempted to call {nameof(Shutdown)} outside of the 'shutdown' action.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        DisposeMemory();
+
         AppDomain.CurrentDomain.AssemblyResolve -= AssemblyResolve;
 
-        _logger?.Stop();
-        _logger?.Clear();
+        Logger?.Stop();
+        Logger?.Clear();
 
         for (int i = 0; i < _fileWatchers.Count; i++)
         {
@@ -39,5 +58,7 @@ public partial class Basic : AslHelperBase
         {
             Texts.RemoveAll();
         }
+
+        return this;
     }
 }

@@ -23,7 +23,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowArgumentException(string paramName, string message)
     {
-        throw new ArgumentException($"[asl-help] {message}", paramName);
+        throw new ArgumentException($"[asl-help] [Error] {message}", paramName);
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowArgumentNullException(string paramName, string message)
     {
-        throw new ArgumentNullException(paramName, $"[asl-help] {message}");
+        throw new ArgumentNullException(paramName, $"[asl-help] [Error] {message}");
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowArgumentOutOfRangeException(string paramName, string message)
     {
-        throw new ArgumentOutOfRangeException($"[asl-help] {message}", paramName);
+        throw new ArgumentOutOfRangeException($"[asl-help] [Error] {message}", paramName);
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowDirectoryNotFoundException(string message)
     {
-        throw new DirectoryNotFoundException($"[asl-help] {message}");
+        throw new DirectoryNotFoundException($"[asl-help] [Error] {message}");
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowFileNotFoundException(string message)
     {
-        throw new FileNotFoundException($"[asl-help] {message}");
+        throw new FileNotFoundException($"[asl-help] [Error] {message}");
     }
 
     /// <summary>
@@ -119,7 +119,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowFileNotFoundException(string fileName, string message)
     {
-        throw new FileNotFoundException($"[asl-help] {message}", fileName);
+        throw new FileNotFoundException($"[asl-help] [Error] {message}", fileName);
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowFormatException(string message)
     {
-        throw new FormatException($"[asl-help] {message}");
+        throw new FormatException($"[asl-help] [Error] {message}");
     }
 
     /// <summary>
@@ -149,7 +149,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowInvalidDataException(string message)
     {
-        throw new InvalidDataException($"[asl-help] {message}");
+        throw new InvalidDataException($"[asl-help] [Error] {message}");
     }
 
     /// <summary>
@@ -164,7 +164,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowInvalidOperationException(string message)
     {
-        throw new InvalidOperationException($"[asl-help] {message}");
+        throw new InvalidOperationException($"[asl-help] [Error] {message}");
     }
 
     /// <summary>
@@ -179,7 +179,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowKeyNotFoundException(string message)
     {
-        throw new KeyNotFoundException($"[asl-help] {message}");
+        throw new KeyNotFoundException($"[asl-help] [Error] {message}");
     }
 
     /// <summary>

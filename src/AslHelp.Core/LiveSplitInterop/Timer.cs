@@ -21,8 +21,6 @@ namespace AslHelp.Core.LiveSplitInterop;
 /// </remarks>
 internal static class Timer
 {
-    private static LiveSplitState _state;
-
     /// <summary>
     ///     Retrieves the current LiveSplit timer's <see cref="TimerForm"/> and its associated <see cref="LiveSplitState"/>.
     /// </summary>
@@ -43,7 +41,7 @@ internal static class Timer
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
-        _state = form.CurrentState;
+        State = form.CurrentState;
 
         Debug.Info("    => Success.");
     }
@@ -56,20 +54,36 @@ internal static class Timer
     /// <summary>
     ///     Gets or sets the timer's <see cref="IRun"/>.
     /// </summary>
-    public static IRun Run { get; set; }
+    public static IRun Run
+    {
+        get => State.Run;
+        set => State.Run = value;
+    }
 
     /// <summary>
     ///     Gets or sets the timer's <see cref="ILayout"/>.
     /// </summary>
-    public static ILayout Layout { get; set; }
+    public static ILayout Layout
+    {
+        get => State.Layout;
+        set => State.Layout = value;
+    }
 
     /// <summary>
     ///     Gets or sets the timer's <see cref="TimerForm"/>.
     /// </summary>
-    public static Form Form { get; set; }
+    public static Form Form
+    {
+        get => State.Form;
+        set => State.Form = value;
+    }
 
     /// <summary>
     ///     Gets or sets the timer's <see cref="TimingMethod"/>.
     /// </summary>
-    public static TimingMethod CurrentTimingMethod { get; set; }
+    public static TimingMethod CurrentTimingMethod
+    {
+        get => State.CurrentTimingMethod;
+        set => State.CurrentTimingMethod = value;
+    }
 }

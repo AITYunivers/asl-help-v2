@@ -4,17 +4,16 @@
 
     <!-- Gather libraries to include in merge. -->
     <PropertyGroup>
-      <ILMergeThisProject>"$(TargetPath)"</ILMergeThisProject>
-      <ILMergeProjectReferences>@(ReferencePath-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')-&gt;'"%(FullPath)"', ' ')</ILMergeProjectReferences>
+      <ProjectReferences>@(ReferencePath-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')-&gt;'%(FileName)%(Extension)', ' ')</ProjectReferences>
     </PropertyGroup>
 
     <!-- Execute ILMerge with the necessary dependencies. -->
     <Exec WorkingDirectory="$(OutDir)"
           Command="
       $(ILMergeConsolePath) ^
-      /out:$(OutDir)\$(LibraryName).dll ^
-      $(ILMergeThisProject) ^
-      $(ILMergeProjectReferences)
+      /out:$(LibraryName).dll ^
+      AslHelp.Build.dll $(ProjectReferences) ^
+      CommunityToolkit.HighPerformance.dll System.Buffers.dll System.Memory.dll System.Numerics.Vectors.dll System.Runtime.CompilerServices.Unsafe.dll
     " />
 
     <!-- Find LiveSplit directory from .lsdir (if existent). -->

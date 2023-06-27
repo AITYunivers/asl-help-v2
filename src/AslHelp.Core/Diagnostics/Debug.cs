@@ -20,22 +20,25 @@ internal static class Debug
 
     public static void Info(object output)
     {
-        _logger.Log($"[asl-help] {output}");
+        _logger.Log($"[asl-help] [Info] {output}");
     }
 
     public static void Warn(object output)
     {
-        _logger.Log($"[Warning]  {output}");
+        _logger.Log($"[asl-help] [Warn] {output}");
     }
 
     public static void Error(object output)
     {
-        _logger.Log($"[Error]    {output}");
+        _logger.Log($"[asl-help] [Error] {output}");
     }
 
     public static void Throw(Exception ex)
     {
-        _logger.Log("[Abort]" + Environment.NewLine + ex);
+        _logger.Log($"""
+            [asl-help] [Abort]
+            {ex}
+            """);
     }
 
     public static DialogResult Show(string message)

@@ -9,23 +9,84 @@ using AslHelp.Core.LiveSplitInterop;
 
 public partial class Basic
 {
-    protected override void GenerateCode()
+    private bool _isInitialized;
+    private bool _generateCode;
+
+    private bool _withInjection;
+    private int _timeout;
+
+    public Basic GenerateCode(bool generateCode = true)
     {
-        Script.Vars["Log"] = (Action<object>)(output => _logger.Log($"[{GameName}] {output}"));
+        if (Actions.CurrentAction != "startup")
+        {
+            string msg = "Code may only be generated in the 'startup' action.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        _generateCode = generateCode;
+
+        return this;
+    }
+
+    protected virtual void RunCodeGeneration()
+    {
+        Script.Vars["Log"] = (Action<object>)(output => Logger.Log($"[{GameName}] {output}"));
         Debug.Info("    => Created the Action<object> `vars.Log`.");
 
         Actions.exit.Prepend($"vars.AslHelp.{nameof(Exit)}();");
         Actions.shutdown.Prepend($"vars.AslHelp.{nameof(Shutdown)}();");
     }
 
-    protected override void Complete()
+    public Basic WithInjection(int pipeConnectionTimeout = 3000)
     {
+        if (Actions.CurrentAction != "startup")
+        {
+            string msg = "Injection may only be enabled in the 'startup' action.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        ThrowHelper.ThrowIfLessThan(pipeConnectionTimeout, -1);
+
+        _withInjection = true;
+        _timeout = pipeConnectionTimeout;
+
+        return this;
+    }
+
+    public Basic Init()
+    {
+        if (_isInitialized)
+        {
+            string msg = "asl-help is already initialized.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        _isInitialized = true;
+
+        if (Actions.CurrentAction != "startup")
+        {
+            string msg = "asl-help may only be initialized in the 'startup' action.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        Debug.Info("Initializing asl-help...");
+
         AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
 
-        _logger.Add(new DebugLogger());
+        Logger.Add(new DebugLogger());
 
         AslHelp.Core.LiveSplitInterop.Timer.Init();
         Script.Init();
+
+        if (_generateCode)
+        {
+            Debug.Info("  => Generating code...");
+            RunCodeGeneration();
+        }
+
+        Debug.Info("  => Done.");
+
+        return this;
     }
 
     private static Assembly? AssemblyResolve(object sender, ResolveEventArgs e)

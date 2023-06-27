@@ -2,7 +2,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-using AslHelp.Core.IO;
+using AslHelp.Common.Exceptions;
+using AslHelp.Core.LiveSplitInterop;
 using AslHelp.Core.Memory.Ipc;
 using AslHelp.Core.Memory.Native;
 
@@ -11,10 +12,17 @@ using Debug = AslHelp.Core.Diagnostics.Debug;
 public partial class Basic
 {
     private IMemoryManager? _memory;
-    protected override IMemoryManager? Memory
+    public IMemoryManager? Memory
     {
         get
         {
+            string action = Actions.CurrentAction;
+            if (action is "startup" or "exit" or "shutdown")
+            {
+                string msg = $"Attempted to access the memory manager in the '{action}' action.";
+                ThrowHelper.ThrowInvalidOperationException(msg);
+            }
+
             if (_memory is not null)
             {
                 return _memory;
@@ -29,7 +37,7 @@ public partial class Basic
         }
     }
 
-    protected override void InitMemory(Process process)
+    protected virtual void InitMemory(Process process)
     {
         Debug.Info("Initiating memory...");
         bool is64Bit = process.ProcessIs64Bit();
@@ -45,7 +53,7 @@ public partial class Basic
 
                 try
                 {
-                    _memory = new PipeMemoryManager(process, _logger, "asl-help-pipe", _timeout);
+                    _memory = new PipeMemoryManager(process, Logger, "asl-help-pipe", _timeout);
 
                     Debug.Info("    => Success.");
 
@@ -64,7 +72,9 @@ public partial class Basic
 
         Debug.Info("  => Using Win32 API for memory reading.");
 
-        _memory = new WinApiMemoryManager(process, _logger);
+        _memory = new WinApiMemoryManager(process, Logger);
+
+        _pointers = new(_memory);
     }
 
     private static bool TryInjectAslCoreNative(Process process, bool is64Bit)
@@ -79,7 +89,7 @@ public partial class Basic
             && WinInteropWrapper.TryCallEntryPoint((nuint)(nint)process.Handle, moduleBase, "AslHelp.DllMain");
     }
 
-    protected override void DisposeMemory()
+    protected virtual void DisposeMemory()
     {
         _memory?.Dispose();
         _memory = null;
