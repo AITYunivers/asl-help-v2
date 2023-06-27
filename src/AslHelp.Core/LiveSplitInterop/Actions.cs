@@ -38,17 +38,7 @@ internal static class Actions
         {
             ReadOnlySpan<char> prefix = "ASLScript.".AsSpan();
 
-            IEnumerable<string> traces =
-                new StackTrace().GetFrames()
-                .Select(f =>
-                {
-                    MethodBase method = f.GetMethod();
-                    Type decl = method.DeclaringType;
-
-                    return decl is null ? method.Name : $"{decl.Name}.{method.Name}";
-                });
-
-            foreach (string trace in traces)
+            foreach (string trace in Debug.StackTraceNames)
             {
                 ReadOnlySpan<char> sTrace = trace.AsSpan();
 

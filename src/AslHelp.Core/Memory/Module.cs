@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
+using AslHelp.Core.Memory.Native;
 using AslHelp.Core.Memory.Native.Structs;
 
 namespace AslHelp.Core.Memory;

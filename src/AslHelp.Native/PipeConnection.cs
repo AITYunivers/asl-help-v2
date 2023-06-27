@@ -55,21 +55,9 @@ public static partial class PipeConnection
 
         _pipe.Write(cmd switch
         {
-            PipeRequest.Deref => _pipe.TryRead(out DerefRequest request) switch
-            {
-                true => Deref(request),
-                false => PipeResponse.ReceiveFailure
-            },
-            PipeRequest.Read => _pipe.TryRead(out ReadRequest request) switch
-            {
-                true => Read(request),
-                false => PipeResponse.ReceiveFailure
-            },
-            PipeRequest.Write => _pipe.TryRead(out WriteRequest request) switch
-            {
-                true => Write(request),
-                false => PipeResponse.ReceiveFailure
-            },
+            PipeRequest.Deref => _pipe.TryRead(out DerefRequest request) ? Deref(request) : PipeResponse.ReceiveFailure,
+            PipeRequest.Read => _pipe.TryRead(out ReadRequest request) ? Read(request) : PipeResponse.ReceiveFailure,
+            PipeRequest.Write => _pipe.TryRead(out WriteRequest request) ? Write(request) : PipeResponse.ReceiveFailure,
             _ => PipeResponse.UnknownCommand
         });
     }

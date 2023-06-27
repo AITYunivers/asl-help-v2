@@ -5,14 +5,12 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using AslHelp.Common.Exceptions;
-using AslHelp.Core.Memory;
-using AslHelp.Core.Memory.Native;
 using AslHelp.Core.Memory.Native.Enums;
 using AslHelp.Core.Memory.Native.Structs;
 
-namespace AslHelp.Core;
+namespace AslHelp.Core.Memory.Native;
 
-internal static unsafe class WinInteropWrapper
+internal static unsafe partial class WinInteropWrapper
 {
     public static bool ProcessIs64Bit(this Process process)
     {

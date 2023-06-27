@@ -3,6 +3,7 @@ using System.Diagnostics;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Core.Diagnostics.Logging;
+using AslHelp.Core.Memory.Native;
 
 namespace AslHelp.Core.Memory.Ipc;
 

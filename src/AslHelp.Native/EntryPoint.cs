@@ -5,7 +5,7 @@ namespace AslHelp.Native;
 
 public static class EntryPoint
 {
-    [UnmanagedCallersOnly(EntryPoint = nameof(DllMain))]
+    [UnmanagedCallersOnly(EntryPoint = $"{nameof(AslHelp)}.{nameof(DllMain)}")]
     public static unsafe uint DllMain(void* _)
     {
         Task.Run(PipeConnection.Main);

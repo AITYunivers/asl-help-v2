@@ -2,11 +2,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Common.Extensions;
+using AslHelp.Core.Reflection;
 
 using Irony.Parsing;
 
@@ -83,6 +85,12 @@ internal static class Script
         LoadActions();
 
         Debug.Info("    => Success.");
+    }
+
+    public static Process Game
+    {
+        get => Emissions.GetScriptGame(_script);
+        set => Emissions.SetScriptGame(_script, value);
     }
 
     /// <summary>

@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 using AslHelp.Core.Diagnostics.Logging;
@@ -47,5 +51,18 @@ internal static class Debug
     public static DialogResult Show(string message, MessageBoxButtons buttons, MessageBoxIcon icon)
     {
         return MessageBox.Show(Timer.Form, message, "LiveSplit | asl-help", buttons, icon);
+    }
+
+    public static IEnumerable<string> StackTraceNames
+    {
+        get => new StackTrace()
+            .GetFrames()
+            .Select(f =>
+            {
+                MethodBase method = f.GetMethod();
+                Type decl = method.DeclaringType;
+
+                return decl is null ? method.Name : $"{decl.Name}.{method.Name}";
+            });
     }
 }

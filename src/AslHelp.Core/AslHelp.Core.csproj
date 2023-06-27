@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="AslHelp.Basic" />
     <InternalsVisibleTo Include="AslHelp.Build" />
   </ItemGroup>
 
@@ -22,11 +23,6 @@
     <Reference Include="../../ref/*.dll" />
 
     <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Memory\Ipc\MemoryManagerBase\Write\" />
-    <Folder Include="Memory\Pointers\" />
   </ItemGroup>
 
 </Project>
