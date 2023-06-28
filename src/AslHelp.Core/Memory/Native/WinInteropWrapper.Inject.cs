@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 using AslHelp.Core.Memory.Native.Enums;
@@ -9,46 +10,41 @@ namespace AslHelp.Core.Memory.Native;
 
 internal static unsafe partial class WinInteropWrapper
 {
-    public static bool IsInjected(this Process process, string dllPath, out nuint module)
+    public static bool IsInjected(nuint processHandle, uint processId, string dllPath, [NotNullWhen(true)] out Module? module)
     {
-        process.Refresh();
-
         dllPath = Path.GetFullPath(dllPath);
-        Debug.Error(dllPath);
 
-        foreach (MODULEENTRY32W me in process.EnumerateModulesTh32())
+        foreach (MODULEENTRY32W me in EnumerateModulesTh32(processId))
         {
             string fileName = new((char*)me.szExePath);
-            Debug.Warn(fileName);
-
             if (fileName.Equals(dllPath, StringComparison.OrdinalIgnoreCase))
             {
-                module = (nuint)me.modBaseAddr;
+                string name = new((char*)me.szModule);
+                nuint @base = (nuint)me.modBaseAddr;
+                uint memorySize = me.modBaseSize;
+
+                module = new(processHandle, name, fileName, @base, memorySize);
                 return true;
             }
         }
 
-        module = default;
+        module = null;
         return false;
     }
 
-    public static unsafe bool TryInjectDll(this Process process, string dllPath, string? entryPoint)
+    public static unsafe bool TryInjectDll(nuint processHandle, string dllPath)
     {
         dllPath = Path.GetFullPath(dllPath);
         if (!File.Exists(dllPath))
         {
+            Debug.Warn("    => Dll file cannot be found.");
             return false;
         }
-
-        uint id = (uint)process.Id;
-        nuint hProcess = WinInterop.OpenProcess(
-            id,
-            (uint)(ProcessAccess.CREATE_THREAD | ProcessAccess.VM_OPERATION | ProcessAccess.VM_WRITE),
-            false);
 
         nuint hModule = WinInterop.GetModuleHandle("kernel32.dll");
         if (hModule == 0)
         {
+            Debug.Warn("    => Failed to get kernel32.dll handle.");
             return false;
         }
 
@@ -57,13 +53,15 @@ internal static unsafe partial class WinInteropWrapper
             nuint pLoadLib = WinInterop.GetProcAddress(hModule, "LoadLibraryW"u8);
             if (pLoadLib == 0)
             {
+                Debug.Warn("    => Failed to get LoadLibraryW address.");
                 return false;
             }
 
-            nuint length = (nuint)(dllPath.Length - 1) * sizeof(char);
-            nuint pModuleAlloc = WinInterop.VirtualAlloc(hProcess, 0, length, MemState.MEM_COMMIT | MemState.MEM_RESERVE, MemProtect.PAGE_READWRITE);
+            nuint length = (nuint)(dllPath.Length + 1) * sizeof(char);
+            nuint pModuleAlloc = WinInterop.VirtualAlloc(processHandle, 0, length, MemState.MEM_COMMIT | MemState.MEM_RESERVE, MemProtect.PAGE_READWRITE);
             if (pModuleAlloc == 0)
             {
+                Debug.Warn("    => Failed to allocate memory in target process.");
                 return false;
             }
 
@@ -71,20 +69,21 @@ internal static unsafe partial class WinInteropWrapper
             {
                 fixed (char* pDllPath = dllPath)
                 {
-                    if (!WriteMemory(hProcess, pModuleAlloc, pDllPath, (uint)length))
+                    if (!WriteMemory(processHandle, pModuleAlloc, pDllPath, (uint)length))
                     {
+                        Debug.Warn("    => Failed to write dll path to target process.");
                         return false;
                     }
                 }
 
-                if (!TryCreateRemoteThreadAndWaitForSuccessfulExit(hProcess, pLoadLib, (void*)pModuleAlloc))
+                if (!TryCreateRemoteThreadAndWaitForSuccessfulExit(processHandle, pLoadLib, (void*)pModuleAlloc))
                 {
                     return false;
                 }
             }
             finally
             {
-                WinInterop.VirtualFree(hProcess, pModuleAlloc, 0, MemState.MEM_RELEASE);
+                WinInterop.VirtualFree(processHandle, pModuleAlloc, 0, MemState.MEM_RELEASE);
             }
         }
         finally
@@ -100,14 +99,31 @@ internal static unsafe partial class WinInteropWrapper
         nuint hThread = WinInterop.CreateRemoteThread(hProcess, null, 0, startAddress, lpParameter, 0, out _);
         if (hThread == 0)
         {
+            Debug.Warn("    => Failed to create remote thread.");
             return false;
         }
 
         try
         {
-            return WinInterop.WaitForSingleObject(hThread, uint.MaxValue) == 0
-                && WinInterop.GetExitCodeThread(hThread, out uint exitCode)
-                && exitCode == 0;
+            if (WinInterop.WaitForSingleObject(hThread, uint.MaxValue) != 0)
+            {
+                Debug.Warn("    => Failed to wait for remote thread.");
+                return false;
+            }
+
+            if (!WinInterop.GetExitCodeThread(hThread, out uint exitCode))
+            {
+                Debug.Warn("    => Failed to get remote thread exit code.");
+                return false;
+            }
+
+            if (exitCode != 0)
+            {
+                Debug.Warn($"    => Remote thread exit code is {exitCode}.");
+                return false;
+            }
+
+            return true;
         }
         finally
         {
@@ -120,6 +136,7 @@ internal static unsafe partial class WinInteropWrapper
         nuint pEntryPoint = WinInterop.GetProcAddress(hModule, entryPoint);
         if (pEntryPoint == 0)
         {
+            Debug.Warn("pEntryPoint == 0");
             return false;
         }
 
@@ -128,10 +145,10 @@ internal static unsafe partial class WinInteropWrapper
 
     public static bool TryCallEntryPoint(nuint hProcess, nuint hModule, ReadOnlySpan<byte> entryPoint)
     {
-        Debug.Warn("TryCallEntryPoint");
         nuint pEntryPoint = WinInterop.GetProcAddress(hModule, entryPoint);
         if (pEntryPoint == 0)
         {
+            Debug.Warn("pEntryPoint == 0");
             return false;
         }
 

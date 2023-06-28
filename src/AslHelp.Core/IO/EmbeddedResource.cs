@@ -29,7 +29,7 @@ internal static class EmbeddedResource
         return resourceStream;
     }
 
-    public static bool TryInject(Process process, string resource, string unpackDirectory)
+    public static bool TryInject(nuint processHandle, string resource, string unpackDirectory)
     {
         string targetFile = Path.GetFullPath(Path.Combine(unpackDirectory, resource));
 
@@ -39,6 +39,6 @@ internal static class EmbeddedResource
         }
         catch (IOException ex) when ((uint)ex.HResult == 0x80070020) { }
 
-        return process.TryInjectDll(targetFile, null);
+        return WinInteropWrapper.TryInjectDll(processHandle, targetFile);
     }
 }

@@ -449,6 +449,7 @@ public sealed class PipeMemoryManager : MemoryManagerBase
     {
         base.Dispose();
 
+        _pipe.Write(PipeRequest.Close);
         _pipe.Dispose();
     }
 }

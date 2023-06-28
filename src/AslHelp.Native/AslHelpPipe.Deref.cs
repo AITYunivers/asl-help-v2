@@ -2,10 +2,12 @@ using AslHelp.Common.Memory.Ipc;
 
 namespace AslHelp.Native;
 
-public static partial class PipeConnection
+public static partial class AslHelpPipe
 {
     public static unsafe PipeResponse Deref(DerefRequest request)
     {
+        Log("  => [Deref] Dereferencing offsets...");
+
         nuint result = (nuint)request.BaseAddress;
         int* offsets = (int*)request.Offsets;
 
@@ -14,11 +16,15 @@ public static partial class PipeConnection
             result = *(nuint*)result;
             if (result == 0)
             {
+                Log("    => [Deref] Failure. Cannot dereference null pointer.");
                 return PipeResponse.DerefFailure;
             }
 
             result += (nuint)offsets[i];
         }
+
+        Log($"    => [Deref] Success.");
+        Log($"               Result: 0x{result:X}.");
 
         *(nuint*)request.ResultPtr = result;
         return PipeResponse.Success;

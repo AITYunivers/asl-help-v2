@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 using AslHelp.Common.Extensions;
@@ -7,13 +8,21 @@ using AslHelp.Common.Memory.Ipc;
 
 namespace AslHelp.Native;
 
-public static partial class PipeConnection
+public static partial class AslHelpPipe
 {
     public const string Name = "asl-help-pipe";
 
     private static NamedPipeServerStream? _pipe;
 
-    public static async Task Main()
+    [UnmanagedCallersOnly(EntryPoint = $"{nameof(AslHelpPipe)}.{nameof(EntryPoint)}")]
+    public static unsafe uint EntryPoint(void* _)
+    {
+        Task.Run(Main);
+
+        return 0;
+    }
+
+    private static async Task Main()
     {
         _pipe = new(Name);
         await _pipe.WaitForConnectionAsync();
@@ -22,13 +31,15 @@ public static partial class PipeConnection
         {
             if (!_pipe.TryRead(out PipeRequest cmd))
             {
-                Debug.WriteLine("Failed reading command!");
+                Log("Failed reading command!");
                 break;
             }
 
+            Log($"Received command: PipeRequest.{cmd}.");
+
             if (cmd == PipeRequest.Close)
             {
-                Debug.WriteLine("Closing pipe connection.");
+                Log("  => Closing pipe connection.");
                 break;
             }
 
@@ -44,12 +55,15 @@ public static partial class PipeConnection
     {
         if (_pipe is null)
         {
+            Log("  => Pipe is null. Command not handled.");
             return;
         }
 
         if (!_pipe.IsConnected)
         {
             _pipe.Write(PipeResponse.PipeClosed);
+
+            Log("  => Pipe is not connected. Command not handled.");
             return;
         }
 
@@ -60,5 +74,11 @@ public static partial class PipeConnection
             PipeRequest.Write => _pipe.TryRead(out WriteRequest request) ? Write(request) : PipeResponse.ReceiveFailure,
             _ => PipeResponse.UnknownCommand
         });
+    }
+
+    [Conditional("DEBUG")]
+    private static void Log(object? output)
+    {
+        Debug.WriteLine($"[asl-help] [Pipe] {output}");
     }
 }

@@ -129,7 +129,7 @@ internal static unsafe partial class WinInteropWrapper
         try
         {
             nuint symLoadBase =
-                WinInterop.SymLoadModule(processHandle, 0, module.FileName, null, (nuint)module.Base, (uint)module.MemorySize, null, 0);
+                WinInterop.SymLoadModule(processHandle, 0, module.FileName, null, module.Base, module.MemorySize, null, 0);
 
             if (symLoadBase == 0)
             {

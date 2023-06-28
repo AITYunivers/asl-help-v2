@@ -1,10 +1,12 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Core.IO;
 using AslHelp.Core.LiveSplitInterop;
+using AslHelp.Core.Memory;
 using AslHelp.Core.Memory.Ipc;
 using AslHelp.Core.Memory.Native;
 
@@ -77,28 +79,26 @@ public partial class Basic
         _pointers = new(_memory);
     }
 
-    private static bool TryInjectAslCoreNative(Process process, bool is64Bit)
+    private static unsafe bool TryInjectAslCoreNative(Process process, bool is64Bit)
     {
+        nuint processHandle = (nuint)(nint)process.Handle;
+        uint processId = (uint)process.Id;
+
         string arch = is64Bit ? "x64" : "x86";
         string res = $"AslHelp.Native.{arch}.dll";
 
         string path = Path.GetFullPath($"{arch}/{res}");
 
-        if (!process.IsInjected(path, out nuint moduleBase))
+        if (!WinInteropWrapper.IsInjected(processHandle, processId, path, out Module? module))
         {
-            bool ti = EmbeddedResource.TryInject(process, res, arch);
-            bool ii = process.IsInjected(path, out moduleBase);
-            Debug.Warn(ii);
-            if (!ti
-                || !ii)
+            if (!EmbeddedResource.TryInject(processHandle, res, arch)
+                || !WinInteropWrapper.IsInjected(processHandle, processId, path, out module))
             {
                 return false;
             }
         }
 
-        Debug.Warn($"0x{moduleBase}");
-
-        return WinInteropWrapper.TryCallEntryPoint((nuint)(nint)process.Handle, moduleBase, "AslHelp.DllMain"u8);
+        return WinInteropWrapper.TryCallEntryPoint(processHandle, module.Base, "AslHelpPipe.EntryPoint"u8);
     }
 
     protected virtual void DisposeMemory()
