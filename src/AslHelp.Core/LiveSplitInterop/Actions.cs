@@ -1,10 +1,6 @@
 ﻿#nullable disable
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 
 using AslHelp.Common.Extensions;
 
@@ -40,6 +36,11 @@ internal static class Actions
 
             foreach (string trace in Debug.StackTraceNames)
             {
+                if (trace == "ASLScript.RunMethod")
+                {
+                    continue;
+                }
+
                 ReadOnlySpan<char> sTrace = trace.AsSpan();
 
                 int i = sTrace.IndexOf(prefix);

@@ -11,11 +11,16 @@ internal static unsafe partial class WinInteropWrapper
 {
     public static bool IsInjected(this Process process, string dllPath, out nuint module)
     {
+        process.Refresh();
+
         dllPath = Path.GetFullPath(dllPath);
+        Debug.Error(dllPath);
 
         foreach (MODULEENTRY32W me in process.EnumerateModulesTh32())
         {
             string fileName = new((char*)me.szExePath);
+            Debug.Warn(fileName);
+
             if (fileName.Equals(dllPath, StringComparison.OrdinalIgnoreCase))
             {
                 module = (nuint)me.modBaseAddr;
@@ -112,6 +117,18 @@ internal static unsafe partial class WinInteropWrapper
 
     public static bool TryCallEntryPoint(nuint hProcess, nuint hModule, string entryPoint)
     {
+        nuint pEntryPoint = WinInterop.GetProcAddress(hModule, entryPoint);
+        if (pEntryPoint == 0)
+        {
+            return false;
+        }
+
+        return TryCreateRemoteThreadAndWaitForSuccessfulExit(hProcess, pEntryPoint, null);
+    }
+
+    public static bool TryCallEntryPoint(nuint hProcess, nuint hModule, ReadOnlySpan<byte> entryPoint)
+    {
+        Debug.Warn("TryCallEntryPoint");
         nuint pEntryPoint = WinInterop.GetProcAddress(hModule, entryPoint);
         if (pEntryPoint == 0)
         {

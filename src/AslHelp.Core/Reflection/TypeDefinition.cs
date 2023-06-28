@@ -1,8 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-using AslHelp.Core.Reflection;
-
-namespace AslHelp.Core;
+namespace AslHelp.Core.Reflection;
 
 public readonly struct TypeDefinition<T> : ITypeDefinition<T>
     where T : unmanaged

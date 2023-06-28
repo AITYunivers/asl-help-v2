@@ -2,12 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net481</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
 
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\AslHelp.Core\AslHelp.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Label="References">
+    <Reference Include="../../ref/LiveSplit.Core.dll" />
   </ItemGroup>
 
 </Project>

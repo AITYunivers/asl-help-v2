@@ -58,7 +58,7 @@ internal static class Debug
 
     public static IEnumerable<string> StackTraceNames
     {
-        get => new StackTrace()
+        get => new StackTrace(6)
             .GetFrames()
             .Select(f =>
             {
