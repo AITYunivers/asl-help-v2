@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 
 using AslHelp.Common.Exceptions;
 
@@ -24,21 +25,31 @@ public static class StringExtensions
     {
         ThrowHelper.ThrowIfNull(value);
 
-        char* output = stackalloc char[value.Length];
+        int length = value.Length;
 
-        fixed (char* pValue = value)
+        char[]? rented = null;
+        Span<char> buffer =
+            length <= 512
+            ? stackalloc char[512]
+            : (rented = ArrayPool<char>.Shared.Rent(length));
+
+        fixed (char* pValue = value, pBuffer = buffer)
         {
-            for (int i = 0, j = 0; i < value.Length; i++)
+            int offset = 0;
+            for (int i = 0; i < length; i++)
             {
                 char c = pValue[i];
 
                 if (!char.IsWhiteSpace(c))
                 {
-                    output[j++] = c;
+                    pBuffer[offset++] = c;
                 }
             }
 
-            return new(output);
+            string result = buffer[..offset].ToString();
+            ArrayPool<char>.Shared.ReturnIfNotNull(rented);
+
+            return result;
         }
     }
 
@@ -68,7 +79,12 @@ public static class StringExtensions
         }
 
         ReadOnlySpan<string> strings = values;
-        Span<char> buffer = stackalloc char[length];
+
+        char[]? rented = null;
+        Span<char> buffer =
+            length <= 512
+            ? stackalloc char[512]
+            : (rented = ArrayPool<char>.Shared.Rent(length));
 
         for (int i = 0, offset = 0; i < strings.Length; i++)
         {
@@ -76,6 +92,9 @@ public static class StringExtensions
             offset += strings[i].Length;
         }
 
-        return buffer.ToString();
+        string result = buffer[..length].ToString();
+        ArrayPool<char>.Shared.ReturnIfNotNull(rented);
+
+        return result;
     }
 }

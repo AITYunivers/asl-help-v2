@@ -15,7 +15,7 @@ public partial class Basic
     private bool _withInjection;
     private int _timeout;
 
-    public Basic GenerateCode(bool generateCode = true)
+    public Basic WithCodeGeneration(bool generateCode = true)
     {
         if (Actions.CurrentAction != "startup")
         {
@@ -28,7 +28,7 @@ public partial class Basic
         return this;
     }
 
-    protected virtual void RunCodeGeneration()
+    protected virtual void GenerateCode()
     {
         Script.Vars["Log"] = (Action<object>)(output => Logger.Log($"[{GameName}] {output}"));
         Debug.Info("    => Created the Action<object> `vars.Log`.");
@@ -81,7 +81,7 @@ public partial class Basic
         if (_generateCode)
         {
             Debug.Info("  => Generating code...");
-            RunCodeGeneration();
+            GenerateCode();
         }
 
         Debug.Info("  => Done.");

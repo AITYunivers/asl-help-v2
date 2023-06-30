@@ -9,7 +9,7 @@ using AslHelp.Core.Diagnostics.Logging;
 
 namespace AslHelp.Core.Memory.Ipc;
 
-public sealed class PipeMemoryManager : MemoryManagerBase
+public class PipeMemoryManager : MemoryManagerBase
 {
     private readonly NamedPipeClientStream _pipe;
 

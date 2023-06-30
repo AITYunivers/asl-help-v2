@@ -1,11 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 
-using AslHelp.Common.Exceptions;
+using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.IO;
-using AslHelp.Core.LiveSplitInterop;
 using AslHelp.Core.Memory;
 using AslHelp.Core.Memory.Ipc;
 using AslHelp.Core.Memory.Native;
@@ -19,13 +17,6 @@ public partial class Basic
     {
         get
         {
-            string action = Actions.CurrentAction;
-            if (action is "startup" or "exit" or "shutdown")
-            {
-                string msg = $"Attempted to access the memory manager in the '{action}' action.";
-                ThrowHelper.ThrowInvalidOperationException(msg);
-            }
-
             if (_memory is not null)
             {
                 return _memory;
@@ -33,14 +24,15 @@ public partial class Basic
 
             if (Game is Process game)
             {
-                InitMemory(game);
+                _memory = InitMemory(game);
+                _pointers = new(_memory);
             }
 
             return _memory;
         }
     }
 
-    protected virtual void InitMemory(Process process)
+    private IMemoryManager InitMemory(Process process)
     {
         Debug.Info("Initiating memory...");
         bool is64Bit = process.ProcessIs64Bit();
@@ -56,11 +48,11 @@ public partial class Basic
 
                 try
                 {
-                    _memory = new PipeMemoryManager(process, Logger, "asl-help-pipe", _timeout);
+                    PipeMemoryManager memory = InitPipeMemory(process, Logger, "asl-help-pipe", _timeout);
 
                     Debug.Info("    => Success.");
 
-                    return;
+                    return memory;
                 }
                 catch (TimeoutException)
                 {
@@ -75,8 +67,28 @@ public partial class Basic
 
         Debug.Info("  => Using Win32 API for memory reading.");
 
-        _memory = new WinApiMemoryManager(process, Logger);
-        _pointers = new(_memory);
+        return InitWinApiMemory(process, Logger);
+    }
+
+    protected virtual WinApiMemoryManager InitWinApiMemory(Process process, ILogger logger)
+    {
+        return new(process, logger);
+    }
+
+    protected virtual PipeMemoryManager InitPipeMemory(Process process, ILogger logger, string pipeName, int timeout)
+    {
+        return new(process, logger, pipeName, timeout);
+    }
+
+    protected virtual void DisposeMemory()
+    {
+        _memory?.Dispose();
+        _memory = null;
+
+        _game?.Dispose();
+        _game = null;
+
+        _pointers = null;
     }
 
     private static unsafe bool TryInjectAslCoreNative(Process process, bool is64Bit)
@@ -99,16 +111,5 @@ public partial class Basic
         }
 
         return WinInteropWrapper.TryCallEntryPoint(processHandle, module.Base, "AslHelpPipe.EntryPoint"u8);
-    }
-
-    protected virtual void DisposeMemory()
-    {
-        _memory?.Dispose();
-        _memory = null;
-
-        _game?.Dispose();
-        _game = null;
-
-        _pointers = null;
     }
 }

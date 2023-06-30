@@ -7,7 +7,7 @@ using AslHelp.Core.Memory.Native;
 
 namespace AslHelp.Core.Memory.Ipc;
 
-public sealed class WinApiMemoryManager : MemoryManagerBase
+public class WinApiMemoryManager : MemoryManagerBase
 {
     public WinApiMemoryManager(Process process)
         : base(process) { }

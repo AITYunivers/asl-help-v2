@@ -7,7 +7,7 @@ using AslHelp.Core.LiveSplitInterop;
 
 public partial class Basic
 {
-    public Basic Exit()
+    public virtual Basic Exit()
     {
         if (Actions.CurrentAction != "exit")
         {
@@ -27,7 +27,7 @@ public partial class Basic
         return this;
     }
 
-    public Basic Shutdown()
+    public virtual Basic Shutdown()
     {
         if (Actions.CurrentAction != "shutdown")
         {

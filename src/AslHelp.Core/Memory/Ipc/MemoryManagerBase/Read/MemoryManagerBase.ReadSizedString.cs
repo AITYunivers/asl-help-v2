@@ -1,7 +1,6 @@
 using System;
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Common.Extensions;

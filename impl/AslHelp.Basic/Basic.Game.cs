@@ -12,7 +12,7 @@ public partial class Basic
         set => _gameName = value;
     }
 
-    public Basic SetGameName(string gameName)
+    public Basic WithGameName(string gameName)
     {
         ThrowHelper.ThrowIfNullOrEmpty(gameName);
 

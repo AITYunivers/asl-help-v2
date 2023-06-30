@@ -49,44 +49,28 @@ public interface IMemoryReader
     bool TryReadSpan<T>(Span<T> buffer, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged;
     bool TryReadSpan<T>(Span<T> buffer, nuint baseAddress, params int[] offsets) where T : unmanaged;
 
-    string ReadString(uint baseOffset, params int[] offsets);
     string ReadString(int length, uint baseOffset, params int[] offsets);
-    string ReadString(ReadStringType stringType, uint baseOffset, params int[] offsets);
     string ReadString(int length, ReadStringType stringType, uint baseOffset, params int[] offsets);
 
-    string ReadString(string moduleName, uint baseOffset, params int[] offsets);
     string ReadString(int length, string moduleName, uint baseOffset, params int[] offsets);
-    string ReadString(ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets);
     string ReadString(int length, ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets);
 
-    string ReadString(Module module, uint baseOffset, params int[] offsets);
     string ReadString(int length, Module module, uint baseOffset, params int[] offsets);
-    string ReadString(ReadStringType stringType, Module module, uint baseOffset, params int[] offsets);
     string ReadString(int length, ReadStringType stringType, Module module, uint baseOffset, params int[] offsets);
 
-    string ReadString(nuint baseAddress, params int[] offsets);
     string ReadString(int length, nuint baseAddress, params int[] offsets);
-    string ReadString(ReadStringType stringType, nuint baseAddress, params int[] offsets);
     string ReadString(int length, ReadStringType stringType, nuint baseAddress, params int[] offsets);
 
-    bool TryReadString([NotNullWhen(true)] out string? result, uint baseOffset, params int[] offsets);
     bool TryReadString([NotNullWhen(true)] out string? result, int length, uint baseOffset, params int[] offsets);
-    bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, uint baseOffset, params int[] offsets);
     bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, uint baseOffset, params int[] offsets);
 
-    bool TryReadString([NotNullWhen(true)] out string? result, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets);
     bool TryReadString([NotNullWhen(true)] out string? result, int length, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets);
-    bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets);
     bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets);
 
-    bool TryReadString([NotNullWhen(true)] out string? result, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets);
     bool TryReadString([NotNullWhen(true)] out string? result, int length, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets);
-    bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets);
     bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets);
 
-    bool TryReadString([NotNullWhen(true)] out string? result, nuint baseAddress, params int[] offsets);
     bool TryReadString([NotNullWhen(true)] out string? result, int length, nuint baseAddress, params int[] offsets);
-    bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, nuint baseAddress, params int[] offsets);
     bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, nuint baseAddress, params int[] offsets);
 
     string ReadSizedString(uint baseOffset, params int[] offsets);

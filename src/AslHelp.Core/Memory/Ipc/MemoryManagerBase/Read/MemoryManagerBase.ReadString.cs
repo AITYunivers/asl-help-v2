@@ -14,19 +14,9 @@ public partial class MemoryManagerBase
 {
     // ReadString
 
-    public string ReadString(uint baseOffset, params int[] offsets)
-    {
-        return ReadString(IOR.DefaultStringReadLength, ReadStringType.AutoDetect, baseOffset, offsets);
-    }
-
     public string ReadString(int length, uint baseOffset, params int[] offsets)
     {
         return ReadString(length, ReadStringType.AutoDetect, baseOffset, offsets);
-    }
-
-    public string ReadString(ReadStringType stringType, uint baseOffset, params int[] offsets)
-    {
-        return ReadString(IOR.DefaultStringReadLength, stringType, baseOffset, offsets);
     }
 
     public string ReadString(int length, ReadStringType stringType, uint baseOffset, params int[] offsets)
@@ -41,19 +31,9 @@ public partial class MemoryManagerBase
         return ReadString(length, stringType, module, baseOffset, offsets);
     }
 
-    public string ReadString(string moduleName, uint baseOffset, params int[] offsets)
-    {
-        return ReadString(IOR.DefaultStringReadLength, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
-    }
-
     public string ReadString(int length, string moduleName, uint baseOffset, params int[] offsets)
     {
         return ReadString(length, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
-    }
-
-    public string ReadString(ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets)
-    {
-        return ReadString(IOR.DefaultStringReadLength, stringType, moduleName, baseOffset, offsets);
     }
 
     public string ReadString(int length, ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets)
@@ -68,19 +48,9 @@ public partial class MemoryManagerBase
         return ReadString(length, stringType, module, baseOffset, offsets);
     }
 
-    public string ReadString(Module module, uint baseOffset, params int[] offsets)
-    {
-        return ReadString(IOR.DefaultStringReadLength, ReadStringType.AutoDetect, module, baseOffset, offsets);
-    }
-
     public string ReadString(int length, Module module, uint baseOffset, params int[] offsets)
     {
         return ReadString(length, ReadStringType.AutoDetect, module, baseOffset, offsets);
-    }
-
-    public string ReadString(ReadStringType stringType, Module module, uint baseOffset, params int[] offsets)
-    {
-        return ReadString(IOR.DefaultStringReadLength, stringType, module, baseOffset, offsets);
     }
 
     public string ReadString(int length, ReadStringType stringType, Module module, uint baseOffset, params int[] offsets)
@@ -88,19 +58,9 @@ public partial class MemoryManagerBase
         return ReadString(length, stringType, module.Base + baseOffset, offsets);
     }
 
-    public string ReadString(nuint baseAddress, params int[] offsets)
-    {
-        return ReadString(IOR.DefaultStringReadLength, ReadStringType.AutoDetect, baseAddress, offsets);
-    }
-
     public string ReadString(int length, nuint baseAddress, params int[] offsets)
     {
         return ReadString(length, ReadStringType.AutoDetect, baseAddress, offsets);
-    }
-
-    public string ReadString(ReadStringType stringType, nuint baseAddress, params int[] offsets)
-    {
-        return ReadString(IOR.DefaultStringReadLength, stringType, baseAddress, offsets);
     }
 
     public string ReadString(int length, ReadStringType stringType, nuint baseAddress, params int[] offsets)
@@ -186,19 +146,9 @@ public partial class MemoryManagerBase
 
     // TryReadString
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, uint baseOffset, params int[] offsets)
-    {
-        return TryReadString(out result, IOR.DefaultStringReadLength, ReadStringType.AutoDetect, baseOffset, offsets);
-    }
-
     public bool TryReadString([NotNullWhen(true)] out string? result, int length, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, length, ReadStringType.AutoDetect, baseOffset, offsets);
-    }
-
-    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, uint baseOffset, params int[] offsets)
-    {
-        return TryReadString(out result, IOR.DefaultStringReadLength, stringType, baseOffset, offsets);
     }
 
     public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, uint baseOffset, params int[] offsets)
@@ -206,19 +156,9 @@ public partial class MemoryManagerBase
         return TryReadString(out result, length, stringType, baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
-    {
-        return TryReadString(out result, IOR.DefaultStringReadLength, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
-    }
-
     public bool TryReadString([NotNullWhen(true)] out string? result, int length, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, length, ReadStringType.AutoDetect, moduleName, baseOffset, offsets);
-    }
-
-    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
-    {
-        return TryReadString(out result, IOR.DefaultStringReadLength, stringType, moduleName, baseOffset, offsets);
     }
 
     public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
@@ -232,19 +172,9 @@ public partial class MemoryManagerBase
         return TryReadString(out result, length, stringType, Modules[moduleName], baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
-    {
-        return TryReadString(out result, IOR.DefaultStringReadLength, ReadStringType.AutoDetect, module, baseOffset, offsets);
-    }
-
     public bool TryReadString([NotNullWhen(true)] out string? result, int length, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
     {
         return TryReadString(out result, length, ReadStringType.AutoDetect, module, baseOffset, offsets);
-    }
-
-    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
-    {
-        return TryReadString(out result, IOR.DefaultStringReadLength, stringType, module, baseOffset, offsets);
     }
 
     public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
@@ -258,19 +188,9 @@ public partial class MemoryManagerBase
         return TryReadString(out result, length, stringType, module.Base + baseOffset, offsets);
     }
 
-    public bool TryReadString([NotNullWhen(true)] out string? result, nuint baseAddress, params int[] offsets)
-    {
-        return TryReadString(out result, IOR.DefaultStringReadLength, ReadStringType.AutoDetect, baseAddress, offsets);
-    }
-
     public bool TryReadString([NotNullWhen(true)] out string? result, int length, nuint baseAddress, params int[] offsets)
     {
         return TryReadString(out result, length, ReadStringType.AutoDetect, baseAddress, offsets);
-    }
-
-    public bool TryReadString([NotNullWhen(true)] out string? result, ReadStringType stringType, nuint baseAddress, params int[] offsets)
-    {
-        return TryReadString(out result, IOR.DefaultStringReadLength, stringType, baseAddress, offsets);
     }
 
     public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, nuint baseAddress, params int[] offsets)
