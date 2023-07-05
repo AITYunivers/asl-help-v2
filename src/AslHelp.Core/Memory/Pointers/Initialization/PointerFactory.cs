@@ -5,15 +5,20 @@ using AslHelp.Core.Reflection;
 
 using LiveSplit.ComponentUtil;
 
-namespace AslHelp.Core.Memory.Pointers;
+namespace AslHelp.Core.Memory.Pointers.Initialization;
 
-public class PointerFactory
+public class PointerFactory : IPointerFactory
 {
     private readonly IMemoryManager _manager;
 
-    public PointerFactory(IMemoryManager manager)
+    private PointerFactory(IMemoryManager manager)
     {
         _manager = manager;
+    }
+
+    public static PointerFactory Create(IMemoryManager manager)
+    {
+        return new(manager);
     }
 
     public Pointer<T> Make<T>(nuint baseAddress, params int[] offsets)
@@ -330,3 +335,4 @@ public class PointerFactory
         return new(_manager, definition, baseAddress, offsets);
     }
 }
+

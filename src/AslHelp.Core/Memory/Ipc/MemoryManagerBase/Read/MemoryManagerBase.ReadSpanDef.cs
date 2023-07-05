@@ -80,11 +80,6 @@ public partial class MemoryManagerBase
 
     public unsafe void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nuint baseAddress, params int[] offsets)
     {
-        if (buffer.IsEmpty)
-        {
-            return;
-        }
-
         uint size = definition.Size;
         long bytes = size * buffer.Length;
 

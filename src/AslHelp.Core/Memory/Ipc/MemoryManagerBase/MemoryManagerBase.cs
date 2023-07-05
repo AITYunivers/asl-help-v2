@@ -107,6 +107,12 @@ public abstract partial class MemoryManagerBase : IMemoryManager
         _isDisposed = true;
     }
 
+    protected abstract unsafe void Read<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets) where T : unmanaged;
+    protected abstract unsafe bool TryRead<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets) where T : unmanaged;
+
+    protected abstract unsafe void Write<T>(T* data, uint length, nuint baseAddress, params int[] offsets) where T : unmanaged;
+    protected abstract unsafe bool TryWrite<T>(T* data, uint length, nuint baseAddress, params int[] offsets) where T : unmanaged;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static bool IsNativeInt<T>()
     {
@@ -114,9 +120,9 @@ public abstract partial class MemoryManagerBase : IMemoryManager
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected unsafe uint GetNativeSizeOf<T>()
+    protected unsafe uint GetNativeSizeOf<T>(int count = 1)
         where T : unmanaged
     {
-        return (uint)(IsNativeInt<T>() ? PtrSize : sizeof(T));
+        return (uint)(IsNativeInt<T>() ? PtrSize : sizeof(T)) * (uint)count;
     }
 }

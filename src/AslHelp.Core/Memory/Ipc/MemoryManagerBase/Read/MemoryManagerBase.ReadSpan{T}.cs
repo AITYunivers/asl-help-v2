@@ -75,7 +75,13 @@ public partial class MemoryManagerBase
         ReadSpan<T>(buffer, module.Base + baseOffset, offsets);
     }
 
-    public abstract void ReadSpan<T>(Span<T> buffer, nuint baseAddress, params int[] offsets) where T : unmanaged;
+    public unsafe void ReadSpan<T>(Span<T> buffer, nuint baseAddress, params int[] offsets) where T : unmanaged
+    {
+        fixed (T* pBuffer = buffer)
+        {
+            Read(pBuffer, GetNativeSizeOf<T>(buffer.Length), baseAddress, offsets);
+        }
+    }
 
     public bool TryReadSpan<T>([NotNullWhen(true)] out T[]? results, int length, uint baseOffset, params int[] offsets) where T : unmanaged
     {
@@ -137,5 +143,11 @@ public partial class MemoryManagerBase
         return TryReadSpan<T>(buffer, module.Base + baseOffset, offsets);
     }
 
-    public abstract bool TryReadSpan<T>(Span<T> buffer, nuint baseAddress, params int[] offsets) where T : unmanaged;
+    public unsafe bool TryReadSpan<T>(Span<T> buffer, nuint baseAddress, params int[] offsets) where T : unmanaged
+    {
+        fixed (T* pBuffer = buffer)
+        {
+            return TryRead<T>(pBuffer, GetNativeSizeOf<T>(buffer.Length), baseAddress, offsets);
+        }
+    }
 }

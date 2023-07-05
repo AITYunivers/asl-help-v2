@@ -36,7 +36,7 @@ internal static class Actions
 
             foreach (string trace in Debug.StackTraceNames)
             {
-                if (trace == "ASLScript.RunMethod")
+                if (string.Intern(trace) == "ASLScript.RunMethod")
                 {
                     continue;
                 }

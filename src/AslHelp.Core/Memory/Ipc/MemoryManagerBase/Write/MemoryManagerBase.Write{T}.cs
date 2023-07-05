@@ -35,7 +35,10 @@ public partial class MemoryManagerBase
         Write<T>(value, module.Base + baseOffset, offsets);
     }
 
-    public abstract void Write<T>(T value, nuint baseAddress, params int[] offsets) where T : unmanaged;
+    public unsafe void Write<T>(T value, nuint baseAddress, params int[] offsets) where T : unmanaged
+    {
+        Write<T>(&value, GetNativeSizeOf<T>(), baseAddress, offsets);
+    }
 
     public bool TryWrite<T>(T value, uint baseOffset, params int[] offsets) where T : unmanaged
     {
@@ -62,5 +65,8 @@ public partial class MemoryManagerBase
         return TryWrite<T>(value, module.Base + baseOffset, offsets);
     }
 
-    public abstract bool TryWrite<T>(T value, nuint baseAddress, params int[] offsets) where T : unmanaged;
+    public unsafe bool TryWrite<T>(T value, nuint baseAddress, params int[] offsets) where T : unmanaged
+    {
+        return TryWrite<T>(&value, GetNativeSizeOf<T>(), baseAddress, offsets);
+    }
 }

@@ -175,6 +175,43 @@ public partial class MemoryManagerBase
         WriteSpan<T>(values.AsSpan(), baseAddress, offsets);
     }
 
+    public void WriteSpan<T>(ReadOnlySpan<T> values, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        Module? module = MainModule;
+        if (module is null)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] MainModule was null.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        WriteSpan<T>(values, module, baseOffset, offsets);
+    }
+
+    public void WriteSpan<T>(ReadOnlySpan<T> values, string moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        Module? module = Modules[moduleName];
+        if (module is null)
+        {
+            string msg = $"[WriteSpan<{typeof(T).Name}>] Module '{moduleName}' could not be found.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        WriteSpan<T>(values, module, baseOffset, offsets);
+    }
+
+    public void WriteSpan<T>(ReadOnlySpan<T> values, Module module, uint baseOffset, params int[] offsets) where T : unmanaged
+    {
+        WriteSpan<T>(values, module.Base + baseOffset, offsets);
+    }
+
+    public unsafe void WriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged
+    {
+        fixed (T* pValues = values)
+        {
+            Write(pValues, GetNativeSizeOf<T>(values.Length), baseAddress, offsets);
+        }
+    }
+
     public bool TryWriteSpan<T>(T[] values, uint baseOffset, params int[] offsets) where T : unmanaged
     {
         return TryWriteSpan<T>(values, MainModule, baseOffset, offsets);
@@ -205,37 +242,6 @@ public partial class MemoryManagerBase
         return TryWriteSpan<T>(values.AsSpan(), baseAddress, offsets);
     }
 
-    public void WriteSpan<T>(ReadOnlySpan<T> values, uint baseOffset, params int[] offsets) where T : unmanaged
-    {
-        Module? module = MainModule;
-        if (module is null)
-        {
-            string msg = $"[WriteSpan<{typeof(T).Name}>] MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        WriteSpan<T>(values, module, baseOffset, offsets);
-    }
-
-    public void WriteSpan<T>(ReadOnlySpan<T> values, string moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
-    {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"[WriteSpan<{typeof(T).Name}>] Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        WriteSpan<T>(values, module, baseOffset, offsets);
-    }
-
-    public void WriteSpan<T>(ReadOnlySpan<T> values, Module module, uint baseOffset, params int[] offsets) where T : unmanaged
-    {
-        WriteSpan<T>(values, module.Base + baseOffset, offsets);
-    }
-
-    public abstract void WriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged;
-
     public bool TryWriteSpan<T>(ReadOnlySpan<T> values, uint baseOffset, params int[] offsets) where T : unmanaged
     {
         return TryWriteSpan<T>(values, MainModule, baseOffset, offsets);
@@ -261,5 +267,11 @@ public partial class MemoryManagerBase
         return TryWriteSpan<T>(values, module.Base + baseOffset, offsets);
     }
 
-    public abstract bool TryWriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged;
+    public unsafe bool TryWriteSpan<T>(ReadOnlySpan<T> values, nuint baseAddress, params int[] offsets) where T : unmanaged
+    {
+        fixed (T* pValues = values)
+        {
+            return TryWrite(pValues, GetNativeSizeOf<T>(values.Length), baseAddress, offsets);
+        }
+    }
 }

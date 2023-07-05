@@ -35,7 +35,13 @@ public partial class MemoryManagerBase
         return Read<T>(module.Base + baseOffset, offsets);
     }
 
-    public abstract T Read<T>(nuint baseAddress, params int[] offsets) where T : unmanaged;
+    public unsafe T Read<T>(nuint baseAddress, params int[] offsets) where T : unmanaged
+    {
+        T result;
+        Read<T>(&result, GetNativeSizeOf<T>(), baseAddress, offsets);
+
+        return result;
+    }
 
     public bool TryRead<T>(out T result, uint baseOffset, params int[] offsets) where T : unmanaged
     {
@@ -64,5 +70,11 @@ public partial class MemoryManagerBase
         return TryRead(out result, module.Base + baseOffset, offsets);
     }
 
-    public abstract bool TryRead<T>(out T result, nuint baseAddress, params int[] offsets) where T : unmanaged;
+    public unsafe bool TryRead<T>(out T result, nuint baseAddress, params int[] offsets) where T : unmanaged
+    {
+        fixed (T* pResult = &result)
+        {
+            return TryRead(pResult, GetNativeSizeOf<T>(), baseAddress, offsets);
+        }
+    }
 }

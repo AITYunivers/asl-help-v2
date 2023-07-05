@@ -65,6 +65,13 @@ public partial class MemoryManagerBase
 
     public string ReadString(int length, ReadStringType stringType, nuint baseAddress, params int[] offsets)
     {
+        ThrowHelper.ThrowIfLessThan(length, 0);
+
+        if (length == 0)
+        {
+            return "";
+        }
+
         if (stringType == ReadStringType.AutoDetect)
         {
             return InternalReadAutoString(length, baseAddress, offsets);
@@ -195,6 +202,14 @@ public partial class MemoryManagerBase
 
     public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, nuint baseAddress, params int[] offsets)
     {
+        ThrowHelper.ThrowIfLessThan(length, 0);
+
+        if (length == 0)
+        {
+            result = "";
+            return true;
+        }
+
         if (stringType == ReadStringType.AutoDetect)
         {
             return InternalTryReadAutoString(out result, length, baseAddress, offsets);
