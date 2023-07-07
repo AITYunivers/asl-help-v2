@@ -1,6 +1,8 @@
 ﻿#nullable disable
 
 using System;
+using System.Diagnostics;
+using System.Reflection;
 
 using AslHelp.Common.Extensions;
 
@@ -32,32 +34,26 @@ internal static class Actions
     {
         get
         {
-            ReadOnlySpan<char> prefix = "ASLScript.".AsSpan();
+            StackFrame[] frames = new StackTrace(6).GetFrames();
 
-            foreach (string trace in Debug.StackTraceNames)
+            for (int i = 0; i < frames.Length; i++)
             {
-                if (string.Intern(trace) == "ASLScript.RunMethod")
+                StackFrame frame = frames[i];
+                MethodBase method = frame.GetMethod();
+
+                if (method.DeclaringType != typeof(ASLScript))
                 {
                     continue;
                 }
 
-                ReadOnlySpan<char> sTrace = trace.AsSpan();
-
-                int i = sTrace.IndexOf(prefix);
-                if (i == -1)
+                string name = method.Name;
+                if (name == "RunMethod")
                 {
                     continue;
                 }
 
-                for (i += prefix.Length + 2; i < sTrace.Length; i++)
-                {
-                    if (char.IsUpper(sTrace[i]))
-                    {
-                        break;
-                    }
-                }
-
-                return trace[i..].ToLower();
+                int j = char.IsUpper(name[2]) ? 2 : 3;
+                return name[j..].ToLower();
             }
 
             throw new Exception("Not in an ASL.");
