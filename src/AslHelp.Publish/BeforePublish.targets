@@ -1,0 +1,23 @@
+<Project>
+
+  <Target Name="PublishAllDependencies" BeforeTargets="Publish">
+
+    <!-- Add all projects we want to publish as custom items. -->
+    <ItemGroup>
+      <ManagedTargets Include="..\..\impl\AslHelp.Basic\AslHelp.Basic.csproj" />
+      <ManagedTargets Include="..\..\impl\AslHelp.Mono\AslHelp.Mono.csproj" />
+
+      <ManagedTargets>
+        <AdditionalProperties>
+          Configuration=$(Configuration);
+          PublishDir=$(OutDir)
+        </AdditionalProperties>
+      </ManagedTargets>
+    </ItemGroup>
+
+    <MSBuild Targets="Restore" Projects="@(ManagedTargets)" />
+    <MSBuild Targets="Publish" Projects="@(ManagedTargets)" />
+
+  </Target>
+
+</Project>

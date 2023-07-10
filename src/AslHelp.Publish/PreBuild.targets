@@ -1,0 +1,28 @@
+<Project>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+
+    <!-- Add all projects we want to publish as custom items. -->
+    <ItemGroup>
+      <NativeTargets Include="..\AslHelp.Native\AslHelp.Native.csproj" />
+
+      <NativeTargets>
+        <AdditionalProperties>
+          Configuration=$(Configuration);
+          RuntimeIdentifier=win-x64;
+          PublishDir=$(OutDir)
+        </AdditionalProperties>
+      </NativeTargets>
+    </ItemGroup>
+
+    <MSBuild Targets="Restore" Projects="@(NativeTargets)" />
+    <MSBuild Targets="Publish" Projects="@(NativeTargets)" />
+
+    <!-- Include AslHelp.Native as embedded resource. -->
+    <ItemGroup>
+      <EmbeddedResource Include="$(OutDir)\AslHelp.Native.dll" Link="Native.x64.dll" />
+    </ItemGroup>
+
+  </Target>
+
+</Project>

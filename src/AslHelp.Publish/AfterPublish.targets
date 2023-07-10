@@ -1,24 +1,33 @@
 <Project>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="MergeAssemblies" AfterTargets="Publish">
 
-    <!-- Gather libraries to include in merge. -->
-    <PropertyGroup>
-      <ProjectReferences>@(ReferencePath-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')-&gt;'%(FileName)%(Extension)', ' ')</ProjectReferences>
-    </PropertyGroup>
+    <ItemGroup>
+      <AslHelpReferences Include="AslHelp.Publish.dll" />
+      <AslHelpReferences Include="AslHelp.Common.dll" />
+      <AslHelpReferences Include="AslHelp.Core.dll" />
+      <AslHelpReferences Include="AslHelp.Basic.dll" />
+      <AslHelpReferences Include="AslHelp.Mono.dll" />
+
+      <MiscReferences Include="CommunityToolkit.HighPerformance.dll" />
+      <MiscReferences Include="System.Buffers.dll" />
+      <MiscReferences Include="System.Memory.dll" />
+      <MiscReferences Include="System.Numerics.Vectors.dll" />
+      <MiscReferences Include="System.Runtime.CompilerServices.Unsafe.dll" />
+    </ItemGroup>
 
     <!-- Execute ILMerge with the necessary dependencies. -->
     <Exec WorkingDirectory="$(OutDir)"
           Command="
       $(ILMergeConsolePath) ^
       /out:$(LibraryName).dll ^
-      AslHelp.Build.dll $(ProjectReferences) ^
-      CommunityToolkit.HighPerformance.dll System.Buffers.dll System.Memory.dll System.Numerics.Vectors.dll System.Runtime.CompilerServices.Unsafe.dll
+      @(AslHelpReferences, ' ') ^
+      @(MiscReferences, ' ')
     " />
 
     <!-- Find LiveSplit directory from .lsdir (if existent). -->
     <!-- First, read the lines in the file. There may be more than one. We expect the directory to be the first. -->
-    <ReadLinesFromFile File="$(SolutionDir)\.lsdir">
+    <ReadLinesFromFile File="$(MSBuildThisFileDirectory)\..\..\.lsdir">
       <Output ItemName="LsDirLines" TaskParameter="Lines" />
     </ReadLinesFromFile>
 

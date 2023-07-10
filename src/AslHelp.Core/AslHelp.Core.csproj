@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net481</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+
+    <!-- <PublishTrimmed>true</PublishTrimmed> -->
+    <!-- <TrimMode>full</TrimMode> -->
+
+    <!-- <IlcOptimizationPreference>size</IlcOptimizationPreference> -->
   </PropertyGroup>
 
   <ItemGroup>

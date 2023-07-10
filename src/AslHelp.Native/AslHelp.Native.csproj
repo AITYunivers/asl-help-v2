@@ -11,6 +11,11 @@
 
     <PublishAot>true</PublishAot>
     <SelfContained>true</SelfContained>
+    <!-- <PublishTrimmed>true</PublishTrimmed> -->
+    <!-- <TrimMode>full</TrimMode> -->
+
+    <!-- <IlcDisableReflection>true</IlcDisableReflection> -->
+    <!-- <IlcOptimizationPreference>size</IlcOptimizationPreference> -->
   </PropertyGroup>
 
 </Project>
