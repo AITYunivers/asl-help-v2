@@ -1,6 +1,5 @@
 using AslHelp.Common.Exceptions;
 using AslHelp.Core.Helpers.Asl.Contracts;
-using AslHelp.Core.LiveSplitInterop;
 
 namespace AslHelp.Core.Helpers.Asl;
 
@@ -9,8 +8,6 @@ public abstract partial class AslHelperBase : IAslHelper.Initialization
     private bool _generateCode;
 
     protected bool _initialized;
-    protected bool _withInjection;
-    protected int _pipeConnectionTimeout;
 
     protected abstract IAslHelper InitImpl();
     protected abstract void GenerateCode();
@@ -55,22 +52,6 @@ public abstract partial class AslHelperBase : IAslHelper.Initialization
         }
 
         _generateCode = generateCode;
-
-        return this;
-    }
-
-    public IAslHelper.Initialization DoInjection(int pipeConnectionTimeout = 3000)
-    {
-        if (_initialized)
-        {
-            string msg = "Injection may only be enabled before initialization.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        ThrowHelper.ThrowIfLessThan(pipeConnectionTimeout, -1);
-
-        _withInjection = true;
-        _pipeConnectionTimeout = pipeConnectionTimeout;
 
         return this;
     }

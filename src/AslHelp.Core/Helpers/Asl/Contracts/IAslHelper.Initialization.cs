@@ -15,7 +15,6 @@ public partial interface IAslHelper
 
         IAslHelper.Initialization SetGameName(string gameName);
         IAslHelper.Initialization DoCodeGeneration(bool generateCode = true);
-        IAslHelper.Initialization DoInjection(int pipeConnectionTimeout = 3000);
 
         IAslHelper.Initialization LogToFile(string fileName, int maxLines = 4096, int linesToErase = 512);
 

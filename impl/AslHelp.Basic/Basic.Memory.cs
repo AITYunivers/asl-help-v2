@@ -4,6 +4,8 @@ using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.Memory.Ipc;
 using AslHelp.Core.Memory.Pointers.Initialization;
 
+using Debug = AslHelp.Core.Diagnostics.Debug;
+
 public partial class Basic
 {
     private IMemoryManager? _memory;
@@ -18,7 +20,7 @@ public partial class Basic
 
             if (Game is Process game)
             {
-                _memory = InitializeMemory(game);
+                _memory = InitializeMemory(game, Logger);
                 _pointers = PointerFactory.Create(_memory);
             }
 
@@ -27,13 +29,10 @@ public partial class Basic
         protected set => _memory = value;
     }
 
-    protected override IMemoryManager InitializePipeMemory(Process process, ILogger logger, string pipeName, int timeout)
+    protected override IMemoryManager InitializeMemory(Process process, ILogger logger)
     {
-        return InitializeWinApiMemory(process, logger);
-    }
+        Debug.Info("  => Initializing memory...");
 
-    protected override IMemoryManager InitializeWinApiMemory(Process process, ILogger logger)
-    {
         return new WinApiMemoryManager(process, logger);
     }
 }
