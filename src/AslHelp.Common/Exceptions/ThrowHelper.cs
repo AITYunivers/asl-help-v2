@@ -15,12 +15,13 @@ public static partial class ThrowHelper
     /// <summary>
     ///     Throws an <see cref="ArgumentNullException"/> if <paramref name="argument"/> is <see langword="null"/>.
     /// </summary>
-    /// <param name="argument">The reference type argument to validate as non-<see langword="null"/>.</param>
+    /// <param name="argument">The argument to validate as non-<see langword="null"/>.</param>
     /// <param name="message">An optional message to include in the exception.</param>
     /// <param name="paramName">
     ///     The name of the parameter with which <paramref name="argument"/> corresponds.
     ///     If this parameter is omitted, the name of <paramref name="argument"/> is used.
     /// </param>
+    /// <param name="caller">The name of the calling method.</param>
     public static void ThrowIfNull(
         [NotNull] object? argument,
         string? message = null,
@@ -41,15 +42,17 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    ///     Throws an <see cref="ArgumentNullException"/> if <paramref name="collection"/> is <see langword="null"/>.<br/>
-    ///     Throws an <see cref="ArgumentException"/> if <paramref name="collection"/> is empty.
+    ///     Throws an <see cref="ArgumentNullException"/> if <paramref name="collection"/> is <see langword="null"/>,
+    ///     or an <see cref="ArgumentException"/> if <paramref name="collection"/> is empty.
     /// </summary>
-    /// <param name="collection">The collection argument to validate as non-<see langword="null"/> and non-empty.</param>
+    /// <typeparam name="T">The type of elements in the collection.</typeparam>
+    /// <param name="collection">The collection to validate as non-<see langword="null"/> and non-empty.</param>
     /// <param name="message">An optional message to include in the exception.</param>
     /// <param name="paramName">
     ///     The name of the parameter with which <paramref name="collection"/> corresponds.
     ///     If this parameter is omitted, the name of <paramref name="collection"/> is used.
     /// </param>
+    /// <param name="caller">The name of the calling method.</param>
     public static void ThrowIfNullOrEmpty<T>(
         [NotNull] IEnumerable<T>? collection,
         string? message = null,
@@ -83,6 +86,7 @@ public static partial class ThrowHelper
     ///     The name of the parameter with which <paramref name="address"/> corresponds.
     ///     If this parameter is omitted, the name of <paramref name="address"/> is used.
     /// </param>
+    /// <param name="caller">The name of the calling method.</param>
     public static void ThrowIfAddressInvalid(
         nuint address,
         string message,
@@ -98,6 +102,7 @@ public static partial class ThrowHelper
     /// <summary>
     ///     Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than <paramref name="min"/>.
     /// </summary>
+    /// <typeparam name="T">The type of the value to be validated.</typeparam>
     /// <param name="value">The value to be validated.</param>
     /// <param name="min">The minimum value <paramref name="value"/> can be.</param>
     /// <param name="message">An optional message to include in the exception.</param>
@@ -105,6 +110,7 @@ public static partial class ThrowHelper
     ///     The name of the parameter with which <paramref name="value"/> corresponds.
     ///     If this parameter is omitted, the name of <paramref name="value"/> is used.
     /// </param>
+    /// <param name="caller">The name of the calling method.</param>
     public static void ThrowIfLessThan<T>(
         T value,
         T min,
@@ -129,6 +135,7 @@ public static partial class ThrowHelper
     /// <summary>
     ///     Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is larger than <paramref name="max"/>.
     /// </summary>
+    /// <typeparam name="T">The type of the value to be validated.</typeparam>
     /// <param name="value">The value to be validated.</param>
     /// <param name="max">The maximum value <paramref name="value"/> can be.</param>
     /// <param name="message">An optional message to include in the exception.</param>
@@ -136,6 +143,7 @@ public static partial class ThrowHelper
     ///     The name of the parameter with which <paramref name="value"/> corresponds.
     ///     If this parameter is omitted, the name of <paramref name="value"/> is used.
     /// </param>
+    /// <param name="caller">The name of the calling method.</param>
     public static void ThrowIfLargerThan<T>(
         T value,
         T max,
@@ -161,6 +169,7 @@ public static partial class ThrowHelper
     ///     Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is
     ///     not in the range of <paramref name="min"/> and <paramref name="max"/>.
     /// </summary>
+    /// <typeparam name="T">The type of the value to be validated.</typeparam>
     /// <param name="value">The value to be validated.</param>
     /// <param name="min">The minimum value <paramref name="value"/> can be.</param>
     /// <param name="max">The maximum value <paramref name="value"/> can be.</param>
@@ -169,6 +178,7 @@ public static partial class ThrowHelper
     ///     The name of the parameter with which <paramref name="value"/> corresponds.
     ///     If this parameter is omitted, the name of <paramref name="value"/> is used.
     /// </param>
+    /// <param name="caller">The name of the calling method.</param>
     public static void ThrowIfNotInRange<T>(
         T value,
         T min,

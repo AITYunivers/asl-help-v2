@@ -15,6 +15,7 @@ public static partial class ThrowHelper
     /// </summary>
     /// <param name="paramName">The name of the parameter that caused the exception.</param>
     /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="caller">The name of the calling method.</param>
     /// <remarks>
     ///     This method does not return and is not inlined to improve codegen of cold paths.
     /// </remarks>
@@ -37,6 +38,7 @@ public static partial class ThrowHelper
     /// </summary>
     /// <param name="paramName">The name of the parameter that caused the exception.</param>
     /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="caller">The name of the calling method.</param>
     /// <remarks>
     ///     This method does not return and is not inlined to improve codegen of cold paths.
     /// </remarks>
@@ -59,6 +61,7 @@ public static partial class ThrowHelper
     /// </summary>
     /// <param name="paramName">The name of the parameter that caused the exception.</param>
     /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="caller">The name of the calling method.</param>
     /// <remarks>
     ///     This method does not return and is not inlined to improve codegen of cold paths.
     /// </remarks>
@@ -79,6 +82,7 @@ public static partial class ThrowHelper
     ///     Throws a <see cref="DirectoryNotFoundException"/> with a specified error message.
     /// </summary>
     /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="caller">The name of the calling method.</param>
     /// <remarks>
     ///     This method does not return and is not inlined to improve codegen of cold paths.
     /// </remarks>
@@ -99,6 +103,7 @@ public static partial class ThrowHelper
     ///     Throws a <see cref="FileNotFoundException"/> with a specified error message.
     /// </summary>
     /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="caller">The name of the calling method.</param>
     /// <remarks>
     ///     This method does not return and is not inlined to improve codegen of cold paths.
     /// </remarks>
@@ -121,6 +126,7 @@ public static partial class ThrowHelper
     /// </summary>
     /// <param name="fileName">The full name of the file that cannot be found.</param>
     /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="caller">The name of the calling method.</param>
     /// <remarks>
     ///     This method does not return and is not inlined to improve codegen of cold paths.
     /// </remarks>
@@ -141,6 +147,7 @@ public static partial class ThrowHelper
     ///     Throws a <see cref="FormatException"/> with a specified error message.
     /// </summary>
     /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="caller">The name of the calling method.</param>
     /// <remarks>
     ///     This method does not return and is not inlined to improve codegen of cold paths.
     /// </remarks>
@@ -161,6 +168,7 @@ public static partial class ThrowHelper
     ///     Throws an <see cref="InvalidDataException"/> with a specified error message.
     /// </summary>
     /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="caller">The name of the calling method.</param>
     /// <remarks>
     ///     This method does not return and is not inlined to improve codegen of cold paths.
     /// </remarks>
@@ -181,6 +189,7 @@ public static partial class ThrowHelper
     ///     Throws an <see cref="InvalidOperationException"/> with a specified error message.
     /// </summary>
     /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="caller">The name of the calling method.</param>
     /// <remarks>
     ///     This method does not return and is not inlined to improve codegen of cold paths.
     /// </remarks>
@@ -201,6 +210,7 @@ public static partial class ThrowHelper
     ///     Throws a <see cref="KeyNotFoundException"/> with a specified error message.
     /// </summary>
     /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="caller">The name of the calling method.</param>
     /// <remarks>
     ///     This method does not return and is not inlined to improve codegen of cold paths.
     /// </remarks>

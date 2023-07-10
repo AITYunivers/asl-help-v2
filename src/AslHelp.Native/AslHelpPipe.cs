@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO.Pipes;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -82,4 +83,12 @@ public static partial class AslHelpPipe
     {
         Debug.WriteLine($"[asl-help] [Pipe] {output}");
     }
+
+    private static void M()
+    {
+        NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), (name, assembly, path) => NativeLibrary.Load(name));
+    }
+
+    [DllImport("mono.dll")]
+    private static extern nint mono_image_open_from_data_full(byte[] data, ulong data_len, bool need_copy, out nint status, bool refonly);
 }

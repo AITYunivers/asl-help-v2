@@ -8,8 +8,18 @@ using AslHelp.Common.Exceptions;
 
 namespace AslHelp.Common.Extensions;
 
+/// <summary>
+///     The <see cref="StreamExtensions"/> class
+///     provides extension methods for the <see cref="Stream"/> class.
+/// </summary>
 public static class StreamExtensions
 {
+    /// <summary>
+    ///     Reads a value of a type <typeparamref name="T"/> from a <see cref="Stream"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of value to read.</typeparam>
+    /// <param name="stream">The <see cref="Stream"/> to read from.</param>
+    /// <returns>The value read from the <see cref="Stream"/>.</returns>
     public static unsafe T Read<T>(this Stream stream)
         where T : unmanaged
     {
@@ -19,6 +29,19 @@ public static class StreamExtensions
         return value;
     }
 
+    /// <summary>
+    ///     Attempts to read a value of a type <typeparamref name="T"/> from a <see cref="Stream"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of value to read.</typeparam>
+    /// <param name="stream">The <see cref="Stream"/> to read from.</param>
+    /// <param name="value">
+    ///     Contains the value read from the <see cref="Stream"/> if the operation succeeded;
+    ///     otherwise, <see langword="default"/>(<typeparamref name="T"/>).
+    /// </param>
+    /// <returns>
+    ///     <see langword="true"/> if the operation succeeded;
+    ///     otherwise, <see langword="false"/>.
+    /// </returns>
     public static unsafe bool TryRead<T>(this Stream stream, out T value)
         where T : unmanaged
     {
@@ -35,12 +58,30 @@ public static class StreamExtensions
         }
     }
 
+    /// <summary>
+    ///     Reads a sequence of values of type <typeparamref name="T"/> from a <see cref="Stream"/>
+    ///     into a <see cref="Span{T}"/> buffer.
+    /// </summary>
+    /// <typeparam name="T">The type of value to read.</typeparam>
+    /// <param name="stream">The <see cref="Stream"/> to read from.</param>
+    /// <param name="buffer">The <see cref="Span{T}"/> that will be filled with the read values.</param>
     public static void Read<T>(this Stream stream, Span<T> buffer)
         where T : unmanaged
     {
         stream.ReadExactly(MemoryMarshal.AsBytes(buffer));
     }
 
+    /// <summary>
+    ///     Attempts to read a sequence of values of a type <typeparamref name="T"/> from a <see cref="Stream"/>
+    ///     into a <see cref="Span{T}"/> buffer.
+    /// </summary>
+    /// <typeparam name="T">The type of value to read.</typeparam>
+    /// <param name="stream">The <see cref="Stream"/> to read from.</param>
+    /// <param name="buffer">The <see cref="Span{T}"/> that will be filled with the read values.</param>
+    /// <returns>
+    ///     <see langword="true"/> if the operation succeeded;
+    ///     otherwise, <see langword="false"/>.
+    /// </returns>
     public static unsafe bool TryRead<T>(this Stream stream, Span<T> buffer)
         where T : unmanaged
     {
@@ -48,21 +89,12 @@ public static class StreamExtensions
         return stream.ReadAtLeast(MemoryMarshal.AsBytes(buffer), minimumBytes) == minimumBytes;
     }
 
-    // Polyfilled from CommunityToolkit.HighPerformance.StreamExtensions.
-
     /// <summary>
-    ///     Writes a value of a specified type into a target <see cref="Stream"/> instance.
+    ///     Writes a value of type <typeparamref name="T"/> to a <see cref="Stream"/>.
     /// </summary>
-    /// <typeparam name="T">
-    ///     The type of value to write.
-    /// </typeparam>
-    /// <param name="stream">
-    ///     The target <see cref="Stream"/> instance to write to.
-    /// </param>
-    /// <param name="value">
-    ///     The input value to write to <paramref name="stream"/>.
-    /// </param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /// <typeparam name="T">The type of value to write.</typeparam>
+    /// <param name="stream">The <see cref="Stream"/> to write to.</param>
+    /// <param name="value">The value to write to the <see cref="Stream"/>.</param>
     public static unsafe void Write<T>(this Stream stream, in T value)
         where T : unmanaged
     {
@@ -75,6 +107,17 @@ public static class StreamExtensions
         ArrayPool<byte>.Shared.Return(buffer);
     }
 
+    /// <summary>
+    ///     Reads a value of type <typeparamref name="TResponse"/> from a <see cref="Stream"/>
+    ///     after writing a value of type <typeparamref name="TRequest"/> to the <see cref="Stream"/>.
+    /// </summary>
+    /// <typeparam name="TRequest">The type of value to write to the <see cref="Stream"/>.</typeparam>
+    /// <typeparam name="TResponse">The type of value to read from the <see cref="Stream"/>.</typeparam>
+    /// <param name="stream">The <see cref="Stream"/> to read from and write to.</param>
+    /// <param name="request">The value to write to the <see cref="Stream"/>.</param>
+    /// <returns>
+    ///     The value read from the <see cref="Stream"/>.
+    /// </returns>
     public static TResponse Transact<TRequest, TResponse>(this Stream stream, TRequest request)
         where TRequest : unmanaged
         where TResponse : unmanaged
@@ -83,6 +126,22 @@ public static class StreamExtensions
         return stream.Read<TResponse>();
     }
 
+    /// <summary>
+    ///     Attempts to read a value of type <typeparamref name="TResponse"/> from a <see cref="Stream"/>
+    ///     after writing a value of type <typeparamref name="TRequest"/> to the <see cref="Stream"/>.
+    /// </summary>
+    /// <typeparam name="TRequest">The type of value to write to the <see cref="Stream"/>.</typeparam>
+    /// <typeparam name="TResponse">The type of value to read from the <see cref="Stream"/>.</typeparam>
+    /// <param name="stream">The <see cref="Stream"/> to read from and write to.</param>
+    /// <param name="request">The value to write to the <see cref="Stream"/>.</param>
+    /// <param name="response">
+    ///     Contains the value read from the <see cref="Stream"/> if the operation succeeded;
+    ///     otherwise, <see langword="default"/>(<typeparamref name="TResponse"/>).
+    /// </param>
+    /// <returns>
+    ///     <see langword="true"/> if the operation succeeded;
+    ///     otherwise, <see langword="false"/>.
+    /// </returns>
     public static bool TryTransact<TRequest, TResponse>(this Stream stream, TRequest request, out TResponse response)
         where TRequest : unmanaged
         where TResponse : unmanaged
