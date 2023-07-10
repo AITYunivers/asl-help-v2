@@ -20,7 +20,7 @@
 
     <!-- Include AslHelp.Native as embedded resource. -->
     <ItemGroup>
-      <EmbeddedResource Include="$(OutDir)\AslHelp.Native.dll" Link="Native.x64.dll" />
+      <!-- <EmbeddedResource Include="$(OutDir)\AslHelp.Native.dll" Link="Native.x64.dll" /> -->
     </ItemGroup>
 
   </Target>

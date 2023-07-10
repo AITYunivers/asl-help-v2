@@ -4,14 +4,6 @@
     <LibraryName>asl-help-neo</LibraryName>
     <RootNamespace>AslHelp</RootNamespace>
     <TargetFramework>net481</TargetFramework>
-
-    <!-- <PublishTrimmed>true</PublishTrimmed> -->
-    <!-- <TrimMode>full</TrimMode> -->
-
-    <!-- <IlcDisableReflection>true</IlcDisableReflection> -->
-    <!-- <IlcInvariantGlobalization>true</IlcInvariantGlobalization> -->
-    <!-- <IlcOptimizationPreference>size</IlcOptimizationPreference> -->
-    <!-- <StripSymbols>true</StripSymbols> -->
   </PropertyGroup>
 
   <ItemGroup>

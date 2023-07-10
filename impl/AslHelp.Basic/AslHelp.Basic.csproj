@@ -5,11 +5,6 @@
     <UseWindowsForms>true</UseWindowsForms>
 
     <Nullable>enable</Nullable>
-
-    <!-- <PublishTrimmed>true</PublishTrimmed> -->
-    <!-- <TrimMode>full</TrimMode> -->
-
-    <!-- <IlcOptimizationPreference>size</IlcOptimizationPreference> -->
   </PropertyGroup>
 
   <ItemGroup>

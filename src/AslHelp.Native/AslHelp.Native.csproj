@@ -1,21 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\AslHelp.Common\AslHelp.Common.csproj" />
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
 
     <Nullable>enable</Nullable>
 
     <PublishAot>true</PublishAot>
-    <SelfContained>true</SelfContained>
-    <!-- <PublishTrimmed>true</PublishTrimmed> -->
-    <!-- <TrimMode>full</TrimMode> -->
-
-    <!-- <IlcDisableReflection>true</IlcDisableReflection> -->
-    <!-- <IlcOptimizationPreference>size</IlcOptimizationPreference> -->
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AslHelp.Common\AslHelp.Common.csproj" />
+  </ItemGroup>
 
 </Project>
