@@ -12,66 +12,66 @@ public partial class MemoryManagerBase
         Module? module = MainModule;
         if (module is null)
         {
-            string msg = "[ScanAll] MainModule could not be found.";
+            string msg = "MainModule could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
-        return ScanAll(signature, module, alignment);
+        return ScanAll(module, signature, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(Signature signature, uint size, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(uint size, Signature signature, uint alignment = 1)
     {
         Module? module = MainModule;
         if (module is null)
         {
-            string msg = "[ScanAll] MainModule could not be found.";
+            string msg = "MainModule could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
-        return ScanAll(signature, module, size, alignment);
+        return ScanAll(module, size, signature, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(Signature signature, string moduleName, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(string moduleName, Signature signature, uint alignment = 1)
     {
         Module? module = Modules[moduleName];
         if (module is null)
         {
-            string msg = $"[ScanAll] Module '{moduleName}' could not be found.";
+            string msg = $"Module '{moduleName}' could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
-        return ScanAll(signature, module, alignment);
+        return ScanAll(module, signature, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(Signature signature, string moduleName, uint size, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(string moduleName, uint size, Signature signature, uint alignment = 1)
     {
         Module? module = Modules[moduleName];
         if (module is null)
         {
-            string msg = $"[ScanAll] Module '{moduleName}' could not be found.";
+            string msg = $"Module '{moduleName}' could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
-        return ScanAll(signature, module, size, alignment);
+        return ScanAll(module, size, signature, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(Signature signature, Module module, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(Module module, Signature signature, uint alignment = 1)
     {
-        return ScanAll(signature, module.Base, module.MemorySize, alignment);
+        return ScanAll(module.Base, module.MemorySize, signature, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(Signature signature, Module module, uint size, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(Module module, uint size, Signature signature, uint alignment = 1)
     {
-        return ScanAll(signature, module.Base, size, alignment);
+        return ScanAll(module.Base, size, signature, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(Signature signature, nuint startAddress, nuint endAddress, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(nuint startAddress, nuint endAddress, Signature signature, uint alignment = 1)
     {
         uint size = (uint)(endAddress - startAddress);
-        return ScanAll(signature, startAddress, size, alignment);
+        return ScanAll(startAddress, size, signature, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(Signature signature, nuint startAddress, uint size, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(nuint startAddress, uint size, Signature signature, uint alignment = 1)
     {
         if (size <= 0)
         {

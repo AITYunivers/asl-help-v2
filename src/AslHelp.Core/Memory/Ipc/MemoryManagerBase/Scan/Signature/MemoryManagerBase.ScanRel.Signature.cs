@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 
-using AslHelp.Common.Exceptions;
 using AslHelp.Core.Memory.SignatureScanning;
 
 namespace AslHelp.Core.Memory.Ipc;
@@ -12,52 +11,38 @@ public partial class MemoryManagerBase
         return ScanAllRel(signature, alignment).FirstOrDefault();
     }
 
-    public nuint ScanRel(Signature signature, uint size, uint alignment = 1)
+    public nuint ScanRel(uint size, Signature signature, uint alignment = 1)
     {
-        return ScanAllRel(signature, size, alignment).FirstOrDefault();
+        return ScanAllRel(size, signature, alignment).FirstOrDefault();
     }
 
-    public nuint ScanRel(Signature signature, string moduleName, uint alignment = 1)
+    public nuint ScanRel(string moduleName, Signature signature, uint alignment = 1)
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"[ScanRel] Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ScanAllRel(signature, module, alignment).FirstOrDefault();
+        return ScanAllRel(moduleName, signature, alignment).FirstOrDefault();
     }
 
-    public nuint ScanRel(Signature signature, string moduleName, uint size, uint alignment = 1)
+    public nuint ScanRel(string moduleName, uint size, Signature signature, uint alignment = 1)
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"[ScanRel] Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ScanAllRel(signature, module, size, alignment).FirstOrDefault();
+        return ScanAllRel(moduleName, size, signature, alignment).FirstOrDefault();
     }
 
-    public nuint ScanRel(Signature signature, Module module, uint alignment = 1)
+    public nuint ScanRel(Module module, Signature signature, uint alignment = 1)
     {
-        return ScanAllRel(signature, module, alignment).FirstOrDefault();
+        return ScanAllRel(module, signature, alignment).FirstOrDefault();
     }
 
-    public nuint ScanRel(Signature signature, Module module, uint size, uint alignment = 1)
+    public nuint ScanRel(Module module, uint size, Signature signature, uint alignment = 1)
     {
-        return ScanAllRel(signature, module, size, alignment).FirstOrDefault();
+        return ScanAllRel(module, size, signature, alignment).FirstOrDefault();
     }
 
-    public nuint ScanRel(Signature signature, nuint startAddress, nuint endAddress, uint alignment = 1)
+    public nuint ScanRel(nuint startAddress, nuint endAddress, Signature signature, uint alignment = 1)
     {
-        return ScanAllRel(signature, startAddress, endAddress, alignment).FirstOrDefault();
+        return ScanAllRel(startAddress, endAddress, signature, alignment).FirstOrDefault();
     }
 
-    public nuint ScanRel(Signature signature, nuint startAddress, uint size, uint alignment = 1)
+    public nuint ScanRel(nuint startAddress, uint size, Signature signature, uint alignment = 1)
     {
-        return ScanAllRel(signature, startAddress, size, alignment).FirstOrDefault();
+        return ScanAllRel(startAddress, size, signature, alignment).FirstOrDefault();
     }
 }

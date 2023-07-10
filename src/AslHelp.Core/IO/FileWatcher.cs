@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 
+using AslHelp.Common.Exceptions;
+
 namespace AslHelp.Core.IO;
 
 public sealed class FileWatcher : IDisposable

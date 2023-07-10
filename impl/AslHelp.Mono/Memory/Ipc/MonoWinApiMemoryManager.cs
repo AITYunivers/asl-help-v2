@@ -5,11 +5,11 @@ using AslHelp.Core.Memory.Ipc;
 
 namespace AslHelp.Unity.Memory.Ipc;
 
-public sealed class UnityWinApiMemoryManager : WinApiMemoryManager
+public sealed class MonoWinApiMemoryManager : WinApiMemoryManager
 {
-    public UnityWinApiMemoryManager(Process process)
+    public MonoWinApiMemoryManager(Process process)
         : base(process) { }
 
-    public UnityWinApiMemoryManager(Process process, ILogger logger)
+    public MonoWinApiMemoryManager(Process process, ILogger logger)
         : base(process, logger) { }
 }

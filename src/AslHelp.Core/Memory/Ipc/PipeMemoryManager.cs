@@ -70,11 +70,21 @@ public class PipeMemoryManager : MemoryManagerBase
 
     public override unsafe nuint Deref(nuint baseAddress, params int[] offsets)
     {
-        EnsureConnected("Deref");
+        if (_isDisposed)
+        {
+            string msg = "Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = "Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
 
         if (baseAddress == 0)
         {
-            string msg = "[Deref] Attempted to dereference a null pointer.";
+            string msg = "Attempted to dereference a null pointer.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -92,7 +102,7 @@ public class PipeMemoryManager : MemoryManagerBase
             PipeResponse response = _pipe.Read<PipeResponse>();
             if (response != PipeResponse.Success)
             {
-                string msg = $"[Deref] Failed to dereference pointer ({response} {(int)response}).";
+                string msg = $"Failed to dereference pointer ({response} {(int)response}).";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             }
 
@@ -102,7 +112,17 @@ public class PipeMemoryManager : MemoryManagerBase
 
     public override unsafe bool TryDeref(out nuint result, nuint baseAddress, params int[] offsets)
     {
-        EnsureConnected("TryDeref");
+        if (_isDisposed)
+        {
+            string msg = "Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = "Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
 
         if (baseAddress == 0)
         {
@@ -126,11 +146,21 @@ public class PipeMemoryManager : MemoryManagerBase
 
     protected override unsafe void Read<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets)
     {
-        EnsureConnected<T>("Read");
+        if (_isDisposed)
+        {
+            string msg = "Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = "Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
 
         if (baseAddress == 0)
         {
-            string msg = $"[Read<{typeof(T).Name}>] Attempted to dereference a null pointer.";
+            string msg = "Attempted to dereference a null pointer.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -147,7 +177,7 @@ public class PipeMemoryManager : MemoryManagerBase
             PipeResponse response = _pipe.Read<PipeResponse>();
             if (response != PipeResponse.Success)
             {
-                string msg = $"[Read<{typeof(T).Name}>] Failed to read value ({response} {(int)response}).";
+                string msg = $"Failed to read value ({response} {(int)response}).";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             }
         }
@@ -155,7 +185,17 @@ public class PipeMemoryManager : MemoryManagerBase
 
     protected override unsafe bool TryRead<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets)
     {
-        EnsureConnected<T>("TryRead");
+        if (_isDisposed)
+        {
+            string msg = "Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = "Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
 
         if (baseAddress == 0)
         {
@@ -178,11 +218,21 @@ public class PipeMemoryManager : MemoryManagerBase
 
     protected override unsafe void Write<T>(T* data, uint length, nuint baseAddress, params int[] offsets)
     {
-        EnsureConnected<T>("Write");
+        if (_isDisposed)
+        {
+            string msg = "Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = "Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
 
         if (baseAddress == 0)
         {
-            string msg = $"[Write<{typeof(T).Name}>] Attempted to dereference a null pointer.";
+            string msg = "Attempted to dereference a null pointer.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -199,7 +249,7 @@ public class PipeMemoryManager : MemoryManagerBase
             PipeResponse response = _pipe.Read<PipeResponse>();
             if (response != PipeResponse.Success)
             {
-                string msg = $"[Write<{typeof(T).Name}>] Failed to write value ({response} {(int)response}).";
+                string msg = $"Failed to write value ({response} {(int)response}).";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             }
         }
@@ -207,11 +257,21 @@ public class PipeMemoryManager : MemoryManagerBase
 
     protected override unsafe bool TryWrite<T>(T* data, uint length, nuint baseAddress, params int[] offsets)
     {
-        EnsureConnected<T>("TryWrite");
+        if (_isDisposed)
+        {
+            string msg = "Cannot interact with the memory of an exited process.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
+
+        if (!_pipe.IsConnected)
+        {
+            string msg = "Pipe was not connected.";
+            ThrowHelper.ThrowInvalidOperationException(msg);
+        }
 
         if (baseAddress == 0)
         {
-            string msg = $"[Write<{typeof(T).Name}>] Attempted to dereference a null pointer.";
+            string msg = "Attempted to dereference a null pointer.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -235,35 +295,5 @@ public class PipeMemoryManager : MemoryManagerBase
 
         _pipe.Write(PipeRequest.Close);
         _pipe.Dispose();
-    }
-
-    private void EnsureConnected(string methodName)
-    {
-        if (_isDisposed)
-        {
-            string msg = $"[{methodName}] Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        if (!_pipe.IsConnected)
-        {
-            string msg = $"[{methodName}] Pipe was not connected.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-    }
-
-    private void EnsureConnected<T>(string methodName)
-    {
-        if (_isDisposed)
-        {
-            string msg = $"[{methodName}<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        if (!_pipe.IsConnected)
-        {
-            string msg = $"[{methodName}<{typeof(T).Name}>] Pipe was not connected.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
     }
 }

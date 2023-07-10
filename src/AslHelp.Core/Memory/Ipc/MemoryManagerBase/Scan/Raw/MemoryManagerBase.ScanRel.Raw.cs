@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 
-using AslHelp.Common.Exceptions;
-
 namespace AslHelp.Core.Memory.Ipc;
 
 public partial class MemoryManagerBase
@@ -18,26 +16,12 @@ public partial class MemoryManagerBase
 
     public nuint ScanRel(string moduleName, uint offset, params string[] pattern)
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"[ScanRel] Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ScanAllRel(module, offset, pattern).FirstOrDefault();
+        return ScanAllRel(moduleName, offset, pattern).FirstOrDefault();
     }
 
     public nuint ScanRel(string moduleName, uint offset, params byte[] pattern)
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"[ScanRel] Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ScanAllRel(module, offset, pattern).FirstOrDefault();
+        return ScanAllRel(moduleName, offset, pattern).FirstOrDefault();
     }
 
     public nuint ScanRel(Module module, uint offset, params string[] pattern)

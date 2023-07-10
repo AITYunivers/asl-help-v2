@@ -6,7 +6,7 @@ public static partial class AslHelpPipe
 {
     public static unsafe PipeResponse Deref(DerefRequest request)
     {
-        Log("  => [Deref] Dereferencing offsets...");
+        Log("  => Dereferencing offsets...");
 
         nuint result = (nuint)request.BaseAddress;
         int* offsets = (int*)request.Offsets;
@@ -16,15 +16,15 @@ public static partial class AslHelpPipe
             result = *(nuint*)result;
             if (result == 0)
             {
-                Log("    => [Deref] Failure. Cannot dereference null pointer.");
+                Log("    => Failure. Cannot dereference null pointer.");
                 return PipeResponse.DerefFailure;
             }
 
             result += (nuint)offsets[i];
         }
 
-        Log($"    => [Deref] Success.");
-        Log($"               Result: 0x{result:X}.");
+        Log($"    => Success.");
+        Log($"       Result: 0x{result:X}.");
 
         *(nuint*)request.ResultPtr = result;
         return PipeResponse.Success;

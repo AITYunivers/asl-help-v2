@@ -19,13 +19,13 @@ public class WinApiMemoryManager : MemoryManagerBase
     {
         if (_isDisposed)
         {
-            string msg = "[Deref] Cannot interact with the memory of an exited process.";
+            string msg = "Cannot interact with the memory of an exited process.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         if (baseAddress == 0)
         {
-            string msg = "[Deref] Attempted to dereference a null pointer.";
+            string msg = "Attempted to dereference a null pointer.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -36,7 +36,7 @@ public class WinApiMemoryManager : MemoryManagerBase
         {
             if (!WinInteropWrapper.ReadMemory(handle, result, &result, ptrSize) || result == 0)
             {
-                string msg = "[Deref] Failed to dereference pointer.";
+                string msg = "Failed to dereference pointer.";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             }
 
@@ -50,7 +50,7 @@ public class WinApiMemoryManager : MemoryManagerBase
     {
         if (_isDisposed)
         {
-            string msg = "[TryDeref] Cannot interact with the memory of an exited process.";
+            string msg = "Cannot interact with the memory of an exited process.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -86,14 +86,14 @@ public class WinApiMemoryManager : MemoryManagerBase
     {
         if (_isDisposed)
         {
-            string msg = $"[Read<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            string msg = "Cannot interact with the memory of an exited process.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         nuint deref = Deref(baseAddress, offsets), handle = _processHandle;
         if (!WinInteropWrapper.ReadMemory(handle, deref, buffer, length))
         {
-            string msg = $"[Read<{typeof(T).Name}>] Failed to read value.";
+            string msg = "Failed to read value.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
     }
@@ -102,7 +102,7 @@ public class WinApiMemoryManager : MemoryManagerBase
     {
         if (_isDisposed)
         {
-            string msg = $"[TryRead<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            string msg = "Cannot interact with the memory of an exited process.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -114,14 +114,14 @@ public class WinApiMemoryManager : MemoryManagerBase
     {
         if (_isDisposed)
         {
-            string msg = $"[Write<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            string msg = "Cannot interact with the memory of an exited process.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         nuint deref = Deref(baseAddress, offsets), handle = _processHandle;
         if (!WinInteropWrapper.ReadMemory(handle, deref, data, length))
         {
-            string msg = $"[ReadSpan<{typeof(T).Name}>] Failed to write value.";
+            string msg = "Failed to write value.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
     }
@@ -130,7 +130,7 @@ public class WinApiMemoryManager : MemoryManagerBase
     {
         if (_isDisposed)
         {
-            string msg = $"[Write<{typeof(T).Name}>] Cannot interact with the memory of an exited process.";
+            string msg = "Cannot interact with the memory of an exited process.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 

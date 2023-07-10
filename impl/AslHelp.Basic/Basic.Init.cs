@@ -5,88 +5,50 @@ using System.Reflection;
 using AslHelp.Common.Exceptions;
 using AslHelp.Core.Diagnostics;
 using AslHelp.Core.Diagnostics.Logging;
+using AslHelp.Core.Helpers.Asl.Contracts;
 using AslHelp.Core.LiveSplitInterop;
+
+using LsTimer = AslHelp.Core.LiveSplitInterop.Timer;
 
 public partial class Basic
 {
-    private bool _isInitialized;
-    private bool _generateCode;
-
-    private bool _withInjection;
-    private int _timeout;
-
-    public Basic WithCodeGeneration(bool generateCode = true)
+    protected sealed override IAslHelper InitImpl()
     {
-        if (Actions.CurrentAction != "startup")
-        {
-            string msg = "Code may only be generated in the 'startup' action.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
+        AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
 
-        _generateCode = generateCode;
+        _logger.Add(new DebugLogger());
+
+        LsTimer.Init();
+        Script.Init();
 
         return this;
     }
 
-    protected virtual void GenerateCode()
+    protected override void GenerateCode()
     {
+        string? helperName = null;
+
+        foreach (var entry in Script.Vars)
+        {
+            if (entry.Value == this)
+            {
+                helperName = entry.Key;
+            }
+        }
+
         Script.Vars["Log"] = (Action<object>)(output => Logger.Log($"[{GameName}] {output}"));
         Debug.Info("    => Created the Action<object> `vars.Log`.");
 
-        Actions.exit.Prepend($"vars.AslHelp.{nameof(Exit)}();");
-        Actions.shutdown.Prepend($"vars.AslHelp.{nameof(Shutdown)}();");
-    }
-
-    public Basic WithInjection(int pipeConnectionTimeout = 3000)
-    {
-        if (Actions.CurrentAction != "startup")
+        if (helperName is not null)
         {
-            string msg = "Injection may only be enabled in the 'startup' action.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
+            Actions.exit.Prepend($"vars.{helperName}.{nameof(OnExit)}();");
+            Actions.shutdown.Prepend($"vars.{helperName}.{nameof(OnShutdown)}();");
         }
-
-        ThrowHelper.ThrowIfLessThan(pipeConnectionTimeout, -1);
-
-        _withInjection = true;
-        _timeout = pipeConnectionTimeout;
-
-        return this;
-    }
-
-    public Basic Init()
-    {
-        if (_isInitialized)
+        else
         {
-            string msg = "asl-help is already initialized.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
+            Debug.Warn("    => Helper was not found as part of 'vars'.");
+            Debug.Warn("    => Make sure to call `OnExit` and `OnShutdown` in their respective actions manually.");
         }
-
-        _isInitialized = true;
-
-        if (Actions.CurrentAction != "startup")
-        {
-            string msg = "asl-help may only be initialized in the 'startup' action.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        Debug.Info("Initializing asl-help...");
-
-        AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
-
-        Logger.Add(new DebugLogger());
-
-        AslHelp.Core.LiveSplitInterop.Timer.Init();
-        Script.Init();
-
-        if (_generateCode)
-        {
-            Debug.Info("  => Generating code...");
-            GenerateCode();
-        }
-
-        Debug.Info("  => Done.");
-
-        return this;
     }
 
     private static Assembly? AssemblyResolve(object sender, ResolveEventArgs e)

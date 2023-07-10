@@ -8,7 +8,7 @@ public static partial class AslHelpPipe
 {
     public static unsafe PipeResponse Read(ReadRequest request)
     {
-        Log("  => [Read] Dereferencing offsets...");
+        Log("  => Dereferencing offsets...");
 
         nuint result = (nuint)request.BaseAddress;
         int* offsets = (int*)request.Offsets;
@@ -18,22 +18,29 @@ public static partial class AslHelpPipe
             result = *(nuint*)result;
             if (result == 0)
             {
-                Log("    => [Read] Failure. Cannot dereference null pointer.");
+                Log("    => Failure. Cannot dereference null pointer.");
                 return PipeResponse.DerefFailure;
             }
 
             result += (nuint)offsets[i];
         }
 
-        Log($"    => [Read] Success.");
-        Log($"              Result: 0x{result:X}.");
+        Log($"    => Success.");
+        Log($"       Result: 0x{result:X}.");
 
-        Log($"  => [Read] Reading data ({request.BufferLength} bytes)...");
+        Log($"  => Reading data ({request.BufferLength} bytes)...");
 
-        NativeMemory.Copy((void*)result, (void*)request.Buffer, request.BufferLength);
+        try
+        {
+            NativeMemory.Copy((void*)result, (void*)request.Buffer, request.BufferLength);
+        }
+        catch
+        {
+            Log("    => Failure. Cannot dereference result address.");
+            return PipeResponse.ReadFailure;
+        }
 
-        Log("    => [Read] Success.");
-
+        Log("    => Success.");
         return PipeResponse.Success;
     }
 }

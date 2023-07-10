@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using AslHelp.Common.Exceptions;
 using AslHelp.Core.Memory.SignatureScanning;
 
 namespace AslHelp.Core.Memory.Ipc;
@@ -13,52 +12,38 @@ public partial class MemoryManagerBase
         return ScanAll(signature, alignment).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nuint> ScanAllRel(Signature signature, uint size, uint alignment = 1)
+    public IEnumerable<nuint> ScanAllRel(uint size, Signature signature, uint alignment = 1)
     {
-        return ScanAll(signature, size, alignment).Select(FromAssemblyAddress);
+        return ScanAll(size, signature, alignment).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nuint> ScanAllRel(Signature signature, string moduleName, uint alignment = 1)
+    public IEnumerable<nuint> ScanAllRel(string moduleName, Signature signature, uint alignment = 1)
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"[ScanAllRel] Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ScanAll(signature, module, alignment).Select(FromAssemblyAddress);
+        return ScanAll(moduleName, signature, alignment).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nuint> ScanAllRel(Signature signature, string moduleName, uint size, uint alignment = 1)
+    public IEnumerable<nuint> ScanAllRel(string moduleName, uint size, Signature signature, uint alignment = 1)
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"[ScanAllRel] Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ScanAll(signature, module, size, alignment).Select(FromAssemblyAddress);
+        return ScanAll(moduleName, size, signature, alignment).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nuint> ScanAllRel(Signature signature, Module module, uint alignment = 1)
+    public IEnumerable<nuint> ScanAllRel(Module module, Signature signature, uint alignment = 1)
     {
-        return ScanAll(signature, module, alignment).Select(FromAssemblyAddress);
+        return ScanAll(module, signature, alignment).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nuint> ScanAllRel(Signature signature, Module module, uint size, uint alignment = 1)
+    public IEnumerable<nuint> ScanAllRel(Module module, uint size, Signature signature, uint alignment = 1)
     {
-        return ScanAll(signature, module, size, alignment).Select(FromAssemblyAddress);
+        return ScanAll(module, size, signature, alignment).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nuint> ScanAllRel(Signature signature, nuint startAddress, nuint endAddress, uint alignment = 1)
+    public IEnumerable<nuint> ScanAllRel(nuint startAddress, nuint endAddress, Signature signature, uint alignment = 1)
     {
-        return ScanAll(signature, startAddress, endAddress, alignment).Select(FromAssemblyAddress);
+        return ScanAll(startAddress, endAddress, signature, alignment).Select(FromAssemblyAddress);
     }
 
-    public IEnumerable<nuint> ScanAllRel(Signature signature, nuint startAddress, uint size, uint alignment = 1)
+    public IEnumerable<nuint> ScanAllRel(nuint startAddress, uint size, Signature signature, uint alignment = 1)
     {
-        return ScanAll(signature, startAddress, size, alignment).Select(FromAssemblyAddress);
+        return ScanAll(startAddress, size, signature, alignment).Select(FromAssemblyAddress);
     }
 }

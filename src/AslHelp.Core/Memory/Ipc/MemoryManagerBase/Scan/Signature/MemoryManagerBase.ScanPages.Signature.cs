@@ -36,7 +36,7 @@ public partial class MemoryManagerBase
     {
         foreach (MemoryPage page in Pages(allPages))
         {
-            foreach (nuint scanResult in ScanAll(signature, page.Base, page.RegionSize, alignment))
+            foreach (nuint scanResult in ScanAll(page.Base, page.RegionSize, signature, alignment))
             {
                 yield return scanResult;
             }

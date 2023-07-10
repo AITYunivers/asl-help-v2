@@ -4,7 +4,9 @@ namespace AslHelp.Core.Helpers.Asl.Contracts;
 
 public partial interface IAslHelper
 {
-    public interface IVersioning
+#pragma warning disable IDE1006
+    public interface Versioning
+#pragma warning restore IDE1006
     {
         uint GetMemorySize();
         uint GetMemorySize(string moduleName);
@@ -21,10 +23,6 @@ public partial interface IAslHelper
         string GetSHA256Hash();
         string GetSHA256Hash(string moduleName);
         string GetSHA256Hash(Module module);
-
-        string GetSHA384Hash();
-        string GetSHA384Hash(string moduleName);
-        string GetSHA384Hash(Module module);
 
         string GetSHA512Hash();
         string GetSHA512Hash(string moduleName);

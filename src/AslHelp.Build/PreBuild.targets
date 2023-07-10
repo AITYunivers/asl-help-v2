@@ -2,17 +2,23 @@
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 
-    <!-- Publishing AslHelp.Native for win-x64. -->
-    <Exec Command="dotnet publish ..\AslHelp.Native -c $(Configuration) -r win-x64 -o $(OutDir)\x64" />
+    <ItemGroup>
+      <PublishNative Include="..\AslHelp.Native\AslHelp.Native.csproj">
+        <AdditionalProperties>
+          Configuration=$(Configuration);
+          RuntimeIdentifier=win-x64;
+          PublishDirectory="$(OutDir)\x64"
+        </AdditionalProperties>
+      </PublishNative>
+    </ItemGroup>
 
-    <!-- Publishing AslHelp.Native for win-x86. -->
-    <!-- This is currently not supported by NativeAOT. -->
-    <!-- <Exec Command="dotnet publish ..\AslHelp.Native -c $(Configuration) -r win-x86 -o $(OutDir)\x86" /> -->
+    <!-- Publishing AslHelp.Native for win-x64. -->
+    <MSBuild Targets="Restore" Projects="@(PublishNative)" />
+    <MSBuild Targets="Publish" Projects="@(PublishNative)" />
 
     <!-- Adding AslHelp.Native libraries as embedded resources. -->
     <ItemGroup>
-      <EmbeddedResource Include="$(OutDir)\x64\*.dll" Link="Native.x64.dll" />
-      <!-- <EmbeddedResource Include="$(OutDir)\x86\*.dll" Link="Native.x86.dll" /> -->
+      <EmbeddedResource Include="$(OutDir)\x64\AslHelp.Native.dll" Link="Native.x64.dll" />
     </ItemGroup>
 
   </Target>

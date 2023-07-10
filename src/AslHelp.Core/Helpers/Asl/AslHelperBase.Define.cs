@@ -1,6 +1,8 @@
 using AslHelp.Core.Reflection;
 
-public partial class Basic
+namespace AslHelp.Core.Helpers.Asl;
+
+public abstract partial class AslHelperBase
 {
     public ITypeDefinition Define(string code, params string[] references)
     {

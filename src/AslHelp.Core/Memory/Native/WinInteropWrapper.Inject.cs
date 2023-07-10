@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Text;
 
 using AslHelp.Core.Memory.Native.Enums;
 using AslHelp.Core.Memory.Native.Structs;
@@ -76,7 +76,8 @@ internal static unsafe partial class WinInteropWrapper
                     }
                 }
 
-                if (!TryCreateRemoteThreadAndWaitForSuccessfulExit(processHandle, pLoadLib, (void*)pModuleAlloc))
+                if (!TryCreateRemoteThreadAndWaitForExit(processHandle, pLoadLib, (void*)pModuleAlloc, out uint exitCode)
+                    && exitCode != 0)
                 {
                     return false;
                 }
@@ -94,12 +95,14 @@ internal static unsafe partial class WinInteropWrapper
         return true;
     }
 
-    private static unsafe bool TryCreateRemoteThreadAndWaitForSuccessfulExit(nuint hProcess, nuint startAddress, void* lpParameter)
+    private static unsafe bool TryCreateRemoteThreadAndWaitForExit(nuint hProcess, nuint startAddress, void* lpParameter, out uint exitCode)
     {
         nuint hThread = WinInterop.CreateRemoteThread(hProcess, null, 0, startAddress, lpParameter, 0, out _);
         if (hThread == 0)
         {
             Debug.Warn("    => Failed to create remote thread.");
+
+            exitCode = uint.MaxValue;
             return false;
         }
 
@@ -108,18 +111,14 @@ internal static unsafe partial class WinInteropWrapper
             if (WinInterop.WaitForSingleObject(hThread, uint.MaxValue) != 0)
             {
                 Debug.Warn("    => Failed to wait for remote thread.");
+
+                exitCode = uint.MaxValue;
                 return false;
             }
 
-            if (!WinInterop.GetExitCodeThread(hThread, out uint exitCode))
+            if (!WinInterop.GetExitCodeThread(hThread, out exitCode))
             {
                 Debug.Warn("    => Failed to get remote thread exit code.");
-                return false;
-            }
-
-            if (exitCode != 0)
-            {
-                Debug.Warn($"    => Remote thread exit code is {exitCode}.");
                 return false;
             }
 
@@ -131,27 +130,16 @@ internal static unsafe partial class WinInteropWrapper
         }
     }
 
-    public static bool TryCallEntryPoint(nuint hProcess, nuint hModule, string entryPoint)
-    {
-        nuint pEntryPoint = WinInterop.GetProcAddress(hModule, entryPoint);
-        if (pEntryPoint == 0)
-        {
-            Debug.Warn("pEntryPoint == 0");
-            return false;
-        }
-
-        return TryCreateRemoteThreadAndWaitForSuccessfulExit(hProcess, pEntryPoint, null);
-    }
-
     public static bool TryCallEntryPoint(nuint hProcess, nuint hModule, ReadOnlySpan<byte> entryPoint)
     {
         nuint pEntryPoint = WinInterop.GetProcAddress(hModule, entryPoint);
         if (pEntryPoint == 0)
         {
-            Debug.Warn("pEntryPoint == 0");
+            Debug.Warn($"    => Entry point not found.");
             return false;
         }
 
-        return TryCreateRemoteThreadAndWaitForSuccessfulExit(hProcess, pEntryPoint, null);
+        return TryCreateRemoteThreadAndWaitForExit(hProcess, pEntryPoint, null, out uint exitCode)
+            && exitCode == 0;
     }
 }

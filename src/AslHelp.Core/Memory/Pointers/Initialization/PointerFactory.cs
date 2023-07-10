@@ -33,7 +33,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.MainModule;
         if (module is null)
         {
-            string msg = $"[Make<{typeof(T).Name}>] MainModule was null.";
+            string msg = "MainModule was null.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -46,7 +46,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.Modules[moduleName];
         if (module is null)
         {
-            string msg = $"[Make<{typeof(T).Name}>] Module '{moduleName}' could not be found.";
+            string msg = $"Module '{moduleName}' could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -71,7 +71,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.MainModule;
         if (module is null)
         {
-            string msg = $"[MakeSpan<{typeof(T).Name}>] MainModule was null.";
+            string msg = "MainModule was null.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -84,7 +84,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.Modules[moduleName];
         if (module is null)
         {
-            string msg = $"[MakeSpan<{typeof(T).Name}>] Module '{moduleName}' could not be found.";
+            string msg = $"Module '{moduleName}' could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -107,7 +107,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.MainModule;
         if (module is null)
         {
-            string msg = "[MakeString] MainModule was null.";
+            string msg = "MainModule was null.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -119,7 +119,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.Modules[moduleName];
         if (module is null)
         {
-            string msg = $"[MakeString] Module '{moduleName}' could not be found.";
+            string msg = $"Module '{moduleName}' could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -141,7 +141,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.MainModule;
         if (module is null)
         {
-            string msg = "[MakeString] MainModule was null.";
+            string msg = "MainModule was null.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -153,7 +153,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.Modules[moduleName];
         if (module is null)
         {
-            string msg = $"[MakeString] Module '{moduleName}' could not be found.";
+            string msg = $"Module '{moduleName}' could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -175,7 +175,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.MainModule;
         if (module is null)
         {
-            string msg = "[MakeString] MainModule was null.";
+            string msg = "MainModule was null.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -187,7 +187,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.Modules[moduleName];
         if (module is null)
         {
-            string msg = $"[MakeString] Module '{moduleName}' could not be found.";
+            string msg = $"Module '{moduleName}' could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -209,7 +209,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.MainModule;
         if (module is null)
         {
-            string msg = "[MakeString] MainModule was null.";
+            string msg = "MainModule was null.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -221,7 +221,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.Modules[moduleName];
         if (module is null)
         {
-            string msg = $"[MakeString] Module '{moduleName}' could not be found.";
+            string msg = $"Module '{moduleName}' could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -243,7 +243,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.MainModule;
         if (module is null)
         {
-            string msg = "[MakeSizedString] MainModule was null.";
+            string msg = "MainModule was null.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -255,7 +255,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.Modules[moduleName];
         if (module is null)
         {
-            string msg = $"[MakeSizedString] Module '{moduleName}' could not be found.";
+            string msg = $"Module '{moduleName}' could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -277,7 +277,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.MainModule;
         if (module is null)
         {
-            string msg = "[MakeSizedString] MainModule was null.";
+            string msg = "MainModule was null.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -289,7 +289,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.Modules[moduleName];
         if (module is null)
         {
-            string msg = $"[MakeSizedString] Module '{moduleName}' could not be found.";
+            string msg = $"Module '{moduleName}' could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -306,7 +306,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.MainModule;
         if (module is null)
         {
-            string msg = "[MakeDef] MainModule was null.";
+            string msg = "MainModule was null.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -318,7 +318,7 @@ public class PointerFactory : IPointerFactory
         Module? module = _manager.Modules[moduleName];
         if (module is null)
         {
-            string msg = $"[MakeDef] Module '{moduleName}' could not be found.";
+            string msg = $"Module '{moduleName}' could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 

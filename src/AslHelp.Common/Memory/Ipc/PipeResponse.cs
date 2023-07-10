@@ -6,6 +6,8 @@ public enum PipeResponse
 
     ReceiveFailure,
     DerefFailure,
+    ReadFailure,
+    WriteFailure,
 
     PipeClosed,
     UnknownCommand

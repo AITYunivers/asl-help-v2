@@ -11,7 +11,7 @@ public partial class MemoryManagerBase
         Module? module = MainModule;
         if (module is null)
         {
-            string msg = $"[Write<{typeof(T).Name}>] MainModule was null.";
+            string msg = "MainModule was null.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
@@ -23,7 +23,7 @@ public partial class MemoryManagerBase
         Module? module = Modules[moduleName];
         if (module is null)
         {
-            string msg = $"[Write<{typeof(T).Name}>] Module '{moduleName}' could not be found.";
+            string msg = $"Module '{moduleName}' could not be found.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 

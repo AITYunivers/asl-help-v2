@@ -51,28 +51,6 @@ internal static unsafe partial class WinInterop
     ///     The address of the exported function or variable, if the function succeeds;
     ///     otherwise, <see langword="null"/>.
     /// </returns>
-    public static nuint GetProcAddress(nuint moduleHandle, string? procName)
-    {
-        return GetProcAddress(moduleHandle, Encoding.ASCII.GetBytes(procName));
-    }
-
-    /// <summary>
-    ///     Retrieves the address of an exported function or variable from the specified DLL.<br/>
-    ///     For further information, see:
-    ///     <i><see href="https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getprocaddress">
-    ///         GetProcAddress function (libloaderapi.h)
-    ///     </see></i>
-    /// </summary>
-    /// <param name="moduleHandle">
-    ///     A handle to the DLL module that contains the function or variable.
-    /// </param>
-    /// <param name="procName">
-    ///     The function or variable name, or the function's ordinal value.
-    /// </param>
-    /// <returns>
-    ///     The address of the exported function or variable, if the function succeeds;
-    ///     otherwise, <see langword="null"/>.
-    /// </returns>
     public static nuint GetProcAddress(nuint moduleHandle, ReadOnlySpan<byte> procName)
     {
         fixed (byte* pProcName = procName)
