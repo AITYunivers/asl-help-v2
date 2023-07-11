@@ -5,14 +5,13 @@ using System.Reflection;
 using AslHelp.Common.Exceptions;
 using AslHelp.Core.Diagnostics;
 using AslHelp.Core.Diagnostics.Logging;
-using AslHelp.Core.Helpers.Asl.Contracts;
 using AslHelp.Core.LiveSplitInterop;
 
 using LsTimer = AslHelp.Core.LiveSplitInterop.Timer;
 
 public partial class Basic
 {
-    protected sealed override IAslHelper InitImpl()
+    protected sealed override void InitImpl()
     {
         AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
 
@@ -20,8 +19,6 @@ public partial class Basic
 
         LsTimer.Init();
         Script.Init();
-
-        return this;
     }
 
     protected override void GenerateCode()

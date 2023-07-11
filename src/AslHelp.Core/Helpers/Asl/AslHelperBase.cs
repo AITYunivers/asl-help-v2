@@ -22,6 +22,9 @@ public abstract partial class AslHelperBase : IAslHelper
         OnExitImpl();
     }
 
+    /// <summary>
+    ///     This method is called from <see cref="OnExit"/> after some checks are performed.
+    /// </summary>
     protected abstract void OnExitImpl();
 
     public void OnShutdown()
@@ -43,5 +46,9 @@ public abstract partial class AslHelperBase : IAslHelper
         OnShutdownImpl(closing);
     }
 
+    /// <summary>
+    ///     This method is called from <see cref="OnShutdown"/> after some checks are performed.
+    /// </summary>
+    /// <param name="closing">Specifies whether LiveSplit is closing.</param>
     protected abstract void OnShutdownImpl(bool closing);
 }

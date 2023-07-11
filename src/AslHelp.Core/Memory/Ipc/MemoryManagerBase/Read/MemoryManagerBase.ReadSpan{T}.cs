@@ -112,7 +112,11 @@ public partial class MemoryManagerBase
 
     public bool TryReadSpan<T>([NotNullWhen(true)] out T[]? results, int length, nuint baseAddress, params int[] offsets) where T : unmanaged
     {
-        ThrowHelper.ThrowIfLessThan(length, 0);
+        if (length < 0)
+        {
+            results = default;
+            return false;
+        }
 
         results = new T[length];
         return TryReadSpan<T>(results, baseAddress, offsets);

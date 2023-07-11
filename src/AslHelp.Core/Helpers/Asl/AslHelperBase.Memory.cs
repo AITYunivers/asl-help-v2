@@ -16,15 +16,41 @@ public abstract partial class AslHelperBase
 {
     public abstract IMemoryManager? Memory { get; protected set; }
 
+    /// <summary>
+    ///     Initializes an instance of an <see cref="IMemoryManager"/> implementation
+    ///     with the specified <see cref="Process"/> and <see cref="ILogger"/>.
+    /// </summary>
+    /// <param name="process">The target <see cref="Process"/> whose memory should be managed.</param>
+    /// <param name="logger">The <see cref="ILogger"/> to use for logging.</param>
+    /// <returns>
+    ///     The created <see cref="IMemoryManager"/> instance.
+    /// </returns>
     protected abstract IMemoryManager InitializeMemory(Process process, ILogger logger);
 
+    /// <summary>
+    ///     Disposes of any resources pertaining to managing memory.
+    /// </summary>
     protected virtual void DisposeMemory()
     {
         Memory?.Dispose();
         Memory = null;
     }
 
-    protected static unsafe bool TryInjectAslCoreNative(Process process, bool is64Bit, [NotNullWhen(true)] out NamedPipeClientStream? pipe)
+    /// <summary>
+    ///     Attempts to inject the AslHelp.Native library into the specified <see cref="Process"/>.
+    /// </summary>
+    /// <param name="process">The target <see cref="Process"/> to inject into.</param>
+    /// <param name="is64Bit">Specifies whether the target <see cref="Process"/> is 64-bit.</param>
+    /// <param name="pipe">
+    ///     Contains the <see cref="NamedPipeClientStream"/> instance
+    ///     used to communicate with the injected library, if the injection was successful;
+    ///     otherwise, <see langword="null"/>.
+    /// </param>
+    /// <returns>
+    ///     <see langword="true"/> if the injection was successful;
+    ///     otherwise, <see langword="false"/>.
+    /// </returns>
+    protected static unsafe bool TryInjectAslHelpNative(Process process, bool is64Bit, [NotNullWhen(true)] out NamedPipeClientStream? pipe)
     {
         Debug.Info("  => Attempting to inject...");
 

@@ -9,6 +9,10 @@ using AslHelp.Common.Exceptions;
 
 namespace AslHelp.Core.Diagnostics.Logging;
 
+/// <summary>
+///     The <see cref="FileLogger"/> class
+///     provides a logger that writes to a specified file.
+/// </summary>
 public sealed class FileLogger : ILogger
 {
     private readonly Queue<string> _queuedLines = new();
@@ -21,7 +25,15 @@ public sealed class FileLogger : ILogger
 
     private bool _isRunning;
 
-    public FileLogger(string path, int maximumLines, int linesToErase)
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="FileLogger"/> class
+    ///     with the specified file path, the maximum amount of lines to write to the file
+    ///     and the amount of lines to erase when the maximum amount of lines is reached.
+    /// </summary>
+    /// <param name="fileName">The path of the file to write to.</param>
+    /// <param name="maximumLines">The maximum amount of lines to write to the file.</param>
+    /// <param name="linesToErase">The amount of lines to erase when the maximum amount of lines is reached.</param>
+    public FileLogger(string fileName, int maximumLines, int linesToErase)
     {
         ThrowHelper.ThrowIfLessThan(
             maximumLines, 1,
@@ -35,13 +47,19 @@ public sealed class FileLogger : ILogger
             linesToErase, maximumLines,
             "The file logger's maximum lines must be greater or equal to the amount of lines to erase.");
 
-        FilePath = Path.GetFullPath(path);
+        FilePath = Path.GetFullPath(fileName);
         _maximumLines = maximumLines;
         _linesToErase = linesToErase;
     }
 
+    /// <summary>
+    ///     Gets the path of the file to write to.
+    /// </summary>
     public string FilePath { get; }
 
+    /// <summary>
+    ///     Starts the <see cref="FileLogger"/>.
+    /// </summary>
     public void Start()
     {
         if (_isRunning)
@@ -96,6 +114,9 @@ public sealed class FileLogger : ILogger
         }, _cancelSource.Token);
     }
 
+    /// <summary>
+    ///     Writes an empty line to the log.
+    /// </summary>
     public void Log()
     {
         if (!_isRunning)
@@ -111,6 +132,10 @@ public sealed class FileLogger : ILogger
         }
     }
 
+    /// <summary>
+    ///     Writes the string representation of the specified value to the log.
+    /// </summary>
+    /// <param name="output">The value to log.</param>
     public void Log(object? output)
     {
         if (!_isRunning)
@@ -126,6 +151,9 @@ public sealed class FileLogger : ILogger
         }
     }
 
+    /// <summary>
+    ///     Terminates the <see cref="FileLogger"/>.
+    /// </summary>
     public void Stop()
     {
         if (!_isRunning)

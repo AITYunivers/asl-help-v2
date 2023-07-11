@@ -46,6 +46,16 @@ public interface IMonoMemoryReader
     bool TryReadDictionary<TKey, TValue>([NotNullWhen(true)] out Dictionary<TKey, TValue>? results, [NotNullWhen(true)] Module? module, uint baseOffset, int[] offsets) where TKey : unmanaged where TValue : unmanaged;
     bool TryReadDictionary<TKey, TValue>([NotNullWhen(true)] out Dictionary<TKey, TValue>? results, nuint address, params int[] offsets) where TKey : unmanaged where TValue : unmanaged;
 
+    Dictionary<string, TValue> ReadDictionary<TValue>(uint baseOffset, params int[] offsets) where TValue : unmanaged;
+    Dictionary<string, TValue> ReadDictionary<TValue>(string moduleName, uint baseOffset, params int[] offsets) where TValue : unmanaged;
+    Dictionary<string, TValue> ReadDictionary<TValue>(Module module, uint baseOffset, int[] offsets) where TValue : unmanaged;
+    Dictionary<string, TValue> ReadDictionary<TValue>(nuint address, params int[] offsets) where TValue : unmanaged;
+
+    bool TryReadDictionary<TValue>([NotNullWhen(true)] out Dictionary<string, TValue>? results, uint baseOffset, params int[] offsets) where TValue : unmanaged;
+    bool TryReadDictionary<TValue>([NotNullWhen(true)] out Dictionary<string, TValue>? results, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where TValue : unmanaged;
+    bool TryReadDictionary<TValue>([NotNullWhen(true)] out Dictionary<string, TValue>? results, [NotNullWhen(true)] Module? module, uint baseOffset, int[] offsets) where TValue : unmanaged;
+    bool TryReadDictionary<TValue>([NotNullWhen(true)] out Dictionary<string, TValue>? results, nuint address, params int[] offsets) where TValue : unmanaged;
+
     string ReadString(uint baseOffset, params int[] offsets);
     string ReadString(string moduleName, uint baseOffset, params int[] offsets);
     string ReadString(Module module, uint baseOffset, int[] offsets);

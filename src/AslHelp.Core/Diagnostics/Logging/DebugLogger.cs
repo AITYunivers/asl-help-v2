@@ -18,11 +18,9 @@ public sealed class DebugLogger : ILogger
     }
 
     /// <summary>
-    ///     Writes the specified value to LiveSplit's <see cref="EventLogTraceListener"/>.
+    ///     Writes the string representation of the specified value to LiveSplit's <see cref="EventLogTraceListener"/>.
     /// </summary>
-    /// <param name="output">
-    ///     The value to log.
-    /// </param>
+    /// <param name="output">The value to log.</param>
     public void Log(object? output)
     {
         LiveSplit.Options.Log.Info(output?.ToString());

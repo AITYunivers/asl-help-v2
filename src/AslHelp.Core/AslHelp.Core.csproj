@@ -7,11 +7,6 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="AslHelp.Basic" />
-    <InternalsVisibleTo Include="AslHelp.Build" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\AslHelp.Common\AslHelp.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup Label="GlobalUsings">
@@ -23,6 +18,14 @@
     <Reference Include="../../ref/*.dll" />
 
     <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AslHelp.Common\AslHelp.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="**/PipeMemoryManager.cs" />
   </ItemGroup>
 
 </Project>

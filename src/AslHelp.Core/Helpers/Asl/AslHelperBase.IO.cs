@@ -13,7 +13,24 @@ public abstract partial class AslHelperBase
     public abstract ILogger Logger { get; }
     public abstract SettingsCreator Settings { get; }
 
+    /// <summary>
+    ///     This method is called from <see cref="LogToFile"/> after some checks are performed.
+    /// </summary>
+    /// <param name="fileName">The name of the file to log to.</param>
+    /// <param name="maxLines">The maximum number of lines to log.</param>
+    /// <param name="linesToErase">The number of lines to erase when the maximum number of lines is reached.</param>
+    /// <returns>
+    ///     The current <see cref="IAslHelper.Initialization"/> instance.
+    /// </returns>
     protected abstract IAslHelper.Initialization LogToFileImpl(string fileName, int maxLines, int linesToErase);
+
+    /// <summary>
+    ///     This method is called from <see cref="CreateFileWatcher"/> after some checks are performed.
+    /// </summary>
+    /// <param name="fileName">The name of the file to watch.</param>
+    /// <returns>
+    ///     The created <see cref="FileWatcher"/> instance.
+    /// </returns>
     protected abstract FileWatcher CreateFileWatcherImpl(string fileName);
 
     public TimerController Timer { get; } = new();

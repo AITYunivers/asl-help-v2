@@ -7,9 +7,19 @@ public abstract partial class AslHelperBase : IAslHelper.Initialization
 {
     private bool _generateCode;
 
+    /// <summary>
+    ///     Specifies whether <see cref="Init"/> has been called successfully.
+    /// </summary>
     protected bool _initialized;
 
-    protected abstract IAslHelper InitImpl();
+    /// <summary>
+    ///     This method is called from <see cref="Init"/> after some checks are performed.
+    /// </summary>
+    protected abstract void InitImpl();
+
+    /// <summary>
+    ///     This method is called from <see cref="Init"/> when <see cref="DoCodeGeneration"/> was called with <see langword="true"/>.
+    /// </summary>
     protected abstract void GenerateCode();
 
     public IAslHelper Init()

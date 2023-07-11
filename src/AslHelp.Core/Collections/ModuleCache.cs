@@ -72,4 +72,21 @@ public sealed class ModuleCache : LazyDictionary<string, Module>
     {
         return $"The given module '{key}' was not present in the process.";
     }
+
+    /// <summary>
+    ///     Gets or sets the <see cref="Module"/> associated with the specified <paramref name="key"/>.
+    /// </summary>
+    /// <param name="key">The name of the <see cref="Module"/> to get or set.</param>
+    /// <returns>
+    ///     The <see cref="Module"/> associated with the specified <paramref name="key"/>, if it exists.
+    /// </returns>
+    /// <exception cref="KeyNotFoundException">
+    ///     Thrown when no <see cref="Module"/> corresponding to the given <paramref name="key"/>
+    ///     is present in the <see cref="ModuleCache"/>.
+    /// </exception>
+    public new Module this[string key]
+    {
+        get => base[key]!;
+        set => base[key] = value;
+    }
 }

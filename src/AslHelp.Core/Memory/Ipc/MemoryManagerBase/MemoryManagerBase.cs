@@ -32,7 +32,7 @@ public abstract partial class MemoryManagerBase : IMemoryManager
         Is64Bit = WinInteropWrapper.ProcessIs64Bit(_processHandle);
         PtrSize = (byte)(Is64Bit ? 0x8 : 0x4);
         Modules = new(process);
-        MainModule = Modules.FirstOrDefault();
+        MainModule = Modules.First();
     }
 
     public MemoryManagerBase(Process process, ILogger logger)
@@ -50,14 +50,14 @@ public abstract partial class MemoryManagerBase : IMemoryManager
         Is64Bit = WinInteropWrapper.ProcessIs64Bit(_processHandle);
         PtrSize = (byte)(Is64Bit ? 0x8 : 0x4);
         Modules = new(process);
-        MainModule = Modules.FirstOrDefault();
+        MainModule = Modules.First();
     }
 
     public Process Process { get; }
     public bool Is64Bit { get; }
     public byte PtrSize { get; }
 
-    public Module? MainModule { get; }
+    public Module MainModule { get; }
     public ModuleCache Modules { get; }
 
     public IEnumerable<MemoryPage> Pages(bool allPages)
