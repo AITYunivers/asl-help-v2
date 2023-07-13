@@ -1,4 +1,6 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Core.LiveSplitInterop;
@@ -10,50 +12,21 @@ public abstract partial class AslHelperBase
 {
     public bool Reject(params uint[] moduleMemorySizes)
     {
-        string action = Actions.CurrentAction;
-        if (action is not "init")
-        {
-            string msg = "Attempted to reject game process in the '{action}' action.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
+        EnsureInInitForRejecting();
 
-        Module? module = Memory!.MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return Reject(module, moduleMemorySizes);
+        return Reject(Memory.MainModule, moduleMemorySizes);
     }
 
     public bool Reject(string moduleName, params uint[] moduleMemorySizes)
     {
-        string action = Actions.CurrentAction;
-        if (action is not "init")
-        {
-            string msg = "Attempted to reject game process in the '{action}' action.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
+        EnsureInInitForRejecting();
 
-        Module? module = Memory!.Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' was not found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return Reject(module, moduleMemorySizes);
+        return Reject(Memory.Modules[moduleName], moduleMemorySizes);
     }
 
     public bool Reject(Module module, params uint[] moduleMemorySizes)
     {
-        string action = Actions.CurrentAction;
-        if (action is not "init")
-        {
-            string msg = $"Attempted to reject game process in the '{action}' action.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
+        EnsureInInitForRejecting();
 
         if (moduleMemorySizes.Length == 0)
         {
@@ -69,5 +42,23 @@ public abstract partial class AslHelperBase
         }
 
         return false;
+    }
+
+    [MemberNotNull(nameof(Memory))]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void EnsureInInitForRejecting([CallerMemberName] string caller = "")
+    {
+        string action = Actions.CurrentAction;
+        if (action is not "init")
+        {
+            string msg = $"Attempted to reject game process in the '{action}' action.";
+            ThrowHelper.ThrowInvalidOperationException(msg, caller);
+        }
+
+        if (Memory is null)
+        {
+            string msg = "Attempted to access uninitialized memory.";
+            ThrowHelper.ThrowInvalidOperationException(msg, caller);
+        }
     }
 }

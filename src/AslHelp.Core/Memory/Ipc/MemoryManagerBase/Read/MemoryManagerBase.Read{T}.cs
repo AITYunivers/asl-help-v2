@@ -8,26 +8,12 @@ public partial class MemoryManagerBase
 {
     public T Read<T>(uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        Module? module = MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return Read<T>(module, baseOffset, offsets);
+        return Read<T>(MainModule.Base + baseOffset, offsets);
     }
 
     public T Read<T>(string moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return Read<T>(module, baseOffset, offsets);
+        return Read<T>(Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public T Read<T>(Module module, uint baseOffset, params int[] offsets) where T : unmanaged
@@ -45,7 +31,7 @@ public partial class MemoryManagerBase
 
     public bool TryRead<T>(out T result, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        return TryRead(out result, MainModule, baseOffset, offsets);
+        return TryRead(out result, MainModule.Base + baseOffset, offsets);
     }
 
     public bool TryRead<T>(out T result, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
@@ -56,7 +42,7 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        return TryRead(out result, Modules[moduleName], baseOffset, offsets);
+        return TryRead(out result, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public bool TryRead<T>(out T result, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged

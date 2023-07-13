@@ -9,26 +9,12 @@ public partial class MemoryManagerBase
 {
     public T[] ReadSpan<T>(int length, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        Module? module = MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ReadSpan<T>(length, module, baseOffset, offsets);
+        return ReadSpan<T>(length, MainModule.Base + baseOffset, offsets);
     }
 
     public T[] ReadSpan<T>(int length, string moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ReadSpan<T>(length, module, baseOffset, offsets);
+        return ReadSpan<T>(length, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public T[] ReadSpan<T>(int length, Module module, uint baseOffset, params int[] offsets) where T : unmanaged
@@ -48,26 +34,12 @@ public partial class MemoryManagerBase
 
     public void ReadSpan<T>(Span<T> buffer, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        Module? module = MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        ReadSpan<T>(buffer, module, baseOffset, offsets);
+        ReadSpan<T>(buffer, MainModule.Base + baseOffset, offsets);
     }
 
     public void ReadSpan<T>(Span<T> buffer, string moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        ReadSpan<T>(buffer, module, baseOffset, offsets);
+        ReadSpan<T>(buffer, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public void ReadSpan<T>(Span<T> buffer, Module module, uint baseOffset, params int[] offsets) where T : unmanaged
@@ -85,7 +57,7 @@ public partial class MemoryManagerBase
 
     public bool TryReadSpan<T>([NotNullWhen(true)] out T[]? results, int length, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        return TryReadSpan<T>(out results, length, MainModule, baseOffset, offsets);
+        return TryReadSpan<T>(out results, length, MainModule.Base + baseOffset, offsets);
     }
 
     public bool TryReadSpan<T>([NotNullWhen(true)] out T[]? results, int length, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
@@ -96,7 +68,7 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        return TryReadSpan<T>(out results, length, Modules[moduleName], baseOffset, offsets);
+        return TryReadSpan<T>(out results, length, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public bool TryReadSpan<T>([NotNullWhen(true)] out T[]? results, int length, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged
@@ -124,7 +96,7 @@ public partial class MemoryManagerBase
 
     public bool TryReadSpan<T>(Span<T> buffer, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        return TryReadSpan<T>(buffer, MainModule, baseOffset, offsets);
+        return TryReadSpan<T>(buffer, MainModule.Base + baseOffset, offsets);
     }
 
     public bool TryReadSpan<T>(Span<T> buffer, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
@@ -134,7 +106,7 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        return TryReadSpan<T>(buffer, Modules[moduleName], baseOffset, offsets);
+        return TryReadSpan<T>(buffer, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public bool TryReadSpan<T>(Span<T> buffer, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged

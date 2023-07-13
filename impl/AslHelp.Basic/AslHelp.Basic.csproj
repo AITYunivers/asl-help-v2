@@ -3,8 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net481</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

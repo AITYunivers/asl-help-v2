@@ -20,14 +20,7 @@ public partial class MemoryManagerBase
 
     public string ReadSizedString(ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
-        Module? module = MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ReadSizedString(stringType, module, baseOffset, offsets);
+        return ReadSizedString(stringType, MainModule.Base + baseOffset, offsets);
     }
 
     public string ReadSizedString(string moduleName, uint baseOffset, params int[] offsets)
@@ -37,14 +30,7 @@ public partial class MemoryManagerBase
 
     public string ReadSizedString(ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets)
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ReadSizedString(stringType, module, baseOffset, offsets);
+        return ReadSizedString(stringType, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public string ReadSizedString(Module module, uint baseOffset, params int[] offsets)
@@ -165,7 +151,7 @@ public partial class MemoryManagerBase
 
     public bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
-        return TryReadSizedString(out result, stringType, MainModule, baseOffset, offsets);
+        return TryReadSizedString(out result, stringType, MainModule.Base + baseOffset, offsets);
     }
 
     public bool TryReadSizedString([NotNullWhen(true)] out string? result, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
@@ -181,7 +167,7 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        return TryReadSizedString(out result, stringType, Modules[moduleName], baseOffset, offsets);
+        return TryReadSizedString(out result, stringType, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public bool TryReadSizedString([NotNullWhen(true)] out string? result, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)

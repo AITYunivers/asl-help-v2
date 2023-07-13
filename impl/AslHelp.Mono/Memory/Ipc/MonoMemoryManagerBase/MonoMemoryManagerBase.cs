@@ -85,26 +85,6 @@ public abstract partial class MonoMemoryManagerBase : MemoryManagerBase, IMonoMe
         throw new System.NotImplementedException();
     }
 
-    public List<T> ReadList<T>(uint baseOffset, params int[] offsets) where T : unmanaged
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public List<T> ReadList<T>(string moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public List<T> ReadList<T>(Module module, uint baseOffset, int[] offsets) where T : unmanaged
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public List<T> ReadList<T>(nuint address, params int[] offsets) where T : unmanaged
-    {
-        throw new System.NotImplementedException();
-    }
-
     public string ReadString(uint baseOffset, params int[] offsets)
     {
         throw new System.NotImplementedException();
@@ -189,26 +169,6 @@ public abstract partial class MonoMemoryManagerBase : MemoryManagerBase, IMonoMe
     }
 
     public bool TryReadHashSet<T>([NotNullWhen(true)] out HashSet<T>? results, nuint address, params int[] offsets) where T : unmanaged
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public bool TryReadList<T>([NotNullWhen(true)] out List<T>? results, uint baseOffset, params int[] offsets) where T : unmanaged
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public bool TryReadList<T>([NotNullWhen(true)] out List<T>? results, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public bool TryReadList<T>([NotNullWhen(true)] out List<T>? results, [NotNullWhen(true)] Module? module, uint baseOffset, int[] offsets) where T : unmanaged
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public bool TryReadList<T>([NotNullWhen(true)] out List<T>? results, nuint address, params int[] offsets) where T : unmanaged
     {
         throw new System.NotImplementedException();
     }

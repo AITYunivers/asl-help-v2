@@ -120,15 +120,9 @@ internal static unsafe partial class WinInterop
     ///     An open handle to the specified process if the function succeeds,
     ///     otherwise, <see langword="null"/>.
     /// </returns>
-    public static nuint OpenProcess(
-        uint processId,
-        uint desiredAccess,
-        bool inheritHandle)
+    public static nuint OpenProcess(uint processId, uint desiredAccess, bool inheritHandle)
     {
-        return (nuint)OpenProcess(
-            desiredAccess,
-            inheritHandle ? 1 : 0,
-            processId);
+        return (nuint)OpenProcess(desiredAccess, inheritHandle ? 1 : 0, processId);
 
         [DllImport(Lib.Kernel32, EntryPoint = nameof(OpenProcess), ExactSpelling = true, SetLastError = true)]
         static extern void* OpenProcess(

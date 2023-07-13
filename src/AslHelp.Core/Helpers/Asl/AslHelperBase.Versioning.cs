@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,65 +15,37 @@ public abstract partial class AslHelperBase : IAslHelper.Versioning
 {
     public uint GetMemorySize()
     {
-        EnsureInInit();
+        EnsureInInitForVersioning();
 
-        Module? module = Memory!.MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return GetMemorySize(module);
+        return GetMemorySize(Memory.MainModule);
     }
 
     public uint GetMemorySize(string moduleName)
     {
-        EnsureInInit();
+        EnsureInInitForVersioning();
 
-        Module? module = Memory!.Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return GetMemorySize(module);
+        return GetMemorySize(Memory.Modules[moduleName]);
     }
 
     public uint GetMemorySize(Module module)
     {
-        EnsureInInit();
+        EnsureInInitForVersioning();
 
         return module.MemorySize;
     }
 
     public string GetMD5Hash()
     {
-        EnsureInInit();
+        EnsureInInitForVersioning();
 
-        Module? module = Memory!.MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return GetMD5Hash(module);
+        return GetMD5Hash(Memory.MainModule);
     }
 
     public string GetMD5Hash(string moduleName)
     {
-        EnsureInInit();
+        EnsureInInitForVersioning();
 
-        Module? module = Memory!.Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return GetMD5Hash(module);
+        return GetMD5Hash(Memory.Modules[moduleName]);
     }
 
     public string GetMD5Hash(Module module)
@@ -83,30 +56,16 @@ public abstract partial class AslHelperBase : IAslHelper.Versioning
 
     public string GetSHA1Hash()
     {
-        EnsureInInit();
+        EnsureInInitForVersioning();
 
-        Module? module = Memory!.MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return GetSHA1Hash(module);
+        return GetSHA1Hash(Memory.MainModule);
     }
 
     public string GetSHA1Hash(string moduleName)
     {
-        EnsureInInit();
+        EnsureInInitForVersioning();
 
-        Module? module = Memory!.Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return GetSHA1Hash(module);
+        return GetSHA1Hash(Memory.Modules[moduleName]);
     }
 
     public string GetSHA1Hash(Module module)
@@ -117,30 +76,16 @@ public abstract partial class AslHelperBase : IAslHelper.Versioning
 
     public string GetSHA256Hash()
     {
-        EnsureInInit();
+        EnsureInInitForVersioning();
 
-        Module? module = Memory!.MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return GetSHA256Hash(module);
+        return GetSHA256Hash(Memory.MainModule);
     }
 
     public string GetSHA256Hash(string moduleName)
     {
-        EnsureInInit();
+        EnsureInInitForVersioning();
 
-        Module? module = Memory!.Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return GetSHA256Hash(module);
+        return GetSHA256Hash(Memory.Modules[moduleName]);
     }
 
     public string GetSHA256Hash(Module module)
@@ -151,30 +96,16 @@ public abstract partial class AslHelperBase : IAslHelper.Versioning
 
     public string GetSHA512Hash()
     {
-        EnsureInInit();
+        EnsureInInitForVersioning();
 
-        Module? module = Memory!.MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return GetSHA512Hash(module);
+        return GetSHA512Hash(Memory.MainModule);
     }
 
     public string GetSHA512Hash(string moduleName)
     {
-        EnsureInInit();
+        EnsureInInitForVersioning();
 
-        Module? module = Memory!.Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return GetSHA512Hash(module);
+        return GetSHA512Hash(Memory.Modules[moduleName]);
     }
 
     public string GetSHA512Hash(Module module)
@@ -190,13 +121,20 @@ public abstract partial class AslHelperBase : IAslHelper.Versioning
         return string.Concat(algorithm.ComputeHash(reader).Select(b => $"{b:X2}"));
     }
 
+    [MemberNotNull(nameof(Memory))]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void EnsureInInit([CallerMemberName] string caller = "")
+    private void EnsureInInitForVersioning([CallerMemberName] string caller = "")
     {
         string action = Actions.CurrentAction;
         if (action is not "init")
         {
             string msg = $"Attempted to get versioning information in the '{action}' action.";
+            ThrowHelper.ThrowInvalidOperationException(msg, caller);
+        }
+
+        if (Memory is null)
+        {
+            string msg = "Attempted to access uninitialized memory.";
             ThrowHelper.ThrowInvalidOperationException(msg, caller);
         }
     }

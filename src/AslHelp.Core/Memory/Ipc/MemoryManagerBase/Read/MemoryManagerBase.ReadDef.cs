@@ -11,26 +11,12 @@ public partial class MemoryManagerBase
 {
     public dynamic ReadDef(ITypeDefinition definition, uint baseOffset, params int[] offsets)
     {
-        Module? module = MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ReadDef(definition, module, baseOffset, offsets);
+        return ReadDef(definition, MainModule.Base + baseOffset, offsets);
     }
 
     public dynamic ReadDef(ITypeDefinition definition, string moduleName, uint baseOffset, params int[] offsets)
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ReadDef(definition, module, baseOffset, offsets);
+        return ReadDef(definition, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public dynamic ReadDef(ITypeDefinition definition, Module module, uint baseOffset, params int[] offsets)
@@ -59,7 +45,7 @@ public partial class MemoryManagerBase
 
     public bool TryReadDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic? result, uint baseOffset, params int[] offsets)
     {
-        return TryReadDef(definition, out result, MainModule, baseOffset, offsets);
+        return TryReadDef(definition, out result, MainModule.Base + baseOffset, offsets);
     }
 
     public bool TryReadDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic? result, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
@@ -70,7 +56,7 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        return TryReadDef(definition, out result, Modules[moduleName], baseOffset, offsets);
+        return TryReadDef(definition, out result, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public bool TryReadDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic? result, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)

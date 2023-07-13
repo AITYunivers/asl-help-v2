@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net481</TargetFramework>
-
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

@@ -8,26 +8,12 @@ public partial class MemoryManagerBase
 {
     public void Write<T>(T value, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        Module? module = MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        Write<T>(value, module, baseOffset, offsets);
+        Write<T>(value, MainModule.Base + baseOffset, offsets);
     }
 
     public void Write<T>(T value, string moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        Write<T>(value, module, baseOffset, offsets);
+        Write<T>(value, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public void Write<T>(T value, Module module, uint baseOffset, params int[] offsets) where T : unmanaged
@@ -42,7 +28,7 @@ public partial class MemoryManagerBase
 
     public bool TryWrite<T>(T value, uint baseOffset, params int[] offsets) where T : unmanaged
     {
-        return TryWrite<T>(value, MainModule, baseOffset, offsets);
+        return TryWrite<T>(value, MainModule.Base + baseOffset, offsets);
     }
 
     public bool TryWrite<T>(T value, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets) where T : unmanaged
@@ -52,7 +38,7 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        return TryWrite<T>(value, Modules[moduleName], baseOffset, offsets);
+        return TryWrite<T>(value, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public bool TryWrite<T>(T value, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets) where T : unmanaged

@@ -4,7 +4,7 @@ using AslHelp.Core.Memory;
 
 namespace AslHelp.Unity.Memory.Ipc;
 
-public abstract partial class MonoMemoryManagerBase
+public partial class MonoMemoryManagerBase
 {
     public T[] ReadArray<T>(uint baseOffset, params int[] offsets) where T : unmanaged
     {

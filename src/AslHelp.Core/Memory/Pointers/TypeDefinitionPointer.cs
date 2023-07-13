@@ -45,7 +45,7 @@ public sealed class TypeDefinitionPointer : PointerBase<dynamic>
 
     protected override bool HasChanged(dynamic? old, dynamic? current)
     {
-        return !old?.Equals(current);
+        return old != current;
     }
 
     public override string ToString()

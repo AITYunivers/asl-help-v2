@@ -8,26 +8,12 @@ public partial class MemoryManagerBase
 {
     public nuint Deref(uint baseOffset, params int[] offsets)
     {
-        Module? module = MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return Deref(module, baseOffset, offsets);
+        return Deref(MainModule.Base + baseOffset, offsets);
     }
 
     public nuint Deref(string moduleName, uint baseOffset, params int[] offsets)
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return Deref(module, baseOffset, offsets);
+        return Deref(Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public nuint Deref(Module module, uint baseOffset, params int[] offsets)
@@ -50,7 +36,7 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        return TryDeref(out result, Modules[moduleName], baseOffset, offsets);
+        return TryDeref(out result, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public bool TryDeref(out nuint result, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)

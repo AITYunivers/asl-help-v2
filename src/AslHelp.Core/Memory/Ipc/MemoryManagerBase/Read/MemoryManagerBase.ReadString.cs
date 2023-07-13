@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Common.Extensions;
-using AslHelp.Common.Memory;
 
 using LiveSplit.ComponentUtil;
 
@@ -21,14 +20,7 @@ public partial class MemoryManagerBase
 
     public string ReadString(int length, ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
-        Module? module = MainModule;
-        if (module is null)
-        {
-            string msg = "MainModule was null.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ReadString(length, stringType, module, baseOffset, offsets);
+        return ReadString(length, stringType, MainModule.Base + baseOffset, offsets);
     }
 
     public string ReadString(int length, string moduleName, uint baseOffset, params int[] offsets)
@@ -38,14 +30,7 @@ public partial class MemoryManagerBase
 
     public string ReadString(int length, ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets)
     {
-        Module? module = Modules[moduleName];
-        if (module is null)
-        {
-            string msg = $"Module '{moduleName}' could not be found.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        return ReadString(length, stringType, module, baseOffset, offsets);
+        return ReadString(length, stringType, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public string ReadString(int length, Module module, uint baseOffset, params int[] offsets)
@@ -160,7 +145,7 @@ public partial class MemoryManagerBase
 
     public bool TryReadString([NotNullWhen(true)] out string? result, int length, ReadStringType stringType, uint baseOffset, params int[] offsets)
     {
-        return TryReadString(out result, length, stringType, baseOffset, offsets);
+        return TryReadString(out result, length, stringType, MainModule.Base + baseOffset, offsets);
     }
 
     public bool TryReadString([NotNullWhen(true)] out string? result, int length, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
@@ -176,7 +161,7 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        return TryReadString(out result, length, stringType, Modules[moduleName], baseOffset, offsets);
+        return TryReadString(out result, length, stringType, Modules[moduleName].Base + baseOffset, offsets);
     }
 
     public bool TryReadString([NotNullWhen(true)] out string? result, int length, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets)
