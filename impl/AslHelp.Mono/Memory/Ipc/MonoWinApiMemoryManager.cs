@@ -3,7 +3,7 @@ using System.Diagnostics;
 using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.Memory.Ipc;
 
-namespace AslHelp.Unity.Memory.Ipc;
+namespace AslHelp.Mono.Memory.Ipc;
 
 public sealed class MonoWinApiMemoryManager : WinApiMemoryManager
 {

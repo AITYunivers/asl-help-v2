@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using AslHelp.Core.Memory;
 
-namespace AslHelp.Unity.Memory.Ipc;
+namespace AslHelp.Mono.Memory.Ipc;
 
 public partial class MonoMemoryManagerBase
 {
@@ -25,8 +25,8 @@ public partial class MonoMemoryManagerBase
     {
         nuint deref = Read<nuint>(address, offsets);
 
-        int length = Read<int>(deref + (uint)(PtrSize * 3));
-        return ReadSpan<T>(length, deref + (uint)(PtrSize * 4));
+        int length = Read<int>(deref + (PtrSize * 3U));
+        return ReadSpan<T>(length, deref + (PtrSize * 4U));
     }
 
     public bool TryReadArray<T>([NotNullWhen(true)] out T[]? results, uint baseOffset, params int[] offsets) where T : unmanaged
@@ -64,12 +64,12 @@ public partial class MonoMemoryManagerBase
             return false;
         }
 
-        if (!TryRead<int>(out int length, deref + (uint)(PtrSize * 3)))
+        if (!TryRead<int>(out int length, deref + (PtrSize * 3U)))
         {
             results = default;
             return false;
         }
 
-        return TryReadSpan<T>(out results, length, deref + (uint)(PtrSize * 4));
+        return TryReadSpan<T>(out results, length, deref + (PtrSize * 4U));
     }
 }

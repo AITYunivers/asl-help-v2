@@ -1,4 +1,4 @@
-namespace AslHelp.Unity.Memory.Ipc;
+namespace AslHelp.Mono.Memory.Ipc;
 
 public partial class MonoMemoryManagerBase
 {

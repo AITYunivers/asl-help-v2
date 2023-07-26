@@ -8,4 +8,8 @@
     <ProjectReference Include="..\AslHelp.Basic\AslHelp.Basic.csproj" />
   </ItemGroup>
 
+  <ItemGroup Label="References">
+    <Reference Include="../../ref/LiveSplit.Core.dll" />
+  </ItemGroup>
+
 </Project>

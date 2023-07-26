@@ -7,7 +7,7 @@ using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.Memory.Ipc;
 using AslHelp.Mono.Memory.Ipc;
 
-namespace AslHelp.Unity.Memory.Ipc;
+namespace AslHelp.Mono.Memory.Ipc;
 
 public abstract partial class MonoMemoryManagerBase : MemoryManagerBase, IMonoMemoryReader, IMonoMemoryWriter
 {
@@ -85,26 +85,6 @@ public abstract partial class MonoMemoryManagerBase : MemoryManagerBase, IMonoMe
         throw new System.NotImplementedException();
     }
 
-    public string ReadString(uint baseOffset, params int[] offsets)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public string ReadString(string moduleName, uint baseOffset, params int[] offsets)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public string ReadString(Module module, uint baseOffset, int[] offsets)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public string ReadString(nuint address, params int[] offsets)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public bool TryReadDictionary<TKey, TValue>([NotNullWhen(true)] out Dictionary<TKey, TValue>? results, uint baseOffset, params int[] offsets)
         where TKey : unmanaged
         where TValue : unmanaged
@@ -169,26 +149,6 @@ public abstract partial class MonoMemoryManagerBase : MemoryManagerBase, IMonoMe
     }
 
     public bool TryReadHashSet<T>([NotNullWhen(true)] out HashSet<T>? results, nuint address, params int[] offsets) where T : unmanaged
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public bool TryReadString([NotNullWhen(true)] out string? result, uint baseOffset, params int[] offsets)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public bool TryReadString([NotNullWhen(true)] out string? result, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public bool TryReadString([NotNullWhen(true)] out string? result, [NotNullWhen(true)] Module? module, uint baseOffset, int[] offsets)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public bool TryReadString([NotNullWhen(true)] out string? result, nuint address, params int[] offsets)
     {
         throw new System.NotImplementedException();
     }
