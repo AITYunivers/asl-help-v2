@@ -112,14 +112,13 @@ public abstract class LazyDictionary<TKey, TValue> : IEnumerable<TValue>
     {
         get
         {
-            if (TryGetValue(key, out TValue? value))
+            if (!TryGetValue(key, out TValue? value))
             {
-                return value;
+                string msg = KeyNotFoundMessage(key);
+                ThrowHelper.ThrowKeyNotFoundException(msg);
             }
-            else
-            {
-                throw new KeyNotFoundException(KeyNotFoundMessage(key));
-            }
+
+            return value;
         }
         protected set => _cache[key] = value;
     }

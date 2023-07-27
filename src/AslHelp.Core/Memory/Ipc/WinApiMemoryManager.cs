@@ -82,7 +82,7 @@ public class WinApiMemoryManager : MemoryManagerBase
         }
     }
 
-    protected override unsafe void Read<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets)
+    protected internal override unsafe void Read<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets)
     {
         if (_isDisposed)
         {
@@ -98,7 +98,7 @@ public class WinApiMemoryManager : MemoryManagerBase
         }
     }
 
-    protected override unsafe bool TryRead<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets)
+    protected internal override unsafe bool TryRead<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets)
     {
         if (_isDisposed)
         {
@@ -110,7 +110,7 @@ public class WinApiMemoryManager : MemoryManagerBase
         return WinInteropWrapper.ReadMemory(handle, deref, buffer, length);
     }
 
-    protected override unsafe void Write<T>(T* data, uint length, nuint baseAddress, params int[] offsets)
+    protected internal override unsafe void Write<T>(T* data, uint length, nuint baseAddress, params int[] offsets)
     {
         if (_isDisposed)
         {
@@ -126,7 +126,7 @@ public class WinApiMemoryManager : MemoryManagerBase
         }
     }
 
-    protected override unsafe bool TryWrite<T>(T* data, uint length, nuint baseAddress, params int[] offsets)
+    protected internal override unsafe bool TryWrite<T>(T* data, uint length, nuint baseAddress, params int[] offsets)
     {
         if (_isDisposed)
         {
