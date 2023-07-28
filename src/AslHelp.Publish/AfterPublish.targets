@@ -1,6 +1,6 @@
 <Project>
 
-  <Target Name="MergeAssemblies" AfterTargets="Publish">
+  <Target Name="MergeAssemblies" AfterTargets="Publish" Condition="'$(Configuration)' == 'Debug'">
 
     <ItemGroup>
       <!-- <AslHelpReferences Include="AslHelp.Publish.dll" /> -->
@@ -19,33 +19,16 @@
     <!-- Execute ILMerge with the necessary dependencies. -->
     <Exec WorkingDirectory="$(OutDir)"
           Command="
-      $(ILMergeConsolePath) ^
-      /out:$(LibraryName).dll ^
-      @(AslHelpReferences, ' ') ^
-      @(MiscReferences, ' ')
-    " />
-
-    <!-- Find LiveSplit directory from .lsdir (if existent). -->
-    <!-- First, read the lines in the file. There may be more than one. We expect the directory to be the first. -->
-    <ReadLinesFromFile File="$(MSBuildThisFileDirectory)\..\..\.lsdir">
-      <Output ItemName="LsDirLines" TaskParameter="Lines" />
-    </ReadLinesFromFile>
-
-    <!-- %(Lines.Identity) returns the last non-empty line. Therefore, we must first reverse the lines. -->
-    <ItemGroup>
-      <LsDirLinesReversed Include="@(LsDirLines-&gt;Reverse())" />
-    </ItemGroup>
-
-    <!-- Then, get the first line and remove any trailing path separators. -->
-    <PropertyGroup>
-      <LiveSplitDir>%(LsDirLinesReversed.Identity)</LiveSplitDir>
-      <LiveSplitDir>$(LiveSplitDir.Replace('/', '\').TrimEnd('\'))</LiveSplitDir>
-    </PropertyGroup>
+        $(ILMergeConsolePath) ^
+        /out:$(LibraryName).dll ^
+        @(AslHelpReferences, ' ') ^
+        @(MiscReferences, ' ')
+      " />
 
     <!-- Move the merged asl-help.dll to the LiveSplit/Components directory. -->
-    <Move Condition="Exists('$(LiveSplitDir)\LiveSplit.exe')"
+    <Move Condition="Exists('$(LsDir)\LiveSplit.exe')"
           SourceFiles="$(OutDir)\$(LibraryName).dll"
-          DestinationFiles="$(LiveSplitDir)\Components\$(LibraryName)" />
+          DestinationFiles="$(LsDir)\Components\$(LibraryName)" />
 
   </Target>
 
