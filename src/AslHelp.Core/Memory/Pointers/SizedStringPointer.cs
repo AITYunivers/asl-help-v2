@@ -34,7 +34,7 @@ public sealed class SizedStringPointer : PointerBase<string>
         _stringType = stringType;
     }
 
-    protected override string? Default { get; }
+    protected override string? Default { get; } = null;
 
     protected override bool TryUpdate([NotNullWhen(true)] out string? result, nuint address)
     {

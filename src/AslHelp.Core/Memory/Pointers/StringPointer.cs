@@ -32,7 +32,7 @@ public sealed class StringPointer : PointerBase<string>
         _length = length;
     }
 
-    protected override string? Default { get; }
+    protected override string? Default { get; } = null;
 
     protected override bool TryUpdate([NotNullWhen(true)] out string? result, nuint address)
     {

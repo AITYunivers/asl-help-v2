@@ -35,4 +35,11 @@ public partial class Basic
 
         return new WinApiMemoryManager(process, logger);
     }
+
+    protected override void DisposeMemory()
+    {
+        base.DisposeMemory();
+
+        _pointers = null;
+    }
 }

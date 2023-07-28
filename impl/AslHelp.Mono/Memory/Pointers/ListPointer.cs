@@ -6,7 +6,7 @@ using AslHelp.Mono.Memory.Ipc;
 
 namespace AslHelp.Mono.Memory.Pointers;
 
-public class ListPointer<T> : PointerBase<List<T>>
+public sealed class ListPointer<T> : PointerBase<List<T>>
     where T : unmanaged
 {
     private readonly new IMonoMemoryManager _manager;
