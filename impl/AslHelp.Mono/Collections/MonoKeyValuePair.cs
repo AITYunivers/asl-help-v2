@@ -6,9 +6,9 @@ public readonly record struct MonoKeyValuePair<TKey, TValue>
     where TKey : unmanaged
     where TValue : unmanaged
 {
-#pragma warning disable IDE0051
+#pragma warning disable CS0169, IDE0051
     private readonly ulong _padding;
-#pragma warning restore IDE0051
+#pragma warning restore CS0169, IDE0051
 
     public MonoKeyValuePair(TKey key, TValue value)
     {

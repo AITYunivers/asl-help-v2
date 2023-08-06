@@ -69,7 +69,6 @@ public abstract partial class MemoryManagerBase : IMemoryManager
 
     public virtual void Update()
     {
-        // Process.Refresh();
         Tick++;
     }
 
@@ -100,7 +99,7 @@ public abstract partial class MemoryManagerBase : IMemoryManager
             return;
         }
 
-        Log("Disposing of memory manager...");
+        Log("[asl-help] [Info] Disposing of memory manager...");
 
         Process.Dispose();
 

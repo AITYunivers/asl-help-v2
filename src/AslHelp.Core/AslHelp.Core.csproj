@@ -22,11 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AslHelp.Common\AslHelp.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="**/PipeMemoryManager.cs" />
+    <ProjectReference Include="../AslHelp.Common/AslHelp.Common.csproj" />
   </ItemGroup>
 
 </Project>

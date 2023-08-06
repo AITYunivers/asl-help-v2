@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using AslHelp.Common.Exceptions;
 
@@ -75,7 +74,7 @@ public abstract class LazyDictionary<TKey, TValue> : IEnumerable<TValue>
 
     /// <summary>
     ///     Called when <see cref="TryGetValue(TKey, out TValue)"/> finds a value
-    ///     with the given <paramref name="key"/>.
+    ///     with the given key.
     /// </summary>
     /// <param name="value">The found <typeparamref name="TValue"/>.</param>
     protected virtual void OnFound(TValue value) { }
@@ -136,7 +135,7 @@ public abstract class LazyDictionary<TKey, TValue> : IEnumerable<TValue>
     ///     with the specified <paramref name="key"/>;
     ///     otherwise, <see langword="false"/>.
     /// </returns>
-    public bool TryGetValue(TKey key, [MaybeNullWhen(true)] out TValue? value)
+    public bool TryGetValue(TKey key, out TValue? value)
     {
         if (_cache.TryGetValue(key, out value))
         {

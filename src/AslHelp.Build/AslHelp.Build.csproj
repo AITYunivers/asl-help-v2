@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <LibraryName>asl-help-neo</LibraryName>
+    <RootNamespace>AslHelp</RootNamespace>
+    <TargetFramework>net481</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ilmerge" Version="3.0.41" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../impl/AslHelp.Basic/AslHelp.Basic.csproj" />
+    <ProjectReference Include="../../impl/AslHelp.Mono/AslHelp.Mono.csproj" />
+
+    <ProjectReference Include="../../native/AslHelp.Native/AslHelp.Native.cxxproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <Import Project="EmbedNativeLibraries.targets" />
+  <Import Project="MergeAssemblies.targets" />
+
+</Project>

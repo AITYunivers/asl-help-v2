@@ -1,7 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Text;
+using System.Runtime.InteropServices;
 
 using AslHelp.Core.Memory.Native.Enums;
 using AslHelp.Core.Memory.Native.Structs;
@@ -34,12 +35,12 @@ internal static unsafe partial class WinInteropWrapper
 
     public static unsafe bool TryInjectDll(nuint processHandle, string dllPath)
     {
-        dllPath = Path.GetFullPath(dllPath);
-        if (!File.Exists(dllPath))
-        {
-            Debug.Warn("    => Dll file cannot be found.");
-            return false;
-        }
+        // dllPath = Path.GetFullPath(dllPath);
+        // if (!File.Exists(dllPath))
+        // {
+        //     Debug.Warn("    => Dll file cannot be found.");
+        //     return false;
+        // }
 
         nuint hModule = WinInterop.GetModuleHandle("kernel32.dll");
         if (hModule == 0)
@@ -76,9 +77,17 @@ internal static unsafe partial class WinInteropWrapper
                     }
                 }
 
-                if (!TryCreateRemoteThreadAndWaitForExit(processHandle, pLoadLib, (void*)pModuleAlloc, out uint exitCode)
-                    && exitCode != 0)
+                if (!TryCreateRemoteThreadAndWaitForExit(processHandle, pLoadLib, (void*)pModuleAlloc, out uint exitCode))
                 {
+                    return false;
+                }
+
+                if (exitCode <= 0)
+                {
+                    int err = Marshal.GetLastWin32Error();
+                    Debug.Warn($"    => ExitCode was not a valid handle (0x{exitCode:X}).");
+                    Debug.Warn($"       0x{err:X}: '{new Win32Exception(err).Message}'");
+
                     return false;
                 }
             }
@@ -135,7 +144,10 @@ internal static unsafe partial class WinInteropWrapper
         nuint pEntryPoint = WinInterop.GetProcAddress(hModule, entryPoint);
         if (pEntryPoint == 0)
         {
+            int err = Marshal.GetLastWin32Error();
             Debug.Warn($"    => Entry point not found.");
+            Debug.Warn($"       0x{err:X}: '{new Win32Exception(err).Message}'");
+
             return false;
         }
 

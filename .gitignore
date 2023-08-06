@@ -8,6 +8,7 @@
 artifacts/
 bin/
 obj/
+build/
 
 # User-specific files
 *.user

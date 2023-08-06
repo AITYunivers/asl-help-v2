@@ -1,0 +1,28 @@
+<Project Sdk="Vezel.Zig.Sdk">
+
+  <PropertyGroup>
+    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../AslHelp.Native.Common/AslHelp.Native.Common.cxxproj" />
+  </ItemGroup>
+
+  <Target Name="_GetNativeLibrary" Returns="@(_NativeLibrary)">
+    <ItemGroup>
+      <_NativeLibrary Include="$(TargetPath)" RuntimeIdentifier="$(RuntimeIdentifier)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_GetNativeLibraries" Returns="@(_NativeLibraries)">
+    <ItemGroup>
+      <_RuntimeIdentifiers Include="$(RuntimeIdentifiers)" />
+      <_Projects Include="$(MSBuildProjectFullPath)" Properties="RuntimeIdentifier=%(_RuntimeIdentifiers.Identity)" />
+    </ItemGroup>
+
+    <MSBuild Projects="@(_Projects)" Targets="_GetNativeLibrary" BuildInParallel="$(BuildInParallel)">
+      <Output TaskParameter="TargetOutputs" ItemName="_NativeLibraries" />
+    </MSBuild>
+  </Target>
+
+</Project>

@@ -16,16 +16,25 @@ public abstract partial class AslHelperBase
 {
     public abstract IMemoryManager? Memory { get; protected set; }
 
-    /// <summary>
-    ///     Initializes an instance of an <see cref="IMemoryManager"/> implementation
-    ///     with the specified <see cref="Process"/> and <see cref="ILogger"/>.
-    /// </summary>
-    /// <param name="process">The target <see cref="Process"/> whose memory should be managed.</param>
-    /// <param name="logger">The <see cref="ILogger"/> to use for logging.</param>
-    /// <returns>
-    ///     The created <see cref="IMemoryManager"/> instance.
-    /// </returns>
-    protected abstract IMemoryManager InitializeMemory(Process process, ILogger logger);
+    protected abstract IMemoryManager InitializeWinApiMemory(Process process, ILogger logger);
+    protected abstract IMemoryManager InitializePipeMemory(Process process, ILogger logger, NamedPipeClientStream pipe);
+
+    protected IMemoryManager InitializeMemory(Process process)
+    {
+        Debug.Info("Initiating memory...");
+        bool is64Bit = process.ProcessIs64Bit();
+
+        if (_inject && TryInjectAslHelpNative(process, is64Bit, _pipeConnectionTimeout, out var pipe))
+        {
+            return InitializePipeMemory(process, Logger, pipe);
+        }
+        else
+        {
+            Debug.Info("  => Using Win32 API for memory reading.");
+
+            return InitializeWinApiMemory(process, Logger);
+        }
+    }
 
     /// <summary>
     ///     Disposes of any resources pertaining to managing memory.
@@ -50,7 +59,7 @@ public abstract partial class AslHelperBase
     ///     <see langword="true"/> if the injection was successful;
     ///     otherwise, <see langword="false"/>.
     /// </returns>
-    protected static unsafe bool TryInjectAslHelpNative(Process process, bool is64Bit, [NotNullWhen(true)] out NamedPipeClientStream? pipe)
+    private static unsafe bool TryInjectAslHelpNative(Process process, bool is64Bit, int timeout, [NotNullWhen(true)] out NamedPipeClientStream? pipe)
     {
         Debug.Info("  => Attempting to inject...");
 
@@ -64,6 +73,14 @@ public abstract partial class AslHelperBase
 
         if (!WinInteropWrapper.IsInjected(processHandle, processId, path, out Module? module))
         {
+            // if (!is64Bit && !WinInteropWrapper.TryInjectDll(processHandle, "msvcrt"))
+            // {
+            //     pipe = null;
+
+            //     Debug.Warn("    => Failure!");
+            //     return false;
+            // }
+
             if (!EmbeddedResource.TryInject(processHandle, res, arch)
                 || !WinInteropWrapper.IsInjected(processHandle, processId, path, out module))
             {
@@ -74,7 +91,7 @@ public abstract partial class AslHelperBase
             }
         }
 
-        if (!WinInteropWrapper.TryCallEntryPoint(processHandle, module.Base, "AslHelpPipe.EntryPoint"u8))
+        if (!WinInteropWrapper.TryCallEntryPoint(processHandle, module.Base, "AslHelp_Native_EntryPoint"u8))
         {
             pipe = null;
 
@@ -88,7 +105,7 @@ public abstract partial class AslHelperBase
         try
         {
             pipe = new("asl-help-pipe");
-            pipe.Connect(3000);
+            pipe.Connect(timeout);
 
             Debug.Info("    => Success.");
             return true;

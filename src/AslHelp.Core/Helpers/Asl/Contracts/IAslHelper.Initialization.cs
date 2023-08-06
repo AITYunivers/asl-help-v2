@@ -24,30 +24,12 @@ public partial interface IAslHelper
         /// <summary>
         ///     Initializes the <see cref="IAslHelper"/> instance.
         /// </summary>
-        /// <returns>
-        ///     The initialized <see cref="IAslHelper"/> instance.
-        /// </returns>
-        IAslHelper Init();
-
-        /// <summary>
-        ///     Sets the <see cref="IAslHelper.GameName"/> property.
-        /// </summary>
-        /// <param name="gameName">The name of the game.</param>
-        /// <returns>
-        ///     The current <see cref="IAslHelper.Initialization"/> instance.
-        /// </returns>
-        IAslHelper.Initialization SetGameName(string gameName);
-
-        /// <summary>
-        ///     Sets whether initialization should generate script code.
-        /// </summary>
-        /// <param name="generateCode">
-        ///     Specifies whether code should be generated. The default value is <see langword="true"/>.
-        /// </param>
-        /// <returns>
-        ///     The current <see cref="IAslHelper.Initialization"/> instance.
-        /// </returns>
-        IAslHelper.Initialization DoCodeGeneration(bool generateCode = true);
+        /// <param name="gameName"></param>
+        /// <param name="generateCode"></param>
+        /// <param name="inject"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        IAslHelper Init(string? gameName = null, bool generateCode = false, bool inject = false, int timeout = 3000);
 
         /// <summary>
         ///     Initializes a <see cref="FileLogger"/> instance with the specified file name,

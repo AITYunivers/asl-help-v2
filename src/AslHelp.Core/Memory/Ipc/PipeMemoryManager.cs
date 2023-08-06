@@ -102,7 +102,7 @@ public class PipeMemoryManager : MemoryManagerBase
             PipeResponse response = _pipe.Read<PipeResponse>();
             if (response != PipeResponse.Success)
             {
-                string msg = $"Failed to dereference pointer ({response} {(int)response}).";
+                string msg = $"Failed to dereference pointer ({(int)response}: '{response}').";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             }
 
@@ -177,7 +177,7 @@ public class PipeMemoryManager : MemoryManagerBase
             PipeResponse response = _pipe.Read<PipeResponse>();
             if (response != PipeResponse.Success)
             {
-                string msg = $"Failed to read value ({response} {(int)response}).";
+                string msg = $"Failed to read value ({(int)response}: '{response}').";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             }
         }
@@ -249,7 +249,7 @@ public class PipeMemoryManager : MemoryManagerBase
             PipeResponse response = _pipe.Read<PipeResponse>();
             if (response != PipeResponse.Success)
             {
-                string msg = $"Failed to write value ({response} {(int)response}).";
+                string msg = $"Failed to write value ({(int)response}: '{response}').";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             }
         }

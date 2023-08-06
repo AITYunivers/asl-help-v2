@@ -1,0 +1,15 @@
+<Project>
+
+  <Import Project="../Root.Build.props" />
+
+  <PropertyGroup>
+    <DefineConstants>
+      $(DefineConstants);
+      UNICODE;_UNICODE;
+      WIN32_LEAN_AND_MEAN
+    </DefineConstants>
+
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+</Project>

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO.Pipes;
 
 using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.Memory.Ipc;
@@ -20,7 +21,7 @@ public partial class Basic
 
             if (Game is Process game)
             {
-                _memory = InitializeMemory(game, Logger);
+                _memory = InitializeMemory(game);
                 _pointers = PointerFactory.Create(_memory);
             }
 
@@ -29,11 +30,14 @@ public partial class Basic
         protected set => _memory = value;
     }
 
-    protected override IMemoryManager InitializeMemory(Process process, ILogger logger)
+    protected override IMemoryManager InitializeWinApiMemory(Process process, ILogger logger)
     {
-        Debug.Info("  => Initializing memory...");
-
         return new WinApiMemoryManager(process, logger);
+    }
+
+    protected override IMemoryManager InitializePipeMemory(Process process, ILogger logger, NamedPipeClientStream pipe)
+    {
+        return new PipeMemoryManager(process, logger, pipe);
     }
 
     protected override void DisposeMemory()

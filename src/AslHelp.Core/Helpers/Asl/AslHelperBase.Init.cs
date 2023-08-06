@@ -5,12 +5,13 @@ namespace AslHelp.Core.Helpers.Asl;
 
 public abstract partial class AslHelperBase : IAslHelper.Initialization
 {
-    private bool _generateCode;
-
     /// <summary>
     ///     Specifies whether <see cref="Init"/> has been called successfully.
     /// </summary>
     protected bool _initialized;
+
+    private bool _inject;
+    private int _pipeConnectionTimeout;
 
     /// <summary>
     ///     This method is called from <see cref="Init"/> after some checks are performed.
@@ -22,7 +23,7 @@ public abstract partial class AslHelperBase : IAslHelper.Initialization
     /// </summary>
     protected abstract void GenerateCode();
 
-    public IAslHelper Init()
+    public IAslHelper Init(string? gameName = null, bool generateCode = false, bool inject = false, int timeout = 3000)
     {
         if (_initialized)
         {
@@ -30,11 +31,17 @@ public abstract partial class AslHelperBase : IAslHelper.Initialization
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
+        ThrowHelper.ThrowIfLessThan(timeout, 0);
+
+        _gameName = gameName;
+        _inject = inject;
+        _pipeConnectionTimeout = timeout;
+
         Debug.Info("Initializing asl-help...");
 
         InitImpl();
 
-        if (_generateCode)
+        if (generateCode)
         {
             Debug.Info("  => Generating code...");
             GenerateCode();
@@ -43,25 +50,6 @@ public abstract partial class AslHelperBase : IAslHelper.Initialization
         Debug.Info("  => Done.");
 
         _initialized = true;
-
-        return this;
-    }
-
-    public IAslHelper.Initialization SetGameName(string gameName)
-    {
-        _gameName = gameName;
-        return this;
-    }
-
-    public IAslHelper.Initialization DoCodeGeneration(bool generateCode = true)
-    {
-        if (_initialized)
-        {
-            string msg = "Code generation may only be enabled before initialization.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        _generateCode = generateCode;
 
         return this;
     }

@@ -1,7 +1,0 @@
-<Project>
-
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-
-  </Target>
-
-</Project>

@@ -1,9 +1,9 @@
 <Project>
 
-  <Target Name="MergeAssemblies" AfterTargets="Publish" Condition="'$(Configuration)' == 'Debug'">
+  <Target Name="_MergeAssemblies" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Debug'">
 
     <ItemGroup>
-      <!-- <AslHelpReferences Include="AslHelp.Publish.dll" /> -->
+      <AslHelpReferences Include="AslHelp.Build.dll" />
       <AslHelpReferences Include="AslHelp.Common.dll" />
       <AslHelpReferences Include="AslHelp.Core.dll" />
       <AslHelpReferences Include="AslHelp.Basic.dll" />

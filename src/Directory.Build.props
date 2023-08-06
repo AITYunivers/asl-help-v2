@@ -1,5 +1,7 @@
 <Project>
 
+  <Import Project="../Root.Build.props" />
+
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
 
@@ -7,10 +9,6 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
-    <!-- UseArtifactsOutput is a .NET 8 preview feature. -->
-    <UseArtifactsOutput>true</UseArtifactsOutput>
-    <ArtifactsPath>$(MSBuildThisFileDirectory)../artifacts</ArtifactsPath>
   </PropertyGroup>
 
   <PropertyGroup>
