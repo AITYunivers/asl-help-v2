@@ -1,11 +1,24 @@
 <Project Sdk="Vezel.Zig.Sdk">
 
   <PropertyGroup>
+    <DefineConstants>
+      $(DefineConstants);
+      UNICODE;_UNICODE;
+      WIN32_LEAN_AND_MEAN;
+      _LIBCPP_ENABLE_EXPERIMENTAL
+    </DefineConstants>
+
+    <LanguageStandard>C++2b</LanguageStandard>
+    <OutputType>Library</OutputType>
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+
+    <MicrosoftExtensions>true</MicrosoftExtensions>
+
+    <Configuration>Debug</Configuration>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../AslHelp.Native.Common/AslHelp.Native.Common.cxxproj" />
+    <IncludeDirectory Include="include" />
   </ItemGroup>
 
   <Target Name="_GetNativeLibrary" Returns="@(_NativeLibrary)">

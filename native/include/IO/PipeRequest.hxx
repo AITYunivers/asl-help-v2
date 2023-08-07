@@ -11,4 +11,4 @@ enum class PipeRequest
     Write
 };
 
-}
+} // namespace IO

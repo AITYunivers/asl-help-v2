@@ -5,7 +5,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".metadata", ".metadata", "{
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		global.json = global.json
-		Root.Build.props = Root.Build.props
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "impl", "impl", "{FB1F130E-A97B-44FE-A2BC-657480FC61E9}"
@@ -35,7 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Common", "src\AslHe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Core", "src\AslHelp.Core\AslHelp.Core.csproj", "{BF33EEAB-77AE-4246-BE60-95D7DC367612}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Native", "native\AslHelp.Native\AslHelp.Native.cxxproj", "{5DA70FE6-2936-44C2-B383-9C1C06825AF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Native", "native\AslHelp.Native.cxxproj", "{5DA70FE6-2936-44C2-B383-9C1C06825AF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

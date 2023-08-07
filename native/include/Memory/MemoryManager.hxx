@@ -1,13 +1,11 @@
 #pragma once
 
 #include <memory>
+#include <stdint.h>
 
-#include "DerefRequest.hxx"
-#include "ReadRequest.hxx"
-#include "WriteRequest.hxx"
-
-#include "../Singleton.hxx"
-#include "../IO/Fwd.hxx"
+#include "IO/Fwd.hxx"
+#include "IO/Logging/Loggers.hxx"
+#include "RequestTypes.hxx"
 
 namespace Memory
 {
@@ -15,65 +13,50 @@ namespace Memory
 class MemoryManager
 {
 public:
-    IO::PipeResponse Handle(const IO::PipeRequest& request) const
+    IO::PipeResponse Handle(const IO::PipeRequest& cmd) const
     {
-        switch (request)
+        switch (cmd)
         {
         case IO::PipeRequest::Deref:
-        {
-            DerefRequest request;
-            if (Singleton<IO::NamedPipeServer>::Instance().TryRead<DerefRequest>(&request))
-            {
-                return Deref(request);
-            }
-
-            break;
-        }
+            return MemOp<DerefRequest>();
         case IO::PipeRequest::Read:
-        {
-            ReadRequest request;
-            if (Singleton<IO::NamedPipeServer>::Instance().TryRead<ReadRequest>(&request))
-            {
-                return Read(request);
-            }
-
-            break;
-        }
+            return MemOp<ReadRequest>();
         case IO::PipeRequest::Write:
-        {
-            WriteRequest request;
-            if (Singleton<IO::NamedPipeServer>::Instance().TryRead<WriteRequest>(&request))
-            {
-                return Write(request);
-            }
-
-            break;
-        }
+            return MemOp<WriteRequest>();
         default:
-        {
             return IO::PipeResponse::UnknownCommand;
         }
+    }
+
+private:
+    template <typename T>
+        requires std::is_base_of_v<IRequest, T>
+    IO::PipeResponse MemOp() const
+    {
+        auto request = _pipeServer.TryRead<T>();
+        if (request.has_value())
+        {
+            return MemOp(request.value());
         }
 
         return IO::PipeResponse::ReceiveFailure;
     }
 
-private:
-    IO::PipeResponse Deref(DerefRequest request) const
+    IO::PipeResponse MemOp(DerefRequest request) const
     {
-        DEBUG_LOG("  => Dereferencing offsets...");
+        DEBUG_LOG(_logger, "  => Dereferencing offsets...");
 
         auto deref = (uintptr_t*)request.Address;
         auto offsets = reinterpret_cast<const int32_t*>(request.Offsets);
 
         __try
         {
-            for (auto i = 0; i < request.OffsetsLength; ++i)
+            for (uint32_t i = 0; i < request.OffsetsLength; ++i)
             {
                 deref = (uintptr_t*)*deref;
                 if (deref == nullptr)
                 {
-                    DEBUG_LOG("    => Failure. Cannot dereference null pointer.");
+                    DEBUG_LOG(_logger, "    => Failure. Cannot dereference null pointer.");
                     return IO::PipeResponse::DerefFailure;
                 }
 
@@ -82,33 +65,33 @@ private:
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {
-            DEBUG_LOG("    => Failure. Cannot dereference null pointer.");
+            DEBUG_LOG(_logger, "    => Failure. Cannot dereference null pointer.");
             return IO::PipeResponse::DerefFailure;
         }
 
         *(uintptr_t**)request.Address = deref;
 
-        DEBUG_LOG("    => Success.");
-        DEBUG_LOG("       Result: 0x%p.", deref);
+        DEBUG_LOG(_logger, "    => Success.");
+        DEBUG_LOG(_logger, "       Result: 0x{:X}.", deref);
 
         return IO::PipeResponse::Success;
     }
 
-    IO::PipeResponse Read(ReadRequest request) const
+    IO::PipeResponse MemOp(ReadRequest request) const
     {
-        DEBUG_LOG("  => Dereferencing offsets...");
+        DEBUG_LOG(_logger, "  => Dereferencing offsets...");
 
         auto deref = (uintptr_t*)request.Address;
         auto offsets = reinterpret_cast<const int32_t*>(request.Offsets);
 
         __try
         {
-            for (auto i = 0; i < request.OffsetsLength; ++i)
+            for (uint32_t i = 0; i < request.OffsetsLength; ++i)
             {
                 deref = (uintptr_t*)*deref;
                 if (deref == nullptr)
                 {
-                    DEBUG_LOG("    => Failure. Cannot dereference null pointer.");
+                    DEBUG_LOG(_logger, "    => Failure. Cannot dereference null pointer.");
                     return IO::PipeResponse::DerefFailure;
                 }
 
@@ -117,14 +100,14 @@ private:
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {
-            DEBUG_LOG("    => Failure. Cannot dereference null pointer.");
+            DEBUG_LOG(_logger, "    => Failure. Cannot dereference null pointer.");
             return IO::PipeResponse::DerefFailure;
         }
 
-        DEBUG_LOG("    => Success.");
-        DEBUG_LOG("       Result: 0x%p.", deref);
+        DEBUG_LOG(_logger, "    => Success.");
+        DEBUG_LOG(_logger, "       Result: 0x{:X}.", deref);
 
-        DEBUG_LOG("  => Reading data (%d bytes)...", request.BufferLength);
+        DEBUG_LOG(_logger, "  => Reading data ({} bytes)...", request.BufferLength);
 
         __try
         {
@@ -132,29 +115,29 @@ private:
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {
-            DEBUG_LOG("    => Failure. Cannot dereference result address.");
+            DEBUG_LOG(_logger, "    => Failure. Cannot dereference result address.");
             return IO::PipeResponse::ReadFailure;
         }
 
-        DEBUG_LOG("    => Success.");
+        DEBUG_LOG(_logger, "    => Success.");
         return IO::PipeResponse::Success;
     }
 
-    IO::PipeResponse Write(WriteRequest request) const
+    IO::PipeResponse MemOp(WriteRequest request) const
     {
-        DEBUG_LOG("  => Dereferencing offsets...");
+        DEBUG_LOG(_logger, "  => Dereferencing offsets...");
 
         auto deref = (uintptr_t*)request.Address;
         auto offsets = reinterpret_cast<const int32_t*>(request.Offsets);
 
         __try
         {
-            for (auto i = 0; i < request.OffsetsLength; ++i)
+            for (uint32_t i = 0; i < request.OffsetsLength; ++i)
             {
                 deref = (uintptr_t*)*deref;
                 if (deref == nullptr)
                 {
-                    DEBUG_LOG("    => Failure. Cannot dereference null pointer.");
+                    DEBUG_LOG(_logger, "    => Failure. Cannot dereference null pointer.");
                     return IO::PipeResponse::DerefFailure;
                 }
 
@@ -163,14 +146,14 @@ private:
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {
-            DEBUG_LOG("    => Failure. Cannot dereference null pointer.");
+            DEBUG_LOG(_logger, "    => Failure. Cannot dereference null pointer.");
             return IO::PipeResponse::DerefFailure;
         }
 
-        DEBUG_LOG("    => Success.");
-        DEBUG_LOG("       Result: 0x%p.", deref);
+        DEBUG_LOG(_logger, "    => Success.");
+        DEBUG_LOG(_logger, "       Result: 0x{:X}.", deref);
 
-        DEBUG_LOG("  => Writing data (%d bytes)...", request.BufferLength);
+        DEBUG_LOG(_logger, "  => Writing data ({} bytes)...", request.DataLength);
 
         __try
         {
@@ -178,13 +161,17 @@ private:
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {
-            DEBUG_LOG("    => Failure. Cannot dereference result address.");
+            DEBUG_LOG(_logger, "    => Failure. Cannot dereference result address.");
             return IO::PipeResponse::WriteFailure;
         }
 
-        DEBUG_LOG("    => Success.");
+        DEBUG_LOG(_logger, "    => Success.");
         return IO::PipeResponse::Success;
     }
+
+private:
+    const std::unique_ptr<IO::NamedPipeServer> _pipeServer;
+    const std::unique_ptr<IO::Logging::ConsoleLogger> _logger;
 };
 
-}
+} // namespace Memory

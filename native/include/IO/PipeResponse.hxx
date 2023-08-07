@@ -16,4 +16,4 @@ enum class PipeResponse
     UnknownCommand
 };
 
-}
+} // namespace IO

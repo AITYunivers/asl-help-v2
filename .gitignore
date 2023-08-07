@@ -12,7 +12,7 @@ build/
 
 # User-specific files
 *.user
+.clangd
 
 # asl-help
 ref/
-.lsdir

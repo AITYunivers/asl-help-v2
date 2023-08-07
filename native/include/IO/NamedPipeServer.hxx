@@ -1,7 +1,11 @@
 #pragma once
 
-#include <string>
 #include <Windows.h>
+#include <__expected/expected.h>
+#include <expected>
+#include <memory>
+#include <optional>
+#include <string>
 
 namespace IO
 {
@@ -9,32 +13,31 @@ namespace IO
 class NamedPipeServer
 {
 public:
-    NamedPipeServer() = default;
-    ~NamedPipeServer()
+    explicit NamedPipeServer(HANDLE hPipe)
+        : _hPipe(hPipe)
+        , _isConnected(false)
     {
-        Dispose();
     }
 
     [[nodiscard]]
-    bool Init(std::wstring name, const unsigned long bufferSize = 1024)
+    static std::optional<IO::NamedPipeServer> Init(std::wstring name, const unsigned long bufferSize = 1024)
     {
-        _hPipe = CreateNamedPipe(
-            name.c_str(),
-            PIPE_ACCESS_DUPLEX,
-            PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
-            PIPE_UNLIMITED_INSTANCES,
-            bufferSize,
-            bufferSize,
-            NMPWAIT_USE_DEFAULT_WAIT,
-            nullptr);
+        auto hPipe =
+            CreateNamedPipe(name.c_str(), PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
+                            PIPE_UNLIMITED_INSTANCES, bufferSize, bufferSize, NMPWAIT_USE_DEFAULT_WAIT, nullptr);
 
-        if (_hPipe == INVALID_HANDLE_VALUE || _hPipe == nullptr)
+        if (hPipe == INVALID_HANDLE_VALUE || hPipe == nullptr)
         {
-            return false;
+            return std::nullopt;
         }
 
         unsigned long mode = PIPE_READMODE_MESSAGE;
-        return SetNamedPipeHandleState(_hPipe, &mode, nullptr, nullptr);
+        if (!SetNamedPipeHandleState(hPipe, &mode, nullptr, nullptr))
+        {
+            return std::nullopt;
+        }
+
+        return IO::NamedPipeServer{hPipe};
     }
 
     [[nodiscard]]
@@ -61,22 +64,27 @@ public:
 
     template <typename T>
     [[nodiscard]]
-    bool TryRead(T* value) const
+    std::optional<T> TryRead() const
     {
-        DWORD bytesRead;
-        if (!ReadFile(_hPipe, value, sizeof(T), &bytesRead, nullptr))
+        T ret;
+        unsigned long bytesRead;
+        if (!ReadFile(_hPipe, &ret, sizeof(T), &bytesRead, nullptr))
         {
-            return false;
+            return std::nullopt;
         }
 
-        return bytesRead == sizeof(T);
+        if (bytesRead != sizeof(T))
+        {
+            return std::nullopt;
+        }
+
+        return ret;
     }
 
     template <typename T>
-    [[nodiscard]]
     bool TryWrite(const T value) const
     {
-        DWORD bytesWritten;
+        unsigned long bytesWritten;
         if (!WriteFile(_hPipe, &value, sizeof(T), &bytesWritten, nullptr))
         {
             return false;
@@ -123,4 +131,4 @@ private:
     bool _isConnected;
 };
 
-}
+} // namespace IO
