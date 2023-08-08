@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 
 using AslHelp.Common.Exceptions;
@@ -23,7 +22,7 @@ internal static class EmbeddedResource
 
         if (resourceStream is null)
         {
-            ThrowHelper.ThrowFileNotFoundException(resource, "Unable to find the specified resource.");
+            ThrowHelper.ThrowFileNotFoundException($"Unable to find the specified resource '{resource}'.");
         }
 
         return resourceStream;

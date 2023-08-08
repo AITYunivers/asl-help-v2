@@ -8,6 +8,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="AslHelp.Basic" />
     <InternalsVisibleTo Include="AslHelp.Mono" />
+    <InternalsVisibleTo Include="AslHelp.Core.Memory.Benchmarks" />
   </ItemGroup>
 
   <ItemGroup Label="GlobalUsings">
@@ -23,6 +24,19 @@
 
   <ItemGroup>
     <ProjectReference Include="../AslHelp.Common/AslHelp.Common.csproj" />
+
+    <ProjectReference Include="../../native/AslHelp.Native/AslHelp.Native.cxxproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
+
+  <Target Name="_EmbedNativeLibraries" BeforeTargets="BeforeResGen">
+    <MSBuild Projects="../../native/AslHelp.Native/AslHelp.Native.cxxproj" Targets="_GetNativeLibraries">
+      <Output TaskParameter="TargetOutputs" ItemName="_NativeLibraries" />
+    </MSBuild>
+
+    <ItemGroup>
+      <EmbeddedResource Include="@(_NativeLibraries)" Type="Non-Resx" WithCulture="false"
+                        LogicalName="%(Filename).$([System.String]::Copy('%(RuntimeIdentifier)').Replace('win-', ''))%(Extension)" />
+    </ItemGroup>
+  </Target>
 
 </Project>

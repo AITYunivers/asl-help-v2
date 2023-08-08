@@ -1,5 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+#
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".metadata", ".metadata", "{5AEF7C88-3F3A-47A5-9B2F-E322B29E1BB9}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -35,7 +36,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Common", "src\AslHe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Core", "src\AslHelp.Core\AslHelp.Core.csproj", "{BF33EEAB-77AE-4246-BE60-95D7DC367612}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Native", "native\AslHelp.Native.cxxproj", "{5DA70FE6-2936-44C2-B383-9C1C06825AF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Native", "native\AslHelp.Native\AslHelp.Native.cxxproj", "{5DA70FE6-2936-44C2-B383-9C1C06825AF9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{82CD1080-B0A3-448E-AF26-DE2215FBE066}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Core.Memory.Benchmarks", "benchmarks\AslHelp.Core.Memory.Benchmarks\AslHelp.Core.Memory.Benchmarks.csproj", "{1E587C51-FB4D-4621-BCBE-42EB08D788EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +57,7 @@ Global
 		{19914398-4BFE-4050-A568-B8741F0CB0CD} = {B5B5B2B0-550F-48EE-A367-DDD18E4F5466}
 		{BF33EEAB-77AE-4246-BE60-95D7DC367612} = {B5B5B2B0-550F-48EE-A367-DDD18E4F5466}
 		{5DA70FE6-2936-44C2-B383-9C1C06825AF9} = {69D40FE5-0807-4835-8C20-233DFDA7D0E4}
+		{1E587C51-FB4D-4621-BCBE-42EB08D788EA} = {82CD1080-B0A3-448E-AF26-DE2215FBE066}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5046CDCA-CBB1-4ACB-BC96-5B6C3B12A510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -78,5 +84,9 @@ Global
 		{5DA70FE6-2936-44C2-B383-9C1C06825AF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DA70FE6-2936-44C2-B383-9C1C06825AF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DA70FE6-2936-44C2-B383-9C1C06825AF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E587C51-FB4D-4621-BCBE-42EB08D788EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E587C51-FB4D-4621-BCBE-42EB08D788EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E587C51-FB4D-4621-BCBE-42EB08D788EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E587C51-FB4D-4621-BCBE-42EB08D788EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

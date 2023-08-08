@@ -35,12 +35,12 @@ internal static unsafe partial class WinInteropWrapper
 
     public static unsafe bool TryInjectDll(nuint processHandle, string dllPath)
     {
-        // dllPath = Path.GetFullPath(dllPath);
-        // if (!File.Exists(dllPath))
-        // {
-        //     Debug.Warn("    => Dll file cannot be found.");
-        //     return false;
-        // }
+        dllPath = Path.GetFullPath(dllPath);
+        if (!File.Exists(dllPath))
+        {
+            Debug.Warn("    => Dll file cannot be found.");
+            return false;
+        }
 
         nuint hModule = WinInterop.GetModuleHandle("kernel32.dll");
         if (hModule == 0)

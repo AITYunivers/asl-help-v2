@@ -19,7 +19,7 @@ static unsigned long WINAPI Main(void*)
 #endif
 
     auto pipe = NamedPipeServer::Init(L"\\\\.\\pipe\\asl-help-pipe", 512);
-    if (pipe == std::nullopt)
+    if (!pipe.has_value())
     {
         DEBUG_LOG(logger, "Failed to initialize named pipe.");
         return 1;
@@ -31,10 +31,11 @@ static unsigned long WINAPI Main(void*)
         return 2;
     }
 
+    auto memory = MemoryManager(pipe.value());
     while (true)
     {
-        IO::PipeRequest cmd;
-        if (!pipe->TryRead<IO::PipeRequest>(&cmd))
+        auto cmd = pipe->TryRead<IO::PipeRequest>();
+        if (!cmd.has_value())
         {
             DEBUG_LOG(logger, "Failed reading command.");
             break;
@@ -48,14 +49,11 @@ static unsigned long WINAPI Main(void*)
             break;
         }
 
-        pipe->TryWrite<IO::PipeResponse>(memory.Handle(cmd));
+        auto response = memory.Handle(cmd.value());
+        pipe->TryWrite<IO::PipeResponse>(response);
     }
 
     pipe->Dispose();
-
-#ifdef _DEBUG
-    logger->Dispose();
-#endif
 
     return 0;
 }
