@@ -25,11 +25,9 @@ static unsigned long WINAPI Main(void*)
         return 1;
     }
 
-    auto memory = Singleton<Memory::MemoryManager>::Instance();
-
     if (!pipe->Connect())
     {
-        DEBUG_LOG("Failed to connect to named pipe.");
+        DEBUG_LOG(logger, "Failed to connect to named pipe.");
         return 2;
     }
 
@@ -38,15 +36,15 @@ static unsigned long WINAPI Main(void*)
         IO::PipeRequest cmd;
         if (!pipe->TryRead<IO::PipeRequest>(&cmd))
         {
-            DEBUG_LOG("Failed reading command.");
+            DEBUG_LOG(logger, "Failed reading command.");
             break;
         }
 
-        DEBUG_LOG("Received command: %s.", cmd);
+        DEBUG_LOG(logger, "Received command: {}.", cmd);
 
         if (cmd == IO::PipeRequest::Close)
         {
-            DEBUG_LOG("  => Closing pipe connection.");
+            DEBUG_LOG(logger, "  => Closing pipe connection.");
             break;
         }
 
@@ -55,8 +53,8 @@ static unsigned long WINAPI Main(void*)
 
     pipe->Dispose();
 
-#ifdef DEBUG
-    IO::DebugLogger::Dispose();
+#ifdef _DEBUG
+    logger->Dispose();
 #endif
 
     return 0;

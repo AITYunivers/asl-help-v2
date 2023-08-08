@@ -13,8 +13,6 @@
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
 
     <MicrosoftExtensions>true</MicrosoftExtensions>
-
-    <Configuration>Debug</Configuration>
   </PropertyGroup>
 
   <ItemGroup>

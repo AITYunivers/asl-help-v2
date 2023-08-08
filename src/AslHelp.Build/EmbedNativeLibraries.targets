@@ -1,7 +1,7 @@
 <Project>
 
   <Target Name="_EmbedNativeLibraries" BeforeTargets="BeforeResGen">
-    <MSBuild Projects="../../native/AslHelp.Native.cxxproj" Targets="_GetNativeLibraries">
+    <MSBuild Projects="../../native/AslHelp.Native/AslHelp.Native.cxxproj" Targets="_GetNativeLibraries">
       <Output TaskParameter="TargetOutputs" ItemName="_NativeLibraries" />
     </MSBuild>
 

@@ -33,7 +33,7 @@ private:
         requires std::is_base_of_v<IRequest, T>
     IO::PipeResponse MemOp() const
     {
-        auto request = _pipeServer.TryRead<T>();
+        auto request = _pipeServer->TryRead<T>();
         if (request.has_value())
         {
             return MemOp(request.value());
