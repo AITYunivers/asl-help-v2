@@ -16,8 +16,8 @@ public abstract partial class AslHelperBase
 {
     public abstract IMemoryManager? Memory { get; protected set; }
 
-    protected abstract IMemoryManager InitializeWinApiMemory(Process process, ILogger logger);
-    protected abstract IMemoryManager InitializePipeMemory(Process process, ILogger logger, NamedPipeClientStream pipe);
+    protected abstract IMemoryManager InitializeExternalMemory(Process process, ILogger logger);
+    protected abstract IMemoryManager InitializeInternalMemory(Process process, ILogger logger, NamedPipeClientStream pipe);
 
     protected IMemoryManager InitializeMemory(Process process)
     {
@@ -26,13 +26,13 @@ public abstract partial class AslHelperBase
 
         if (_inject && TryInjectAslHelpNative(process, is64Bit, _pipeConnectionTimeout, out var pipe))
         {
-            return InitializePipeMemory(process, Logger, pipe);
+            return InitializeInternalMemory(process, Logger, pipe);
         }
         else
         {
             Debug.Info("  => Using Win32 API for memory reading.");
 
-            return InitializeWinApiMemory(process, Logger);
+            return InitializeExternalMemory(process, Logger);
         }
     }
 

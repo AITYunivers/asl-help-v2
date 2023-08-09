@@ -1,9 +1,9 @@
 #pragma once
 
 #include <Windows.h>
+#include <format>
 #include <string>
 #include <vector>
-#include <wincon.h>
 
 namespace IO::Logging
 {
@@ -14,19 +14,14 @@ public:
     virtual ~ILogger() = default;
 
     template <typename... Args>
-    bool Log(const std::string& format, Args... args) const
+    constexpr bool Log(std::string& format, Args... args) const
     {
-        // auto message = std::vformat(format, std::make_format_args(args...));
-
-        size_t size = snprintf(nullptr, 0, format.c_str(), args...) + 1;
-
-        std::vector<char> buffer(size);
-        sprintf_s(buffer.data(), size, format.c_str(), args...);
-
-        return LogImpl(std::string(buffer.begin(), buffer.end()));
+        auto message = std::format(format, std::make_format_args(args...));
+        return LogImpl(message);
     }
 
 protected:
+    [[clang::noinline]]
     virtual bool LogImpl(const std::string& message) const = 0;
 };
 

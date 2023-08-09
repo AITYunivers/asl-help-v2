@@ -108,6 +108,22 @@ public static class StreamExtensions
     }
 
     /// <summary>
+    ///     Writes a value of type <typeparamref name="T"/> to a <see cref="Stream"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of value to write.</typeparam>
+    /// <param name="stream">The <see cref="Stream"/> to write to.</param>
+    /// <param name="value">The value to write to the <see cref="Stream"/>.</param>
+    public static unsafe void Write(this Stream stream, ReadOnlySpan<byte> buffer)
+    {
+        byte[] rented = ArrayPool<byte>.Shared.Rent(buffer.Length);
+
+        buffer.CopyTo(rented);
+        stream.Write(rented, 0, buffer.Length);
+
+        ArrayPool<byte>.Shared.Return(rented);
+    }
+
+    /// <summary>
     ///     Reads a value of type <typeparamref name="TResponse"/> from a <see cref="Stream"/>
     ///     after writing a value of type <typeparamref name="TRequest"/> to the <see cref="Stream"/>.
     /// </summary>
@@ -171,9 +187,9 @@ public static class StreamExtensions
 
         while (totalRead < minimumBytes)
         {
-            int read = CommunityToolkit.HighPerformance.StreamExtensions.Read(stream, buffer[totalRead..]);
+            int bytesRead = read(stream, buffer[totalRead..]);
 
-            if (read == 0)
+            if (bytesRead == 0)
             {
                 if (throwOnEndOfStream)
                 {
@@ -183,10 +199,26 @@ public static class StreamExtensions
                 return totalRead;
             }
 
-            totalRead += read;
+            totalRead += bytesRead;
         }
 
         return totalRead;
+
+        static int read(Stream stream, Span<byte> buffer)
+        {
+            byte[] rented = ArrayPool<byte>.Shared.Rent(buffer.Length);
+
+            int bytesRead = stream.Read(rented, 0, buffer.Length);
+
+            if (bytesRead > 0)
+            {
+                rented.AsSpan(0, bytesRead).CopyTo(buffer);
+            }
+
+            ArrayPool<byte>.Shared.Return(rented);
+
+            return bytesRead;
+        }
     }
 
     private static void ValidateReadAtLeastArguments(int bufferLength, int minimumBytes)

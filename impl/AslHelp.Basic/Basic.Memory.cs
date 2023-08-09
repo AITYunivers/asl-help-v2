@@ -30,14 +30,14 @@ public partial class Basic
         protected set => _memory = value;
     }
 
-    protected override IMemoryManager InitializeWinApiMemory(Process process, ILogger logger)
+    protected override IMemoryManager InitializeExternalMemory(Process process, ILogger logger)
     {
-        return new WinApiMemoryManager(process, logger);
+        return new ExternalMemoryManager(process, logger);
     }
 
-    protected override IMemoryManager InitializePipeMemory(Process process, ILogger logger, NamedPipeClientStream pipe)
+    protected override IMemoryManager InitializeInternalMemory(Process process, ILogger logger, NamedPipeClientStream pipe)
     {
-        return new PipeMemoryManager(process, logger, pipe);
+        return new InternalMemoryManager(process, logger, pipe);
     }
 
     protected override void DisposeMemory()

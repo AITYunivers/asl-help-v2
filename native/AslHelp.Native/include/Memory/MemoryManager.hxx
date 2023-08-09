@@ -2,6 +2,7 @@
 
 #include "IO/Fwd.hxx"
 #include "RequestTypes.hxx"
+#include <corecrt.h>
 
 namespace Memory
 {
@@ -42,6 +43,31 @@ private:
         }
 
         return IO::PipeResponse::ReceiveFailure;
+    }
+
+    intptr_t Dereference(uint64_t address, const int32_t* offsets, uint32_t offsetsLength) const
+    {
+        auto deref = (intptr_t)address;
+
+        __try
+        {
+            for (uint32_t i = 0; i < offsetsLength; ++i)
+            {
+                deref = *(intptr_t*)deref;
+                if (deref == 0)
+                {
+                    return 0;
+                }
+
+                deref += offsets[i];
+            }
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            return 0;
+        }
+
+        return (intptr_t)deref;
     }
 
     IO::PipeResponse MemOp(DerefRequest request) const

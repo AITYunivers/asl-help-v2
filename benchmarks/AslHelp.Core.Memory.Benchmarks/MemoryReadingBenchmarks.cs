@@ -15,8 +15,8 @@ namespace AslHelp.Core.Memory.Benchmarks;
 public class MemoryReadingBenchmarks
 {
 #nullable disable
-    private WinApiMemoryManager _winApiMemory;
-    private PipeMemoryManager _pipeMemory;
+    private ExternalMemoryManager _externalMemory;
+    private InternalMemoryManager _internalMemory;
 #nullable restore
 
     [GlobalSetup]
@@ -50,26 +50,26 @@ public class MemoryReadingBenchmarks
         NamedPipeClientStream pipe = new("asl-help-pipe");
         pipe.Connect(3000);
 
-        _winApiMemory = new WinApiMemoryManager(process);
-        _pipeMemory = new PipeMemoryManager(process, pipe);
+        _externalMemory = new ExternalMemoryManager(process);
+        _internalMemory = new InternalMemoryManager(process, pipe);
     }
 
     [GlobalCleanup]
     public void Cleanup()
     {
-        _winApiMemory.Dispose();
-        _pipeMemory.Dispose();
+        _externalMemory.Dispose();
+        _internalMemory.Dispose();
     }
 
     [Benchmark(Baseline = true)]
     public double ReadDouble_External()
     {
-        return _winApiMemory.Read<double>(0x813390, 0x48, 0x10, 0x690, 0x30);
+        return _externalMemory.Read<double>(0x813390, 0x48, 0x10, 0x690, 0x30);
     }
 
     [Benchmark]
     public double ReadDouble_Pipe()
     {
-        return _pipeMemory.Read<double>(0x813390, 0x48, 0x10, 0x690, 0x30);
+        return _internalMemory.Read<double>(0x813390, 0x48, 0x10, 0x690, 0x30);
     }
 }

@@ -10,7 +10,6 @@ namespace IO::Logging
 class LoggingService
 {
 public:
-    // Creates a new instance of the specified type of logger.
     template <typename T>
         requires std::is_base_of_v<ILogger, T>
     static std::unique_ptr<T> Create()

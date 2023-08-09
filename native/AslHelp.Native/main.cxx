@@ -1,4 +1,3 @@
-#include <iostream>
 #include <windows.h>
 
 #include <IO/Fwd.hxx>
@@ -18,42 +17,42 @@ static unsigned long WINAPI Main(void*)
         nullptr;
 #endif
 
-    auto pipe = NamedPipeServer::Init(L"\\\\.\\pipe\\asl-help-pipe", 512);
-    if (!pipe.has_value())
-    {
-        DEBUG_LOG(logger, "Failed to initialize named pipe.");
-        return 1;
-    }
+    // auto pipe = NamedPipeServer::Init(L"\\\\.\\pipe\\asl-help-pipe", 512);
+    // if (!pipe.has_value())
+    // {
+    //     DEBUG_LOG(logger, "Failed to initialize named pipe.");
+    //     return 1;
+    // }
 
-    if (!pipe->Connect())
-    {
-        DEBUG_LOG(logger, "Failed to connect to named pipe.");
-        return 2;
-    }
+    // if (!pipe->Connect())
+    // {
+    //     DEBUG_LOG(logger, "Failed to connect to named pipe.");
+    //     return 2;
+    // }
 
-    auto memory = MemoryManager(pipe.value());
-    while (true)
-    {
-        auto cmd = pipe->TryRead<IO::PipeRequest>();
-        if (!cmd.has_value())
-        {
-            DEBUG_LOG(logger, "Failed reading command.");
-            break;
-        }
+    // auto memory = MemoryManager(pipe.value());
+    // while (true)
+    // {
+    //     auto cmd = pipe->TryRead<IO::PipeRequest>();
+    //     if (!cmd.has_value())
+    //     {
+    //         DEBUG_LOG(logger, "Failed reading command.");
+    //         break;
+    //     }
 
-        DEBUG_LOG(logger, "Received command: {}.", cmd);
+    //     DEBUG_LOG(logger, "Received command: {}.", cmd);
 
-        if (cmd == IO::PipeRequest::Close)
-        {
-            DEBUG_LOG(logger, "  => Closing pipe connection.");
-            break;
-        }
+    //     if (cmd == IO::PipeRequest::Close)
+    //     {
+    //         DEBUG_LOG(logger, "  => Closing pipe connection.");
+    //         break;
+    //     }
 
-        auto response = memory.Handle(cmd.value());
-        pipe->TryWrite<IO::PipeResponse>(response);
-    }
+    //     auto response = memory.Handle(cmd.value());
+    //     pipe->TryWrite<IO::PipeResponse>(response);
+    // }
 
-    pipe->Dispose();
+    // pipe->Dispose();
 
     return 0;
 }

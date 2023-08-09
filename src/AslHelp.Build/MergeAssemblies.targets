@@ -9,7 +9,6 @@
       <AslHelpReferences Include="AslHelp.Basic.dll" />
       <AslHelpReferences Include="AslHelp.Mono.dll" />
 
-      <MiscReferences Include="CommunityToolkit.HighPerformance.dll" />
       <MiscReferences Include="System.Buffers.dll" />
       <MiscReferences Include="System.Memory.dll" />
       <MiscReferences Include="System.Numerics.Vectors.dll" />
