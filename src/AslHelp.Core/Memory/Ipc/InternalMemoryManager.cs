@@ -1,288 +1,160 @@
 using System;
 using System.Diagnostics;
-using System.IO.MemoryMappedFiles;
+using System.IO.Pipes;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Common.Extensions;
-using AslHelp.Common.Memory.Ipc;
+using AslHelp.Common.Results;
 using AslHelp.Core.Diagnostics.Logging;
 
 namespace AslHelp.Core.Memory.Ipc;
 
 public class InternalMemoryManager : MemoryManagerBase
 {
-    private readonly MemoryMappedFile _mmf;
-    private readonly MemoryMappedViewAccessor _accessor;
+    private readonly NamedPipeClientStream _pipe;
 
-    public InternalMemoryManager(Process process, string mappedFileName)
+    public InternalMemoryManager(Process process, string namedPipeName, int timeout = -1)
         : base(process)
     {
-        _mmf = MemoryMappedFile.CreateOrOpen(mappedFileName, 512, MemoryMappedFileAccess.ReadWrite);
-        _accessor = _mmf.CreateViewAccessor();
+        _pipe = new(namedPipeName);
+        _pipe.Connect(timeout);
     }
 
-    public InternalMemoryManager(Process process, ILogger logger, string mappedFileName)
+    public InternalMemoryManager(Process process, ILogger logger, string namedPipeName, int timeout = -1)
         : base(process, logger)
     {
-        _mmf = MemoryMappedFile.CreateOrOpen(mappedFileName, 512, MemoryMappedFileAccess.ReadWrite);
-        _accessor = _mmf.CreateViewAccessor();
+        _pipe = new(namedPipeName);
+        _pipe.Connect(timeout);
     }
 
-    public override unsafe nuint Deref(nuint baseAddress, params int[] offsets)
+    public InternalMemoryManager(Process process, NamedPipeClientStream pipe)
+        : base(process)
+    {
+        if (!pipe.IsConnected)
+        {
+            ThrowHelper.ThrowInvalidOperationException("Pipe stream was not connected.");
+        }
+
+        if (!pipe.CanRead)
+        {
+            ThrowHelper.ThrowInvalidOperationException("Pipe stream was not readable.");
+        }
+
+        if (!pipe.CanWrite)
+        {
+            ThrowHelper.ThrowInvalidOperationException("Pipe stream was not writable.");
+        }
+
+        _pipe = pipe;
+    }
+
+    public InternalMemoryManager(Process process, ILogger logger, NamedPipeClientStream pipe)
+        : base(process, logger)
+    {
+        if (!pipe.IsConnected)
+        {
+            ThrowHelper.ThrowInvalidOperationException("Pipe stream was not connected.");
+        }
+
+        if (!pipe.CanRead)
+        {
+            ThrowHelper.ThrowInvalidOperationException("Pipe stream was not readable.");
+        }
+
+        if (!pipe.CanWrite)
+        {
+            ThrowHelper.ThrowInvalidOperationException("Pipe stream was not writable.");
+        }
+
+        _pipe = pipe;
+    }
+
+    [SkipLocalsInit]
+    [StructLayout(LayoutKind.Explicit)]
+    private unsafe struct Request
+    {
+        [FieldOffset(0x000)] public nuint BaseAddress;
+        [FieldOffset(0x008)] public int OffsetsLength;
+        [FieldOffset(0x00C)] public fixed int Offsets[128];
+        [FieldOffset(0x20C)] public uint Bytes;
+    }
+
+    protected override unsafe Result<nuint> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (_isDisposed)
         {
-            string msg = "Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
+            return new(
+                IsSuccess: false,
+                Throw: static () =>
+                {
+                    string msg = "Cannot interact with the memory of an exited process.";
+                    ThrowHelper.ThrowInvalidOperationException(msg);
+                });
+        }
+
+        if (offsets.Length > 128)
+        {
+            return new(
+                IsSuccess: false,
+                Throw: static () =>
+                {
+                    const string msg = "Cannot dereference more than 128 offsets.";
+                    ThrowHelper.ThrowArgumentException(nameof(offsets), msg);
+                });
         }
 
         if (baseAddress == 0)
         {
-            string msg = "Attempted to dereference a null pointer.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
+            return new(
+                IsSuccess: false,
+                Throw: static () =>
+                {
+                    const string msg = "Attempted to dereference a null pointer.";
+                    ThrowHelper.ThrowArgumentException(nameof(baseAddress), msg);
+                });
         }
 
-        S s = default;
-        s.Request = PipeRequest.Deref;
-        s.BaseAddress = baseAddress;
-        s.OffsetCount = (uint)offsets.Length;
-        s.Length = 0;
-
-        offsets.CopyTo(new Span<int>(s.Offsets, offsets.Length));
-
-        for (int i = 0; i < offsets.Length; i++)
+        Request req = new()
         {
-            s.Offsets[i] = offsets[i];
-        }
+            BaseAddress = baseAddress,
+            OffsetsLength = offsets.Length
+        };
 
-        using var handle = _accessor.SafeMemoryMappedViewHandle;
+        offsets.CopyTo(new(req.Offsets, offsets.Length));
 
-        byte* ptr = null;
-        handle.AcquirePointer(ref ptr);
+        _pipe.Write(1);
+        _pipe.Write(req);
 
-        fixed (int* pOffsets = offsets)
+        if (!_pipe.TryRead(out int response) || response != 0)
         {
-            *((PipeRequest*)ptr + 0) = PipeRequest.Deref;
-            *((ulong*)ptr + 4) = baseAddress;
-            *((uint*)ptr + 12) = (uint)offsets.Length;
+            return new(
+                IsSuccess: false,
+                Throw: () =>
+                {
+                    string msg = $"Failed to dereference pointer ({(int)response}: '{response}').";
+                    ThrowHelper.ThrowInvalidOperationException(msg);
+                });
         }
 
-        handle.Write(0, PipeRequest.Deref);
-
-        handle.Write(8, (ulong)baseAddress);
-        handle.Write(16, (uint)offsets.Length);
-        handle.Write(24, offsets, 0, offsets.Length);
-
-        _accessor.Flush();
-
-        _view.Write(PipeRequest.Deref);
-
-        _view.Write((ulong)baseAddress);
-        _view.Write((uint)offsets.Length);
-        _view.Write(MemoryMarshal.AsBytes<int>(offsets));
-
-        PipeResponse response = _view.Read<PipeResponse>();
-        if (response != PipeResponse.Success)
-        {
-            string msg = $"Failed to dereference pointer ({(int)response}: '{response}').";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        nuint result = (nuint)_view.Read<ulong>();
-
-        _view.Flush();
-
-        return result;
+        return new(
+            IsSuccess: _pipe.TryRead(out ulong deref),
+            Value: (nuint)deref,
+            Throw: static () =>
+            {
+                const string msg = "Failed to receive result.";
+                ThrowHelper.ThrowInvalidOperationException(msg);
+            });
     }
 
-    public override unsafe bool TryDeref(out nuint result, nuint baseAddress, params int[] offsets)
+    protected override unsafe Result TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
     {
-        if (_isDisposed)
-        {
-            string msg = "Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        if (baseAddress == 0)
-        {
-            _view.Flush();
-
-            result = default;
-            return false;
-        }
-
-        _view.Write(PipeRequest.Deref);
-
-        _view.Write((ulong)baseAddress);
-        _view.Write((uint)offsets.Length);
-        _view.Write(MemoryMarshal.AsBytes<int>(offsets));
-
-        if (!_view.TryRead(out PipeResponse response) || response != PipeResponse.Success)
-        {
-            _view.Flush();
-
-            result = default;
-            return false;
-        }
-
-        if (!_view.TryRead(out ulong value))
-        {
-            _view.Flush();
-
-            result = default;
-            return false;
-        }
-
-        result = (nuint)value;
-
-        _view.Flush();
-
-        return true;
+        throw new NotImplementedException();
     }
 
-    protected internal override unsafe void Read<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets)
+    protected override unsafe Result TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
     {
-        if (_isDisposed)
-        {
-            string msg = "Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        if (baseAddress == 0)
-        {
-            string msg = "Attempted to dereference a null pointer.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        _view.Write(PipeRequest.Read);
-
-        _view.Write((ulong)baseAddress);
-        _view.Write((uint)offsets.Length);
-        _view.Write(MemoryMarshal.AsBytes<int>(offsets));
-        _view.Write(length);
-
-        PipeResponse response = _view.Read<PipeResponse>();
-        if (response != PipeResponse.Success)
-        {
-            string msg = $"Failed to read value ({(int)response}: '{response}').";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        Span<byte> bytes = new(buffer, (int)length);
-        _view.Read(bytes);
-
-        _view.Flush();
-    }
-
-    protected internal override unsafe bool TryRead<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets)
-    {
-        if (_isDisposed)
-        {
-            string msg = "Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        if (baseAddress == 0)
-        {
-            _view.Flush();
-            return false;
-        }
-
-        _view.Write(PipeRequest.Read);
-
-        _view.Write((ulong)baseAddress);
-        _view.Write((uint)offsets.Length);
-        _view.Write(MemoryMarshal.AsBytes<int>(offsets));
-        _view.Write(length);
-
-        if (!_view.TryRead(out PipeResponse response) || response != PipeResponse.Success)
-        {
-            _view.Flush();
-            return false;
-        }
-
-        if (!_view.TryRead(out T value))
-        {
-            _view.Flush();
-            return false;
-        }
-
-        *buffer = value;
-
-        _view.Flush();
-
-        return true;
-    }
-
-    protected internal override unsafe void Write<T>(T* data, uint length, nuint baseAddress, params int[] offsets)
-    {
-        if (_isDisposed)
-        {
-            string msg = "Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        if (baseAddress == 0)
-        {
-            string msg = "Attempted to dereference a null pointer.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        _view.Write(PipeRequest.Write);
-
-        _view.Write((ulong)baseAddress);
-        _view.Write((uint)offsets.Length);
-        _view.Write(MemoryMarshal.AsBytes<int>(offsets));
-        _view.Write(length);
-        _view.Write(*data);
-
-        PipeResponse response = _view.Read<PipeResponse>();
-        if (response != PipeResponse.Success)
-        {
-            string msg = $"Failed to write value ({(int)response}: '{response}').";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        _view.Flush();
-    }
-
-    protected internal override unsafe bool TryWrite<T>(T* data, uint length, nuint baseAddress, params int[] offsets)
-    {
-        if (_isDisposed)
-        {
-            string msg = "Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        if (baseAddress == 0)
-        {
-            string msg = "Attempted to dereference a null pointer.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        _view.Write(PipeRequest.Write);
-
-        _view.Write((ulong)baseAddress);
-        _view.Write((uint)offsets.Length);
-        _view.Write(MemoryMarshal.AsBytes<int>(offsets));
-        _view.Write(length);
-        _view.Write(*data);
-
-        if (!_view.TryRead(out PipeResponse response) || response != PipeResponse.Success)
-        {
-            _view.Flush();
-            return false;
-        }
-
-        _view.Flush();
-    }
-
-    public override void Dispose()
-    {
-        base.Dispose();
-
-        _pipe.Write(PipeRequest.Close);
-        _pipe.Dispose();
+        throw new NotImplementedException();
     }
 }

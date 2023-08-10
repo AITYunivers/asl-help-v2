@@ -3,14 +3,16 @@ using System.Runtime.InteropServices;
 
 namespace AslHelp.Common.Memory.Ipc;
 
-/// <summary />
+/// <summary>
+///     The <see cref="ReadRequest"/> structure
+///     represents a request to read a value from a remote process.
+/// </summary>
 [SkipLocalsInit]
 [StructLayout(LayoutKind.Explicit)]
 public unsafe struct ReadRequest
 {
     /// <summary>
-    /// ///     The base address of the value to read.
-
+    ///     The base address of the value to read.
     /// </summary>
     [FieldOffset(0x0)]
     public nuint BaseAddress;
@@ -32,6 +34,4 @@ public unsafe struct ReadRequest
     /// </summary>
     [FieldOffset(0x20C)]
     public uint BufferLength;
-
-    public IMemoryOwner
 }

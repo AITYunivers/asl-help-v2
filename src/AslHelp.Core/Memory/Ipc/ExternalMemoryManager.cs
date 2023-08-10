@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 
 using AslHelp.Common.Exceptions;
+using AslHelp.Common.Results;
 using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.Memory.Native;
 
@@ -15,18 +16,28 @@ public class ExternalMemoryManager : MemoryManagerBase
     public ExternalMemoryManager(Process process, ILogger logger)
         : base(process, logger) { }
 
-    public override unsafe nuint Deref(nuint baseAddress, params int[] offsets)
+    protected override unsafe Result<nuint> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (_isDisposed)
         {
-            string msg = "Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
+            return new(
+                IsSuccess: false,
+                Throw: static () =>
+                {
+                    string msg = "Cannot interact with the memory of an exited process.";
+                    ThrowHelper.ThrowInvalidOperationException(msg);
+                });
         }
 
         if (baseAddress == 0)
         {
-            string msg = "Attempted to dereference a null pointer.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
+            return new(
+                IsSuccess: false,
+                Throw: static () =>
+                {
+                    string msg = "Attempted to dereference a null pointer.";
+                    ThrowHelper.ThrowInvalidOperationException(msg);
+                });
         }
 
         nuint result = baseAddress, handle = _processHandle;
@@ -36,105 +47,78 @@ public class ExternalMemoryManager : MemoryManagerBase
         {
             if (!WinInteropWrapper.ReadMemory(handle, result, &result, ptrSize) || result == 0)
             {
-                string msg = "Failed to dereference pointer.";
-                ThrowHelper.ThrowInvalidOperationException(msg);
+                return new(
+                    IsSuccess: false,
+                    Throw: static () =>
+                    {
+                        string msg = "Failed to dereference pointer.";
+                        ThrowHelper.ThrowInvalidOperationException(msg);
+                    });
             }
 
             result += (uint)offsets[i];
         }
 
-        return result;
+        return new(
+            IsSuccess: true,
+            Value: result);
     }
 
-    public override unsafe bool TryDeref(out nuint result, nuint baseAddress, params int[] offsets)
+    protected override unsafe Result TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (_isDisposed)
         {
-            string msg = "Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        if (baseAddress == 0)
-        {
-            result = default;
-            return false;
-        }
-
-        result = baseAddress;
-
-        nuint handle = _processHandle;
-        uint ptrSize = PtrSize;
-
-        fixed (nuint* pResult = &result)
-        {
-            for (int i = 0; i < offsets.Length; i++)
-            {
-                if (!WinInteropWrapper.ReadMemory(handle, result, pResult, ptrSize) || result == 0)
+            return new(
+                IsSuccess: false,
+                Throw: static () =>
                 {
-                    result = default;
-                    return false;
-                }
-
-                result += (uint)offsets[i];
-            }
-
-            return true;
+                    string msg = "Cannot interact with the memory of an exited process.";
+                    ThrowHelper.ThrowInvalidOperationException(msg);
+                });
         }
+
+        Result<nuint> derefResult = TryDeref(baseAddress, offsets);
+        if (!derefResult.IsSuccess)
+        {
+            return derefResult;
+        }
+
+        nuint deref = derefResult.Value, handle = _processHandle;
+        return new(
+            IsSuccess: WinInteropWrapper.ReadMemory(handle, deref, buffer, length),
+            Throw: static () =>
+            {
+                string msg = "Failed to read value.";
+                ThrowHelper.ThrowInvalidOperationException(msg);
+            });
     }
 
-    protected internal override unsafe void Read<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets)
+    protected override unsafe Result TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (_isDisposed)
         {
-            string msg = "Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
+            return new(
+                IsSuccess: false,
+                Throw: static () =>
+                {
+                    string msg = "Cannot interact with the memory of an exited process.";
+                    ThrowHelper.ThrowInvalidOperationException(msg);
+                });
         }
 
-        nuint deref = Deref(baseAddress, offsets), handle = _processHandle;
-        if (!WinInteropWrapper.ReadMemory(handle, deref, buffer, length))
+        Result<nuint> derefResult = TryDeref(baseAddress, offsets);
+        if (!derefResult.IsSuccess)
         {
-            string msg = "Failed to read value.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-    }
-
-    protected internal override unsafe bool TryRead<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets)
-    {
-        if (_isDisposed)
-        {
-            string msg = "Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
+            return derefResult;
         }
 
-        nuint deref = Deref(baseAddress, offsets), handle = _processHandle;
-        return WinInteropWrapper.ReadMemory(handle, deref, buffer, length);
-    }
-
-    protected internal override unsafe void Write<T>(T* data, uint length, nuint baseAddress, params int[] offsets)
-    {
-        if (_isDisposed)
-        {
-            string msg = "Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        nuint deref = Deref(baseAddress, offsets), handle = _processHandle;
-        if (!WinInteropWrapper.ReadMemory(handle, deref, data, length))
-        {
-            string msg = "Failed to write value.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-    }
-
-    protected internal override unsafe bool TryWrite<T>(T* data, uint length, nuint baseAddress, params int[] offsets)
-    {
-        if (_isDisposed)
-        {
-            string msg = "Cannot interact with the memory of an exited process.";
-            ThrowHelper.ThrowInvalidOperationException(msg);
-        }
-
-        nuint deref = Deref(baseAddress, offsets), handle = _processHandle;
-        return WinInteropWrapper.ReadMemory(handle, deref, data, length);
+        nuint deref = derefResult.Value, handle = _processHandle;
+        return new(
+            IsSuccess: WinInteropWrapper.ReadMemory(handle, deref, data, length),
+            Throw: static () =>
+            {
+                string msg = "Failed to read value.";
+                ThrowHelper.ThrowInvalidOperationException(msg);
+            });
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 
 using AslHelp.Common.Exceptions;
+using AslHelp.Common.Results;
 
 namespace AslHelp.Core.Memory.Ipc;
 
@@ -51,7 +52,12 @@ public partial class MemoryManagerBase
     {
         fixed (T* pBuffer = buffer)
         {
-            Read(pBuffer, GetNativeSizeOf<T>(buffer.Length), baseAddress, offsets);
+            Result readResult = TryRead<T>(pBuffer, GetNativeSizeOf<T>(buffer.Length), baseAddress, offsets);
+
+            if (!readResult.IsSuccess)
+            {
+                readResult.Throw();
+            }
         }
     }
 
@@ -123,7 +129,8 @@ public partial class MemoryManagerBase
     {
         fixed (T* pBuffer = buffer)
         {
-            return TryRead<T>(pBuffer, GetNativeSizeOf<T>(buffer.Length), baseAddress, offsets);
+            Result readResult = TryRead<T>(pBuffer, GetNativeSizeOf<T>(buffer.Length), baseAddress, offsets);
+            return readResult.IsSuccess;
         }
     }
 }

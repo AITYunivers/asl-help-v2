@@ -99,18 +99,10 @@ public abstract partial class MemoryManagerBase : IMemoryManager
             return;
         }
 
-        Log("[asl-help] [Info] Disposing of memory manager...");
-
         Process.Dispose();
 
         _isDisposed = true;
     }
-
-    protected internal abstract unsafe void Read<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets) where T : unmanaged;
-    protected internal abstract unsafe bool TryRead<T>(T* buffer, uint length, nuint baseAddress, params int[] offsets) where T : unmanaged;
-
-    protected internal abstract unsafe void Write<T>(T* data, uint length, nuint baseAddress, params int[] offsets) where T : unmanaged;
-    protected internal abstract unsafe bool TryWrite<T>(T* data, uint length, nuint baseAddress, params int[] offsets) where T : unmanaged;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static bool IsNativeInt<T>()

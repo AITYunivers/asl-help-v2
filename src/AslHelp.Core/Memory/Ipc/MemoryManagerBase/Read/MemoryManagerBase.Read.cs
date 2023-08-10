@@ -1,6 +1,8 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 using AslHelp.Common.Exceptions;
+using AslHelp.Common.Results;
 
 namespace AslHelp.Core.Memory.Ipc;
 
@@ -24,7 +26,12 @@ public partial class MemoryManagerBase
     public unsafe T Read<T>(nuint baseAddress, params int[] offsets) where T : unmanaged
     {
         T result;
-        Read<T>(&result, GetNativeSizeOf<T>(), baseAddress, offsets);
+        Result readResult = TryRead<T>(&result, GetNativeSizeOf<T>(), baseAddress, offsets);
+
+        if (!readResult.IsSuccess)
+        {
+            readResult.Throw();
+        }
 
         return result;
     }
@@ -60,7 +67,10 @@ public partial class MemoryManagerBase
     {
         fixed (T* pResult = &result)
         {
-            return TryRead(pResult, GetNativeSizeOf<T>(), baseAddress, offsets);
+            Result readResult = TryRead<T>(pResult, GetNativeSizeOf<T>(), baseAddress, offsets);
+            return readResult.IsSuccess;
         }
     }
+
+    protected abstract unsafe Result TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets) where T : unmanaged;
 }

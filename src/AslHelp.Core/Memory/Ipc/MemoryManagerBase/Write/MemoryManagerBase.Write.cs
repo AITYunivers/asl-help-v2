@@ -1,6 +1,8 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 using AslHelp.Common.Exceptions;
+using AslHelp.Common.Results;
 
 namespace AslHelp.Core.Memory.Ipc;
 
@@ -23,7 +25,12 @@ public partial class MemoryManagerBase
 
     public unsafe void Write<T>(T value, nuint baseAddress, params int[] offsets) where T : unmanaged
     {
-        Write<T>(&value, GetNativeSizeOf<T>(), baseAddress, offsets);
+        Result writeResult = TryWrite<T>(&value, GetNativeSizeOf<T>(), baseAddress, offsets);
+
+        if (!writeResult.IsSuccess)
+        {
+            writeResult.Throw();
+        }
     }
 
     public bool TryWrite<T>(T value, uint baseOffset, params int[] offsets) where T : unmanaged
@@ -53,6 +60,9 @@ public partial class MemoryManagerBase
 
     public unsafe bool TryWrite<T>(T value, nuint baseAddress, params int[] offsets) where T : unmanaged
     {
-        return TryWrite<T>(&value, GetNativeSizeOf<T>(), baseAddress, offsets);
+        Result writeResult = TryWrite<T>(&value, GetNativeSizeOf<T>(), baseAddress, offsets);
+        return writeResult.IsSuccess;
     }
+
+    protected abstract unsafe Result TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets) where T : unmanaged;
 }
