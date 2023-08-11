@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
@@ -38,7 +39,7 @@ public class MemoryReadingBenchmarks
             if (!EmbeddedResource.TryInject(processHandle, res, arch)
                 || !WinInteropWrapper.IsInjected(processHandle, processId, path, out module))
             {
-                throw new("not injected");
+                throw new Win32Exception();
             }
         }
 

@@ -9,8 +9,6 @@ public record Result(
     Action? Throw = null);
 
 public record Result<T>(
-    [property: MemberNotNullWhen(true, nameof(Result<T>.Value))]
-    [property: MemberNotNullWhen(false, nameof(Result<T>.Throw))]
     bool IsSuccess,
     T? Value = default,
     Action? Throw = null) : Result(IsSuccess, Throw);

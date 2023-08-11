@@ -14,14 +14,13 @@ public:
     virtual ~ILogger() = default;
 
     template <typename... Args>
-    constexpr bool Log(std::string& format, Args... args) const
+    bool Log(const std::string& format, Args... args) const
     {
-        auto message = std::format(format, std::make_format_args(args...));
+        auto message = std::vformat(format, std::make_format_args(args...));
         return LogImpl(message);
     }
 
 protected:
-    [[clang::noinline]]
     virtual bool LogImpl(const std::string& message) const = 0;
 };
 
@@ -31,12 +30,6 @@ public:
     ConsoleLogger()
         : _hConsole(GetStdHandle(STD_OUTPUT_HANDLE))
     {
-        AllocConsole();
-    }
-
-    ~ConsoleLogger() override
-    {
-        FreeConsole();
     }
 
 protected:

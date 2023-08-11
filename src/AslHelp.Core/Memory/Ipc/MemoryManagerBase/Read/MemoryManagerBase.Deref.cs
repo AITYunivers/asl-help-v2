@@ -69,5 +69,5 @@ public partial class MemoryManagerBase
         return derefResult.IsSuccess;
     }
 
-    protected abstract Result<nuint> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets);
+    protected internal abstract Result<nuint> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets);
 }

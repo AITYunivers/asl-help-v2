@@ -16,7 +16,7 @@ public class ExternalMemoryManager : MemoryManagerBase
     public ExternalMemoryManager(Process process, ILogger logger)
         : base(process, logger) { }
 
-    protected override unsafe Result<nuint> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets)
+    protected internal override unsafe Result<nuint> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (_isDisposed)
         {
@@ -24,7 +24,7 @@ public class ExternalMemoryManager : MemoryManagerBase
                 IsSuccess: false,
                 Throw: static () =>
                 {
-                    string msg = "Cannot interact with the memory of an exited process.";
+                    const string msg = "Cannot interact with the memory of an exited process.";
                     ThrowHelper.ThrowInvalidOperationException(msg);
                 });
         }
@@ -35,7 +35,7 @@ public class ExternalMemoryManager : MemoryManagerBase
                 IsSuccess: false,
                 Throw: static () =>
                 {
-                    string msg = "Attempted to dereference a null pointer.";
+                    const string msg = "Attempted to dereference a null pointer.";
                     ThrowHelper.ThrowInvalidOperationException(msg);
                 });
         }
@@ -51,7 +51,7 @@ public class ExternalMemoryManager : MemoryManagerBase
                     IsSuccess: false,
                     Throw: static () =>
                     {
-                        string msg = "Failed to dereference pointer.";
+                        const string msg = "Failed to dereference pointer.";
                         ThrowHelper.ThrowInvalidOperationException(msg);
                     });
             }
@@ -64,7 +64,7 @@ public class ExternalMemoryManager : MemoryManagerBase
             Value: result);
     }
 
-    protected override unsafe Result TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
+    protected internal override unsafe Result TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (_isDisposed)
         {
@@ -72,7 +72,7 @@ public class ExternalMemoryManager : MemoryManagerBase
                 IsSuccess: false,
                 Throw: static () =>
                 {
-                    string msg = "Cannot interact with the memory of an exited process.";
+                    const string msg = "Cannot interact with the memory of an exited process.";
                     ThrowHelper.ThrowInvalidOperationException(msg);
                 });
         }
@@ -88,12 +88,12 @@ public class ExternalMemoryManager : MemoryManagerBase
             IsSuccess: WinInteropWrapper.ReadMemory(handle, deref, buffer, length),
             Throw: static () =>
             {
-                string msg = "Failed to read value.";
+                const string msg = "Failed to read value.";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             });
     }
 
-    protected override unsafe Result TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
+    protected internal override unsafe Result TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (_isDisposed)
         {
@@ -101,7 +101,7 @@ public class ExternalMemoryManager : MemoryManagerBase
                 IsSuccess: false,
                 Throw: static () =>
                 {
-                    string msg = "Cannot interact with the memory of an exited process.";
+                    const string msg = "Cannot interact with the memory of an exited process.";
                     ThrowHelper.ThrowInvalidOperationException(msg);
                 });
         }
@@ -117,7 +117,7 @@ public class ExternalMemoryManager : MemoryManagerBase
             IsSuccess: WinInteropWrapper.ReadMemory(handle, deref, data, length),
             Throw: static () =>
             {
-                string msg = "Failed to read value.";
+                const string msg = "Failed to read value.";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             });
     }

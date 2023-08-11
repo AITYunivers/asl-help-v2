@@ -3,7 +3,9 @@
 #include <Windows.h>
 #include <memory>
 #include <optional>
+#include <stdint.h>
 #include <string>
+#include <vector>
 
 namespace IO
 {
@@ -80,6 +82,26 @@ public:
     }
 
     template <typename T>
+    [[nodiscard]]
+    std::optional<std::vector<T>> TryRead(const uint32_t length) const
+    {
+        std::vector<T> buffer(length);
+
+        unsigned long bytesRead;
+        if (!ReadFile(_hPipe, buffer.data(), sizeof(T) * length, &bytesRead, nullptr))
+        {
+            return std::nullopt;
+        }
+
+        if (bytesRead != sizeof(T) * length)
+        {
+            return std::nullopt;
+        }
+
+        return buffer;
+    }
+
+    template <typename T>
     bool TryWrite(const T value) const
     {
         unsigned long bytesWritten;
@@ -89,6 +111,18 @@ public:
         }
 
         return bytesWritten == sizeof(T);
+    }
+
+    template <typename T>
+    bool TryWrite(const std::vector<T> values) const
+    {
+        unsigned long bytesWritten;
+        if (!WriteFile(_hPipe, values.data(), sizeof(T) * values.size(), &bytesWritten, nullptr))
+        {
+            return false;
+        }
+
+        return bytesWritten == sizeof(T) * values.size();
     }
 
     bool Disconnect()

@@ -64,5 +64,5 @@ public partial class MemoryManagerBase
         return writeResult.IsSuccess;
     }
 
-    protected abstract unsafe Result TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets) where T : unmanaged;
+    protected internal abstract unsafe Result TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets) where T : unmanaged;
 }

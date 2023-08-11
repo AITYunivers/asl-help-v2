@@ -3,10 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 #
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".metadata", ".metadata", "{5AEF7C88-3F3A-47A5-9B2F-E322B29E1BB9}"
 	ProjectSection(SolutionItems) = preProject
+		.clang-format = .clang-format
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		global.json = global.json
 		Directory.Build.props = Directory.Build.props
+		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "impl", "impl", "{FB1F130E-A97B-44FE-A2BC-657480FC61E9}"
@@ -15,9 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "impl", "impl", "{FB1F130E-A
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "native", "native", "{69D40FE5-0807-4835-8C20-233DFDA7D0E4}"
-	ProjectSection(SolutionItems) = preProject
-		native\Directory.Build.props = native\Directory.Build.props
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B5B5B2B0-550F-48EE-A367-DDD18E4F5466}"
 	ProjectSection(SolutionItems) = preProject

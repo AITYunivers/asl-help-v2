@@ -1,15 +1,19 @@
 #include <windows.h>
 
 #include <IO/Fwd.hxx>
-#include <Memory/MemoryManager.hxx>
+#include <Memory/MemoryRequestHandler.hxx>
 
 using namespace std;
 using namespace IO;
 using namespace IO::Logging;
 using namespace Memory;
 
-static unsigned long WINAPI Main(void*)
+static DWORD WINAPI Main(LPVOID)
 {
+#ifdef _DEBUG
+    AllocConsole();
+#endif
+
     const auto logger =
 #ifdef _DEBUG
         LoggingService::Create<ConsoleLogger>();
@@ -17,52 +21,69 @@ static unsigned long WINAPI Main(void*)
         nullptr;
 #endif
 
-    // auto pipe = NamedPipeServer::Init(L"\\\\.\\pipe\\asl-help-pipe", 512);
-    // if (!pipe.has_value())
-    // {
-    //     DEBUG_LOG(logger, "Failed to initialize named pipe.");
-    //     return 1;
-    // }
+    auto pipe = NamedPipeServer::Init(L"\\\\.\\pipe\\asl-help-pipe", 512);
+    if (!pipe.has_value())
+    {
+        DEBUG_LOG(logger, "Failed to initialize named pipe.");
+        return 1;
+    }
 
-    // if (!pipe->Connect())
-    // {
-    //     DEBUG_LOG(logger, "Failed to connect to named pipe.");
-    //     return 2;
-    // }
+    while (true)
+    {
+        if (!pipe->Connect())
+        {
+            continue;
+        }
 
-    // auto memory = MemoryManager(pipe.value());
-    // while (true)
-    // {
-    //     auto cmd = pipe->TryRead<IO::PipeRequest>();
-    //     if (!cmd.has_value())
-    //     {
-    //         DEBUG_LOG(logger, "Failed reading command.");
-    //         break;
-    //     }
+        DEBUG_LOG(logger, "Connected to pipe.");
 
-    //     DEBUG_LOG(logger, "Received command: {}.", cmd);
+        auto memory = MemoryRequestHandler(pipe.value());
+        while (true)
+        {
+            auto cmd = pipe->TryRead<IO::PipeRequest>();
+            if (!cmd.has_value())
+            {
+                DEBUG_LOG(logger, "Failed reading command ({}).", GetLastError());
 
-    //     if (cmd == IO::PipeRequest::Close)
-    //     {
-    //         DEBUG_LOG(logger, "  => Closing pipe connection.");
-    //         break;
-    //     }
+                if (GetLastError() == ERROR_BROKEN_PIPE)
+                {
+                    break;
+                }
 
-    //     auto response = memory.Handle(cmd.value());
-    //     pipe->TryWrite<IO::PipeResponse>(response);
-    // }
+                continue;
+            }
 
-    // pipe->Dispose();
+            DEBUG_LOG(logger, "Received command: {}.", static_cast<int>(cmd.value()));
+
+            if (cmd == IO::PipeRequest::Close)
+            {
+                DEBUG_LOG(logger, "  => Closing pipe connection.");
+                break;
+            }
+
+            memory.HandleNextRequest(cmd.value());
+        }
+
+        pipe->Disconnect();
+    }
+
+    pipe->Dispose();
+
+#ifdef _DEBUG
+    FreeConsole();
+#endif
 
     return 0;
 }
 
-extern "C"
+BOOL WINAPI DllMain(HINSTANCE, DWORD fdwReason, LPVOID)
 {
-    __declspec(dllexport) uint32_t AslHelp_Native_EntryPoint(void*)
+    switch (fdwReason)
     {
+    case DLL_PROCESS_ATTACH:
         CreateThread(nullptr, 0, Main, nullptr, 0, nullptr);
-
-        return 0;
+        break;
     }
+
+    return TRUE;
 }

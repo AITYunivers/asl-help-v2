@@ -72,5 +72,5 @@ public partial class MemoryManagerBase
         }
     }
 
-    protected abstract unsafe Result TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets) where T : unmanaged;
+    protected internal abstract unsafe Result TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets) where T : unmanaged;
 }
