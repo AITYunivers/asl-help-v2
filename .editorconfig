@@ -335,3 +335,13 @@ dotnet_naming_style._camelcase.required_prefix = _
 dotnet_naming_style._camelcase.required_suffix =
 dotnet_naming_style._camelcase.word_separator  =
 dotnet_naming_style._camelcase.capitalization  = camel_case
+
+[src/AslHelp.Core/Memory/Native/**/*.cs]
+
+dotnet_diagnostic.IDE1006.severity = none # IDE1006: Naming rule violation.
+dotnet_diagnostic.CS0649.severity  = none # CS0649: Field is never assigned to, and will always have its default value.
+
+[impl/AslHelp.Mono/Memory/MonoInterop/**/{Structs,Enums}/*.cs]
+
+dotnet_diagnostic.IDE1006.severity = none # IDE1006: Naming rule violation.
+dotnet_diagnostic.CS0649.severity  = none # CS0649: Field is never assigned to, and will always have its default value.
