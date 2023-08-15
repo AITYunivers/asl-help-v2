@@ -14,4 +14,8 @@
     <Reference Include="../../ref/LiveSplit.Core.dll" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Memory\MonoInterop\MonoV1\" />
+  </ItemGroup>
+
 </Project>
