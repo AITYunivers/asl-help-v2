@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AslHelp.Core\AslHelp.Core.csproj" />
+    <ProjectReference Include="../../src/AslHelp.Core/AslHelp.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup Label="References">

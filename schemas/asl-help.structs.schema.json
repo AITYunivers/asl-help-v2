@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "asl-help.structs",
+  "description": "Specifies a collection of structs reflected from a game engine's internals.",
+  "type": "object",
+  "properties": {
+    "inherits": {
+      "type": "object",
+      "properties": {
+        "major": {
+          "type": "string"
+        },
+        "minor": {
+          "type": "string"
+        }
+      },
+      "required": [ "major", "minor" ]
+    },
+    "structs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "parent": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "alignment": {
+                  "type": "integer"
+                }
+              },
+              "required": [ "type", "name" ]
+            }
+          }
+        },
+        "required": [ "name", "fields" ]
+      }
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "offset": {
+            "type": "integer"
+          },
+          "pattern": {
+            "type": "string"
+          }
+        },
+        "required": [ "name", "pattern" ]
+      }
+    }
+  },
+  "anyOf": [
+    {
+      "required": [ "inherits" ]
+    },
+    {
+      "required": [ "structs" ]
+    }
+  ]
+}

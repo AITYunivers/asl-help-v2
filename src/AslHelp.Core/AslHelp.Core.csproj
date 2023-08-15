@@ -20,6 +20,7 @@
     <Reference Include="../../ref/*.dll" />
 
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.Extensions" />
   </ItemGroup>
 
   <ItemGroup>

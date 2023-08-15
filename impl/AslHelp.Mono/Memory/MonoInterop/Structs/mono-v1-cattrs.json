@@ -1,0 +1,92 @@
+{
+  "$schema": "./../../../../../schemas/asl-help.structs.schema.json",
+  "inherits": { "major": "mono", "minor": "v1" },
+  "structs": [
+    {
+      "name": "MonoClass",
+      "fields": [
+        { "type": "MonoClass*", "name": "element_class" },
+        { "type": "MonoClass*", "name": "cast_class" },
+        { "type": "MonoClass**", "name": "supertypes" },
+        { "type": "ushort", "name": "idepth" },
+        { "type": "byte", "name": "rank" },
+        { "type": "int", "name": "instance_size" },
+
+        { "type": "uint:1", "name": "inited" },
+        { "type": "uint:1", "name": "init_pending" },
+        { "type": "uint:1", "name": "size_inited" },
+        { "type": "uint:1", "name": "valuetype" },
+        { "type": "uint:1", "name": "enumtype" },
+        { "type": "uint:1", "name": "blittable" },
+        { "type": "uint:1", "name": "unicode" },
+        { "type": "uint:1", "name": "wastypebuilder" },
+
+        { "type": "byte", "name": "min_align" },
+
+        { "type": "uint:4", "name": "packing_size" },
+        { "type": "uint:1", "name": "ghcimpl" },
+        { "type": "uint:1", "name": "has_finalize" },
+        { "type": "uint:1", "name": "marshalbyref" },
+        { "type": "uint:1", "name": "contextbound" },
+
+        { "type": "uint:1", "name": "delegate" },
+        { "type": "uint:1", "name": "gc_descr_inited" },
+        { "type": "uint:1", "name": "has_cctor" },
+        { "type": "uint:1", "name": "has_references" },
+        { "type": "uint:1", "name": "has_static_refs" },
+        { "type": "uint:1", "name": "no_special_static_fields" },
+        { "type": "uint:1", "name": "is_com_object" },
+        { "type": "uint:1", "name": "nested_classes_inited" },
+
+        { "type": "uint:1", "name": "interfaces_inited" },
+        { "type": "uint:1", "name": "simd_type" },
+        { "type": "uint:1", "name": "is_generic" },
+        { "type": "uint:1", "name": "is_inflated" },
+
+        { "type": "byte", "name": "exception_type" },
+
+        { "type": "MonoClass*", "name": "parent" },
+        { "type": "MonoClass*", "name": "nested_in" },
+        { "type": "MonoCustomAttrInfo*", "name": "cattrs" },
+        { "type": "MonoImage*", "name": "image" },
+        { "type": "char*", "name": "name" },
+        { "type": "char*", "name": "name_space" },
+        { "type": "uint", "name": "type_token" },
+        { "type": "int", "name": "vtable_size" },
+
+        { "type": "ushort", "name": "interface_count" },
+        { "type": "ushort", "name": "interface_id" },
+        { "type": "ushort", "name": "max_interface_id" },
+        { "type": "ushort", "name": "interface_offsets_count" },
+        { "type": "MonoClass**", "name": "interfaces_packed" },
+        { "type": "ushort*", "name": "interface_offsets_packed" },
+        { "type": "byte*", "name": "interface_bitmap" },
+        { "type": "MonoClass**", "name": "interfaces" },
+
+        { "type": "int", "name": "sizes" },
+        { "type": "uint", "name": "flags" },
+        { "type": "uint", "name": "field.first" },
+        { "type": "uint", "name": "field.count" },
+        { "type": "uint", "name": "method.first" },
+        { "type": "uint", "name": "method.count" },
+        { "type": "MonoMarshalType*", "name": "marshal_info" },
+
+        { "type": "MonoClassField*", "name": "fields" },
+        { "type": "MonoMethod**", "name": "methods" },
+        { "type": "MonoType", "name": "this_arg" },
+        { "type": "MonoType", "name": "byval_arg" },
+        { "type": "MonoGenericClass*", "name": "generic_class" },
+        { "type": "MonoGenericContainer*", "name": "generic_container" },
+
+        { "type": "void*", "name": "reflection_info" },
+        { "type": "void*", "name": "gc_descr" },
+
+        { "type": "MonoClassRuntimeInfo*", "name": "runtime_info" },
+        { "type": "MonoClass*", "name": "next_class_cache" },
+        { "type": "MonoMethod**", "name": "vtable" },
+        { "type": "MonoClassExt*", "name": "ext" },
+        { "type": "void*", "name": "user_data" }
+      ]
+    }
+  ]
+}

@@ -11,10 +11,10 @@ public sealed partial class SettingsCreator
     public struct XmlSetting
     {
         [XmlAttribute] public string Id;
-        [XmlAttribute] public string State;
+        [XmlAttribute] public string? State;
         [XmlAttribute] public string Label;
-        [XmlAttribute] public string Parent;
-        [XmlAttribute] public string ToolTip;
+        [XmlAttribute] public string? Parent;
+        [XmlAttribute] public string? ToolTip;
 
         [XmlElement("Setting")] public XmlSetting[] Children;
     }
