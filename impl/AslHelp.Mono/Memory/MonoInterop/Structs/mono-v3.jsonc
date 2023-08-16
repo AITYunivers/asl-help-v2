@@ -5,10 +5,10 @@
     {
       "name": "MonoAssemblyName",
       "fields": [
-        { "type": "char*", "name": "name" },
-        { "type": "char*", "name": "culture" },
+        { "type": "sbyte*", "name": "name" },
+        { "type": "sbyte*", "name": "culture" },
 
-        { "type": "char*", "name": "hash_value" },
+        { "type": "sbyte*", "name": "hash_value" },
         { "type": "byte*", "name": "public_key" },
         { "type": "byte[17]", "name": "public_key_token" },
         { "type": "uint", "name": "hash_alg" },
@@ -49,15 +49,15 @@
         { "type": "byte:1", "name": "core_clr_platform_code" },
         { "type": "byte:1", "name": "minimal_delta" },
 
-        { "type": "char*", "name": "name" },
-        { "type": "char*", "name": "filename" },
-        { "type": "char*", "name": "assembly_name" },
-        { "type": "char*", "name": "module_name" },
+        { "type": "sbyte*", "name": "name" },
+        { "type": "sbyte*", "name": "filename" },
+        { "type": "sbyte*", "name": "assembly_name" },
+        { "type": "sbyte*", "name": "module_name" },
         { "type": "uint", "name": "time_date_stamp" },
-        { "type": "char*", "name": "version" },
+        { "type": "sbyte*", "name": "version" },
         { "type": "short", "name": "md_version_major" },
         { "type": "short", "name": "md_version_minor" },
-        { "type": "char*", "name": "guid" },
+        { "type": "sbyte*", "name": "guid" },
         { "type": "MonoCLIImageInfo*", "name": "image_info" },
 
         { "type": "MonoMemPool*", "name": "mempool" },

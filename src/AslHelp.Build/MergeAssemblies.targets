@@ -18,7 +18,7 @@
     <!-- Execute ILMerge with the necessary dependencies. -->
     <Exec WorkingDirectory="$(OutDir)"
           Command="
-        $(ILMergeConsolePath) ^
+        $(ILMergeConsolePath) /ndebug /union ^
         /out:$(LibraryName).dll ^
         @(AslHelpReferences, ' ') ^
         @(MiscReferences, ' ')

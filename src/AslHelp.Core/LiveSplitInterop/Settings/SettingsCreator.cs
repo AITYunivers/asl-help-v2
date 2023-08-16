@@ -95,13 +95,13 @@ public sealed partial class SettingsCreator
         return this;
     }
 
-    public SettingsCreator Create(dynamic[,] settings, bool defaultValue = true, string? defaultParent = null)
+    public SettingsCreator Create(dynamic?[,] settings, bool defaultValue = true, string? defaultParent = null)
     {
         IEnumerable<Setting> converted = EnumerateDynamic(settings, defaultValue, defaultParent);
         return Create(converted, defaultParent);
     }
 
-    private IEnumerable<Setting> EnumerateDynamic(dynamic[,] settings, bool defaultValue, string? defaultParent)
+    private IEnumerable<Setting> EnumerateDynamic(dynamic?[,] settings, bool defaultValue, string? defaultParent)
     {
         (int outerCount, int innerCount) = (settings.GetLength(0), settings.GetLength(1));
 
@@ -124,19 +124,19 @@ public sealed partial class SettingsCreator
         }
     }
 
-    public SettingsCreator Create(dynamic[][] settings, bool defaultValue = true, string? defaultParent = null)
+    public SettingsCreator Create(dynamic?[][] settings, bool defaultValue = true, string? defaultParent = null)
     {
         IEnumerable<Setting> converted = EnumerateDynamic(settings, defaultValue, defaultParent);
         return Create(converted, defaultParent);
     }
 
-    private IEnumerable<Setting> EnumerateDynamic(dynamic[][] settings, bool defaultValue, string? defaultParent)
+    private IEnumerable<Setting> EnumerateDynamic(dynamic?[][] settings, bool defaultValue, string? defaultParent)
     {
         int count = settings.Length;
 
         for (int i = 0; i < count; i++)
         {
-            dynamic[] setting = settings[i];
+            dynamic?[] setting = settings[i];
             ThrowHelper.ThrowIfNull(setting, paramName: $"settings[{i}]");
 
             yield return setting.Length switch
@@ -156,23 +156,23 @@ public sealed partial class SettingsCreator
         }
     }
 
-    public SettingsCreator CreateCustom(dynamic[,] settings, params int[] positions)
+    public SettingsCreator CreateCustom(dynamic?[,] settings, params int[] positions)
     {
         return CreateCustom(settings, true, null, positions);
     }
 
-    public SettingsCreator CreateCustom(dynamic[,] settings, string? defaultParent, params int[] positions)
+    public SettingsCreator CreateCustom(dynamic?[,] settings, string? defaultParent, params int[] positions)
     {
         return CreateCustom(settings, true, defaultParent, positions);
     }
 
-    public SettingsCreator CreateCustom(dynamic[,] settings, bool defaultValue, string? defaultParent, params int[] positions)
+    public SettingsCreator CreateCustom(dynamic?[,] settings, bool defaultValue, string? defaultParent, params int[] positions)
     {
         IEnumerable<Setting> converted = EnumerateCustom(settings, defaultValue, positions);
         return Create(converted, defaultParent);
     }
 
-    private IEnumerable<Setting> EnumerateCustom(dynamic[,] settings, bool defaultValue, params int[] positions)
+    private IEnumerable<Setting> EnumerateCustom(dynamic?[,] settings, bool defaultValue, params int[] positions)
     {
         for (int i = 0; i < positions.Length; i++)
         {
@@ -193,7 +193,7 @@ public sealed partial class SettingsCreator
 
         for (int i = 0; i < outerCount; i++)
         {
-            dynamic[] sorted = new dynamic[5];
+            dynamic?[] sorted = new dynamic[5];
             for (int j = 0; j < innerCount; j++)
             {
                 sorted[positions[j]] = settings[i, j];

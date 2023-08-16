@@ -21,10 +21,10 @@
 
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.Extensions" />
-  </ItemGroup>
 
-  <ItemGroup>
     <ProjectReference Include="../AslHelp.Common/AslHelp.Common.csproj" />
+
+    <PackageReference Include="System.Text.Json" Version="7.0.3" />
   </ItemGroup>
 
 </Project>

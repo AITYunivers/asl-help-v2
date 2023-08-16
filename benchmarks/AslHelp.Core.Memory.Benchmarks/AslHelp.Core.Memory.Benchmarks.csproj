@@ -12,7 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AslHelp.Core\AslHelp.Core.csproj" />
+    <Reference Include="../../ref/LiveSplit.Core.dll" />
+    <ProjectReference Include="../../src/AslHelp.Core/AslHelp.Core.csproj" />
   </ItemGroup>
 
 </Project>

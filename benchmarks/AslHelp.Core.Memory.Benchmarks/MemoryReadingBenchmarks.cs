@@ -1,14 +1,11 @@
-using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 
-using AslHelp.Core.IO;
 using AslHelp.Core.Memory.Ipc;
-using AslHelp.Core.Memory.Native;
 
 using BenchmarkDotNet.Attributes;
+
+using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.Benchmarks;
 
@@ -16,61 +13,34 @@ namespace AslHelp.Core.Memory.Benchmarks;
 public class MemoryReadingBenchmarks
 {
 #nullable disable
-    private ExternalMemoryManager _externalMemory;
-    private InternalMemoryManager _internalMemory;
+    private Process _process;
+    private ExternalMemoryManager _memory;
 #nullable restore
 
     [GlobalSetup]
     public void Setup()
     {
-        var process = Process.GetProcessesByName("Post Void").Single();
-
-        nuint processHandle = (nuint)(nint)process.Handle;
-        uint processId = (uint)process.Id;
-
-        string arch = process.ProcessIs64Bit() ? "x64" : "x86";
-        string res = $"AslHelp.Native.{arch}.dll";
-
-        Directory.CreateDirectory(arch);
-        string path = Path.GetFullPath($"{arch}/{res}");
-
-        if (!WinInteropWrapper.IsInjected(processHandle, processId, path, out Module? module))
-        {
-            if (!EmbeddedResource.TryInject(processHandle, res, arch)
-                || !WinInteropWrapper.IsInjected(processHandle, processId, path, out module))
-            {
-                throw new Win32Exception();
-            }
-        }
-
-        // if (!WinInteropWrapper.TryCallEntryPoint(processHandle, module.Base, "AslHelp_Native_EntryPoint"u8))
-        // {
-        //     throw new("couldn't call entry point");
-        // }
-
-        NamedPipeClientStream pipe = new("asl-help-pipe");
-        pipe.Connect(3000);
-
-        _externalMemory = new ExternalMemoryManager(process);
-        _internalMemory = new InternalMemoryManager(process, pipe);
+        _process = Process.GetProcessesByName("Post Void").Single();
+        _memory = new(_process);
     }
 
     [GlobalCleanup]
     public void Cleanup()
     {
-        _externalMemory.Dispose();
-        _internalMemory.Dispose();
+        _memory.Dispose();
+        _process.Dispose();
     }
 
     [Benchmark(Baseline = true)]
-    public double ReadDouble_External()
+    public double ReadDouble_LiveSplit()
     {
-        return _externalMemory.Read<double>(0x813390, 0x48, 0x10, 0x690, 0x30);
+        var dp = new DeepPointer(0x813390, 0x48, 0x10, 0x690, 0x30);
+        return dp.Deref<double>(_process);
     }
 
     [Benchmark]
-    public double ReadDouble_Pipe()
+    public double ReadDouble_AslHelp()
     {
-        return _internalMemory.Read<double>(0x813390, 0x48, 0x10, 0x690, 0x30);
+        return _memory.Read<double>(0x813390, 0x48, 0x10, 0x690, 0x30);
     }
 }

@@ -37,10 +37,10 @@
     {
       "name": "MonoAssemblyName",
       "fields": [
-        { "type": "char*", "name": "name" },
-        { "type": "char*", "name": "culture" },
+        { "type": "sbyte*", "name": "name" },
+        { "type": "sbyte*", "name": "culture" },
 
-        { "type": "char*", "name": "hash_value" },
+        { "type": "sbyte*", "name": "hash_value" },
         { "type": "byte*", "name": "public_key" },
         { "type": "byte[17]", "name": "public_key_token" },
         { "type": "uint", "name": "hash_alg" },
@@ -102,13 +102,13 @@
         { "type": "byte:1", "name": "idx_blob_wide" },
         { "type": "byte:1", "name": "core_clr_platform_code" },
 
-        { "type": "char*", "name": "name" },
-        { "type": "char*", "name": "assembly_name" },
-        { "type": "char*", "name": "module_name" },
-        { "type": "char*", "name": "version" },
+        { "type": "sbyte*", "name": "name" },
+        { "type": "sbyte*", "name": "assembly_name" },
+        { "type": "sbyte*", "name": "module_name" },
+        { "type": "sbyte*", "name": "version" },
         { "type": "short", "name": "md_version_major" },
         { "type": "short", "name": "md_version_minor" },
-        { "type": "char*", "name": "guid" },
+        { "type": "sbyte*", "name": "guid" },
         { "type": "MonoCLIImageInfo*", "name": "image_info" },
 
         { "type": "MonoMemPool*", "name": "mempool" },
@@ -238,8 +238,8 @@
         { "type": "MonoClass*", "name": "parent" },
         { "type": "MonoClass*", "name": "nested_in" },
         { "type": "MonoImage*", "name": "image" },
-        { "type": "char*", "name": "name" },
-        { "type": "char*", "name": "name_space" },
+        { "type": "sbyte*", "name": "name" },
+        { "type": "sbyte*", "name": "name_space" },
         { "type": "uint", "name": "type_token" },
         { "type": "int", "name": "vtable_size" },
 
@@ -327,7 +327,7 @@
       "name": "MonoGenericParamInfo",
       "fields": [
         { "type": "MonoClass*", "name": "pklass" },
-        { "type": "char*", "name": "name" },
+        { "type": "sbyte*", "name": "name" },
         { "type": "ushort", "name": "flags" },
         { "type": "uint", "name": "token" },
         { "type": "MonoClass**", "name": "constraints" }
@@ -345,7 +345,7 @@
       "name": "MonoClassField",
       "fields": [
         { "type": "MonoType*", "name": "type" },
-        { "type": "char*", "name": "name" },
+        { "type": "sbyte*", "name": "name" },
         { "type": "MonoClass*", "name": "parent" },
         { "type": "int", "name": "offset" }
       ]
@@ -360,7 +360,7 @@
         { "type": "MonoClass*", "name": "klass" },
 
         { "type": "MonoMethodSignature*", "name": "signature" },
-        { "type": "char*", "name": "name" },
+        { "type": "sbyte*", "name": "name" },
 
         { "type": "uint:1", "name": "inline_info" },
         { "type": "uint:1", "name": "inline_failure" },

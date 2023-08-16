@@ -49,8 +49,8 @@
         { "type": "MonoClass*", "name": "nested_in" },
         { "type": "MonoCustomAttrInfo*", "name": "cattrs" },
         { "type": "MonoImage*", "name": "image" },
-        { "type": "char*", "name": "name" },
-        { "type": "char*", "name": "name_space" },
+        { "type": "sbyte*", "name": "name" },
+        { "type": "sbyte*", "name": "name_space" },
         { "type": "uint", "name": "type_token" },
         { "type": "int", "name": "vtable_size" },
 

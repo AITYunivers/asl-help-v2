@@ -20,7 +20,7 @@ indent_size = 2
 indent_size = 2
 
 # Other markup files
-[*.{json,toml,xml,yml,yaml}]
+[*.{json,jsonc,toml,xml,yml,yaml}]
 indent_size = 2
 
 # Markdown files

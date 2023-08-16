@@ -9,6 +9,7 @@ artifacts/
 bin/
 obj/
 build/
+BenchmarkDotNet.Artifacts/
 
 # User-specific files
 *.user

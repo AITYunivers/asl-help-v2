@@ -1,48 +1,46 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Web.Script.Serialization;
+using System.Text.Json;
 
 namespace AslHelp.Core.LiveSplitInterop.Settings;
 
 public sealed partial class SettingsCreator
 {
     private record struct JsonSetting(
-        string Id,
+        string? Id,
         bool State,
-        string Label,
+        string? Label,
         string? Parent,
         string? ToolTip,
         JsonSetting[] Children);
 
     public void FromJson(string path, bool defaultValue = true, string? defaultParent = null)
     {
-        using StreamReader sr = new(path);
-        string json = sr.ReadToEnd();
-
-        JavaScriptSerializer serializer = new();
+        using FileStream fs = File.OpenRead(path);
 
         try
         {
-            JsonSetting[] settings = serializer.Deserialize<JsonSetting[]>(json);
-
-            IEnumerable<Setting> converted = EnumerateJsonSettings(settings, defaultValue, defaultParent);
-            Create(converted, defaultParent);
+            if (JsonSerializer.Deserialize<JsonSetting[]>(fs) is { Length: > 0 } settings)
+            {
+                IEnumerable<Setting> converted = EnumerateJsonSettings(settings, defaultValue, defaultParent);
+                Create(converted, defaultParent);
+            }
         }
         catch (InvalidOperationException)
         {
-            JsonElement[][] settings = JsonSerializer.Deserialize<JsonElement[][]>(fs);
-
-            IEnumerable<Setting> converted = EnumerateDynamicJsonSettings(settings, defaultValue, defaultParent);
-            Create(converted, defaultParent);
+            if (JsonSerializer.Deserialize<JsonElement[][]>(fs) is { Length: > 0 } settings)
+            {
+                IEnumerable<Setting> converted = EnumerateDynamicJsonSettings(settings, defaultValue, defaultParent);
+                Create(converted, defaultParent);
+            }
         }
     }
 
-    private IEnumerable<Setting> EnumerateJsonSettings(JsonSetting[] nodes, bool defaultValue, string defaultParent)
+    private static IEnumerable<Setting> EnumerateJsonSettings(JsonSetting[] nodes, bool defaultValue, string? defaultParent)
     {
-        for (int i = 0; i < nodes.Length; i++)
+        foreach (var node in nodes)
         {
-            JsonSetting node = nodes[i];
             yield return new(
                 node.Id,
                 node.State,
@@ -60,14 +58,12 @@ public sealed partial class SettingsCreator
         }
     }
 
-    private IEnumerable<Setting> EnumerateDynamicJsonSettings(dynamic[][] nodes, bool defaultValue, string defaultParent)
+    private static IEnumerable<Setting> EnumerateDynamicJsonSettings(JsonElement[][] nodes, bool defaultValue, string? defaultParent)
     {
-        for (int i = 0; i < nodes.Length; i++)
+        foreach (var node in nodes)
         {
-            dynamic[] node = nodes[i];
-
-            if (node[^1].ValueKind is Array
-                && node[^1].Deserialize<dynamic[][]>() is { Length: > 0 } children)
+            if (node[^1].ValueKind == JsonValueKind.Array
+                && node[^1].Deserialize<JsonElement[][]>() is { Length: > 0 } children)
             {
                 yield return node.Length switch
                 {
