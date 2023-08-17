@@ -1,0 +1,107 @@
+{
+  "$schema": "../../../../../schemas/asl-help.structs.schema.json",
+  "inherits": { "major": "il2cpp", "minor": "v23" },
+  "structs": [
+    {
+      "name": "MonoImage", // Il2CppImage
+      "fields": [
+        { "type": "sbyte*", "name": "name" },
+        { "type": "sbyte*", "name": "nameNoExt" },
+        { "type": "MonoAssembly*", "name": "assembly" },
+
+        { "type": "uint", "name": "typeCount" },
+        { "type": "uint", "name": "exportedTypeCount" },
+        { "type": "uint", "name": "customAttributeCount" },
+
+        { "type": "void*", "name": "metadataHandle" },
+        { "type": "void*", "name": "nameToClassHashTable" },
+        { "type": "void*", "name": "codeGenModule" },
+        { "type": "uint", "name": "token" },
+        { "type": "byte", "name": "dynamic" }
+      ]
+    },
+
+    {
+      "name": "MonoClass", // Il2CppClass
+      "fields": [
+        { "type": "MonoImage*", "name": "image" },
+        { "type": "void*", "name": "gc_desc" },
+        { "type": "sbyte*", "name": "name" },
+        { "type": "sbyte*", "name": "name_space" }, // const char* namespaze
+        { "type": "MonoType", "name": "byval_arg" },
+        { "type": "MonoType", "name": "this_arg" },
+
+        { "type": "MonoClass*", "name": "element_class" },
+        { "type": "MonoClass*", "name": "castClass" },
+        { "type": "MonoClass*", "name": "declaringType" },
+        { "type": "MonoClass*", "name": "parent" },
+        { "type": "MonoGenericClass*", "name": "generic_class" },
+        { "type": "void*", "name": "typeMetadataHandle" },
+        { "type": "void*", "name": "interopData" },
+        { "type": "MonoClass*", "name": "klass" },
+
+        { "type": "MonoClassField*", "name": "fields" },
+        { "type": "EventInfo*", "name": "events" },
+        { "type": "PropertyInfo*", "name": "properties" },
+        { "type": "MethodInfo**", "name": "methods" },
+        { "type": "MonoClass**", "name": "nestedTypes" },
+        { "type": "MonoClass**", "name": "implementedInterfaces" },
+        { "type": "void*", "name": "interfaceOffsets" },
+
+        { "type": "void*", "name": "static_fields" },
+
+        { "type": "void*", "name": "rgctx_data" },
+        { "type": "MonoClass**", "name": "typeHierarchy" },
+        { "type": "void*", "name": "unity_user_data" },
+        { "type": "uint", "name": "initializationExceptionGCHandle" },
+        { "type": "uint", "name": "cctor_started" },
+        { "type": "uint", "name": "cctor_finished" },
+        { "type": "ulong", "name": "cctor_thread" },
+        { "type": "void*", "name": "genericContainerHandle" },
+
+        { "type": "uint", "name": "instance_size" },
+        { "type": "uint", "name": "actualSize" },
+        { "type": "uint", "name": "element_size" },
+        { "type": "int", "name": "native_size" },
+        { "type": "uint", "name": "static_fields_size" },
+        { "type": "uint", "name": "thread_static_fields_size" },
+        { "type": "int", "name": "thread_static_fields_offset" },
+
+        { "type": "uint", "name": "flags" },
+        { "type": "uint", "name": "token" },
+
+        { "type": "ushort", "name": "method_count" },
+        { "type": "ushort", "name": "property_count" },
+        { "type": "ushort", "name": "field_count" },
+        { "type": "ushort", "name": "event_count" },
+        { "type": "ushort", "name": "nested_type_count" },
+        { "type": "ushort", "name": "vtable_count" },
+        { "type": "ushort", "name": "interfaces_count" },
+        { "type": "ushort", "name": "interface_offsets_count" },
+
+        { "type": "byte", "name": "typeHierarchyDepth" },
+        { "type": "byte", "name": "genericRecursionDepth" },
+        { "type": "byte", "name": "rank" },
+        { "type": "byte", "name": "minimumAlignment" },
+        { "type": "byte", "name": "naturalAligment" },
+        { "type": "byte", "name": "packingSize" },
+
+        { "type": "byte:1", "name": "initialized_and_no_error" },
+        { "type": "byte:1", "name": "valuetype" },
+        { "type": "byte:1", "name": "initialized" },
+        { "type": "byte:1", "name": "enumtype" },
+        { "type": "byte:1", "name": "is_generic" },
+        { "type": "byte:1", "name": "has_references" },
+        { "type": "byte:1", "name": "init_pending" },
+        { "type": "byte:1", "name": "size_inited" },
+
+        { "type": "byte:1", "name": "has_finalize" },
+        { "type": "byte:1", "name": "has_cctor" },
+        { "type": "byte:1", "name": "is_blittable" },
+        { "type": "byte:1", "name": "is_import_or_windows_runtime" },
+        { "type": "byte:1", "name": "is_vtable_initialized" },
+        { "type": "byte:1", "name": "has_initialization_error" }
+      ]
+    }
+  ]
+}

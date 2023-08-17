@@ -18,7 +18,7 @@ internal static class EmbeddedResource
 
     public static Stream GetResourceStream(string resource)
     {
-        Stream resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
+        Stream? resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
 
         if (resourceStream is null)
         {
