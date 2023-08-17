@@ -1,5 +1,5 @@
 {
-  "$schema": "./../../../../../schemas/asl-help.structs.schema.json",
+  "$schema": "../../../../../schemas/asl-help.structs.schema.json",
   "structs": [
     {
       "name": "MonoAssemblyName", // Il2CppAssemblyName
@@ -29,7 +29,7 @@
         { "type": "int", "name": "referencedAssemblyCount" },
         { "type": "MonoAssemblyName", "name": "aname" }
       ]
-    }
+    },
 
     {
       "name": "MonoImage", // Il2CppImage
