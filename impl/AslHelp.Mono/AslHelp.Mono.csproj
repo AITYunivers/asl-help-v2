@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net481</TargetFramework>
-
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,20 +10,6 @@
 
   <ItemGroup Label="References">
     <Reference Include="../../ref/LiveSplit.Core.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Memory\MonoInterop\Structs\il2cpp-v1.jsonc" />
-    <None Remove="Memory\MonoInterop\Structs\il2cpp-v23.jsonc" />
-    <None Remove="Memory\MonoInterop\Structs\il2cpp-v27.jsonc" />
-    <None Remove="Memory\MonoInterop\Structs\mono-v1.jsonc" />
-    <None Remove="Memory\MonoInterop\Structs\mono-v1-cattrs.jsonc" />
-    <None Remove="Memory\MonoInterop\Structs\mono-v2.jsonc" />
-    <None Remove="Memory\MonoInterop\Structs\mono-v3.jsonc" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Memory\MonoInterop\" />
   </ItemGroup>
 
   <ItemGroup>
