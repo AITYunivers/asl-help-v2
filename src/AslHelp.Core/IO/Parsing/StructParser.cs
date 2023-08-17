@@ -74,12 +74,25 @@ public partial class NativeStructMap
                 Super = s.Super
             };
 
-            int offset =
-                s.Super is not null && nsm.TryGetValue(s.Super, out var super)
-                ? super.Fields.Last()
-                : 0;
+            int offset = 0, alignment = 0;
+            if (s.Super is not null && nsm.TryGetValue(s.Super, out var super))
+            {
+                NativeField last = super.Values.Last();
 
+                offset = last.Offset + last.Size;
+                alignment = last.Alignment;
+            }
 
+            foreach (Field f in s.Fields)
+            {
+                var x = f.Type switch
+                {
+                    [.., '*'] => 0,
+                    [.. string type, '[', .. string foo, ']'] => 1,
+                    [.. string type, '<', .., '>' ] => 2,
+                    _ => 3
+                };
+            }
         }
     }
 }
