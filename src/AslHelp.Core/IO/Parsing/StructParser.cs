@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -37,7 +38,7 @@ public partial class NativeStructMap
     private record Field(
         [property: JsonPropertyName("type")] string Type,
         [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("alignment")] int Alignment);
+        [property: JsonPropertyName("alignment")] int? Alignment);
 
     internal static NativeStructMap Parse(string engine, string major, string minor, bool is64Bit)
     {
@@ -74,49 +75,316 @@ public partial class NativeStructMap
                 Super = s.Super
             };
 
-            int offset = 0, alignment = 0;
-            if (s.Super is not null && nsm.TryGetValue(s.Super, out var super))
-            {
-                NativeField last = super.Values.Last();
-
-                offset = last.Offset + last.Size;
-                alignment = last.Alignment;
-            }
+            NativeFieldParser parser =
+                s.Super is not null && nsm.TryGetValue(s.Super, out var super)
+                ? new(nsm, super, is64Bit)
+                : new(nsm, is64Bit);
 
             foreach (Field f in s.Fields)
             {
-                var x = f.Type switch
+                var result = parser.ParseNext(f.Type, f.Alignment);
+                ns[f.Name] = new(result.BitField)
                 {
-                    [.., '*'] => 0,
-                    [.. string type, '[', .. string foo, ']'] => 1,
-                    [.. string type, '<', .., '>' ] => 2,
-                    _ => 3
+                    Name = f.Name,
+                    Type = result.TypeName,
+                    Offset = result.Offset,
+                    Size = result.Size,
+                    Alignment = result.Alignment
                 };
             }
+
+            nsm[s.Name] = ns;
         }
+
+        return nsm;
+    }
+
+    public override string ToString()
+    {
+        StringBuilder sb = new();
+
+        foreach (NativeStruct ns in this)
+        {
+            if (ns.Super is string super)
+            {
+                sb.AppendLine($"{ns.Name} : {super} // 0x{ns.Size:X3} (0x{ns.SelfAlignedSize:X3})");
+            }
+            else
+            {
+                sb.AppendLine($"{ns.Name} // 0x{ns.Size:X3} (0x{ns.SelfAlignedSize:X3})");
+            }
+
+            foreach (NativeField nf in ns.Fields)
+            {
+                if (nf.BitMask > 0)
+                {
+                    sb.AppendLine($"    {nf.Type,-32} {nf.Name,-32} " +
+                                  $"// 0x{nf.Offset:X3} " +
+                                  $"(0x{nf.Size:X3}, 0b{Convert.ToString(nf.BitMask, 2).PadLeft(8, '0')})");
+                }
+                else
+                {
+                    sb.AppendLine($"    {nf.Type,-32} {nf.Name,-32} // 0x{nf.Offset:X3} (0x{nf.Size:X3})");
+                }
+            }
+        }
+
+        return sb.ToString();
     }
 }
 
-public sealed partial class NativeStructMap : Dictionary<string, NativeStruct> { }
-
-public sealed class NativeStruct : Dictionary<string, NativeField>
+public abstract class OrderedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IList<TValue>, IReadOnlyList<TValue>
+    where TKey : notnull
 {
+    private readonly Dictionary<TKey, TValue> _dict;
+    private readonly Dictionary<TKey, int> _indices;
+    private readonly List<TValue> _items = new();
+
+    protected OrderedDictionary(IEqualityComparer<TKey>? comparer = null)
+    {
+        comparer ??= EqualityComparer<TKey>.Default;
+
+        _dict = new(comparer);
+        _indices = new(comparer);
+    }
+
+    public ICollection<TKey> Keys => _dict.Keys;
+    public ICollection<TValue> Values => _items;
+
+    public int Count => _items.Count;
+    public bool IsReadOnly => false;
+
+    public TValue this[TKey key]
+    {
+        get => _dict[key];
+        set
+        {
+            _dict[key] = value;
+
+            if (_indices.TryGetValue(key, out int index))
+            {
+                _items.RemoveAt(index);
+                _items.Insert(index, value);
+            }
+            else
+            {
+                _indices[key] = _items.Count;
+                _items.Add(value);
+            }
+        }
+    }
+
+    public TValue this[int index]
+    {
+        get => _items[index];
+        set
+        {
+            _items[index] = value;
+
+            TKey key = GetKeyForItem(value);
+            _dict[key] = value;
+            _indices[key] = index;
+        }
+    }
+
+    protected abstract TKey GetKeyForItem(TValue item);
+
+    public void Add(TValue item)
+    {
+        Add(GetKeyForItem(item), item);
+    }
+
+    public void Add(TKey key, TValue value)
+    {
+        _dict.Add(key, value);
+        _indices.Add(key, _items.Count);
+        _items.Add(value);
+    }
+
+    public void Add(KeyValuePair<TKey, TValue> item)
+    {
+        Add(item.Key, item.Value);
+    }
+
+    public void Insert(int index, TValue item)
+    {
+        foreach (var kvp in _indices.Where(kvp => kvp.Value >= index))
+        {
+            _indices[kvp.Key] = kvp.Value + 1;
+        }
+
+        TKey key = GetKeyForItem(item);
+
+        _dict.Add(key, item);
+        _indices.Add(key, index);
+        _items.Insert(index, item);
+    }
+
+    public bool Remove(TValue item)
+    {
+        return Remove(GetKeyForItem(item));
+    }
+
+    public bool Remove(TKey key)
+    {
+        if (!_indices.TryGetValue(key, out int index))
+        {
+            return false;
+        }
+
+        foreach (var kvp in _indices.Where(kvp => kvp.Value > index))
+        {
+            _indices[kvp.Key] = kvp.Value - 1;
+        }
+
+        _items.RemoveAt(index);
+        return _dict.Remove(key) && _indices.Remove(key);
+    }
+
+    public bool Remove(KeyValuePair<TKey, TValue> item)
+    {
+        return Remove(item.Key);
+    }
+
+    public void RemoveAt(int index)
+    {
+        TKey key = GetKeyForItem(_items[index]);
+
+        foreach (var kvp in _indices.Where(kvp => kvp.Value > index))
+        {
+            _indices[kvp.Key] = kvp.Value - 1;
+        }
+
+        _dict.Remove(key);
+        _indices.Remove(key);
+        _items.RemoveAt(index);
+    }
+
+    public bool ContainsKey(TKey key)
+    {
+        return _dict.ContainsKey(key);
+    }
+
+    public bool Contains(TValue item)
+    {
+        return Contains(new KeyValuePair<TKey, TValue>(GetKeyForItem(item), item));
+    }
+
+    public bool Contains(KeyValuePair<TKey, TValue> item)
+    {
+        return _dict.Contains(item);
+    }
+
+    public int IndexOf(TValue item)
+    {
+        return _indices[GetKeyForItem(item)];
+    }
+
+    public bool TryGetValue(TKey key, [UnscopedRef] out TValue value)
+    {
+        return _dict.TryGetValue(key, out value);
+    }
+
+    public void Clear()
+    {
+        _dict.Clear();
+        _indices.Clear();
+        _items.Clear();
+    }
+
+    public void CopyTo(TValue[] array, int arrayIndex)
+    {
+        if (arrayIndex < 0)
+        {
+            const string msg = "Starting index must be equal to or greater than 0.";
+            ThrowHelper.ThrowArgumentOutOfRangeException(nameof(arrayIndex), msg);
+        }
+
+        for (int i = 0; i < Count; i++)
+        {
+            if (arrayIndex >= array.Length)
+            {
+                const string msg = $"The number of elements in this collection is greater than the available space in '{nameof(array)}'.";
+                ThrowHelper.ThrowArgumentException(nameof(array), msg);
+            }
+
+            array[arrayIndex++] = _items[i];
+        }
+    }
+
+    public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+    {
+        if (arrayIndex < 0)
+        {
+            const string msg = "Starting index must be equal to or greater than 0.";
+            ThrowHelper.ThrowArgumentOutOfRangeException(nameof(arrayIndex), msg);
+        }
+
+        for (int i = 0; i < Count; i++)
+        {
+            if (arrayIndex >= array.Length)
+            {
+                const string msg = $"The number of elements in this collection is greater than the available space in '{nameof(array)}'.";
+                ThrowHelper.ThrowArgumentException(nameof(array), msg);
+            }
+
+            TValue item = _items[i];
+            array[arrayIndex++] = new(GetKeyForItem(item), item);
+        }
+    }
+
+    public IEnumerator<TValue> GetEnumerator()
+    {
+        return _items.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
+    {
+        return _dict.GetEnumerator();
+    }
+}
+
+public sealed partial class NativeStructMap : OrderedDictionary<string, NativeStruct>
+{
+    protected override string GetKeyForItem(NativeStruct item)
+    {
+        return item.Name;
+    }
+}
+
+public sealed class NativeStruct : OrderedDictionary<string, NativeField>
+{
+    public IEnumerable<NativeField> Fields => this;
+
     public required string Name { get; init; }
     public required string? Super { get; init; }
 
-    public IEnumerable<NativeField> Fields => Values;
+    public int Size => Fields.First().Offset;
+    public int Alignment => Fields.Last().Alignment;
+    public int SelfAlignedSize => NativeFieldParser.Align(Size, Alignment);
+
+    protected override string GetKeyForItem(NativeField item)
+    {
+        return item.Name;
+    }
 }
 
 public sealed class NativeField
 {
     private readonly int _trailingZeroCount;
 
-    public NativeField() { }
-
-    public NativeField(int bitFieldOffset, int bitFieldSize)
+    public NativeField(BitField? bitField)
     {
-        BitMask = ((1u << bitFieldSize) - 1) << bitFieldOffset;
-        _trailingZeroCount = TrailingZeroCount(BitMask);
+        if (bitField is (int size, int offset))
+        {
+            BitMask = ((1u << size) - 1) << offset;
+            _trailingZeroCount = TrailingZeroCount(BitMask);
+        }
     }
 
     public required string Name { get; init; }

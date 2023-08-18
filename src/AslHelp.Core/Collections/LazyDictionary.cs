@@ -38,11 +38,9 @@ public abstract class LazyDictionary<TKey, TValue> : IEnumerable<TValue>
     /// <exception cref="ArgumentNullException">
     ///     Thrown when <paramref name="comparer"/> is <see langword="null"/>.
     /// </exception>
-    protected LazyDictionary(IEqualityComparer<TKey> comparer)
+    protected LazyDictionary(IEqualityComparer<TKey>? comparer)
     {
-        ThrowHelper.ThrowIfNull(comparer);
-
-        _comparer = comparer;
+        _comparer = comparer ?? EqualityComparer<TKey>.Default;
         _cache = new(comparer);
     }
 

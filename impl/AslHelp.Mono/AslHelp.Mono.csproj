@@ -13,13 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Memory\Native\il2cpp-v1.jsonc" />
-    <EmbeddedResource Include="Memory\Native\il2cpp-v23.jsonc" />
-    <EmbeddedResource Include="Memory\Native\il2cpp-v27.jsonc" />
-    <EmbeddedResource Include="Memory\Native\mono-v1-cattrs.jsonc" />
-    <EmbeddedResource Include="Memory\Native\mono-v1.jsonc" />
-    <EmbeddedResource Include="Memory\Native\mono-v2.jsonc" />
-    <EmbeddedResource Include="Memory\Native\mono-v3.jsonc" />
+    <EmbeddedResource Include="Memory/Native/il2cpp-v1.jsonc" />
+    <EmbeddedResource Include="Memory/Native/il2cpp-v23.jsonc" />
+    <EmbeddedResource Include="Memory/Native/il2cpp-v27.jsonc" />
+    <EmbeddedResource Include="Memory/Native/mono-v1-cattrs.jsonc" />
+    <EmbeddedResource Include="Memory/Native/mono-v1.jsonc" />
+    <EmbeddedResource Include="Memory/Native/mono-v2.jsonc" />
+    <EmbeddedResource Include="Memory/Native/mono-v3.jsonc" />
   </ItemGroup>
 
 </Project>
