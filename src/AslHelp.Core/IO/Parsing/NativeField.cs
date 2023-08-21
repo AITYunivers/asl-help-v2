@@ -1,20 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-using AslHelp.Common.Exceptions;
 
 namespace AslHelp.Core.IO.Parsing;
 
-public sealed class NativeField
+internal sealed class NativeField
 {
     private readonly int _trailingZeroCount;
 

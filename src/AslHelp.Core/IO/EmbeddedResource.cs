@@ -18,7 +18,17 @@ internal static class EmbeddedResource
 
     public static Stream GetResourceStream(string resource)
     {
-        Stream? resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
+        return GetResourceStream(resource, Assembly.GetCallingAssembly());
+    }
+
+    public static Stream GetResourceStream(string resource, Assembly asm)
+    {
+        foreach (var name in asm.GetManifestResourceNames())
+        {
+            System.Console.WriteLine(name);
+        }
+
+        Stream? resourceStream = asm.GetManifestResourceStream(resource);
 
         if (resourceStream is null)
         {

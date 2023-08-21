@@ -8,6 +8,8 @@
   <ItemGroup>
     <InternalsVisibleTo Include="AslHelp.Basic" />
     <InternalsVisibleTo Include="AslHelp.Mono" />
+
+    <InternalsVisibleTo Include="AslHelp.Core.IO.Benchmarks" />
     <InternalsVisibleTo Include="AslHelp.Core.Memory.Benchmarks" />
   </ItemGroup>
 

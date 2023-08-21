@@ -9,59 +9,59 @@ namespace AslHelp.Core.Memory.Ipc;
 
 public partial class MemoryManagerBase
 {
-    public IEnumerable<nuint> ScanAll(uint offset, params string[] pattern)
+    public IEnumerable<nuint> ScanAll(int offset, params string[] pattern)
     {
         Signature signature = new(offset, pattern);
         return ScanAll(signature);
     }
 
-    public IEnumerable<nuint> ScanAll(uint offset, params byte[] pattern)
+    public IEnumerable<nuint> ScanAll(int offset, params byte[] pattern)
     {
         Signature signature = new(offset, pattern);
         return ScanAll(signature);
     }
 
-    public IEnumerable<nuint> ScanAll(string moduleName, uint offset, params string[] pattern)
+    public IEnumerable<nuint> ScanAll(string moduleName, int offset, params string[] pattern)
     {
         Signature signature = new(offset, pattern);
         return ScanAll(moduleName, signature);
     }
 
-    public IEnumerable<nuint> ScanAll(string moduleName, uint offset, params byte[] pattern)
+    public IEnumerable<nuint> ScanAll(string moduleName, int offset, params byte[] pattern)
     {
         Signature signature = new(offset, pattern);
         return ScanAll(moduleName, signature);
     }
 
-    public IEnumerable<nuint> ScanAll(Module module, uint offset, params string[] pattern)
+    public IEnumerable<nuint> ScanAll(Module module, int offset, params string[] pattern)
     {
         return ScanAll(module.Base, module.MemorySize, offset, pattern);
     }
 
-    public IEnumerable<nuint> ScanAll(Module module, uint offset, params byte[] pattern)
+    public IEnumerable<nuint> ScanAll(Module module, int offset, params byte[] pattern)
     {
         return ScanAll(module.Base, module.MemorySize, offset, pattern);
     }
 
-    public IEnumerable<nuint> ScanAll(nuint startAddress, nuint endAddress, uint offset, params string[] pattern)
+    public IEnumerable<nuint> ScanAll(nuint startAddress, nuint endAddress, int offset, params string[] pattern)
     {
         uint size = (uint)(endAddress - startAddress);
         return ScanAll(startAddress, size, offset, pattern);
     }
 
-    public IEnumerable<nuint> ScanAll(nuint startAddress, nuint endAddress, uint offset, params byte[] pattern)
+    public IEnumerable<nuint> ScanAll(nuint startAddress, nuint endAddress, int offset, params byte[] pattern)
     {
         uint size = (uint)(endAddress - startAddress);
         return ScanAll(startAddress, size, offset, pattern);
     }
 
-    public IEnumerable<nuint> ScanAll(nuint startAddress, uint size, uint offset, params string[] pattern)
+    public IEnumerable<nuint> ScanAll(nuint startAddress, uint size, int offset, params string[] pattern)
     {
         Signature signature = new(offset, pattern);
         return ScanAll(startAddress, size, signature);
     }
 
-    public IEnumerable<nuint> ScanAll(nuint startAddress, uint size, uint offset, params byte[] pattern)
+    public IEnumerable<nuint> ScanAll(nuint startAddress, uint size, int offset, params byte[] pattern)
     {
         Signature signature = new(offset, pattern);
         return ScanAll(startAddress, size, signature);

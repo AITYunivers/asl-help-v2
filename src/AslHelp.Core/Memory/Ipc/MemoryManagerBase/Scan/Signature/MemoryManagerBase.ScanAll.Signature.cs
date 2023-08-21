@@ -58,7 +58,7 @@ public partial class MemoryManagerBase
 
         foreach (uint scanOffset in new ScanEnumerator(memory, signature, alignment))
         {
-            yield return startAddress + scanOffset + signature.Offset;
+            yield return startAddress + scanOffset + (uint)signature.Offset;
         }
     }
 }

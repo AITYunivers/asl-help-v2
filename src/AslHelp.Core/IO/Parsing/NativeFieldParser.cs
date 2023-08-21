@@ -1,24 +1,31 @@
 ﻿using System;
+using System.Text.RegularExpressions;
+
+using AslHelp.Common.Extensions;
 
 namespace AslHelp.Core.IO.Parsing;
 
-public record struct FieldParseResult(
+internal record struct FieldParseResult(
     string TypeName,
     int Offset,
     int Size,
     int Alignment,
     BitField? BitField);
 
-public record struct BitField(
+internal record struct BitField(
     int Size,
     int Offset);
 
 internal sealed class NativeFieldParser
 {
+    private readonly Regex _genericRegex = new(@"^(\w+)<\w+>$", RegexOptions.Compiled);
+    private readonly Regex _arrayRegex = new(@"^(\w+)\[(\d*)\]$", RegexOptions.Compiled);
+    private readonly Regex _bitfieldRegex = new(@"^(\w+):(\d+)$", RegexOptions.Compiled);
+
     private readonly NativeStructMap _structs;
     private readonly byte _ptrSize;
 
-    private int _offset;
+    private int _fieldOffset;
     private int _bitOffset = -1;
 
     private int _pAlignment;
@@ -33,101 +40,112 @@ internal sealed class NativeFieldParser
     public NativeFieldParser(NativeStructMap structs, NativeStruct super, bool is64Bit)
         : this(structs, is64Bit)
     {
-        _offset = super.Size;
+        _fieldOffset = super.Size;
         _pAlignment = super.Alignment;
     }
 
     public FieldParseResult ParseNext(string typeName, int? forceAlignment)
     {
-        int tBitOffset = _bitOffset, tOffset = _offset;
-        SizeParseResult result = ParseTypeSize(typeName);
+        int tBitOffset = _bitOffset, tOffset = _fieldOffset;
+        var result = ParseTypeSize(typeName);
 
+        // Result was not a bitfield or we weren't previously in a bitfield.
+        // In that case, we align this field to the required alignment.
         if (!result.BitField.HasValue || tBitOffset == -1)
         {
+            // If we were previously in a bitfield, but are not anymore, we need to break the byte alignment.
             if (tBitOffset != -1 && _bitOffset == -1 && _pSize == 0)
             {
-                _offset++;
+                _fieldOffset++;
             }
 
-            tOffset = Align(_offset, forceAlignment ?? Math.Max(_pAlignment, result.Alignment));
+            // We align to either a forced alignment or the maximum between the previous alignment and the current alignment.
+            tOffset = Align(_fieldOffset, forceAlignment ?? Math.Max(_pAlignment, result.Alignment));
         }
 
-        _offset = tOffset + result.Size;
+        _fieldOffset = tOffset + result.Size;
         _pSize = result.Size;
         _pAlignment = result.Alignment;
 
         return new(typeName, tOffset, result.Size, result.Alignment, result.BitField);
     }
 
-    private record struct SizeParseResult(
-        string TypeName,
-        int Size,
-        int Alignment,
-        BitField? BitField);
-
-    private SizeParseResult ParseTypeSize(string typeName)
+    private (string TypeName, int Size, int Alignment, BitField? BitField) ParseTypeSize(string typeName)
     {
+        // If we're not in a bitfield, we simply reset the offset to -1.
+
         if (IsNativeType(typeName, out int size))
         {
             _bitOffset = -1;
-            return new(typeName, size, size, null);
+            return (typeName, size, size, null);
         }
 
         if (IsKnownStruct(typeName, out size, out int alignment))
         {
             _bitOffset = -1;
-            return new(typeName, size, alignment, null);
+            return (typeName, size, alignment, null);
         }
 
-        if (typeName is [.. string genericName, '<', .., '>'])
+        if (_genericRegex.Groups(typeName) is [_, { Value: string genericName }])
         {
             _bitOffset = -1;
             return ParseTypeSize(genericName);
         }
 
-        if (typeName is [.. string arrayType, '[', .. string sCount, ']'])
+        if (_arrayRegex.Groups(typeName) is [_, { Value: string arrayType }, { Value: string sCount }])
         {
             _bitOffset = -1;
 
+            // We allow empty array sizes to be specified, in which case we default to 1.
             if (!int.TryParse(sCount, out int count))
             {
                 count = 1;
             }
 
+            // Get size and alignment for the array's element type recursively.
             (_, size, alignment, _) = ParseTypeSize(arrayType);
-            return new($"{arrayType}[]", size * count, alignment, null);
+            return ($"{arrayType}[]", size * count, alignment, null);
         }
 
-        if (typeName is [.. string nativeType, ':', .. string sBitFieldSize])
+        if (_bitfieldRegex.Groups(typeName) is [_, { Value: string nativeType }, { Value: string sBitFieldSize }])
         {
+            // If we're a bitfield, assume it must be of a native type.
             _ = IsNativeType(nativeType, out size);
+
+            // Explicitly let it throw for incorrect inputs.
             int bitFieldSize = int.Parse(sBitFieldSize);
 
-            // If we previously were not in a bitfield, or the type's alignment changed,
-            // reset the current bit-offset to 0.
+            // If we previously were not in a bitfield, or the underlying type's alignment changed,
+            // reset the current bitfield offset to 0.
             if (_bitOffset == -1 || size != _pAlignment)
             {
                 _bitOffset = 0;
             }
 
-            // Advance bit-offset by the new size.
+            // Store the current bitfield offset for creating the bitfield mask.
             int tBitOffset = _bitOffset;
+
+            // Advance bitfield offset by the new size.
             _bitOffset += bitFieldSize;
 
             alignment = size;
             size = _bitOffset / 8;
 
+            // We only care about the bitfield offset within the current byte.
             _bitOffset %= 8;
 
-            return new(typeName, size, alignment, new(bitFieldSize, tBitOffset));
+            return (typeName, size, alignment, new(bitFieldSize, tBitOffset));
         }
 
+        // If none of the above apply, just assume it's some kind of typedef to a pointer.
         _bitOffset = -1;
-        return new(typeName, _ptrSize, _ptrSize, null);
+        return (typeName, _ptrSize, _ptrSize, null);
     }
 
     private bool IsKnownStruct(string typeName, out int size, out int alignment)
     {
+        // Check the backing data for whether we already know this struct's size and alignment.
+        // This is used for in-line (arrays of) structs.
         if (_structs.TryGetValue(typeName, out NativeStruct? es))
         {
             size = es.Size;
@@ -136,12 +154,15 @@ internal sealed class NativeFieldParser
             return true;
         }
 
-        size = alignment = _ptrSize;
+        size = alignment = 0;
         return false;
     }
 
     private bool IsNativeType(string typeName, out int size)
     {
+        // C and C++ primitive types are redefined in the JSON files to match C# types.
+        // This is to avoid having to accommodate for all combinations of `int`, `long`, `unsigned int`, `unsigned long`, etc.
+
         size = typeName switch
         {
             "byte" or "sbyte" or "bool" => 0x01,
@@ -156,6 +177,14 @@ internal sealed class NativeFieldParser
         return size != -1;
     }
 
+    /// <summary>
+    ///     Aligns a given <paramref name="offset"/> to the specified <paramref name="alignment"/>.
+    /// </summary>
+    /// <param name="offset">The offset to align.</param>
+    /// <param name="alignment">The alignment to apply.</param>
+    /// <returns>
+    ///     The aligned offset.
+    /// </returns>
     public static int Align(int offset, int alignment)
     {
         if (alignment <= 0)
