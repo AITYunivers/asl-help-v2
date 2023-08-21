@@ -21,34 +21,38 @@ internal sealed class NativeStructMap : OrderedDictionary<string, NativeStruct>
     }
 
     private record Root(
-        [property: JsonPropertyName("inherits")] Inheritance? Inheritance,
-        [property: JsonPropertyName("signatures")] Signature[]? Signatures,
-        [property: JsonPropertyName("structs")] Struct[]? Structs);
+        Inheritance? Inheritance,
+        Signature[]? Signatures,
+        Struct[]? Structs);
 
     private record Inheritance(
-        [property: JsonPropertyName("major")] string Major,
-        [property: JsonPropertyName("minor")] string Minor);
+        string Major,
+        string Minor);
 
     private record Signature(
-        [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("offset")] int Offset,
-        [property: JsonPropertyName("pattern")] string Pattern);
+        string Name,
+        int Offset,
+        string Pattern);
 
     private record Struct(
-        [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("super")] string? Super,
-        [property: JsonPropertyName("fields")] Field[] Fields);
+        string Name,
+        string? Super,
+        Field[] Fields);
 
     private record Field(
-        [property: JsonPropertyName("type")] string Type,
-        [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("alignment")] int? Alignment);
+        string Type,
+        string Name,
+        int? Alignment);
 
     public static NativeStructMap Parse(string engine, string major, string minor, bool is64Bit, Assembly asm)
     {
         using Stream source = EmbeddedResource.GetResourceStream($"AslHelp.{engine}.Memory.Native.{major}-{minor}.jsonc", asm);
 
-        Root? root = JsonSerializer.Deserialize<Root>(source);
+        Root? root = JsonSerializer.Deserialize<Root>(source, new JsonSerializerOptions
+        {
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            PropertyNameCaseInsensitive = true
+        });
         if (root is null)
         {
             const string msg = "Provided resource was a JSON 'null' literal.";
