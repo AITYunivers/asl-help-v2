@@ -2,12 +2,13 @@
   "$schema": "../../../../schemas/asl-help.structs.schema.json",
   "structs": [
     {
-      "name": "MonoAssemblyName", // Il2CppAssemblyName
+      "name": "Il2CppAssemblyName",
       "fields": [
-        { "type": "sbyte*", "name": "name" },
-        { "type": "sbyte*", "name": "culture" },
+        { "type": "int", "name": "nameIndex" },
+        { "type": "int", "name": "cultureIndex" },
+        { "type": "int", "name": "hashValueIndex" },
+        { "type": "int", "name": "publicKeyIndex" },
 
-        { "type": "byte*", "name": "public_key" },
         { "type": "uint", "name": "hash_alg" },
         { "type": "int", "name": "hash_len" },
         { "type": "uint", "name": "flags" },
@@ -21,52 +22,44 @@
       ]
     },
     {
-      "name": "MonoAssembly", // Il2CppAssembly
+      "name": "Il2CppAssembly",
       "fields": [
-        { "type": "MonoImage*", "name": "image" },
-        { "type": "uint", "name": "token" },
-        { "type": "int", "name": "referencedAssemblyStart" },
-        { "type": "int", "name": "referencedAssemblyCount" },
-        { "type": "MonoAssemblyName", "name": "aname" }
+        { "type": "int", "name": "imageIndex" },
+        { "type": "int", "name": "customAttributeIndex" },
+        { "type": "Il2CppAssemblyName", "name": "aname" }
       ]
     },
 
     {
-      "name": "MonoImage", // Il2CppImage
+      "name": "Il2CppImage",
       "fields": [
         { "type": "sbyte*", "name": "name" },
-        { "type": "sbyte*", "name": "nameNoExt" },
-        { "type": "MonoAssembly*", "name": "assembly" },
+        { "type": "int", "name": "assemblyIndex" },
 
         { "type": "int", "name": "typeStart" },
         { "type": "uint", "name": "typeCount" },
-        { "type": "int", "name": "exportedTypeStart" },
-        { "type": "uint", "name": "exportedTypeCount" },
-        { "type": "int", "name": "customAttributeStart" },
-        { "type": "uint", "name": "customAttributeCount" },
 
         { "type": "int", "name": "entryPointIndex" },
-        { "type": "void*", "name": "nameToClassHashTable" },
-        { "type": "uint", "name": "token" },
-        { "type": "byte", "name": "dynamic" }
+
+        { "type": "void*", "name": "nameToClassHashTable" }
       ]
     },
 
     {
-      "name": "MonoType", // Il2CppType
+      "name": "Il2CppType",
       "fields": [
-        { "type": "void*", "name": "data" }, // union of about a million things
-        { "type": "int:16", "name": "attrs" },
-        { "type": "int:8", "name": "type" },
-        { "type": "int:6", "name": "num_mods" },
-        { "type": "int:1", "name": "byref" },
-        { "type": "int:1", "name": "pinned" }
+        { "type": "void*", "name": "data" },
+        { "type": "uint:16", "name": "attrs" },
+        { "type": "uint:8", "name": "type" },
+        { "type": "uint:6", "name": "num_mods" },
+        { "type": "uint:1", "name": "byref" },
+        { "type": "uint:1", "name": "pinned" }
       ]
     },
     {
-      "name": "MonoArrayType", // Il2CppArrayType
+      "name": "Il2CppArrayType",
       "fields": [
-        { "type": "MonoType*", "name": "etype" },
+        { "type": "Il2CppType*", "name": "etype" },
         { "type": "byte", "name": "rank" },
         { "type": "byte", "name": "numsizes" },
         { "type": "byte", "name": "numlobounds" },
@@ -76,41 +69,42 @@
     },
 
     {
-      "name": "MonoClass", // Il2CppClass
+      "name": "Il2CppClass",
       "fields": [
-        { "type": "MonoImage*", "name": "image" },
+        { "type": "Il2CppImage*", "name": "image" },
         { "type": "void*", "name": "gc_desc" },
+
         { "type": "sbyte*", "name": "name" },
-        { "type": "sbyte*", "name": "name_space" }, // const char* namespaze
-        { "type": "MonoType", "name": "byval_arg" },
-        { "type": "MonoType", "name": "this_arg" },
+        { "type": "sbyte*", "name": "namespaze" },
 
-        { "type": "MonoClass*", "name": "element_class" },
-        { "type": "MonoClass*", "name": "castClass" },
-        { "type": "MonoClass*", "name": "declaringType" },
-        { "type": "MonoClass*", "name": "parent" },
-        { "type": "MonoGenericClass*", "name": "generic_class" },
-        { "type": "void*", "name": "typeDefinition" },
-        { "type": "void*", "name": "interopData" },
-        { "type": "MonoClass*", "name": "klass" },
+        { "type": "Il2CppType*", "name": "byval_arg" },
+        { "type": "Il2CppType*", "name": "this_arg" },
 
-        { "type": "MonoClassField*", "name": "fields" },
+        { "type": "Il2CppClass*", "name": "element_class" },
+        { "type": "Il2CppClass*", "name": "castClass" },
+        { "type": "Il2CppClass*", "name": "declaringType" },
+        { "type": "Il2CppClass*", "name": "parent" },
+        { "type": "Il2CppGenericClass*", "name": "generic_class" },
+        { "type": "Il2CppTypeDefinition*", "name": "typeDefinition" },
+
+        { "type": "FieldInfo*", "name": "fields" },
         { "type": "EventInfo*", "name": "events" },
         { "type": "PropertyInfo*", "name": "properties" },
         { "type": "MethodInfo**", "name": "methods" },
-        { "type": "MonoClass**", "name": "nestedTypes" },
-        { "type": "MonoClass**", "name": "implementedInterfaces" },
+        { "type": "Il2CppClass**", "name": "nestedTypes" },
+        { "type": "Il2CppClass**", "name": "implementedInterfaces" },
+        { "type": "MethodInfo**", "name": "vtable" },
         { "type": "void*", "name": "interfaceOffsets" },
 
         { "type": "void*", "name": "static_fields" },
 
         { "type": "void*", "name": "rgctx_data" },
-        { "type": "MonoClass**", "name": "typeHierarchy" },
-        { "type": "uint", "name": "initializationExceptionGCHandle" },
+        { "type": "Il2CppClass**", "name": "typeHierarchy" },
         { "type": "uint", "name": "cctor_started" },
         { "type": "uint", "name": "cctor_finished" },
         { "type": "ulong", "name": "cctor_thread", "alignment": 8 },
         { "type": "int", "name": "genericContainerIndex" },
+        { "type": "int", "name": "customAttributeIndex" },
 
         { "type": "uint", "name": "instance_size" },
         { "type": "uint", "name": "actualSize" },
@@ -121,7 +115,6 @@
         { "type": "int", "name": "thread_static_fields_offset" },
 
         { "type": "uint", "name": "flags" },
-        { "type": "uint", "name": "token" },
 
         { "type": "ushort", "name": "method_count" },
         { "type": "ushort", "name": "property_count" },
@@ -133,13 +126,10 @@
         { "type": "ushort", "name": "interface_offsets_count" },
 
         { "type": "byte", "name": "typeHierarchyDepth" },
-        { "type": "byte", "name": "genericRecursionDepth" },
         { "type": "byte", "name": "rank" },
         { "type": "byte", "name": "minimumAlignment" },
-        { "type": "byte", "name": "naturalAligment" },
         { "type": "byte", "name": "packingSize" },
 
-        { "type": "byte:1", "name": "initialized_and_no_error" },
         { "type": "byte:1", "name": "valuetype" },
         { "type": "byte:1", "name": "initialized" },
         { "type": "byte:1", "name": "enumtype" },
@@ -147,63 +137,80 @@
         { "type": "byte:1", "name": "has_references" },
         { "type": "byte:1", "name": "init_pending" },
         { "type": "byte:1", "name": "size_inited" },
-
         { "type": "byte:1", "name": "has_finalize" },
+
         { "type": "byte:1", "name": "has_cctor" },
-        { "type": "byte:1", "name": "is_blittable" },
-        { "type": "byte:1", "name": "is_import_or_windows_runtime" },
-        { "type": "byte:1", "name": "is_vtable_initialized" },
-        { "type": "byte:1", "name": "has_initialization_error" }
+        { "type": "byte:1", "name": "is_blittable" }
       ]
     },
+
     {
-      "name": "MonoGenericContext", // Il2CppGenericContext
-      "fields": [
-        { "type": "MonoGenericInst*", "name": "class_inst" },
-        { "type": "MonoGenericInst*", "name": "method_inst" }
-      ]
-    },
-    {
-      "name": "MonoGenericClass", // Il2CppGenericClass
-      "fields": [
-        { "type": "int", "name": "typeDefinitionIndex" },
-        { "type": "MonoGenericContext", "name": "context" },
-        { "type": "MonoClass*", "name": "cached_class" }
-      ]
-    },
-    {
-      "name": "MonoGenericInst", // Il2CppGenericInst
+      "name": "Il2CppGenericInst",
       "fields": [
         { "type": "uint", "name": "type_argc" },
-        { "type": "MonoType**", "name": "type_argv" }
+        { "type": "Il2CppType**", "name": "type_argv" }
+      ]
+    },
+    {
+      "name": "Il2CppGenericContext",
+      "fields": [
+        { "type": "Il2CppGenericInst*", "name": "class_inst" },
+        { "type": "Il2CppGenericInst*", "name": "method_inst" }
+      ]
+    },
+    {
+      "name": "Il2CppGenericClass",
+      "fields": [
+        { "type": "int", "name": "typeDefinitionIndex" },
+        { "type": "Il2CppGenericContext", "name": "context" },
+        { "type": "Il2CppClass*", "name": "cached_class" }
+      ]
+    },
+    {
+      "name": "Il2CppGenericMethod",
+      "fields": [
+        { "type": "MethodInfo*", "name": "methodDefinition" },
+        { "type": "Il2CppGenericContext", "name": "context" }
       ]
     },
 
     {
-      "name": "MonoClassField", // FieldInfo
+      "name": "FieldInfo",
       "fields": [
         { "type": "sbyte*", "name": "name" },
-        { "type": "MonoType*", "name": "type" },
-        { "type": "MonoClass*", "name": "parent" },
+        { "type": "Il2CppType*", "name": "type" },
+        { "type": "Il2CppClass*", "name": "parent" },
         { "type": "int", "name": "offset" },
-        { "type": "uint", "name": "token" }
+        { "type": "int", "name": "customAttributeIndex" }
+      ]
+    },
+    {
+      "name": "PropertyInfo",
+      "fields": [
+        { "type": "Il2CppClass*", "name": "parent" },
+        { "type": "sbyte*", "name": "name" },
+        { "type": "MethodInfo*", "name": "get" },
+        { "type": "MethodInfo*", "name": "set" },
+        { "type": "uint", "name": "attrs" },
+        { "type": "int", "name": "customAttributeIndex" }
       ]
     },
 
     {
-      "name": "MonoMethod", // MethodInfo
+      "name": "MethodInfo",
       "fields": [
-        { "type": "void*", "name": "methodPointer" },
+        { "type": "void*", "name": "method" },
         { "type": "void**", "name": "invoker_method" },
 
         { "type": "sbyte*", "name": "name" },
-        { "type": "MonoClass*", "name": "klass" },
-        { "type": "MonoType*", "name": "return_type" },
+        { "type": "Il2CppClass*", "name": "declaring_type" },
+        { "type": "Il2CppType*", "name": "return_type" },
         { "type": "ParameterInfo*", "name": "parameters" },
 
         { "type": "void*", "name": "rgctx_data" },
         { "type": "void*", "name": "genericMethod" },
 
+        { "type": "int", "name": "customAttributeIndex" },
         { "type": "uint", "name": "token" },
         { "type": "ushort", "name": "flags" },
         { "type": "ushort", "name": "iflags" },
@@ -212,9 +219,7 @@
         { "type": "byte", "name": "parameters_count" },
 
         { "type": "byte:1", "name": "is_generic" },
-        { "type": "byte:1", "name": "is_inflated" },
-        { "type": "byte:1", "name": "wrapper_type" },
-        { "type": "byte:1", "name": "is_marshaled_from_native" }
+        { "type": "byte:1", "name": "is_inflated" }
       ]
     },
     {
@@ -223,7 +228,8 @@
         { "type": "sbyte*", "name": "name" },
         { "type": "int", "name": "position" },
         { "type": "uint", "name": "token" },
-        { "type": "MonoType*", "name": "parameter_type" }
+        { "type": "int", "name": "customAttributeIndex" },
+        { "type": "Il2CppType*", "name": "parameter_type" }
       ]
     }
   ]

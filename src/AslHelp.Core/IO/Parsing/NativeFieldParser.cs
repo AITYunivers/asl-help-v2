@@ -161,7 +161,7 @@ internal sealed class NativeFieldParser
     private bool IsNativeType(string typeName, out int size)
     {
         // C and C++ primitive types are redefined in the JSON files to match C# types.
-        // This is to avoid having to accommodate for all combinations of `int`, `long`, `unsigned int`, `unsigned long`, etc.
+        // This is to avoid having to accommodate for all combinations of `int`, `long`, `int32_t`, etc.
 
         size = typeName switch
         {

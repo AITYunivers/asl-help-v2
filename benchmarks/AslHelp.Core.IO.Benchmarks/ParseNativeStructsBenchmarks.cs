@@ -12,7 +12,7 @@ public class ParseNativeStructsBenchmarks
     [Benchmark]
     public void ParseNativeStructs()
     {
-        _result = NativeStructMap.Parse("Mono", "il2cpp", "v23", true, typeof(global::Mono).Assembly);
+        _result = NativeStructMap.Parse("Mono", "il2cpp", "v24", false, typeof(global::Mono).Assembly);
         System.Console.WriteLine(_result);
     }
 }

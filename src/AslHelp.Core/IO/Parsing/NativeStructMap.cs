@@ -21,7 +21,7 @@ internal sealed class NativeStructMap : OrderedDictionary<string, NativeStruct>
     }
 
     private record Root(
-        Inheritance? Inheritance,
+        [property: JsonPropertyName("inherits")] Inheritance? Inheritance,
         Signature[]? Signatures,
         Struct[]? Structs);
 
@@ -46,7 +46,7 @@ internal sealed class NativeStructMap : OrderedDictionary<string, NativeStruct>
 
     public static NativeStructMap Parse(string engine, string major, string minor, bool is64Bit, Assembly asm)
     {
-        using Stream source = EmbeddedResource.GetResourceStream($"AslHelp.{engine}.Memory.Native.{major}-{minor}.jsonc", asm);
+        using Stream source = EmbeddedResource.GetResourceStream($"AslHelp.{engine}.Memory.Native.{major}-{minor}.json", asm);
 
         Root? root = JsonSerializer.Deserialize<Root>(source, new JsonSerializerOptions
         {

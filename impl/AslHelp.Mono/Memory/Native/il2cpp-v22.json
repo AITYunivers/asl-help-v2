@@ -1,44 +1,43 @@
 {
   "$schema": "../../../../schemas/asl-help.structs.schema.json",
-  "inherits": { "major": "il2cpp", "minor": "v1" },
+  "inherits": { "major": "il2cpp", "minor": "v21" },
   "structs": [
     {
-      "name": "MonoClass", // Il2CppClass
+      "name": "Il2CppClass",
       "fields": [
-        { "type": "MonoImage*", "name": "image" },
+        { "type": "Il2CppImage*", "name": "image" },
         { "type": "void*", "name": "gc_desc" },
+
         { "type": "sbyte*", "name": "name" },
-        { "type": "sbyte*", "name": "name_space" }, // const char* namespaze
-        { "type": "MonoType", "name": "byval_arg" },
-        { "type": "MonoType", "name": "this_arg" },
+        { "type": "sbyte*", "name": "namespaze" },
 
-        { "type": "MonoClass*", "name": "element_class" },
-        { "type": "MonoClass*", "name": "castClass" },
-        { "type": "MonoClass*", "name": "declaringType" },
-        { "type": "MonoClass*", "name": "parent" },
-        { "type": "MonoGenericClass*", "name": "generic_class" },
-        { "type": "void*", "name": "typeDefinition" },
-        { "type": "void*", "name": "interopData" },
-        { "type": "MonoClass*", "name": "klass" },
+        { "type": "Il2CppType*", "name": "byval_arg" },
+        { "type": "Il2CppType*", "name": "this_arg" },
 
-        { "type": "MonoClassField*", "name": "fields" },
+        { "type": "Il2CppClass*", "name": "element_class" },
+        { "type": "Il2CppClass*", "name": "castClass" },
+        { "type": "Il2CppClass*", "name": "declaringType" },
+        { "type": "Il2CppClass*", "name": "parent" },
+        { "type": "Il2CppGenericClass*", "name": "generic_class" },
+        { "type": "Il2CppTypeDefinition*", "name": "typeDefinition" },
+
+        { "type": "FieldInfo*", "name": "fields" },
         { "type": "EventInfo*", "name": "events" },
         { "type": "PropertyInfo*", "name": "properties" },
         { "type": "MethodInfo**", "name": "methods" },
-        { "type": "MonoClass**", "name": "nestedTypes" },
-        { "type": "MonoClass**", "name": "implementedInterfaces" },
+        { "type": "Il2CppClass**", "name": "nestedTypes" },
+        { "type": "Il2CppClass**", "name": "implementedInterfaces" },
         { "type": "void*", "name": "interfaceOffsets" },
 
         { "type": "void*", "name": "static_fields" },
 
         { "type": "void*", "name": "rgctx_data" },
-        { "type": "MonoClass**", "name": "typeHierarchy" },
-        { "type": "void*", "name": "unity_user_data" },
-        { "type": "uint", "name": "initializationExceptionGCHandle" },
+        { "type": "Il2CppClass**", "name": "typeHierarchy" },
         { "type": "uint", "name": "cctor_started" },
         { "type": "uint", "name": "cctor_finished" },
-        { "type": "ulong", "name": "cctor_thread" },
+        { "type": "ulong", "name": "cctor_thread", "alignment": 8 },
         { "type": "int", "name": "genericContainerIndex" },
+        { "type": "int", "name": "customAttributeIndex" },
 
         { "type": "uint", "name": "instance_size" },
         { "type": "uint", "name": "actualSize" },
@@ -61,13 +60,10 @@
         { "type": "ushort", "name": "interface_offsets_count" },
 
         { "type": "byte", "name": "typeHierarchyDepth" },
-        { "type": "byte", "name": "genericRecursionDepth" },
         { "type": "byte", "name": "rank" },
         { "type": "byte", "name": "minimumAlignment" },
-        { "type": "byte", "name": "naturalAligment" },
         { "type": "byte", "name": "packingSize" },
 
-        { "type": "byte:1", "name": "initialized_and_no_error" },
         { "type": "byte:1", "name": "valuetype" },
         { "type": "byte:1", "name": "initialized" },
         { "type": "byte:1", "name": "enumtype" },
@@ -75,13 +71,12 @@
         { "type": "byte:1", "name": "has_references" },
         { "type": "byte:1", "name": "init_pending" },
         { "type": "byte:1", "name": "size_inited" },
-
         { "type": "byte:1", "name": "has_finalize" },
+
         { "type": "byte:1", "name": "has_cctor" },
         { "type": "byte:1", "name": "is_blittable" },
         { "type": "byte:1", "name": "is_import_or_windows_runtime" },
-        { "type": "byte:1", "name": "is_vtable_initialized" },
-        { "type": "byte:1", "name": "has_initialization_error" }
+        { "type": "byte:1", "name": "is_vtable_initialized" }
       ]
     }
   ]
