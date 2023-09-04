@@ -12,7 +12,7 @@ internal record struct FieldParseResult(
     int Alignment,
     BitField? BitField);
 
-internal record struct BitField(
+public record struct BitField(
     int Size,
     int Offset);
 

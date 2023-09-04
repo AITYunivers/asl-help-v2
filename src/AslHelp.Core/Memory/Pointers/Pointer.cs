@@ -41,7 +41,7 @@ public sealed partial class Pointer<T> : PointerBase<T>
     }
 }
 
-public partial class Pointer<T>
+public partial class Pointer<T> : IParentPointer
 {
     public Pointer<TChild> Make<TChild>(int nextOffset, params int[] remainingOffsets)
         where TChild : unmanaged
@@ -110,7 +110,7 @@ public partial class Pointer<T>
         }
         else
         {
-            string msg = $"Cannot create children from a non-IPointer<nuint> parent.";
+            const string msg = $"Cannot create children from a non-IPointer<nuint> parent.";
             throw new InvalidOperationException(msg);
         }
     }

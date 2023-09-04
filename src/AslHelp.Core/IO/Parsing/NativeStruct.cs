@@ -4,7 +4,7 @@ using AslHelp.Core.Collections;
 
 namespace AslHelp.Core.IO.Parsing;
 
-internal sealed class NativeStruct : OrderedDictionary<string, NativeField>
+public sealed class NativeStruct : OrderedDictionary<string, NativeField>
 {
     public IEnumerable<NativeField> Fields => this;
 

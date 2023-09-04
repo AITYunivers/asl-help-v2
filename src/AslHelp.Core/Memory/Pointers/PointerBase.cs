@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
@@ -37,7 +36,6 @@ public abstract class PointerBase<T> : IPointer<T>
     {
         ThrowHelper.ThrowIfNull(manager);
         ThrowHelper.ThrowIfNull(parent);
-        ThrowHelper.ThrowIfLessThan(nextOffset, 0);
         ThrowHelper.ThrowIfNull(remainingOffsets);
 
         _manager = manager;

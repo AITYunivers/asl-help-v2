@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace AslHelp.Core.IO.Parsing;
 
-internal sealed class NativeField
+public sealed class NativeField
 {
     private readonly int _trailingZeroCount;
 

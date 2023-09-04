@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 using AslHelp.Core.Memory.Ipc;
@@ -22,7 +21,7 @@ public sealed class SpanPointer<T> : PointerBase<T[]>
         _length = length;
     }
 
-    protected override T[] Default { get; } = Array.Empty<T>();
+    protected override T[] Default { get; } = [];
 
     protected override bool TryUpdate([NotNullWhen(true)] out T[]? result, nuint address)
     {

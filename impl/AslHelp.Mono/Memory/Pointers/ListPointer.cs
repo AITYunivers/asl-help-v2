@@ -23,7 +23,7 @@ public sealed class ListPointer<T> : PointerBase<List<T>>
         _manager = manager;
     }
 
-    protected override List<T> Default => new();
+    protected override List<T> Default => [];
 
     protected override bool TryUpdate([NotNullWhen(true)] out List<T>? result, nuint address)
     {

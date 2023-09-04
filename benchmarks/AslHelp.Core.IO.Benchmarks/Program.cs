@@ -1,8 +1,8 @@
 ﻿using AslHelp.Core.IO.Benchmarks;
+using AslHelp.Mono.MonoInterop.MonoV1;
 
 #if DEBUG
-ParseNativeStructsBenchmarks benchmarks = new();
-benchmarks.ParseNativeStructs();
+MonoV1Manager manager = new();
 #else
 using BenchmarkDotNet.Running;
 

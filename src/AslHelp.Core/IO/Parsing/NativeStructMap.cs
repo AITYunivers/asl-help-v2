@@ -11,8 +11,10 @@ using AslHelp.Core.Collections;
 
 namespace AslHelp.Core.IO.Parsing;
 
-internal sealed class NativeStructMap : OrderedDictionary<string, NativeStruct>
+public sealed class NativeStructMap : OrderedDictionary<string, NativeStruct>
 {
+    private NativeStructMap() { }
+
     public Dictionary<string, Memory.SignatureScanning.Signature> Signatures { get; } = new();
 
     protected override string GetKeyForItem(NativeStruct item)
@@ -44,15 +46,17 @@ internal sealed class NativeStructMap : OrderedDictionary<string, NativeStruct>
         string Name,
         int? Alignment);
 
-    public static NativeStructMap Parse(string engine, string major, string minor, bool is64Bit, Assembly asm)
+    public static NativeStructMap Parse(string engine, string major, string minor, bool is64Bit)
     {
-        using Stream source = EmbeddedResource.GetResourceStream($"AslHelp.{engine}.Memory.Native.{major}-{minor}.json", asm);
+        Assembly assembly = Assembly.GetCallingAssembly();
+        using Stream source = EmbeddedResource.GetResourceStream($"AslHelp.{engine}.Memory.Native.{major}-{minor}.json", assembly);
 
         Root? root = JsonSerializer.Deserialize<Root>(source, new JsonSerializerOptions
         {
             ReadCommentHandling = JsonCommentHandling.Skip,
             PropertyNameCaseInsensitive = true
         });
+
         if (root is null)
         {
             const string msg = "Provided resource was a JSON 'null' literal.";
@@ -67,7 +71,7 @@ internal sealed class NativeStructMap : OrderedDictionary<string, NativeStruct>
 
         NativeStructMap nsm =
             root.Inheritance is { Major.Length: > 0, Minor.Length: > 0 } inherit
-            ? Parse(engine, inherit.Major, inherit.Minor, is64Bit, asm)
+            ? Parse(engine, inherit.Major, inherit.Minor, is64Bit)
             : new();
 
         if (root.Structs is not { Length: > 0 } structs)

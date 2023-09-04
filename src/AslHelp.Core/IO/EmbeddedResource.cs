@@ -6,7 +6,7 @@ using AslHelp.Core.Memory.Native;
 
 namespace AslHelp.Core.IO;
 
-internal static class EmbeddedResource
+public static class EmbeddedResource
 {
     public static void Unpack(string resource, string targetFile)
     {
@@ -21,13 +21,15 @@ internal static class EmbeddedResource
         return GetResourceStream(resource, Assembly.GetCallingAssembly());
     }
 
-    public static Stream GetResourceStream(string resource, Assembly asm)
+    public static Stream GetResourceStream(string resource, Assembly assembly)
     {
-        Stream? resourceStream = asm.GetManifestResourceStream(resource);
+        System.Console.WriteLine(assembly.FullName);
+        Stream? resourceStream = assembly.GetManifestResourceStream(resource);
 
         if (resourceStream is null)
         {
-            ThrowHelper.ThrowFileNotFoundException($"Unable to find the specified resource '{resource}'.");
+            string msg = $"Unable to find the specified resource '{resource}'.";
+            ThrowHelper.ThrowFileNotFoundException(msg);
         }
 
         return resourceStream;

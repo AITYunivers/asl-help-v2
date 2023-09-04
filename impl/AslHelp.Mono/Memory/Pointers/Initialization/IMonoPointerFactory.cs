@@ -1,6 +1,3 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-
 using AslHelp.Core.Memory.Pointers;
 using AslHelp.Core.Memory.Pointers.Initialization;
 

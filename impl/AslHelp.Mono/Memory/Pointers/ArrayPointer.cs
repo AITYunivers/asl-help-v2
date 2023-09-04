@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 using AslHelp.Core.Memory.Pointers;
@@ -23,7 +22,7 @@ public sealed class ArrayPointer<T> : PointerBase<T[]>
         _manager = manager;
     }
 
-    protected override T[] Default { get; } = Array.Empty<T>();
+    protected override T[] Default { get; } = [];
 
     protected override bool TryUpdate([NotNullWhen(true)] out T[]? result, nuint address)
     {
