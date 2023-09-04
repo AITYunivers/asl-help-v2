@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
-using AslHelp.Core.LiveSplitInterop;
 using AslHelp.Core.Memory.Pointers;
 using AslHelp.Core.Memory.Pointers.Initialization;
 
@@ -8,20 +8,23 @@ public partial class Basic
 {
     private readonly Dictionary<string, IPointer> _pointerCache = new();
 
-    public sealed override IPointer this[string name]
-    {
-        get => _pointerCache[name];
-        set => _pointerCache[name] = value;
-    }
-
     protected IPointerFactory? _pointers;
-    public override IPointerFactory? Pointers => _pointers;
-
-    public sealed override void MapPointerValuesToCurrent()
+    public override IPointerFactory? Pointers
     {
-        foreach (var ptr in _pointerCache)
+        get
         {
-            Script.Current[ptr.Key] = ptr.Value.Current;
+            if (_pointers is not null)
+            {
+                return _pointers;
+            }
+
+            if (Game is Process game)
+            {
+                _memory = InitializeMemory(game);
+                _pointers = PointerFactory.Create(_memory);
+            }
+
+            return _pointers;
         }
     }
 }

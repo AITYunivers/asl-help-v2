@@ -70,20 +70,6 @@ public partial interface IAslHelper
     IPointerFactory? Pointers { get; }
 
     /// <summary>
-    ///     Gets or sets the <see cref="IPointer"/> with the specified name.
-    /// </summary>
-    IPointer this[string name] { get; set; }
-
-    /// <summary>
-    ///     Gets the <see cref="IPointer"/>s set via <see cref="IAslHelper[string]"/>
-    ///     and assigns their values to the ASL script's <c>current</c> object by name.
-    /// </summary>
-    /// <remarks>
-    ///     This method will overwrite any existing values in the <c>current</c> object with the same name.
-    /// </remarks>
-    void MapPointerValuesToCurrent();
-
-    /// <summary>
     ///     Checks whether the game's main module's memory size matches any of the specified values.
     /// </summary>
     /// <param name="moduleMemorySizes">The memory sizes to check against.</param>

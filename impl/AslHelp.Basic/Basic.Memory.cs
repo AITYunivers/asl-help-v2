@@ -1,11 +1,7 @@
 using System.Diagnostics;
-using System.IO.Pipes;
 
-using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.Memory.Ipc;
 using AslHelp.Core.Memory.Pointers.Initialization;
-
-using Debug = AslHelp.Core.Diagnostics.Debug;
 
 public partial class Basic
 {
@@ -28,16 +24,6 @@ public partial class Basic
             return _memory;
         }
         protected set => _memory = value;
-    }
-
-    protected override IMemoryManager InitializeExternalMemory(Process process, ILogger logger)
-    {
-        return new ExternalMemoryManager(process, logger);
-    }
-
-    protected override IMemoryManager InitializeInternalMemory(Process process, ILogger logger, NamedPipeClientStream pipe)
-    {
-        return new InternalMemoryManager(process, logger, pipe);
     }
 
     protected override void DisposeMemory()

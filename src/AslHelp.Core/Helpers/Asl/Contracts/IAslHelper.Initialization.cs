@@ -29,7 +29,7 @@ public partial interface IAslHelper
         /// <param name="inject"></param>
         /// <param name="timeout"></param>
         /// <returns></returns>
-        IAslHelper Init(string? gameName = null, bool generateCode = false, bool inject = false, int timeout = 3000);
+        IAslHelper Init(string? gameName = null, bool generateCode = false);
 
         /// <summary>
         ///     Initializes a <see cref="FileLogger"/> instance with the specified file name,

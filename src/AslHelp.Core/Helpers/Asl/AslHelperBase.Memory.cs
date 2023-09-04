@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Pipes;
 
-using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.IO;
 using AslHelp.Core.Memory;
 using AslHelp.Core.Memory.Ipc;
@@ -16,24 +15,10 @@ public abstract partial class AslHelperBase
 {
     public abstract IMemoryManager? Memory { get; protected set; }
 
-    protected abstract IMemoryManager InitializeExternalMemory(Process process, ILogger logger);
-    protected abstract IMemoryManager InitializeInternalMemory(Process process, ILogger logger, NamedPipeClientStream pipe);
-
     protected IMemoryManager InitializeMemory(Process process)
     {
         Debug.Info("Initiating memory...");
-        bool is64Bit = process.ProcessIs64Bit();
-
-        if (_inject && TryInjectAslHelpNative(process, is64Bit, _pipeConnectionTimeout, out var pipe))
-        {
-            return InitializeInternalMemory(process, Logger, pipe);
-        }
-        else
-        {
-            Debug.Info("  => Using Win32 API for memory reading.");
-
-            return InitializeExternalMemory(process, Logger);
-        }
+        return new ExternalMemoryManager(process, Logger);
     }
 
     /// <summary>
@@ -73,14 +58,6 @@ public abstract partial class AslHelperBase
 
         if (!WinInteropWrapper.IsInjected(processHandle, processId, path, out Module? module))
         {
-            // if (!is64Bit && !WinInteropWrapper.TryInjectDll(processHandle, "msvcrt"))
-            // {
-            //     pipe = null;
-
-            //     Debug.Warn("    => Failure!");
-            //     return false;
-            // }
-
             if (!EmbeddedResource.TryInject(processHandle, res, arch)
                 || !WinInteropWrapper.IsInjected(processHandle, processId, path, out module))
             {

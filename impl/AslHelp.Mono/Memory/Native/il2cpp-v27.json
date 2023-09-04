@@ -1,40 +1,7 @@
 {
   "$schema": "../../../../schemas/asl-help.structs.schema.json",
-  "inherits": { "major": "il2cpp", "minor": "v23" },
+  "inherits": { "major": "il2cpp", "minor": "v24" },
   "structs": [
-    {
-      "name": "Il2CppAssemblyName",
-      "fields": [
-        { "type": "sbyte*", "name": "name" },
-        { "type": "sbyte*", "name": "culture" },
-        { "type": "sbyte*", "name": "hash_value" },
-        { "type": "sbyte*", "name": "public_key" },
-
-        { "type": "uint", "name": "hash_alg" },
-        { "type": "int", "name": "hash_len" },
-        { "type": "uint", "name": "flags" },
-
-        { "type": "int", "name": "major" },
-        { "type": "int", "name": "minor" },
-        { "type": "int", "name": "build" },
-        { "type": "int", "name": "revision" },
-
-        { "type": "byte[8]", "name": "public_key_token" }
-      ]
-    },
-    {
-      "name": "Il2CppAssembly",
-      "fields": [
-        { "type": "Il2CppImage*", "name": "image" },
-        { "type": "int", "name": "customAttributeIndex" },
-
-        { "type": "int", "name": "referencedAssemblyStart" },
-        { "type": "int", "name": "referencedAssemblyCount" },
-
-        { "type": "Il2CppAssemblyName", "name": "aname" }
-      ]
-    },
-
     {
       "name": "Il2CppImage",
       "fields": [
@@ -42,17 +9,29 @@
         { "type": "sbyte*", "name": "nameNoExt" },
         { "type": "Il2CppAssembly*", "name": "assembly" },
 
-        { "type": "int", "name": "typeStart" },
         { "type": "uint", "name": "typeCount" },
-
-        { "type": "int", "name": "exportedTypeStart" },
         { "type": "uint", "name": "exportedTypeCount" },
+        { "type": "uint", "name": "customAttributeCount" },
 
-        { "type": "int", "name": "entryPointIndex" },
+        { "type": "void*", "name": "metadataHandle" },
 
         { "type": "void*", "name": "nameToClassHashTable" },
+        { "type": "void*", "name": "codeGenModule" },
         { "type": "uint", "name": "token" },
         { "type": "byte", "name": "dynamic" }
+      ]
+    },
+
+    {
+      "name": "Il2CppType",
+      "fields": [
+        { "type": "void*", "name": "data" },
+        { "type": "uint:16", "name": "attrs" },
+        { "type": "uint:8", "name": "type" },
+        { "type": "uint:5", "name": "num_mods" },
+        { "type": "uint:1", "name": "byref" },
+        { "type": "uint:1", "name": "pinned" },
+        { "type": "uint:1", "name": "valuetype" }
       ]
     },
 
@@ -73,8 +52,9 @@
         { "type": "Il2CppClass*", "name": "declaringType" },
         { "type": "Il2CppClass*", "name": "parent" },
         { "type": "Il2CppGenericClass*", "name": "generic_class" },
-        { "type": "Il2CppTypeDefinition*", "name": "typeDefinition" },
+        { "type": "void*", "name": "typeMetadataHandle" },
         { "type": "Il2CppInteropData*", "name": "interopData" },
+        { "type": "Il2CppClass*", "name": "klass" },
 
         { "type": "FieldInfo*", "name": "fields" },
         { "type": "EventInfo*", "name": "events" },
@@ -88,11 +68,14 @@
 
         { "type": "void*", "name": "rgctx_data" },
         { "type": "Il2CppClass**", "name": "typeHierarchy" },
+        { "type": "void*", "name": "unity_user_data" },
+        { "type": "uint", "name": "initializationExceptionGCHandle" },
+
         { "type": "uint", "name": "cctor_started" },
         { "type": "uint", "name": "cctor_finished" },
-        { "type": "ulong", "name": "cctor_thread", "alignment": 8 },
-        { "type": "int", "name": "genericContainerIndex" },
-        { "type": "int", "name": "customAttributeIndex" },
+        { "type": "nuint", "name": "cctor_thread", "alignment": 8 },
+
+        { "type": "void*", "name": "genericContainerHandle" },
 
         { "type": "uint", "name": "instance_size" },
         { "type": "uint", "name": "actualSize" },
@@ -118,21 +101,34 @@
         { "type": "byte", "name": "genericRecursionDepth" },
         { "type": "byte", "name": "rank" },
         { "type": "byte", "name": "minimumAlignment" },
+        { "type": "byte", "name": "naturalAligment" },
         { "type": "byte", "name": "packingSize" },
 
-        { "type": "byte:1", "name": "valuetype" },
+        { "type": "byte:1", "name": "initialized_and_no_error" },
         { "type": "byte:1", "name": "initialized" },
         { "type": "byte:1", "name": "enumtype" },
+        { "type": "byte:1", "name": "nullabletype" },
         { "type": "byte:1", "name": "is_generic" },
         { "type": "byte:1", "name": "has_references" },
         { "type": "byte:1", "name": "init_pending" },
+        { "type": "byte:1", "name": "size_init_pending" },
+
         { "type": "byte:1", "name": "size_inited" },
         { "type": "byte:1", "name": "has_finalize" },
-
         { "type": "byte:1", "name": "has_cctor" },
         { "type": "byte:1", "name": "is_blittable" },
         { "type": "byte:1", "name": "is_import_or_windows_runtime" },
-        { "type": "byte:1", "name": "is_vtable_initialized" }
+        { "type": "byte:1", "name": "is_vtable_initialized" },
+        { "type": "byte:1", "name": "is_byref_like" }
+      ]
+    },
+
+    {
+      "name": "Il2CppGenericClass",
+      "fields": [
+        { "type": "Il2CppType*", "name": "type" },
+        { "type": "Il2CppGenericContext", "name": "context" },
+        { "type": "Il2CppClass*", "name": "cached_class" }
       ]
     }
   ]

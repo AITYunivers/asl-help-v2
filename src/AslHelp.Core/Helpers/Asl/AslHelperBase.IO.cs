@@ -11,7 +11,7 @@ namespace AslHelp.Core.Helpers.Asl;
 public abstract partial class AslHelperBase
 {
     public abstract ILogger Logger { get; }
-    public abstract SettingsCreator Settings { get; }
+    public SettingsCreator Settings { get; } = new();
 
     /// <summary>
     ///     This method is called from <see cref="LogToFile"/> after some checks are performed.

@@ -10,14 +10,12 @@
 
   <ItemGroup Label="References">
     <Reference Include="../../ref/LiveSplit.Core.dll" />
+
+    <PackageReference Include="OneOf" Version="3.0.255" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Memory\Native\il2cpp-v16.json" />
-    <None Include="Memory\Native\mono-v1-cattrs.json" />
-    <None Include="Memory\Native\mono-v1.json" />
-    <None Include="Memory\Native\mono-v2.json" />
-    <None Include="Memory\Native\mono-v3.json" />
+    <EmbeddedResource Include="Memory/Native/*.json" />
   </ItemGroup>
 
 </Project>

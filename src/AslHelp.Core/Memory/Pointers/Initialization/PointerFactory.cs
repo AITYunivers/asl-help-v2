@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using AslHelp.Common.Memory;
 using AslHelp.Core.Memory.Ipc;
 using AslHelp.Core.Reflection;
@@ -6,7 +8,7 @@ using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.Pointers.Initialization;
 
-public class PointerFactory : IPointerFactory
+public class PointerFactory : Dictionary<string, IPointer>, IPointerFactory
 {
     private readonly IMemoryManager _manager;
 
@@ -18,6 +20,14 @@ public class PointerFactory : IPointerFactory
     public static PointerFactory Create(IMemoryManager manager)
     {
         return new(manager);
+    }
+
+    public void MapTo(IDictionary<string, object> destination)
+    {
+        foreach (var entry in this)
+        {
+            destination[entry.Key] = entry.Value;
+        }
     }
 
     public Pointer<T> Make<T>(nuint baseAddress, params int[] offsets)

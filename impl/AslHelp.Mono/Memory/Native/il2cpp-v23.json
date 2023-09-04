@@ -34,9 +34,11 @@
 
         { "type": "void*", "name": "rgctx_data" },
         { "type": "Il2CppClass**", "name": "typeHierarchy" },
+
         { "type": "uint", "name": "cctor_started" },
         { "type": "uint", "name": "cctor_finished" },
         { "type": "ulong", "name": "cctor_thread", "alignment": 8 },
+
         { "type": "int", "name": "genericContainerIndex" },
         { "type": "int", "name": "customAttributeIndex" },
 

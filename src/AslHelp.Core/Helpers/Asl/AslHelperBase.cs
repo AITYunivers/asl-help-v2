@@ -17,6 +17,8 @@ public abstract partial class AslHelperBase : IAslHelper
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
+        Debug.Info("Disposing...");
+
         DisposeMemory();
 
         OnExitImpl();
@@ -35,6 +37,8 @@ public abstract partial class AslHelperBase : IAslHelper
             string msg = $"Attempted to shut down asl-help in the '{action}' action.";
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
+
+        Debug.Info("Disposing...");
 
         DisposeMemory();
 

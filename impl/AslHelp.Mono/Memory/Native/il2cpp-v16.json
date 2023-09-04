@@ -100,9 +100,11 @@
 
         { "type": "void*", "name": "rgctx_data" },
         { "type": "Il2CppClass**", "name": "typeHierarchy" },
+
         { "type": "uint", "name": "cctor_started" },
         { "type": "uint", "name": "cctor_finished" },
         { "type": "ulong", "name": "cctor_thread", "alignment": 8 },
+
         { "type": "int", "name": "genericContainerIndex" },
         { "type": "int", "name": "customAttributeIndex" },
 
@@ -145,13 +147,6 @@
     },
 
     {
-      "name": "Il2CppGenericInst",
-      "fields": [
-        { "type": "uint", "name": "type_argc" },
-        { "type": "Il2CppType**", "name": "type_argv" }
-      ]
-    },
-    {
       "name": "Il2CppGenericContext",
       "fields": [
         { "type": "Il2CppGenericInst*", "name": "class_inst" },
@@ -166,13 +161,6 @@
         { "type": "Il2CppClass*", "name": "cached_class" }
       ]
     },
-    {
-      "name": "Il2CppGenericMethod",
-      "fields": [
-        { "type": "MethodInfo*", "name": "methodDefinition" },
-        { "type": "Il2CppGenericContext", "name": "context" }
-      ]
-    },
 
     {
       "name": "FieldInfo",
@@ -182,54 +170,6 @@
         { "type": "Il2CppClass*", "name": "parent" },
         { "type": "int", "name": "offset" },
         { "type": "int", "name": "customAttributeIndex" }
-      ]
-    },
-    {
-      "name": "PropertyInfo",
-      "fields": [
-        { "type": "Il2CppClass*", "name": "parent" },
-        { "type": "sbyte*", "name": "name" },
-        { "type": "MethodInfo*", "name": "get" },
-        { "type": "MethodInfo*", "name": "set" },
-        { "type": "uint", "name": "attrs" },
-        { "type": "int", "name": "customAttributeIndex" }
-      ]
-    },
-
-    {
-      "name": "MethodInfo",
-      "fields": [
-        { "type": "void*", "name": "method" },
-        { "type": "void**", "name": "invoker_method" },
-
-        { "type": "sbyte*", "name": "name" },
-        { "type": "Il2CppClass*", "name": "declaring_type" },
-        { "type": "Il2CppType*", "name": "return_type" },
-        { "type": "ParameterInfo*", "name": "parameters" },
-
-        { "type": "void*", "name": "rgctx_data" },
-        { "type": "void*", "name": "genericMethod" },
-
-        { "type": "int", "name": "customAttributeIndex" },
-        { "type": "uint", "name": "token" },
-        { "type": "ushort", "name": "flags" },
-        { "type": "ushort", "name": "iflags" },
-        { "type": "ushort", "name": "slot" },
-
-        { "type": "byte", "name": "parameters_count" },
-
-        { "type": "byte:1", "name": "is_generic" },
-        { "type": "byte:1", "name": "is_inflated" }
-      ]
-    },
-    {
-      "name": "ParameterInfo",
-      "fields": [
-        { "type": "sbyte*", "name": "name" },
-        { "type": "int", "name": "position" },
-        { "type": "uint", "name": "token" },
-        { "type": "int", "name": "customAttributeIndex" },
-        { "type": "Il2CppType*", "name": "parameter_type" }
       ]
     }
   ]

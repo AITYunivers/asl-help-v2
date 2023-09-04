@@ -1,11 +1,15 @@
+using System.Collections.Generic;
+
 using AslHelp.Core.Reflection;
 
 using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.Pointers.Initialization;
 
-public interface IPointerFactory
+public interface IPointerFactory : IDictionary<string, IPointer>
 {
+    void MapTo(IDictionary<string, object> destination);
+
     Pointer<T> Make<T>(nuint baseAddress, params int[] offsets) where T : unmanaged;
     Pointer<T> Make<T>(uint baseOffset, params int[] offsets) where T : unmanaged;
     Pointer<T> Make<T>(string moduleName, uint baseOffset, params int[] offsets) where T : unmanaged;

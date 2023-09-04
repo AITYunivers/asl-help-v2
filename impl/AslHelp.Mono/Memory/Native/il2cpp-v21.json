@@ -63,9 +63,11 @@
 
         { "type": "void*", "name": "rgctx_data" },
         { "type": "Il2CppClass**", "name": "typeHierarchy" },
+
         { "type": "uint", "name": "cctor_started" },
         { "type": "uint", "name": "cctor_finished" },
         { "type": "ulong", "name": "cctor_thread", "alignment": 8 },
+
         { "type": "int", "name": "genericContainerIndex" },
         { "type": "int", "name": "customAttributeIndex" },
 
@@ -116,18 +118,6 @@
         { "type": "Il2CppType*", "name": "type" },
         { "type": "Il2CppClass*", "name": "parent" },
         { "type": "int", "name": "offset" },
-        { "type": "int", "name": "customAttributeIndex" },
-        { "type": "uint", "name": "token" }
-      ]
-    },
-    {
-      "name": "PropertyInfo",
-      "fields": [
-        { "type": "Il2CppClass*", "name": "parent" },
-        { "type": "sbyte*", "name": "name" },
-        { "type": "MethodInfo*", "name": "get" },
-        { "type": "MethodInfo*", "name": "set" },
-        { "type": "uint", "name": "attrs" },
         { "type": "int", "name": "customAttributeIndex" },
         { "type": "uint", "name": "token" }
       ]

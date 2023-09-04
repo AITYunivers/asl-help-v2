@@ -10,9 +10,6 @@ public abstract partial class AslHelperBase : IAslHelper.Initialization
     /// </summary>
     protected bool _initialized;
 
-    private bool _inject;
-    private int _pipeConnectionTimeout;
-
     /// <summary>
     ///     This method is called from <see cref="Init"/> after some checks are performed.
     /// </summary>
@@ -23,7 +20,7 @@ public abstract partial class AslHelperBase : IAslHelper.Initialization
     /// </summary>
     protected abstract void GenerateCode();
 
-    public IAslHelper Init(string? gameName = null, bool generateCode = false, bool inject = false, int timeout = 3000)
+    public IAslHelper Init(string? gameName = null, bool generateCode = false)
     {
         if (_initialized)
         {
@@ -31,11 +28,7 @@ public abstract partial class AslHelperBase : IAslHelper.Initialization
             ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
-        ThrowHelper.ThrowIfLessThan(timeout, 0);
-
         _gameName = gameName;
-        _inject = inject;
-        _pipeConnectionTimeout = timeout;
 
         Debug.Info("Initializing asl-help...");
 
