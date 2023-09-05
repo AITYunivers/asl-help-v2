@@ -9,47 +9,27 @@ public partial class MemoryManagerBase
 {
     public nuint ScanPages(Signature signature, uint alignment = 1)
     {
-        return ScanPagesAll(false, signature, alignment).FirstOrDefault();
+        return ScanPagesAll(signature, false, alignment).FirstOrDefault();
     }
 
-    public nuint ScanPages(bool allPages, Signature signature, uint alignment = 1)
+    public nuint ScanPages(Signature signature, bool allPages, uint alignment = 1)
     {
-        return ScanPagesAll(allPages, signature, alignment).FirstOrDefault();
-    }
-
-    public nuint ScanPagesRel(Signature signature, uint alignment = 1)
-    {
-        return ScanPagesAllRel(false, signature, alignment).FirstOrDefault();
-    }
-
-    public nuint ScanPagesRel(bool allPages, Signature signature, uint alignment = 1)
-    {
-        return ScanPagesAllRel(allPages, signature, alignment).FirstOrDefault();
+        return ScanPagesAll(signature, allPages, alignment).FirstOrDefault();
     }
 
     public IEnumerable<nuint> ScanPagesAll(Signature signature, uint alignment = 1)
     {
-        return ScanPagesAll(false, signature, alignment);
+        return ScanPagesAll(signature, false, alignment);
     }
 
-    public IEnumerable<nuint> ScanPagesAll(bool allPages, Signature signature, uint alignment = 1)
+    public IEnumerable<nuint> ScanPagesAll(Signature signature, bool allPages, uint alignment = 1)
     {
         foreach (MemoryPage page in Pages(allPages))
         {
-            foreach (nuint scanResult in ScanAll(page.Base, page.RegionSize, signature, alignment))
+            foreach (nuint scanResult in ScanAll(signature, page.Base, page.RegionSize, alignment))
             {
                 yield return scanResult;
             }
         }
-    }
-
-    public IEnumerable<nuint> ScanPagesAllRel(Signature signature, uint alignment = 1)
-    {
-        return ScanPagesAll(false, signature, alignment).Select(FromAssemblyAddress);
-    }
-
-    public IEnumerable<nuint> ScanPagesAllRel(bool allPages, Signature signature, uint alignment = 1)
-    {
-        return ScanPagesAll(allPages, signature, alignment).Select(FromAssemblyAddress);
     }
 }

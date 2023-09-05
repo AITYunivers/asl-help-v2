@@ -21,8 +21,10 @@ public interface IMemoryManager
 
     IEnumerable<MemoryPage> Pages(bool allPages);
 
-    void Update();
     uint Tick { get; }
+    void Update();
+
+    nuint ReadRelative(nuint address);
 
     void Log(object output);
 }

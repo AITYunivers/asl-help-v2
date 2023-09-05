@@ -9,41 +9,41 @@ public partial class MemoryManagerBase
 {
     public IEnumerable<nuint> ScanAll(Signature signature, uint alignment = 1)
     {
-        return ScanAll(MainModule, signature, alignment);
+        return ScanAll(signature, MainModule, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(uint size, Signature signature, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(Signature signature, uint size, uint alignment = 1)
     {
-        return ScanAll(MainModule, size, signature, alignment);
+        return ScanAll(signature, MainModule, size, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(string moduleName, Signature signature, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(Signature signature, string moduleName, uint alignment = 1)
     {
-        return ScanAll(Modules[moduleName], signature, alignment);
+        return ScanAll(signature, Modules[moduleName], alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(string moduleName, uint size, Signature signature, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(Signature signature, string moduleName, uint size, uint alignment = 1)
     {
-        return ScanAll(Modules[moduleName], size, signature, alignment);
+        return ScanAll(signature, Modules[moduleName], size, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(Module module, Signature signature, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(Signature signature, Module module, uint alignment = 1)
     {
-        return ScanAll(module.Base, module.MemorySize, signature, alignment);
+        return ScanAll(signature, module.Base, module.MemorySize, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(Module module, uint size, Signature signature, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(Signature signature, Module module, uint size, uint alignment = 1)
     {
-        return ScanAll(module.Base, size, signature, alignment);
+        return ScanAll(signature, module.Base, size, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(nuint startAddress, nuint endAddress, Signature signature, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(Signature signature, nuint startAddress, nuint endAddress, uint alignment = 1)
     {
         uint size = (uint)(endAddress - startAddress);
-        return ScanAll(startAddress, size, signature, alignment);
+        return ScanAll(signature, startAddress, size, alignment);
     }
 
-    public IEnumerable<nuint> ScanAll(nuint startAddress, uint size, Signature signature, uint alignment = 1)
+    public IEnumerable<nuint> ScanAll(Signature signature, nuint startAddress, uint size, uint alignment = 1)
     {
         if (size <= 0)
         {

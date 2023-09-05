@@ -11,38 +11,38 @@ public partial class MemoryManagerBase
         return ScanAll(signature, alignment).FirstOrDefault();
     }
 
-    public nuint Scan(uint size, Signature signature, uint alignment = 1)
+    public nuint Scan(Signature signature, uint size, uint alignment = 1)
     {
-        return ScanAll(size, signature, alignment).FirstOrDefault();
+        return ScanAll(signature, size, alignment).FirstOrDefault();
     }
 
-    public nuint Scan(string moduleName, Signature signature, uint alignment = 1)
+    public nuint Scan(Signature signature, string moduleName, uint alignment = 1)
     {
-        return ScanAll(moduleName, signature, alignment).FirstOrDefault();
+        return ScanAll(signature, moduleName, alignment).FirstOrDefault();
     }
 
-    public nuint Scan(string moduleName, uint size, Signature signature, uint alignment = 1)
+    public nuint Scan(Signature signature, string moduleName, uint size, uint alignment = 1)
     {
-        return ScanAll(moduleName, size, signature, alignment).FirstOrDefault();
+        return ScanAll(signature, moduleName, size, alignment).FirstOrDefault();
     }
 
-    public nuint Scan(Module module, Signature signature, uint alignment = 1)
+    public nuint Scan(Signature signature, Module module, uint alignment = 1)
     {
-        return ScanAll(module, signature, alignment).FirstOrDefault();
+        return ScanAll(signature, module, alignment).FirstOrDefault();
     }
 
-    public nuint Scan(Module module, uint size, Signature signature, uint alignment = 1)
+    public nuint Scan(Signature signature, Module module, uint size, uint alignment = 1)
     {
-        return ScanAll(module, size, signature, alignment).FirstOrDefault();
+        return ScanAll(signature, module, size, alignment).FirstOrDefault();
     }
 
-    public nuint Scan(nuint startAddress, nuint endAddress, Signature signature, uint alignment = 1)
+    public nuint Scan(Signature signature, nuint startAddress, nuint endAddress, uint alignment = 1)
     {
-        return ScanAll(startAddress, endAddress, signature, alignment).FirstOrDefault();
+        return ScanAll(signature, startAddress, endAddress, alignment).FirstOrDefault();
     }
 
-    public nuint Scan(nuint startAddress, uint size, Signature signature, uint alignment = 1)
+    public nuint Scan(Signature signature, nuint startAddress, uint size, uint alignment = 1)
     {
-        return ScanAll(startAddress, size, signature, alignment).FirstOrDefault();
+        return ScanAll(signature, startAddress, size, alignment).FirstOrDefault();
     }
 }

@@ -72,9 +72,9 @@ public abstract partial class MemoryManagerBase : IMemoryManager
         Tick++;
     }
 
-    public nuint FromAbsoluteAddress(nuint address)
+    public nuint ReadRelative(nuint address)
     {
-        return Read<nuint>(address);
+        return Is64Bit ? FromRelativeAddress(address) : FromAbsoluteAddress(address);
     }
 
     public nuint FromRelativeAddress(nuint address)
@@ -82,9 +82,9 @@ public abstract partial class MemoryManagerBase : IMemoryManager
         return address + 0x4 + Read<uint>(address);
     }
 
-    public nuint FromAssemblyAddress(nuint address)
+    public nuint FromAbsoluteAddress(nuint address)
     {
-        return Is64Bit ? FromRelativeAddress(address) : FromAbsoluteAddress(address);
+        return Read<nuint>(address);
     }
 
     public void Log(object output)

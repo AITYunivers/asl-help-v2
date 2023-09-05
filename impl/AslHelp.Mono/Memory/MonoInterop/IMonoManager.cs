@@ -6,8 +6,8 @@ namespace AslHelp.Mono.MonoInterop;
 
 public interface IMonoManager
 {
-    MonoImage GetImage(string imageName);
-    bool TryGetImage(string imageName, [NotNullWhen(true)] out MonoImage? monoImage);
+    MonoImage FindImage(string imageName);
+    bool TryFindImage(string imageName, [NotNullWhen(true)] out MonoImage? monoImage);
 
     MonoClass FindClass(string className);
     MonoClass FindClass(string @namespace, string className);
