@@ -1,17 +1,19 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "asl-help.structs",
+  "title": "asl-help.native-structs",
   "description": "Specifies a collection of structs reflected from a game engine's internals.",
   "type": "object",
+  "additionalProperties": false,
   "properties": {
     "inherits": {
       "type": "object",
       "properties": {
         "major": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "minor": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         }
       },
       "required": [ "major", "minor" ]
@@ -24,10 +26,12 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "parent": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "fields": {
             "type": "array",
@@ -37,13 +41,16 @@
               "type": "object",
               "properties": {
                 "type": {
-                  "type": "string"
+                  "type": "string",
+                  "minLength": 1
                 },
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "minLength": 1
                 },
                 "alignment": {
-                  "type": "integer"
+                  "type": "integer",
+                  "minimum": 1
                 }
               },
               "required": [ "type", "name" ]
@@ -61,13 +68,18 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "offset": {
-            "type": "integer"
+            "type": "integer",
+            "not": {
+              "const": 0
+            }
           },
           "pattern": {
-            "type": "string"
+            "type": "string",
+            "minLength": 2
           }
         },
         "required": [ "name", "pattern" ]

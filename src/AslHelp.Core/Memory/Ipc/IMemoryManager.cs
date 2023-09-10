@@ -25,6 +25,7 @@ public interface IMemoryManager
     void Update();
 
     nuint ReadRelative(nuint address);
+    bool TryReadRelative(nuint address, out nuint result);
 
     void Log(object output);
 }

@@ -53,4 +53,9 @@ public partial class MemoryManagerBase
     {
         return ScanAll(startAddress, size, offset, pattern).FirstOrDefault();
     }
+
+    public uint Scan(byte[] memory, int offset, params string[] pattern)
+    {
+        return ScanAll(memory, offset, pattern).FirstOrDefault();
+    }
 }

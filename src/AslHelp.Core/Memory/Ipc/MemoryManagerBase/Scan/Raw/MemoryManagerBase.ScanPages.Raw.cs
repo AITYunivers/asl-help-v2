@@ -40,12 +40,12 @@ public partial class MemoryManagerBase
     public IEnumerable<nuint> ScanPagesAll(bool allPages, int offset, params string[] pattern)
     {
         Signature signature = new(offset, pattern);
-        return ScanPagesAll(allPages, signature);
+        return ScanPagesAll(signature, allPages);
     }
 
     public IEnumerable<nuint> ScanPagesAll(bool allPages, int offset, params byte[] pattern)
     {
         Signature signature = new(offset, pattern);
-        return ScanPagesAll(allPages, signature);
+        return ScanPagesAll(signature, allPages);
     }
 }

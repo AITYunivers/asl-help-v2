@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Core.Memory.SignatureScanning;
@@ -45,20 +46,28 @@ public partial class MemoryManagerBase
 
     public IEnumerable<nuint> ScanAll(Signature signature, nuint startAddress, uint size, uint alignment = 1)
     {
-        if (size <= 0)
+        if (size == 0)
         {
             yield break;
         }
 
-        byte[] memory = new byte[size];
-        if (!TryReadSpan<byte>(memory, startAddress))
+        byte[] buffer = new byte[size];
+        if (!TryReadSpan<byte>(buffer, startAddress))
         {
             yield break;
         }
 
-        foreach (uint scanOffset in new ScanEnumerator(memory, signature, alignment))
+        foreach (nuint result in ScanAll(signature, buffer, alignment))
         {
-            yield return startAddress + scanOffset + (uint)signature.Offset;
+            yield return startAddress + result;
+        }
+    }
+
+    public IEnumerable<uint> ScanAll(Signature signature, byte[] buffer, uint alignment = 1)
+    {
+        foreach (uint scanOffset in new ScanEnumerator(buffer, signature, alignment))
+        {
+            yield return scanOffset + (uint)signature.Offset;
         }
     }
 }

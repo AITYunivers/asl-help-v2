@@ -24,13 +24,13 @@ public partial class MemoryManagerBase
     public IEnumerable<nuint> ScanAll(string moduleName, int offset, params string[] pattern)
     {
         Signature signature = new(offset, pattern);
-        return ScanAll(moduleName, signature);
+        return ScanAll(signature, moduleName);
     }
 
     public IEnumerable<nuint> ScanAll(string moduleName, int offset, params byte[] pattern)
     {
         Signature signature = new(offset, pattern);
-        return ScanAll(moduleName, signature);
+        return ScanAll(signature, moduleName);
     }
 
     public IEnumerable<nuint> ScanAll(Module module, int offset, params string[] pattern)
@@ -58,12 +58,18 @@ public partial class MemoryManagerBase
     public IEnumerable<nuint> ScanAll(nuint startAddress, uint size, int offset, params string[] pattern)
     {
         Signature signature = new(offset, pattern);
-        return ScanAll(startAddress, size, signature);
+        return ScanAll(signature, startAddress, size);
     }
 
     public IEnumerable<nuint> ScanAll(nuint startAddress, uint size, int offset, params byte[] pattern)
     {
         Signature signature = new(offset, pattern);
-        return ScanAll(startAddress, size, signature);
+        return ScanAll(signature, startAddress, size);
+    }
+
+    public IEnumerable<uint> ScanAll(byte[] memory, int offset, params string[] pattern)
+    {
+        Signature signature = new(offset, pattern);
+        return ScanAll(signature, memory);
     }
 }

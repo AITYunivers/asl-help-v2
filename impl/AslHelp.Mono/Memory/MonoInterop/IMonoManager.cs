@@ -1,8 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-using AslHelp.Mono.Memory.Ipc;
-
-namespace AslHelp.Mono.MonoInterop;
+namespace AslHelp.Mono.Memory.MonoInterop;
 
 public interface IMonoManager
 {

@@ -7,6 +7,7 @@ using AslHelp.Common.Exceptions;
 using AslHelp.Core.Collections;
 using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.Memory.Native;
+using AslHelp.Core.Memory.SignatureScanning;
 
 namespace AslHelp.Core.Memory.Ipc;
 
@@ -74,17 +75,29 @@ public abstract partial class MemoryManagerBase : IMemoryManager
 
     public nuint ReadRelative(nuint address)
     {
-        return Is64Bit ? FromRelativeAddress(address) : FromAbsoluteAddress(address);
+        if (Is64Bit)
+        {
+            return address + 0x4 + Read<uint>(address);
+        }
+        else
+        {
+            return Read<uint>(address);
+        }
     }
 
-    public nuint FromRelativeAddress(nuint address)
+    public bool TryReadRelative(nuint address, out nuint result)
     {
-        return address + 0x4 + Read<uint>(address);
-    }
+        if (Is64Bit)
+        {
+            bool success = TryRead(out uint offset, address);
+            result = address + 0x4 + offset;
 
-    public nuint FromAbsoluteAddress(nuint address)
-    {
-        return Read<nuint>(address);
+            return success;
+        }
+        else
+        {
+            return TryRead(out result, address);
+        }
     }
 
     public void Log(object output)

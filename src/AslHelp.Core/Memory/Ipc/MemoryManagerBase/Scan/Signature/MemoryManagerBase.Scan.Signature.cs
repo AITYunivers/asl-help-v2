@@ -45,4 +45,9 @@ public partial class MemoryManagerBase
     {
         return ScanAll(signature, startAddress, size, alignment).FirstOrDefault();
     }
+
+    public uint Scan(Signature signature, byte[] memory, uint alignment = 1)
+    {
+        return ScanAll(signature, memory, alignment).FirstOrDefault();
+    }
 }

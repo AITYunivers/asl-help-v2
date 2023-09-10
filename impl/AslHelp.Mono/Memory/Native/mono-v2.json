@@ -1,5 +1,4 @@
 {
-  "$schema": "../../../../schemas/asl-help.structs.schema.json",
   "inherits": { "major": "mono", "minor": "v1" },
   "structs": [
     {
