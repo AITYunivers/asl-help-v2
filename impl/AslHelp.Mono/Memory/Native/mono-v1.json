@@ -52,6 +52,15 @@
         { "type": "ushort", "name": "revision" }
       ]
     },
+    {
+      "name": "MonoAssembly",
+      "fields": [
+        { "type": "int", "name": "ref_count" },
+        { "type": "sbyte*", "name": "basedir" },
+        { "type": "MonoAssemblyName", "name": "aname" },
+        { "type": "MonoImage*", "name": "image" }
+      ]
+    },
 
     {
       "name": "MonoStreamHeader",

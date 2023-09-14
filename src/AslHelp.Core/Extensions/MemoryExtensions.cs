@@ -1,3 +1,5 @@
+using System.Linq;
+
 using AslHelp.Core.Memory;
 using AslHelp.Core.Memory.Ipc;
 using AslHelp.Core.Memory.SignatureScanning;

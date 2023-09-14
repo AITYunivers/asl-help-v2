@@ -3,7 +3,7 @@ using AslHelp.Mono.Memory.Ipc;
 
 namespace AslHelp.Mono.Memory.MonoInterop;
 
-internal interface IMonoInitializer
+public interface IMonoInitializer
 {
     NativeStructMap InitializeStructs(bool is64Bit);
     nuint InitializeAssemblies(IMonoMemoryManager memory);

@@ -15,7 +15,7 @@ public sealed unsafe class ScanEnumerator : IEnumerable<uint>, IEnumerator<uint>
     private readonly int _length;
     private readonly int _end;
 
-    private readonly uint[] _align = new uint[9];
+    private readonly uint[] _align = new uint[UNROLLS + 1];
 
     private uint _next;
 
@@ -29,7 +29,7 @@ public sealed unsafe class ScanEnumerator : IEnumerable<uint>, IEnumerator<uint>
         _length = signature.Values.Length;
         _end = memory.Length - _length - UNROLLS;
 
-        for (uint i = 1; i <= 8; i++)
+        for (uint i = 1; i <= UNROLLS; i++)
         {
             _align[i] = alignment * i;
         }
@@ -149,21 +149,21 @@ public sealed unsafe class ScanEnumerator : IEnumerable<uint>, IEnumerator<uint>
 
             while (next < end)
             {
-                if (*(ulong*)(pMemory + next) != value0)
+                if ((*(ulong*)(pMemory + next) & value0) != value0)
                 {
-                    if (*(ulong*)(pMemory + next + pAlign[1]) != value0)
+                    if ((*(ulong*)(pMemory + next + pAlign[1]) & value0) != value0)
                     {
-                        if (*(ulong*)(pMemory + next + pAlign[2]) != value0)
+                        if ((*(ulong*)(pMemory + next + pAlign[2]) & value0) != value0)
                         {
-                            if (*(ulong*)(pMemory + next + pAlign[3]) != value0)
+                            if ((*(ulong*)(pMemory + next + pAlign[3]) & value0) != value0)
                             {
-                                if (*(ulong*)(pMemory + next + pAlign[4]) != value0)
+                                if ((*(ulong*)(pMemory + next + pAlign[4]) & value0) != value0)
                                 {
-                                    if (*(ulong*)(pMemory + next + pAlign[5]) != value0)
+                                    if ((*(ulong*)(pMemory + next + pAlign[5]) & value0) != value0)
                                     {
-                                        if (*(ulong*)(pMemory + next + pAlign[6]) != value0)
+                                        if ((*(ulong*)(pMemory + next + pAlign[6]) & value0) != value0)
                                         {
-                                            if (*(ulong*)(pMemory + next + pAlign[7]) != value0)
+                                            if ((*(ulong*)(pMemory + next + pAlign[7]) & value0) != value0)
                                             {
                                                 next += pAlign[8];
                                                 goto Next;

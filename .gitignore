@@ -1,6 +1,6 @@
 # IDE options/cache directories
 .vs/
-.vscode/
+# .vscode/
 .fleet/
 .idea/
 

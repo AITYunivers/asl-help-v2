@@ -30,7 +30,16 @@ public abstract class OrderedDictionary<TKey, TValue> : IDictionary<TKey, TValue
 
     public TValue this[TKey key]
     {
-        get => _dict[key];
+        get
+        {
+            if (!_dict.TryGetValue(key, out TValue value))
+            {
+                string msg = $"The given key '{key}' was not present in the dictionary.";
+                ThrowHelper.ThrowKeyNotFoundException(msg);
+            }
+
+            return value;
+        }
         set
         {
             _dict[key] = value;

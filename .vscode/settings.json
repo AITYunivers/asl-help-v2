@@ -1,0 +1,9 @@
+{
+  "dotnet.defaultSolution": "asl-help.sln",
+  "json.schemas": [
+    {
+      "fileMatch": [ "./impl/**/Native/*.json" ],
+      "url": "./schemas/asl-help.structs.schema.json"
+    }
+  ]
+}

@@ -1,12 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".metadata", ".metadata", "{A46E4AD5-173F-4C5B-806D-93D2CF8E02C2}"
+#
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion =
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{A46E4AD5-173F-4C5B-806D-93D2CF8E02C2}"
 	ProjectSection(SolutionItems) = preProject
 		.clang-format = .clang-format
 		.editorconfig = .editorconfig
-		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
-		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{D6F42E96-A67F-4740-A122-C9A9D18108AD}"
@@ -16,8 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "schemas", "schemas", "{D6F4
 		schemas\asl-help.settings-condensed.schema.json = schemas\asl-help.settings-condensed.schema.json
 		schemas\asl-help.structs.schema.json = schemas\asl-help.structs.schema.json
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{C33EA27A-1EE6-4083-92A1-176BF8CBB6EE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "impl", "impl", "{31E0FBCC-A99E-4675-97D7-2DE0597F39C1}"
 	ProjectSection(SolutionItems) = preProject
@@ -48,18 +47,6 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{D6F42E96-A67F-4740-A122-C9A9D18108AD} = {A46E4AD5-173F-4C5B-806D-93D2CF8E02C2}
-		{32824833-E345-4061-A8FE-0209C8BCB463} = {03B55EFA-7C4A-4637-B216-64AB03AE422E}
-		{D98DD0A7-243E-4DA1-BE51-CCEA8118C632} = {03B55EFA-7C4A-4637-B216-64AB03AE422E}
-		{190DC871-5D68-4769-B3CA-9C9A70191CCE} = {03B55EFA-7C4A-4637-B216-64AB03AE422E}
-		{59C08E71-19BA-46F1-9D58-69B1E1814585} = {DD3BDB5D-AF9A-45D9-A447-0A40CC84FD8A}
-		{FFED421D-4DA8-4D1C-A26C-7FDD4A8644C3} = {31E0FBCC-A99E-4675-97D7-2DE0597F39C1}
-		{1E9EE522-2F4D-4AEA-BC37-D1BBA1344083} = {31E0FBCC-A99E-4675-97D7-2DE0597F39C1}
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{32824833-E345-4061-A8FE-0209C8BCB463}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{32824833-E345-4061-A8FE-0209C8BCB463}.Debug|Any CPU.Build.0 = Debug|Any CPU
@@ -85,5 +72,17 @@ Global
 		{1E9EE522-2F4D-4AEA-BC37-D1BBA1344083}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E9EE522-2F4D-4AEA-BC37-D1BBA1344083}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E9EE522-2F4D-4AEA-BC37-D1BBA1344083}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D6F42E96-A67F-4740-A122-C9A9D18108AD} = {A46E4AD5-173F-4C5B-806D-93D2CF8E02C2}
+		{32824833-E345-4061-A8FE-0209C8BCB463} = {03B55EFA-7C4A-4637-B216-64AB03AE422E}
+		{D98DD0A7-243E-4DA1-BE51-CCEA8118C632} = {03B55EFA-7C4A-4637-B216-64AB03AE422E}
+		{190DC871-5D68-4769-B3CA-9C9A70191CCE} = {03B55EFA-7C4A-4637-B216-64AB03AE422E}
+		{59C08E71-19BA-46F1-9D58-69B1E1814585} = {DD3BDB5D-AF9A-45D9-A447-0A40CC84FD8A}
+		{FFED421D-4DA8-4D1C-A26C-7FDD4A8644C3} = {31E0FBCC-A99E-4675-97D7-2DE0597F39C1}
+		{1E9EE522-2F4D-4AEA-BC37-D1BBA1344083} = {31E0FBCC-A99E-4675-97D7-2DE0597F39C1}
 	EndGlobalSection
 EndGlobal

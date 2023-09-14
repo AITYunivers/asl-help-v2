@@ -1,4 +1,7 @@
+using System.Linq;
+
 using AslHelp.Common.Exceptions;
+using AslHelp.Core.Diagnostics;
 using AslHelp.Core.Extensions;
 using AslHelp.Core.IO.Parsing;
 using AslHelp.Core.Memory.SignatureScanning;
@@ -10,8 +13,8 @@ internal readonly struct MonoV1Initializer : IMonoInitializer
 {
     public nuint InitializeAssemblies(IMonoMemoryManager memory)
     {
-        nuint monoAssemblyForeach = memory.MonoModule.Symbols["mono_assembly_foreach"].Address;
-        if (monoAssemblyForeach == 0)
+        if (!memory.MonoModule.Symbols.TryGetValue("mono_assembly_foreach", out var monoAssemblyForeach)
+            || monoAssemblyForeach.Address == 0)
         {
             const string msg = "Unable to find symbol 'mono_assembly_foreach'.";
             ThrowHelper.ThrowInvalidOperationException(msg);
@@ -22,7 +25,7 @@ internal readonly struct MonoV1Initializer : IMonoInitializer
             ? [new(3, "48 8B 0D")]
             : [new(2, "FF 35"), new(2, "8B 0D")];
 
-        nuint loadedAssemblies = memory.Scan(signatures, monoAssemblyForeach, 0x100);
+        nuint loadedAssemblies = memory.Scan(signatures, monoAssemblyForeach.Address, 0x100);
         if (loadedAssemblies == 0)
         {
             const string msg = "Failed scanning for a reference to 'loaded_assemblies'.";

@@ -15,7 +15,7 @@ public readonly record struct DebugSymbol
 
     internal unsafe DebugSymbol(SYMBOL_INFOW symbol)
     {
-        ReadOnlySpan<char> name = new((char*)symbol.Name, (int)symbol.NameLen);
+        ReadOnlySpan<char> name = new((char*)symbol.Name, (int)symbol.NameLen - 1);
 
         Name = name.ToString();
         Address = (nuint)symbol.Address;
