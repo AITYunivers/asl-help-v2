@@ -32,8 +32,8 @@ internal readonly struct MonoV1Initializer : IMonoInitializer
         return memory.Read<nuint>(memory.ReadRelative(loadedAssemblies));
     }
 
-    public NativeStructMap InitializeStructs(IMonoMemoryManager memory)
+    public NativeStructMap InitializeStructs(bool is64Bit)
     {
-        return NativeStructMap.Parse("Mono", "mono", "v1", memory.Is64Bit);
+        return NativeStructMap.Parse("Mono", "mono", "v1", is64Bit);
     }
 }

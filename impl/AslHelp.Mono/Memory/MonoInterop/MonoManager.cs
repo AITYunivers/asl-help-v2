@@ -1,26 +1,33 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
+using AslHelp.Core.IO.Parsing;
 using AslHelp.Mono.Memory.Ipc;
+using AslHelp.Mono.Memory.MonoInterop.MonoV1;
 
 namespace AslHelp.Mono.Memory.MonoInterop;
 
 internal abstract class MonoManager : IMonoManager
 {
-    private protected abstract IMonoInitializer Initializer { get; }
+    protected readonly IMonoMemoryManager _memory;
+
+    protected readonly NativeStructMap _structs;
+    protected readonly nuint _loadedAssemblies;
+
+    protected MonoManager(IMonoMemoryManager memory, IMonoInitializer initializer)
+    {
+        _memory = memory;
+
+        _structs = initializer.InitializeStructs(memory.Is64Bit);
+        _loadedAssemblies = initializer.InitializeAssemblies(memory);
+    }
 
     public static IMonoManager Initialize(IMonoMemoryManager memory)
     {
-
+        return new MonoV1Manager(memory);
     }
 
-    public abstract MonoImage FindImage(string imageName);
-    public abstract bool TryFindImage(string imageName, [NotNullWhen(true)] out MonoImage? monoImage);
-
-    public abstract MonoClass FindClass(string className);
-    public abstract MonoClass FindClass(string @namespace, string className);
-    public abstract bool TryFindClass(string className, [NotNullWhen(true)] out MonoClass? monoClass);
-    public abstract bool TryFindClass(string @namespace, string className, [NotNullWhen(true)] out MonoClass? monoClass);
-
-    public abstract MonoClass GetParentClass(MonoClass monoClass);
-    public abstract bool TryGetParentClass(MonoClass monoClass, [NotNullWhen(true)] out MonoClass? parent);
+    protected abstract IEnumerable<nuint> EnumerateImages();
+    protected abstract IEnumerable<nuint> EnumerateClasses(nuint image);
+    protected abstract IEnumerable<nuint> EnumerateFields(nuint klass);
 }

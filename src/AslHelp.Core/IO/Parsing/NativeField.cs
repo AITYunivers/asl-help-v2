@@ -30,6 +30,11 @@ public sealed class NativeField
         return field.Offset;
     }
 
+    public static implicit operator uint(NativeField field)
+    {
+        return (uint)field.Offset;
+    }
+
     public static byte operator &(byte value, NativeField field)
     {
         return (byte)((value & field.BitMask) >> field._trailingZeroCount);

@@ -1,48 +1,60 @@
-using System.Diagnostics.CodeAnalysis;
+using System;
+using System.Buffers;
+using System.Collections.Generic;
+
+using AslHelp.Common.Extensions;
+using AslHelp.Mono.Memory.Ipc;
 
 namespace AslHelp.Mono.Memory.MonoInterop.MonoV1;
 
 internal class MonoV1Manager : MonoManager
 {
-    private protected override IMonoInitializer Initializer { get; } = new MonoV1Initializer();
+    public MonoV1Manager(IMonoMemoryManager memory)
+        : base(memory, new MonoV1Initializer()) { }
 
-    public override MonoClass FindClass(string className)
+    protected override IEnumerable<nuint> EnumerateImages()
     {
-        throw new System.NotImplementedException();
+        nuint assemblies = _loadedAssemblies;
+
+        while (assemblies != 0)
+        {
+            nuint assembly = _memory.Read<nuint>(assemblies + _structs["GList"]["data"]);
+            nuint image = _memory.Read<nuint>(assembly + _structs["MonoAssembly"]["image"]);
+
+            yield return image;
+
+            assemblies = _memory.Read<nuint>(assemblies + _structs["GList"]["next"]);
+        }
     }
 
-    public override MonoClass FindClass(string @namespace, string className)
+    protected override IEnumerable<nuint> EnumerateClasses(nuint image)
     {
-        throw new System.NotImplementedException();
+        nuint classCache = _memory.Read<nuint>(image + _structs["MonoImage"]["class_cache"] + _structs["MonoInternalHashTable"]["table"]);
+        int size = _memory.Read<int>(image + _structs["MonoImage"]["class_cache"] + _structs["MonoInternalHashTable"]["size"]);
+
+        nuint[] classes = ArrayPool<nuint>.Shared.Rent(size);
+
+        if (!_memory.TryReadSpan<nuint>(classes, classCache))
+        {
+            ArrayPool<nuint>.Shared.ReturnIfNotNull(classes);
+
+            yield break;
+        }
+
+        for (int i = 0; i < size; i++)
+        {
+            nuint klass = classes[i];
+            while (klass != 0)
+            {
+                yield return klass;
+
+                klass = _memory.Read<nuint>(klass + _structs["MonoClass"]["next_class_cache"]);
+            }
+        }
     }
 
-    public override MonoImage FindImage(string imageName)
+    protected override IEnumerable<nuint> EnumerateFields(nuint klass)
     {
-        throw new System.NotImplementedException();
-    }
-
-    public override MonoClass GetParentClass(MonoClass monoClass)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override bool TryFindClass(string className, [NotNullWhen(true)] out MonoClass? monoClass)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override bool TryFindClass(string @namespace, string className, [NotNullWhen(true)] out MonoClass? monoClass)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override bool TryFindImage(string imageName, [NotNullWhen(true)] out MonoImage? monoImage)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override bool TryGetParentClass(MonoClass monoClass, [NotNullWhen(true)] out MonoClass? parent)
-    {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 }
