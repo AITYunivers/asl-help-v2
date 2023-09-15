@@ -4,6 +4,13 @@ This is the work-in-progress repository of the next iteration of [`asl-help`](ht
 
 ## To-Do
 
+- Unit tests
+
+- Benchmarks?
+  - Compare against LiveSplit.Core?
+
+- Documentation & tutorials
+
 - Overhaul `Pointer` classes
   - Maybe change from `Make` to `Create`?
   - Allow children to be created from span-like `Pointer`s by accessing one specific index
@@ -30,6 +37,7 @@ This is the work-in-progress repository of the next iteration of [`asl-help`](ht
 - Unreal-related features
   - Figure out Subsystems
   - Figure out Singletons/static anything
+  - Figure out UE3 (apple1417 will do it)
 
 - GameMaker-related features
   - Figure out everything

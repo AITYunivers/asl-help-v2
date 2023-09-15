@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Common.Results;
@@ -88,7 +89,7 @@ public class ExternalMemoryManager : MemoryManagerBase
             IsSuccess: WinInteropWrapper.ReadMemory(handle, deref, buffer, length),
             Throw: static () =>
             {
-                const string msg = "Failed to read value.";
+                string msg = $"ReadProcessMemory call failed. ({Marshal.GetLastWin32Error()})";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             });
     }
@@ -114,10 +115,10 @@ public class ExternalMemoryManager : MemoryManagerBase
 
         nuint deref = derefResult.Value, handle = _processHandle;
         return new(
-            IsSuccess: WinInteropWrapper.ReadMemory(handle, deref, data, length),
+            IsSuccess: WinInteropWrapper.WriteMemory(handle, deref, data, length),
             Throw: static () =>
             {
-                const string msg = "Failed to read value.";
+                string msg = $"WriteProcessMemory call failed. ({Marshal.GetLastWin32Error()})";
                 ThrowHelper.ThrowInvalidOperationException(msg);
             });
     }

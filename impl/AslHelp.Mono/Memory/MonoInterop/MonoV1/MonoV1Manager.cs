@@ -13,7 +13,7 @@ internal class MonoV1Manager : MonoManager
     public MonoV1Manager(IMonoMemoryManager memory)
         : base(memory, new MonoV1Initializer()) { }
 
-    public override IEnumerable<nuint> EnumerateImages()
+    protected override IEnumerable<nuint> EnumerateImages()
     {
         nuint assemblies = _loadedAssemblies;
 
@@ -28,7 +28,7 @@ internal class MonoV1Manager : MonoManager
         }
     }
 
-    public override IEnumerable<nuint> EnumerateClasses(nuint image)
+    protected override IEnumerable<nuint> EnumerateClasses(nuint image)
     {
         nuint classCache = _memory.Read<nuint>(image + _structs["MonoImage"]["class_cache"] + _structs["MonoInternalHashTable"]["table"]);
         int size = _memory.Read<int>(image + _structs["MonoImage"]["class_cache"] + _structs["MonoInternalHashTable"]["size"]);
@@ -54,10 +54,8 @@ internal class MonoV1Manager : MonoManager
         }
     }
 
-    public override IEnumerable<nuint> EnumerateFields(nuint klass)
+    protected override IEnumerable<nuint> EnumerateFields(nuint klass)
     {
-        int fieldSize = _structs["MonoClassField"].SelfAlignedSize;
-
         while (klass != 0)
         {
             int fieldCount = _memory.Read<int>(klass + _structs["MonoClass"]["field.count"]);
@@ -65,7 +63,7 @@ internal class MonoV1Manager : MonoManager
 
             for (int i = 0; i < fieldCount; i++)
             {
-                nuint field = _memory.Read<nuint>(fields + (uint)(fieldSize * i));
+                nuint field = _memory.Read<nuint>(fields + (uint)(_structs["MonoClassField"].SelfAlignedSize * i));
 
                 yield return field;
             }
@@ -74,15 +72,27 @@ internal class MonoV1Manager : MonoManager
         }
     }
 
-    public override string GetImageName(nuint image)
+    protected override string GetImageName(nuint image)
     {
         nuint name = _memory.Read<nuint>(image + _structs["MonoImage"]["assembly_name"]);
         return _memory.ReadString(256, ReadStringType.UTF8, name);
     }
 
-    public override string GetClassName(nuint klass)
+    protected override string GetImagePath(nuint image)
+    {
+        nuint path = _memory.Read<nuint>(image + _structs["MonoImage"]["module_name"]);
+        return _memory.ReadString(260, ReadStringType.UTF8, path);
+    }
+
+    protected override string GetClassName(nuint klass)
     {
         nuint name = _memory.Read<nuint>(klass + _structs["MonoClass"]["name"]);
         return _memory.ReadString(128, ReadStringType.UTF8, name);
+    }
+
+    protected override string GetClassNamespace(nuint klass)
+    {
+        nuint nameSpace = _memory.Read<nuint>(klass + _structs["MonoClass"]["name_space"]);
+        return _memory.ReadString(256, ReadStringType.UTF8, nameSpace);
     }
 }
