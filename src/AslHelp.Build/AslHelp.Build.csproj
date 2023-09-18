@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <LibraryName>asl-help-neo</LibraryName>
+    <LibraryName>asl-help-v2</LibraryName>
     <RootNamespace>AslHelp</RootNamespace>
     <TargetFramework>net481</TargetFramework>
   </PropertyGroup>

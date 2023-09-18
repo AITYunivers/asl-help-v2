@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Linq;
 
 using AslHelp.Core.Memory.Ipc;
 using AslHelp.Mono.Memory.Ipc;
@@ -12,7 +13,16 @@ public partial class Mono : Basic
     public new IMonoMemoryManager? Memory => (IMonoMemoryManager?)base.Memory;
 
     private IMonoManager? _manager;
-    public IMonoManager? Manager => _manager ??= MonoManager.Initialize(Memory!);
+    private IMonoManager? Manager => _manager ??= MonoManager.Initialize(Memory!);
+
+    public void ListImages()
+    {
+        var mono = new MonoEngine(Manager!);
+        foreach (var klass in mono.First(img => img.Name == "Assembly-CSharp"))
+        {
+            Debug.Warn($"{klass.Namespace}.{klass.Name}");
+        }
+    }
 
     protected override IMemoryManager InitializeMemory(Process process)
     {

@@ -4,6 +4,8 @@ This is the work-in-progress repository of the next iteration of [`asl-help`](ht
 
 ## To-Do
 
+- Struct parser doesn't work man
+
 - Unit tests
 
 - Benchmarks?
@@ -36,6 +38,7 @@ This is the work-in-progress repository of the next iteration of [`asl-help`](ht
 
 - Unreal-related features
   - Figure out Subsystems
+    - It's a TMap in `UGameInstance` (`SubsystemCollection`) (no clue how to find it, it's not a `UPROPERTY`)
   - Figure out Singletons/static anything
   - Figure out UE3 (apple1417 will do it)
 

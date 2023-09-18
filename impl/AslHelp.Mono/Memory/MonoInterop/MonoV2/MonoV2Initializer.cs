@@ -1,12 +1,13 @@
 using AslHelp.Common.Exceptions;
+using AslHelp.Core.Diagnostics;
 using AslHelp.Core.Extensions;
 using AslHelp.Core.IO.Parsing;
 using AslHelp.Core.Memory.SignatureScanning;
 using AslHelp.Mono.Memory.Ipc;
 
-namespace AslHelp.Mono.Memory.MonoInterop.MonoV1;
+namespace AslHelp.Mono.Memory.MonoInterop.MonoV2;
 
-internal sealed class MonoV1Initializer : IMonoInitializer
+internal class MonoV2Initializer : IMonoInitializer
 {
     public nuint InitializeAssemblies(IMonoMemoryManager memory)
     {
@@ -34,6 +35,6 @@ internal sealed class MonoV1Initializer : IMonoInitializer
 
     public NativeStructMap InitializeStructs(bool is64Bit)
     {
-        return NativeStructMap.Parse("Mono", "mono", "v1", is64Bit);
+        return NativeStructMap.Parse("Mono", "mono", "v2", is64Bit);
     }
 }

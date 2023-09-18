@@ -1,59 +1,183 @@
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Generic;
+
+using AslHelp.Core.Collections;
 
 namespace AslHelp.Mono.Memory.MonoInterop;
 
-public interface IMonoManager
+internal interface IMonoManager
 {
-    MonoImage FindImage(string imageName);
-    bool TryFindImage(string imageName, [NotNullWhen(true)] out MonoImage? monoImage);
+    IEnumerable<nuint> GetImages();
+    IEnumerable<nuint> GetClasses(nuint image);
+    IEnumerable<nuint> GetFields(nuint klass);
 
-    MonoClass FindClass(nuint image, string className);
-    MonoClass FindClass(nuint image, string @namespace, string className);
+    string GetImageName(nuint image);
+    string GetImagePath(nuint image);
 
-    bool TryFindClass(nuint image, string className, [NotNullWhen(true)] out MonoClass? monoClass);
-    bool TryFindClass(nuint image, string @namespace, string className, [NotNullWhen(true)] out MonoClass? monoClass);
+    string GetClassName(nuint klass);
+    string GetClassNamespace(nuint klass);
 
-    // MonoClass GetParentClass(MonoClass monoClass);
-    // bool TryGetParentClass(MonoClass monoClass, [NotNullWhen(true)] out MonoClass? parent);
+    string GetFieldName(nuint field);
+    int GetFieldOffset(nuint field);
 }
 
-public record MonoImage
+internal class MonoEngine : LazyDictionary<string, MonoImage>, IEngine
 {
     private readonly IMonoManager _manager;
 
-    public MonoImage(IMonoManager manager, nuint address, string name, string path)
+    public MonoEngine(IMonoManager manager)
+    {
+        _manager = manager;
+    }
+
+    public IEnumerable<IModule> GetModules()
+    {
+        return this;
+    }
+
+    public override IEnumerator<MonoImage> GetEnumerator()
+    {
+        foreach (nuint image in _manager.GetImages())
+        {
+            yield return new(_manager, image);
+        }
+    }
+
+    protected override string GetKey(MonoImage value)
+    {
+        return value.Name;
+    }
+}
+
+internal class MonoImage : LazyDictionary<string, MonoClass>, IModule
+{
+    private readonly IMonoManager _manager;
+
+    public MonoImage(IMonoManager manager, nuint address)
     {
         _manager = manager;
 
         Address = address;
-        Name = name;
-        Path = path;
     }
 
     public nuint Address { get; }
-    public string Name { get; }
-    public string Path { get; }
 
-    public MonoClass FindClass(string className)
+    private string? _name;
+    public string Name => _name ??= _manager.GetImageName(Address);
+
+    private string? _fileName;
+    public string FileName => _fileName ??= _manager.GetImagePath(Address);
+
+    public IEnumerable<IType> GetTypes()
     {
-        return _manager.FindClass(Address, className);
+        return this;
     }
 
-    public MonoClass FindClass(string @namespace, string className)
+    public override IEnumerator<MonoClass> GetEnumerator()
     {
-        return _manager.FindClass(Address, @namespace, className);
+        foreach (nuint klass in _manager.GetClasses(Address))
+        {
+            yield return new(_manager, klass);
+        }
     }
 
-    public override string ToString()
+    protected override string GetKey(MonoClass value)
     {
-        return $"{Name} {{ Address: 0x{(ulong)Address:X}, Path: {Path} }}";
+        string name = value.Name, ns = value.Namespace;
+        if (string.IsNullOrEmpty(ns))
+        {
+            return name;
+        }
+        else
+        {
+            return $"{ns}.{name}";
+        }
     }
 }
 
-public record MonoClass(
-    nuint Address,
-    string Name,
-    string Namespace);
+internal interface IEngine
+{
+    IEnumerable<IModule> GetModules();
+}
 
-public record MonoField;
+internal interface IModule
+{
+    nuint Address { get; }
+    string Name { get; }
+
+    IEnumerable<IType> GetTypes();
+}
+
+internal interface IType
+{
+    nuint Address { get; }
+    string Name { get; }
+    string Namespace { get; }
+
+    IEnumerable<IMember> GetMembers();
+}
+
+internal interface IMember
+{
+    nuint Address { get; }
+    string Name { get; }
+    int Offset { get; }
+}
+
+internal class MonoClass : LazyDictionary<string, MonoField>, IType
+{
+    private readonly IMonoManager _manager;
+
+    public MonoClass(IMonoManager manager, nuint address)
+    {
+        _manager = manager;
+
+        Address = address;
+    }
+
+    public nuint Address { get; }
+
+    private string? _name;
+    public string Name => _name ??= _manager.GetClassName(Address);
+
+    private string? _namespace;
+    public string Namespace => _namespace ??= _manager.GetClassNamespace(Address);
+
+    public IEnumerable<IMember> GetMembers()
+    {
+        return this;
+    }
+
+    public override IEnumerator<MonoField> GetEnumerator()
+    {
+        foreach (nuint field in _manager.GetFields(Address))
+        {
+            yield return new(_manager, field);
+        }
+    }
+
+    protected override string GetKey(MonoField value)
+    {
+        return value.Name;
+    }
+}
+
+internal class MonoField : IMember
+{
+    private readonly IMonoManager _manager;
+
+    public MonoField(IMonoManager manager, nuint address)
+    {
+        _manager = manager;
+        Address = address;
+    }
+
+    public nuint Address { get; }
+
+    private string? _name;
+    public string Name => _name ??= _manager.GetFieldName(Address);
+
+    private int? _offset;
+    public int Offset => _offset ??= _manager.GetFieldOffset(Address);
+}
+
 public record MonoType;
