@@ -49,7 +49,7 @@ public sealed class NativeStructMap : OrderedDictionary<string, NativeStruct>
     public static NativeStructMap Parse(string engine, string major, string minor, bool is64Bit)
     {
         Assembly assembly = Assembly.GetCallingAssembly();
-        using Stream source = EmbeddedResource.GetResourceStream($"AslHelp.{engine}.Memory.Native.{major}-{minor}.json", assembly);
+        using Stream source = EmbeddedResource.GetResourceStream($"AslHelp.{engine}.Structs.{major}-{minor}.json", assembly);
 
         Root? root = JsonSerializer.Deserialize<Root>(source, new JsonSerializerOptions
         {

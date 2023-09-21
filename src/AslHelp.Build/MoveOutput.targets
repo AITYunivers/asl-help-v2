@@ -1,0 +1,12 @@
+<Project>
+
+  <Target Name="_MoveOutput" AfterTargets="_MergeAssemblies" Condition="'$(Configuration)' == 'Debug'">
+
+    <!-- Move the merged asl-help.dll to the LiveSplit/Components directory. -->
+    <Move Condition="Exists('$(LsDir)\LiveSplit.exe')"
+          SourceFiles="$(OutDir)\$(LibraryName).dll"
+          DestinationFiles="$(LsDir)\Components\$(LibraryName)" />
+
+  </Target>
+
+</Project>

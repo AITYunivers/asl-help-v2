@@ -2,7 +2,7 @@
   "dotnet.defaultSolution": "asl-help.sln",
   "json.schemas": [
     {
-      "fileMatch": [ "./impl/**/Native/*.json" ],
+      "fileMatch": [ "./impl/*/Structs/*.json" ],
       "url": "./schemas/asl-help.structs.schema.json"
     }
   ]

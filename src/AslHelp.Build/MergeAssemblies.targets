@@ -1,6 +1,6 @@
 <Project>
 
-  <Target Name="_MergeAssemblies" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Debug'">
+  <Target Name="_MergeAssemblies" AfterTargets="PostBuildEvent">
 
     <ItemGroup>
       <!-- <AslHelpReferences Include="AslHelp.Build.dll" /> -->
@@ -28,11 +28,6 @@
         @(AslHelpReferences, ' ') ^
         @(MiscReferences, ' ')
       " />
-
-    <!-- Move the merged asl-help.dll to the LiveSplit/Components directory. -->
-    <Move Condition="Exists('$(LsDir)\LiveSplit.exe')"
-          SourceFiles="$(OutDir)\$(LibraryName).dll"
-          DestinationFiles="$(LsDir)\Components\$(LibraryName)" />
 
   </Target>
 
