@@ -1,0 +1,610 @@
+SF:C:\Users\Ero\Desktop\code\asl-help-v2\src\AslHelp.Common\PolySharp.SourceGenerators\PolySharp.SourceGenerators.PolyfillsGenerator\System.Diagnostics.CodeAnalysis.RequiresAssemblyFilesAttribute.g.cs
+FN:43,System.String System.Diagnostics.CodeAnalysis.RequiresAssemblyFilesAttribute::get_Message()
+FNDA:0,System.String System.Diagnostics.CodeAnalysis.RequiresAssemblyFilesAttribute::get_Message()
+DA:44,0
+FN:50,System.String System.Diagnostics.CodeAnalysis.RequiresAssemblyFilesAttribute::get_Url()
+FNDA:0,System.String System.Diagnostics.CodeAnalysis.RequiresAssemblyFilesAttribute::get_Url()
+DA:51,0
+FN:24,System.Void System.Diagnostics.CodeAnalysis.RequiresAssemblyFilesAttribute::.ctor()
+FNDA:0,System.Void System.Diagnostics.CodeAnalysis.RequiresAssemblyFilesAttribute::.ctor()
+DA:25,0
+DA:26,0
+DA:27,0
+FN:34,System.Void System.Diagnostics.CodeAnalysis.RequiresAssemblyFilesAttribute::.ctor(System.String)
+FNDA:0,System.Void System.Diagnostics.CodeAnalysis.RequiresAssemblyFilesAttribute::.ctor(System.String)
+DA:35,0
+DA:36,0
+DA:37,0
+DA:38,0
+LF:9
+LH:0
+BRF:0
+BRH:0
+FNF:4
+FNH:0
+end_of_record
+SF:C:\Users\Ero\Desktop\code\asl-help-v2\src\AslHelp.Common\Results\Result.cs
+FN:7,System.Boolean AslHelp.Common.Results.Result::get_IsSuccess()
+FNDA:0,System.Boolean AslHelp.Common.Results.Result::get_IsSuccess()
+DA:8,0
+FN:8,System.Action AslHelp.Common.Results.Result::get_Throw()
+FNDA:0,System.Action AslHelp.Common.Results.Result::get_Throw()
+DA:9,0
+FN:5,System.Void AslHelp.Common.Results.Result::.ctor(System.Boolean,System.Action)
+FNDA:0,System.Void AslHelp.Common.Results.Result::.ctor(System.Boolean,System.Action)
+DA:6,0
+DA:7,0
+FN:12,T AslHelp.Common.Results.Result`1::get_Value()
+FNDA:0,T AslHelp.Common.Results.Result`1::get_Value()
+DA:13,0
+FN:13,System.Void AslHelp.Common.Results.Result`1::.ctor(System.Boolean,T,System.Action)
+FNDA:0,System.Void AslHelp.Common.Results.Result`1::.ctor(System.Boolean,T,System.Action)
+DA:14,0
+FN:10,System.Void AslHelp.Common.Results.Result`1::.ctor(AslHelp.Common.Results.Result`1<T>)
+FNDA:0,System.Void AslHelp.Common.Results.Result`1::.ctor(AslHelp.Common.Results.Result`1<T>)
+DA:11,0
+LF:7
+LH:0
+BRF:0
+BRH:0
+FNF:6
+FNH:0
+end_of_record
+SF:C:\Users\Ero\Desktop\code\asl-help-v2\src\AslHelp.Common\Extensions\ArrayPoolExtensions.cs
+FN:18,System.Void AslHelp.Common.Extensions.ArrayPoolExtensions::ReturnIfNotNull(System.Buffers.ArrayPool`1<T>,T[])
+FNDA:0,System.Void AslHelp.Common.Extensions.ArrayPoolExtensions::ReturnIfNotNull(System.Buffers.ArrayPool`1<T>,T[])
+DA:19,0
+DA:20,0
+DA:21,0
+DA:22,0
+DA:23,0
+DA:24,0
+BRDA:20,7,0,0
+BRDA:20,7,1,0
+LF:6
+LH:0
+BRF:2
+BRH:0
+FNF:1
+FNH:0
+end_of_record
+SF:C:\Users\Ero\Desktop\code\asl-help-v2\src\AslHelp.Common\Extensions\CharExtensions.cs
+FN:19,System.Byte AslHelp.Common.Extensions.CharExtensions::ToHexValue(System.Char)
+FNDA:25,System.Byte AslHelp.Common.Extensions.CharExtensions::ToHexValue(System.Char)
+DA:20,25
+DA:21,25
+DA:23,25
+DA:24,10
+DA:25,10
+DA:28,15
+DA:30,15
+DA:31,12
+DA:32,12
+DA:35,3
+DA:36,25
+BRDA:23,8,0,23
+BRDA:23,8,1,2
+BRDA:23,20,0,10
+BRDA:23,20,1,15
+BRDA:30,38,0,13
+BRDA:30,38,1,2
+BRDA:30,51,0,12
+BRDA:30,51,1,3
+LF:11
+LH:11
+BRF:8
+BRH:8
+FNF:1
+FNH:1
+end_of_record
+SF:C:\Users\Ero\Desktop\code\asl-help-v2\src\AslHelp.Common\Extensions\ReflectionExtensions.cs
+FN:24,T AslHelp.Common.Extensions.ReflectionExtensions::GetFieldValue(System.Object,System.String)
+FNDA:0,T AslHelp.Common.Extensions.ReflectionExtensions::GetFieldValue(System.Object,System.String)
+DA:25,0
+DA:26,0
+DA:27,0
+BRDA:26,43,0,0
+BRDA:26,43,1,0
+FN:36,System.Void AslHelp.Common.Extensions.ReflectionExtensions::SetFieldValue(System.Object,System.String,T)
+FNDA:0,System.Void AslHelp.Common.Extensions.ReflectionExtensions::SetFieldValue(System.Object,System.String,T)
+DA:37,0
+DA:38,0
+DA:39,0
+BRDA:38,43,0,0
+BRDA:38,43,1,0
+FN:51,T AslHelp.Common.Extensions.ReflectionExtensions::GetPropertyValue(System.Object,System.String)
+FNDA:0,T AslHelp.Common.Extensions.ReflectionExtensions::GetPropertyValue(System.Object,System.String)
+DA:52,0
+DA:53,0
+DA:54,0
+BRDA:53,43,0,0
+BRDA:53,43,1,0
+FN:63,System.Void AslHelp.Common.Extensions.ReflectionExtensions::SetPropertyValue(System.Object,System.String,T)
+FNDA:0,System.Void AslHelp.Common.Extensions.ReflectionExtensions::SetPropertyValue(System.Object,System.String,T)
+DA:64,0
+DA:65,0
+DA:66,0
+BRDA:65,43,0,0
+BRDA:65,43,1,0
+FN:77,System.Reflection.MethodInfo AslHelp.Common.Extensions.ReflectionExtensions::GetMethod(System.Object,System.String)
+FNDA:0,System.Reflection.MethodInfo AslHelp.Common.Extensions.ReflectionExtensions::GetMethod(System.Object,System.String)
+DA:78,0
+DA:79,0
+DA:80,0
+FN:91,System.Boolean AslHelp.Common.Extensions.ReflectionExtensions::IsType(System.Object)
+FNDA:0,System.Boolean AslHelp.Common.Extensions.ReflectionExtensions::IsType(System.Object)
+DA:92,0
+DA:93,0
+DA:94,0
+FN:101,System.Reflection.Assembly AslHelp.Common.Extensions.ReflectionExtensions::get_CurrentAssembly()
+FNDA:0,System.Reflection.Assembly AslHelp.Common.Extensions.ReflectionExtensions::get_CurrentAssembly()
+DA:102,0
+DA:103,0
+DA:105,0
+DA:106,0
+DA:107,0
+DA:109,0
+DA:110,0
+DA:111,0
+DA:113,0
+DA:115,0
+DA:116,0
+BRDA:105,95,1,0
+BRDA:107,31,0,0
+BRDA:107,31,1,0
+BRDA:109,46,0,0
+BRDA:109,46,1,0
+BRDA:109,72,0,0
+BRDA:109,72,1,0
+BRDA:105,95,0,0
+LF:29
+LH:0
+BRF:16
+BRH:0
+FNF:7
+FNH:0
+end_of_record
+SF:C:\Users\Ero\Desktop\code\asl-help-v2\src\AslHelp.Common\Extensions\RegexExtensions.cs
+FN:7,System.Text.RegularExpressions.GroupCollection AslHelp.Common.Extensions.RegexExtensions::Groups(System.Text.RegularExpressions.Regex,System.String)
+FNDA:0,System.Text.RegularExpressions.GroupCollection AslHelp.Common.Extensions.RegexExtensions::Groups(System.Text.RegularExpressions.Regex,System.String)
+DA:8,0
+DA:9,0
+DA:10,0
+FN:12,System.Text.RegularExpressions.GroupCollection AslHelp.Common.Extensions.RegexExtensions::Groups(System.Text.RegularExpressions.Regex,System.String,System.Int32)
+FNDA:0,System.Text.RegularExpressions.GroupCollection AslHelp.Common.Extensions.RegexExtensions::Groups(System.Text.RegularExpressions.Regex,System.String,System.Int32)
+DA:13,0
+DA:14,0
+DA:15,0
+FN:17,System.Text.RegularExpressions.GroupCollection AslHelp.Common.Extensions.RegexExtensions::Groups(System.Text.RegularExpressions.Regex,System.String,System.Int32,System.Int32)
+FNDA:0,System.Text.RegularExpressions.GroupCollection AslHelp.Common.Extensions.RegexExtensions::Groups(System.Text.RegularExpressions.Regex,System.String,System.Int32,System.Int32)
+DA:18,0
+DA:19,0
+DA:20,0
+LF:9
+LH:0
+BRF:0
+BRH:0
+FNF:3
+FNH:0
+end_of_record
+SF:C:\Users\Ero\Desktop\code\asl-help-v2\src\AslHelp.Common\Extensions\StreamExtensions.cs
+FN:24,T AslHelp.Common.Extensions.StreamExtensions::Read(System.IO.Stream)
+FNDA:0,T AslHelp.Common.Extensions.StreamExtensions::Read(System.IO.Stream)
+DA:25,0
+DA:27,0
+DA:29,0
+DA:30,0
+FN:46,System.Boolean AslHelp.Common.Extensions.StreamExtensions::TryRead(System.IO.Stream,T&)
+FNDA:0,System.Boolean AslHelp.Common.Extensions.StreamExtensions::TryRead(System.IO.Stream,T&)
+DA:47,0
+DA:49,0
+DA:50,0
+DA:51,0
+DA:52,0
+DA:55,0
+DA:56,0
+DA:57,0
+DA:59,0
+BRDA:49,38,0,0
+BRDA:49,38,1,0
+FN:69,System.Void AslHelp.Common.Extensions.StreamExtensions::Read(System.IO.Stream,System.Span`1<T>)
+FNDA:0,System.Void AslHelp.Common.Extensions.StreamExtensions::Read(System.IO.Stream,System.Span`1<T>)
+DA:70,0
+DA:71,0
+DA:72,0
+FN:86,System.Boolean AslHelp.Common.Extensions.StreamExtensions::TryRead(System.IO.Stream,System.Span`1<T>)
+FNDA:0,System.Boolean AslHelp.Common.Extensions.StreamExtensions::TryRead(System.IO.Stream,System.Span`1<T>)
+DA:87,0
+DA:88,0
+DA:89,0
+DA:90,0
+FN:99,System.Void AslHelp.Common.Extensions.StreamExtensions::Write(System.IO.Stream,T&)
+FNDA:0,System.Void AslHelp.Common.Extensions.StreamExtensions::Write(System.IO.Stream,T&)
+DA:100,0
+DA:101,0
+DA:102,0
+DA:104,0
+DA:105,0
+DA:107,0
+DA:108,0
+FN:116,System.Void AslHelp.Common.Extensions.StreamExtensions::Write(System.IO.Stream,System.ReadOnlySpan`1<System.Byte>)
+FNDA:0,System.Void AslHelp.Common.Extensions.StreamExtensions::Write(System.IO.Stream,System.ReadOnlySpan`1<System.Byte>)
+DA:117,0
+DA:118,0
+DA:120,0
+DA:121,0
+DA:123,0
+DA:124,0
+FN:139,TResponse AslHelp.Common.Extensions.StreamExtensions::Transact(System.IO.Stream,TRequest)
+FNDA:0,TResponse AslHelp.Common.Extensions.StreamExtensions::Transact(System.IO.Stream,TRequest)
+DA:140,0
+DA:141,0
+DA:142,0
+DA:143,0
+FN:163,System.Boolean AslHelp.Common.Extensions.StreamExtensions::TryTransact(System.IO.Stream,TRequest,TResponse&)
+FNDA:0,System.Boolean AslHelp.Common.Extensions.StreamExtensions::TryTransact(System.IO.Stream,TRequest,TResponse&)
+DA:164,0
+DA:165,0
+DA:166,0
+DA:167,0
+FN:169,System.Void AslHelp.Common.Extensions.StreamExtensions::ReadExactly(System.IO.Stream,System.Span`1<System.Byte>)
+FNDA:0,System.Void AslHelp.Common.Extensions.StreamExtensions::ReadExactly(System.IO.Stream,System.Span`1<System.Byte>)
+DA:170,0
+DA:171,0
+DA:173,0
+DA:174,0
+FN:176,System.Int32 AslHelp.Common.Extensions.StreamExtensions::ReadAtLeast(System.IO.Stream,System.Span`1<System.Byte>,System.Int32,System.Boolean)
+FNDA:0,System.Int32 AslHelp.Common.Extensions.StreamExtensions::ReadAtLeast(System.IO.Stream,System.Span`1<System.Byte>,System.Int32,System.Boolean)
+DA:177,0
+DA:178,0
+DA:180,0
+DA:181,0
+DA:182,0
+FN:184,System.Int32 AslHelp.Common.Extensions.StreamExtensions::ReadAtLeastCore(System.IO.Stream,System.Span`1<System.Byte>,System.Int32,System.Boolean)
+FNDA:0,System.Int32 AslHelp.Common.Extensions.StreamExtensions::ReadAtLeastCore(System.IO.Stream,System.Span`1<System.Byte>,System.Int32,System.Boolean)
+DA:185,0
+DA:186,0
+DA:188,0
+DA:189,0
+DA:190,0
+DA:192,0
+DA:193,0
+DA:194,0
+DA:195,0
+DA:196,0
+DA:197,0
+DA:199,0
+DA:202,0
+DA:203,0
+DA:205,0
+DA:222,0
+BRDA:188,77,1,0
+BRDA:192,41,0,0
+BRDA:194,49,0,0
+BRDA:194,49,1,0
+BRDA:192,41,1,0
+BRDA:188,77,0,0
+FN:224,System.Void AslHelp.Common.Extensions.StreamExtensions::ValidateReadAtLeastArguments(System.Int32,System.Int32)
+FNDA:0,System.Void AslHelp.Common.Extensions.StreamExtensions::ValidateReadAtLeastArguments(System.Int32,System.Int32)
+DA:225,0
+DA:226,0
+DA:227,0
+DA:228,0
+DA:229,0
+DA:230,0
+DA:232,0
+DA:233,0
+DA:234,0
+DA:235,0
+DA:236,0
+DA:237,0
+DA:238,0
+BRDA:226,7,0,0
+BRDA:226,7,1,0
+BRDA:232,40,0,0
+BRDA:232,40,1,0
+FN:240,System.Void AslHelp.Common.Extensions.StreamExtensions::ThrowEndOfFileException()
+FNDA:0,System.Void AslHelp.Common.Extensions.StreamExtensions::ThrowEndOfFileException()
+DA:241,0
+DA:242,0
+FN:207,System.Int32 AslHelp.Common.Extensions.StreamExtensions::<ReadAtLeastCore>g__read|10_0(System.IO.Stream,System.Span`1<System.Byte>)
+FNDA:0,System.Int32 AslHelp.Common.Extensions.StreamExtensions::<ReadAtLeastCore>g__read|10_0(System.IO.Stream,System.Span`1<System.Byte>)
+DA:208,0
+DA:209,0
+DA:211,0
+DA:213,0
+DA:214,0
+DA:215,0
+DA:216,0
+DA:218,0
+DA:220,0
+DA:221,0
+BRDA:213,41,0,0
+BRDA:213,41,1,0
+LF:91
+LH:0
+BRF:14
+BRH:0
+FNF:14
+FNH:0
+end_of_record
+SF:C:\Users\Ero\Desktop\code\asl-help-v2\src\AslHelp.Common\Extensions\StringExtensions.cs
+FN:24,System.String AslHelp.Common.Extensions.StringExtensions::RemoveWhiteSpace(System.String)
+FNDA:0,System.String AslHelp.Common.Extensions.StringExtensions::RemoveWhiteSpace(System.String)
+DA:25,0
+DA:26,0
+DA:28,0
+DA:30,0
+DA:31,0
+DA:32,0
+DA:33,0
+DA:34,0
+DA:36,0
+DA:37,0
+DA:38,0
+DA:39,0
+DA:40,0
+DA:41,0
+DA:43,0
+DA:44,0
+DA:45,0
+DA:46,0
+DA:47,0
+DA:49,0
+DA:50,0
+DA:52,0
+DA:54,0
+BRDA:31,34,0,0
+BRDA:31,34,1,0
+BRDA:36,92,0,0
+BRDA:36,92,1,0
+BRDA:39,189,1,0
+BRDA:43,153,0,0
+BRDA:43,153,1,0
+BRDA:39,189,0,0
+FN:66,System.String AslHelp.Common.Extensions.StringExtensions::Concat(System.String[])
+FNDA:0,System.String AslHelp.Common.Extensions.StringExtensions::Concat(System.String[])
+DA:67,0
+DA:68,0
+DA:70,0
+DA:71,0
+DA:72,0
+DA:75,0
+DA:76,0
+DA:77,0
+DA:78,0
+DA:79,0
+DA:81,0
+DA:83,0
+DA:84,0
+DA:85,0
+DA:86,0
+DA:87,0
+DA:89,0
+DA:90,0
+DA:91,0
+DA:92,0
+DA:93,0
+DA:95,0
+DA:96,0
+DA:98,0
+DA:99,0
+BRDA:70,28,0,0
+BRDA:70,28,1,0
+BRDA:76,85,1,0
+BRDA:76,85,0,0
+BRDA:84,102,0,0
+BRDA:84,102,1,0
+BRDA:89,256,1,0
+BRDA:89,256,0,0
+LF:48
+LH:0
+BRF:16
+BRH:0
+FNF:2
+FNH:0
+end_of_record
+SF:C:\Users\Ero\Desktop\code\asl-help-v2\src\AslHelp.Common\Exceptions\ThrowHelper.cs
+FN:29,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowIfNull(System.Object,System.String,System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowIfNull(System.Object,System.String,System.String,System.String)
+DA:30,0
+DA:31,0
+DA:32,0
+DA:33,0
+DA:34,0
+DA:35,0
+DA:36,0
+DA:38,0
+DA:39,0
+DA:40,0
+DA:41,0
+DA:42,0
+BRDA:31,7,0,0
+BRDA:33,18,0,0
+BRDA:33,18,1,0
+BRDA:31,7,1,0
+FN:60,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowIfNullOrEmpty(System.Collections.Generic.IEnumerable`1<T>,System.String,System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowIfNullOrEmpty(System.Collections.Generic.IEnumerable`1<T>,System.String,System.String,System.String)
+DA:61,0
+DA:62,0
+DA:63,0
+DA:64,0
+DA:65,0
+DA:67,0
+DA:68,0
+DA:69,0
+DA:70,0
+DA:71,0
+DA:72,0
+DA:74,0
+DA:75,0
+DA:76,0
+DA:77,0
+DA:78,0
+BRDA:62,7,0,0
+BRDA:62,7,1,0
+BRDA:67,35,0,0
+BRDA:69,46,0,0
+BRDA:69,46,1,0
+BRDA:67,35,1,0
+FN:94,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowIfAddressInvalid(System.UIntPtr,System.String,System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowIfAddressInvalid(System.UIntPtr,System.String,System.String,System.String)
+DA:95,0
+DA:96,0
+DA:97,0
+DA:98,0
+DA:99,0
+DA:100,0
+BRDA:96,11,0,0
+BRDA:96,11,1,0
+FN:120,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowIfLessThan(T,T,System.String,System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowIfLessThan(T,T,System.String,System.String,System.String)
+DA:121,0
+DA:122,0
+DA:123,0
+DA:124,0
+DA:125,0
+DA:126,0
+DA:127,0
+DA:129,0
+DA:130,0
+DA:131,0
+DA:132,0
+DA:133,0
+BRDA:122,20,0,0
+BRDA:124,31,0,0
+BRDA:124,31,1,0
+BRDA:122,20,1,0
+FN:153,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowIfLargerThan(T,T,System.String,System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowIfLargerThan(T,T,System.String,System.String,System.String)
+DA:154,0
+DA:155,0
+DA:156,0
+DA:157,0
+DA:158,0
+DA:159,0
+DA:160,0
+DA:162,0
+DA:163,0
+DA:164,0
+DA:165,0
+DA:166,0
+BRDA:155,20,0,0
+BRDA:157,31,0,0
+BRDA:157,31,1,0
+BRDA:155,20,1,0
+FN:189,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowIfNotInRange(T,T,T,System.String,System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowIfNotInRange(T,T,T,System.String,System.String,System.String)
+DA:190,0
+DA:191,0
+DA:192,0
+DA:193,0
+LF:62
+LH:0
+BRF:20
+BRH:0
+FNF:6
+FNH:0
+end_of_record
+SF:C:\Users\Ero\Desktop\code\asl-help-v2\src\AslHelp.Common\Exceptions\ThrowHelper.ThrowExceptions.cs
+FN:25,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowArgumentException(System.String,System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowArgumentException(System.String,System.String,System.String)
+DA:26,0
+DA:27,0
+DA:28,0
+DA:29,0
+DA:30,0
+DA:32,0
+BRDA:27,7,0,0
+BRDA:27,7,1,0
+FN:48,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowArgumentNullException(System.String,System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowArgumentNullException(System.String,System.String,System.String)
+DA:49,0
+DA:50,0
+DA:51,0
+DA:52,0
+DA:53,0
+DA:55,0
+BRDA:50,7,0,0
+BRDA:50,7,1,0
+FN:71,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowArgumentOutOfRangeException(System.String,System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowArgumentOutOfRangeException(System.String,System.String,System.String)
+DA:72,0
+DA:73,0
+DA:74,0
+DA:75,0
+DA:76,0
+DA:78,0
+BRDA:73,7,0,0
+BRDA:73,7,1,0
+FN:92,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowDirectoryNotFoundException(System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowDirectoryNotFoundException(System.String,System.String)
+DA:93,0
+DA:94,0
+DA:95,0
+DA:96,0
+DA:97,0
+DA:99,0
+BRDA:94,7,0,0
+BRDA:94,7,1,0
+FN:113,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowFileNotFoundException(System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowFileNotFoundException(System.String,System.String)
+DA:114,0
+DA:115,0
+DA:116,0
+DA:117,0
+DA:118,0
+DA:120,0
+BRDA:115,7,0,0
+BRDA:115,7,1,0
+FN:134,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowFormatException(System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowFormatException(System.String,System.String)
+DA:135,0
+DA:136,0
+DA:137,0
+DA:138,0
+DA:139,0
+DA:141,0
+BRDA:136,7,0,0
+BRDA:136,7,1,0
+FN:155,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowInvalidDataException(System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowInvalidDataException(System.String,System.String)
+DA:156,0
+DA:157,0
+DA:158,0
+DA:159,0
+DA:160,0
+DA:162,0
+BRDA:157,7,0,0
+BRDA:157,7,1,0
+FN:176,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowInvalidOperationException(System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowInvalidOperationException(System.String,System.String)
+DA:177,0
+DA:178,0
+DA:179,0
+DA:180,0
+DA:181,0
+DA:183,0
+BRDA:178,7,0,0
+BRDA:178,7,1,0
+FN:197,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowKeyNotFoundException(System.String,System.String)
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowKeyNotFoundException(System.String,System.String)
+DA:198,0
+DA:199,0
+DA:200,0
+DA:201,0
+DA:202,0
+DA:204,0
+BRDA:199,7,0,0
+BRDA:199,7,1,0
+FN:216,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowWin32Exception()
+FNDA:0,System.Void AslHelp.Common.Exceptions.ThrowHelper::ThrowWin32Exception()
+DA:217,0
+DA:218,0
+LF:56
+LH:0
+BRF:18
+BRH:0
+FNF:10
+FNH:0
+end_of_record

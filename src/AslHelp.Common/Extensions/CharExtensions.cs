@@ -1,4 +1,6 @@
-﻿namespace AslHelp.Common.Extensions;
+﻿using AslHelp.Common.Exceptions;
+
+namespace AslHelp.Common.Extensions;
 
 /// <summary>
 ///     The <see cref="CharExtensions"/> class
@@ -18,14 +20,14 @@ public static class CharExtensions
     {
         int digit = c - '0';
 
-        if (digit < 10)
+        if (digit is >= 0 and < 10)
         {
             return (byte)digit;
         }
 
         int letter = (c | 0x20) - 'a';
 
-        if (letter < 6)
+        if (letter is >= 0 and < 6)
         {
             return (byte)(letter + 10);
         }
