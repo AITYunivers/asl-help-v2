@@ -86,8 +86,13 @@ internal static unsafe partial class WinInteropWrapper
     {
         nuint address = 0x10000, max = (nuint)(is64Bit ? 0x7FFFFFFEFFFF : 0x7FFEFFFF);
 
-        while (WinInterop.VirtualQuery(processHandle, address, out MEMORY_BASIC_INFORMATION mbi) != 0)
+        do
         {
+            if (WinInterop.VirtualQuery(processHandle, address, out MEMORY_BASIC_INFORMATION mbi) != 0)
+            {
+                break;
+            }
+
             if (mbi.State != MemState.MEM_COMMIT)
             {
                 continue;
@@ -104,13 +109,7 @@ internal static unsafe partial class WinInteropWrapper
             }
 
             yield return new(mbi);
-
-            address += mbi.RegionSize;
-            if (address >= max)
-            {
-                break;
-            }
-        }
+        } while (address < max);
     }
 
     public static List<SYMBOL_INFOW> GetSymbols(this Module module, nuint processHandle, string? mask = "*", string? pdbDirectory = null)
