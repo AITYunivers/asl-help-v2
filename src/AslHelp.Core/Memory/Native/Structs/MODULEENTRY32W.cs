@@ -10,7 +10,6 @@ namespace AslHelp.Core.Memory.Native.Structs;
 ///     <i><see href="https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-moduleentry32w">MODULEENTRY32W structure (tlhelp32.h)</see></i>
 /// </remarks>
 [StructLayout(LayoutKind.Sequential)]
-#pragma warning disable IDE1006
 internal unsafe struct MODULEENTRY32W
 {
     /// <summary>
@@ -65,4 +64,3 @@ internal unsafe struct MODULEENTRY32W
 
     public static uint Size => (uint)sizeof(MODULEENTRY32W);
 }
-#pragma warning restore IDE1006
