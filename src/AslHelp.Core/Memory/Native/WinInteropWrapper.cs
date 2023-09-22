@@ -93,6 +93,8 @@ internal static unsafe partial class WinInteropWrapper
                 break;
             }
 
+            address += mbi.RegionSize;
+
             if (mbi.State != MemState.MEM_COMMIT)
             {
                 continue;
