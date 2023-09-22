@@ -11,7 +11,7 @@
 
     <!-- UseArtifactsOutput is a .NET 8 preview feature. -->
     <UseArtifactsOutput>true</UseArtifactsOutput>
-    <ArtifactsPath>$(MSBuildThisFileDirectory)/artifacts</ArtifactsPath>
+    <ArtifactsPath>$(MSBuildThisFileDirectory)\artifacts</ArtifactsPath>
   </PropertyGroup>
 
   <ItemGroup>

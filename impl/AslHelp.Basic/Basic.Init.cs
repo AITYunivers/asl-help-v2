@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 
 using AslHelp.Common.Exceptions;
-using AslHelp.Core.Diagnostics;
 using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.LiveSplitInterop;
 

@@ -20,7 +20,7 @@ After cloning the repository, create a folder named `ref` in it. Place the below
 
 To build, simply run `dotnet build src\AslHelp.Build`.  
 You can add the option `-c <Debug|Release>` to choose which configuration you would like to build.  
-The `Debug` configuration also adds the ability to choose the LiveSplit directory that the built `asl-help` binary should be copied into: `-p:LsDir="C:\Path\To\LiveSplit"`.
+The `Debug` configuration also adds the ability to choose the LiveSplit directory that the built `asl-help` binary should be copied into: `-p:LsDir="C:\Path\To\LiveSplit"`. *Note: this **replaces** the file without asking!*
 
 When your project builds, open a pull request with your changes.
 

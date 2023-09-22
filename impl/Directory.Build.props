@@ -1,0 +1,17 @@
+<Project>
+
+  <Import Project="..\Directory.Build.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Alias="Debug" Include="AslHelp.Core.Diagnostics.Debug" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(MSBuildThisFileDirectory)\..\ref\LiveSplit.Core.dll" />
+  </ItemGroup>
+
+</Project>

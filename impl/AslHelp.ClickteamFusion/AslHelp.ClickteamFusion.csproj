@@ -8,12 +8,4 @@
     <ProjectReference Include="..\AslHelp.Basic\*.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="OneOf" Version="3.0.255" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Structs\*.json" />
-  </ItemGroup>
-
 </Project>

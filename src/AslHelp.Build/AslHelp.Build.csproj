@@ -7,12 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ilmerge" Version="3.0.41" />
+    <ProjectReference Include="..\..\impl\*\*.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../impl/AslHelp.Basic/AslHelp.Basic.csproj" />
-    <ProjectReference Include="../../impl/AslHelp.Mono/AslHelp.Mono.csproj" />
+    <PackageReference Include="ilmerge" Version="3.0.41" />
   </ItemGroup>
 
   <Import Project="MergeAssemblies.targets" />
