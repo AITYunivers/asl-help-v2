@@ -225,9 +225,9 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        fixed (sbyte* pBuffer = buffer[..length])
+        fixed (sbyte* pBuffer = buffer)
         {
-            result = new(pBuffer);
+            result = new(pBuffer, 0, length);
             ArrayPool<sbyte>.Shared.ReturnIfNotNull(rented);
 
             return true;
@@ -252,9 +252,9 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        fixed (char* pBuffer = buffer[..length])
+        fixed (char* pBuffer = buffer)
         {
-            result = new(pBuffer);
+            result = new(pBuffer, 0, length);
             ArrayPool<char>.Shared.ReturnIfNotNull(rented);
 
             return true;
@@ -278,13 +278,13 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        fixed (byte* pBuffer = buffer[..length])
+        fixed (byte* pBuffer = buffer)
         {
             // String ctor stops at the first null terminator.
             result =
                 length >= 2 && pBuffer[1] == '\0'
-                ? new((char*)pBuffer)
-                : new((sbyte*)pBuffer);
+                ? new((char*)pBuffer, 0, length)
+                : new((sbyte*)pBuffer, 0, length);
 
             ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
 
