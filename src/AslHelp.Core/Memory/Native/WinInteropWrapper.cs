@@ -88,7 +88,7 @@ internal static unsafe partial class WinInteropWrapper
 
         do
         {
-            if (WinInterop.VirtualQuery(processHandle, address, out MEMORY_BASIC_INFORMATION mbi) != 0)
+            if (WinInterop.VirtualQuery(processHandle, address, out MEMORY_BASIC_INFORMATION mbi) == 0)
             {
                 break;
             }
