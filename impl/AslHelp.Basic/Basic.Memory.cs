@@ -17,13 +17,22 @@ public partial class Basic
 
             if (Game is Process game)
             {
+                Debug.Info("Initializing memory...");
+
                 _memory = InitializeMemory(game);
                 _pointers = PointerFactory.Create(_memory);
+
+                Debug.Info("  => Done.");
             }
 
             return _memory;
         }
         protected set => _memory = value;
+    }
+
+    protected virtual IMemoryManager InitializeMemory(Process process)
+    {
+        return new ExternalMemoryManager(process, Logger);
     }
 
     protected override void DisposeMemory()

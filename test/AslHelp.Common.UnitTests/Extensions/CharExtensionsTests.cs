@@ -1,10 +1,8 @@
-using System;
-
 using AslHelp.Common.Extensions;
 
 namespace AslHelp.Common.UnitTests.Extensions;
 
-public class CharExtensions_ToHexValue
+public class CharExtensionsTests
 {
     [Theory]
     [InlineData('0', 0x00)]
@@ -29,7 +27,7 @@ public class CharExtensions_ToHexValue
     [InlineData('D', 0x0D)]
     [InlineData('E', 0x0E)]
     [InlineData('F', 0x0F)]
-    public void ToHexValue_Returns_ConvertedValue(char c, byte expected)
+    public void ToHexValue_ReturnsConvertedValueForValidChar(char c, byte expected)
     {
         byte actual = c.ToHexValue();
         Assert.Equal(expected, actual);
@@ -39,7 +37,7 @@ public class CharExtensions_ToHexValue
     [InlineData('.')]
     [InlineData(' ')]
     [InlineData('g')]
-    public void ToHexValue_Returns_0xFF(char c)
+    public void ToHexValue_Returns255ForInvalidChar(char c)
     {
         byte actual = c.ToHexValue();
         Assert.Equal(0xFF, actual);

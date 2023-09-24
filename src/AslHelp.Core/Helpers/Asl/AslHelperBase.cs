@@ -8,6 +8,8 @@ namespace AslHelp.Core.Helpers.Asl;
 
 public abstract partial class AslHelperBase : IAslHelper
 {
+    protected const string LibraryName = "asl-help-v2";
+
     public void OnExit()
     {
         string action = Actions.CurrentAction;

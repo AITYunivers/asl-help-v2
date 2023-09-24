@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 using AslHelp.Core.Helpers.Asl;
 
@@ -17,6 +18,7 @@ public partial class Basic : AslHelperBase
     protected override void OnShutdownImpl(bool closing)
     {
         AppDomain.CurrentDomain.AssemblyResolve -= AssemblyResolve;
+        AppDomain.CurrentDomain.FirstChanceException -= FirstChanceHandler;
 
         _logger.Stop();
         _logger.Clear();

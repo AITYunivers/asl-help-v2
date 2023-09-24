@@ -15,12 +15,6 @@ public abstract partial class AslHelperBase
 {
     public abstract IMemoryManager? Memory { get; protected set; }
 
-    protected virtual IMemoryManager InitializeMemory(Process process)
-    {
-        Debug.Info("Initializing memory...");
-        return new ExternalMemoryManager(process, Logger);
-    }
-
     /// <summary>
     ///     Disposes of any resources pertaining to managing memory.
     /// </summary>

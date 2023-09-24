@@ -34,7 +34,7 @@ internal static class Actions
     {
         get
         {
-            StackFrame[] frames = new StackTrace(6).GetFrames();
+            StackFrame[] frames = new StackTrace(6, false).GetFrames();
 
             for (int i = 0; i < frames.Length; i++)
             {

@@ -46,19 +46,19 @@ public abstract partial class AslHelperBase
 
     [MemberNotNull(nameof(Memory))]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void EnsureInInitForRejecting([CallerMemberName] string caller = "")
+    private void EnsureInInitForRejecting()
     {
         string action = Actions.CurrentAction;
         if (action is not "init")
         {
             string msg = $"Attempted to reject game process in the '{action}' action.";
-            ThrowHelper.ThrowInvalidOperationException(msg, caller);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         if (Memory is null)
         {
             string msg = "Attempted to access uninitialized memory.";
-            ThrowHelper.ThrowInvalidOperationException(msg, caller);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
     }
 }

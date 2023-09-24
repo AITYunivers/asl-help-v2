@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Common.Extensions;
@@ -47,6 +48,7 @@ internal static class Script
 
         IEnumerable<IComponent> components = Timer.Layout.Components.Prepend(Timer.Run.AutoSplitter?.Component);
 
+        Assembly scriptAssembly = ReflectionExtensions.AssemblyTrace.Skip(2).First();
         ASLComponent component = (ASLComponent)components.FirstOrDefault(c =>
         {
             if (c is not ASLComponent aslc)
@@ -66,7 +68,7 @@ internal static class Script
             }
 
             object cc = method.GetFieldValue<object>("_compiled_code");
-            return cc?.GetType().Assembly == ReflectionExtensions.CurrentAssembly;
+            return cc?.GetType().Assembly == scriptAssembly;
         });
 
         if (component is null)

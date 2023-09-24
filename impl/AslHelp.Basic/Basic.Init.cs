@@ -1,37 +1,29 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
+using System.Text;
 
 using AslHelp.Common.Exceptions;
+using AslHelp.Common.Extensions;
 using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.LiveSplitInterop;
-
-using LsTimer = AslHelp.Core.LiveSplitInterop.Timer;
 
 public partial class Basic
 {
     protected sealed override void InitImpl()
     {
         AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
+        AppDomain.CurrentDomain.FirstChanceException += FirstChanceHandler;
 
         _logger.Add(new DebugLogger());
-
-        LsTimer.Init();
-        Script.Init();
     }
 
-    protected override void GenerateCode()
+    protected override void GenerateCodeImpl(string? helperName)
     {
-        string? helperName = null;
-
-        foreach (var entry in Script.Vars)
-        {
-            if (entry.Value == this)
-            {
-                helperName = entry.Key;
-            }
-        }
-
         Script.Vars["Log"] = (Action<object>)(output => Logger.Log($"[{GameName}] {output}"));
         Debug.Info("    => Created the Action<object> `vars.Log`.");
 
@@ -59,5 +51,43 @@ public partial class Basic
         string file = $"Components/{name[..i]}.dll";
 
         return File.Exists(file) ? Assembly.LoadFrom(file) : null;
+    }
+
+    private static readonly FieldInfo _messageField = typeof(Exception).GetField("_message", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+    private static void FirstChanceHandler(object source, FirstChanceExceptionEventArgs e)
+    {
+        StackFrame[] frames = new StackTrace(1, false).GetFrames();
+
+        int last = frames.Length - 1;
+        for (; last >= 0; last--)
+        {
+            MethodBase? mb = frames[last].GetMethod();
+            if (mb?.DeclaringType?.Assembly == ReflectionExtensions.ExecutingAssembly)
+            {
+                break;
+            }
+        }
+
+        if (last == -1)
+        {
+            return;
+        }
+
+        Exception ex = e.Exception;
+        string message = $"""
+            {string.Join("\n", ex.Message.Split('\n').Select(l => l.TrimEnd()).Distinct())}
+            {string.Join("\n", frames.Take(last + 1)
+                .Select(f =>
+                {
+                    MethodBase? mb = f.GetMethod();
+                    string declaration = $"{mb}";
+                    int space = declaration.IndexOf(' ') + 1;
+
+                    return $"   at {mb?.DeclaringType}.{declaration[space..]}";
+                }))}
+            """;
+
+        _messageField.SetValue(ex, $"{message}".Trim());
     }
 }

@@ -5,7 +5,5 @@
       "fileMatch": [ "${workspaceFolder}/impl/*/Structs/*.json" ],
       "url": "${workspaceFolder}/schemas/asl-help.structs.schema.json"
     }
-  ],
-  "dotnet-test-explorer.testArguments": "/p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=./lcov.info",
-  "dotnet-test-explorer.testProjectPath": "${workspaceFolder}/test/AslHelp.*.*Tests.csproj"
+  ]
 }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 
+using AslHelp.Common.Extensions;
 using AslHelp.Core.Diagnostics.Logging;
 
 namespace AslHelp.Core.Diagnostics;
@@ -108,14 +110,17 @@ internal static class Debug
     /// </summary>
     public static IEnumerable<string> StackTraceNames
     {
-        get => new StackTrace(6)
-            .GetFrames()
-            .Select(f =>
-            {
-                MethodBase method = f.GetMethod();
-                Type decl = method.DeclaringType;
+        get
+        {
+            return new StackTrace(6, false)
+                .GetFrames()
+                .Select(frame =>
+                {
+                    MethodBase method = frame.GetMethod();
+                    Type? decl = method.DeclaringType;
 
-                return decl is null ? method.Name : $"{decl.Name}.{method.Name}";
-            });
+                    return decl is null ? method.Name : $"{decl.Name}.{method.Name}";
+                });
+        }
     }
 }
