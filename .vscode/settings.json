@@ -5,5 +5,11 @@
       "fileMatch": [ "${workspaceFolder}/impl/*/Structs/*.json" ],
       "url": "${workspaceFolder}/schemas/asl-help.structs.schema.json"
     }
-  ]
+  ],
+  "files.exclude": {
+    "ref": true,
+    "artifacts": true,
+    "**/bin": true,
+    "**/obj": true
+  }
 }

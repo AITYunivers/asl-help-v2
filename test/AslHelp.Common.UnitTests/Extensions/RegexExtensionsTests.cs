@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 using AslHelp.Common.Extensions;
@@ -10,50 +13,49 @@ public class RegexExtensionsTests
     public void Groups_RegexStringInput_ReturnsGroupCollection()
     {
         // Arrange
-        Regex regex = new(@"(?<name>\w+)");
-        string input = "Hello World";
+        Regex regex = new(@"(\w+) (\w+)");
+        string input = "Foo Bar Baz";
 
         // Act
-        var result = regex.Groups(input);
+        GroupCollection groups = regex.Groups(input);
 
         // Assert
-        Assert.Equal(2, result.Count);
-        Assert.Equal("Hello", result[0].Value);
-        Assert.Equal("World", result[1].Value);
+        Assert.Equal(3, groups.Count);
+        Assert.Equal([input, "Foo", "Bar", "Baz"], groups.Cast<Group>().Select(g => g.Value).ToArray());
     }
 
     [Fact]
     public void Groups_RegexStringInputStartIndex_ReturnsGroupCollection()
     {
         // Arrange
-        var regex = new Regex(@"(?<name>\w+)");
-        var input = "Hello World";
-        var startIndex = 6;
+        Regex regex = new(@"(\w+) (\w+)");
+        string input = "Foo Bar Baz";
+
+        int startIndex = 4;
 
         // Act
-        var result = regex.Groups(input, startIndex);
+        GroupCollection groups = regex.Groups(input, startIndex);
 
         // Assert
-        Assert.Equal(2, result.Count);
-        Assert.Equal("World", result[0].Value);
-        Assert.Equal("", result[1].Value);
+        Assert.Equal(3, groups.Count);
+        Assert.Equal(groups.Cast<string>(), [input, "Bar", "Baz"]);
     }
 
     [Fact]
     public void Groups_RegexStringInputStartIndexLength_ReturnsGroupCollection()
     {
         // Arrange
-        var regex = new Regex(@"(?<name>\w+)");
-        var input = "Hello World";
-        var startIndex = 6;
-        var length = 5;
+        Regex regex = new(@"(\w+) (\w+)");
+        string input = "Foo Bar Baz";
+
+        int startIndex = 5;
+        int length = 5;
 
         // Act
-        var result = regex.Groups(input, startIndex, length);
+        GroupCollection groups = regex.Groups(input, startIndex, length);
 
         // Assert
-        Assert.Equal(2, result.Count);
-        Assert.Equal("World", result[0].Value);
-        Assert.Equal("", result[1].Value);
+        Assert.Equal(2, groups.Count);
+        Assert.Equal(groups.Cast<string>(), [input, "ar", "Ba"]);
     }
 }

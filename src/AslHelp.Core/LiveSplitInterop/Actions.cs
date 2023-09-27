@@ -30,7 +30,7 @@ internal static class Actions
     ///     Finds the name of the action which this currently being executed.<br/>
     ///     This is done by traversing the stack trace and finding which method in the <see cref="ASLScript"/> we are being called from.
     /// </summary>
-    public static unsafe string CurrentAction
+    public static string CurrentAction
     {
         get
         {

@@ -132,7 +132,75 @@ internal static class Script
             string name = (string)method.ChildNodes[0].Token.Value;
             string body = (string)method.ChildNodes[2].Token.Value;
             int line = method.ChildNodes[0].Token.Location.Line + 1;
-            typeof(Actions).SetPropertyValue<Actions.Action>(name, new(body, name, line));
+
+            switch (name)
+            {
+                case "startup":
+                {
+                    Actions.startup = new(body, name, line);
+                    continue;
+                }
+                case "onStart":
+                {
+                    Actions.onStart = new(body, name, line);
+                    continue;
+                }
+                case "onSplit":
+                {
+                    Actions.onSplit = new(body, name, line);
+                    continue;
+                }
+                case "onReset":
+                {
+                    Actions.onReset = new(body, name, line);
+                    continue;
+                }
+                case "init":
+                {
+                    Actions.init = new(body, name, line);
+                    continue;
+                }
+                case "update":
+                {
+                    Actions.update = new(body, name, line);
+                    continue;
+                }
+                case "start":
+                {
+                    Actions.start = new(body, name, line);
+                    continue;
+                }
+                case "split":
+                {
+                    Actions.split = new(body, name, line);
+                    continue;
+                }
+                case "reset":
+                {
+                    Actions.reset = new(body, name, line);
+                    continue;
+                }
+                case "gameTime":
+                {
+                    Actions.gameTime = new(body, name, line);
+                    continue;
+                }
+                case "isLoading":
+                {
+                    Actions.isLoading = new(body, name, line);
+                    continue;
+                }
+                case "exit":
+                {
+                    Actions.exit = new(body, name, line);
+                    continue;
+                }
+                case "shutdown":
+                {
+                    Actions.shutdown = new(body, name, line);
+                    continue;
+                }
+            }
         }
 
         Debug.Info("      => Success.");

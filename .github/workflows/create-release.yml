@@ -1,0 +1,73 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+      releaseNotes:
+        description: 'Release Notes'
+        required: false
+      preRelease:
+        description: 'Pre-Release'
+        type: boolean
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET 4.8.1
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '4.8.1'
+
+    - name: Setup .NET 8.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Build project
+      run: dotnet build -tl -c Release ./src/AslHelp.Build
+
+    - name: Get latest release tag
+      id: latesttag
+      run: |
+        LATEST_TAG=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/releases/latest" | jq -r .tag_name)
+        if [ "$LATEST_TAG" != "" ]; then
+          echo "::set-output name=tag::${LATEST_TAG}"
+        else
+          echo "::set-output name=tag::0"
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.event.inputs.version }}
+        release_name: Release ${{ github.event.inputs.version }}
+        body: |
+          ${{ github.event.inputs.releaseNotes }}
+
+          See the full changes here: https://github.com/${{ github.repository }}/compare/${{ steps.latesttag.outputs.tag }}...${{ github.event.inputs.version }}
+        draft: false
+        prerelease: ${{ github.event.inputs.preRelease }}
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./src/AslHelp.Build/bin/Release/net48/asl-help.dll
+        asset_name: asl-help
+        asset_content_type: application/octet-stream

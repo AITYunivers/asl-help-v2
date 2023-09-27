@@ -53,41 +53,54 @@ public partial class Basic
         return File.Exists(file) ? Assembly.LoadFrom(file) : null;
     }
 
+    private const string UpdateAndExecuteVoid =
+        "   at System.Dynamic.UpdateDelegates.UpdateAndExecuteVoid2[T0,T1](CallSite site, T0 arg0, T1 arg1)";
+    private const string CompiledScriptExecute =
+        "   at CompiledScript.Execute(LiveSplitState timer, Object old, Object current, Object vars, Process game, Object settings)";
+
+    private static readonly string[] _newLines = ["\r\n", "\n"];
     private static readonly FieldInfo _messageField = typeof(Exception).GetField("_message", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
     private static void FirstChanceHandler(object source, FirstChanceExceptionEventArgs e)
     {
-        StackFrame[] frames = new StackTrace(1, false).GetFrames();
-
-        int last = frames.Length - 1;
-        for (; last >= 0; last--)
-        {
-            MethodBase? mb = frames[last].GetMethod();
-            if (mb?.DeclaringType?.Assembly == ReflectionExtensions.ExecutingAssembly)
-            {
-                break;
-            }
-        }
-
-        if (last == -1)
+        if (e.Exception is not LiveSplit.ASL.ASLRuntimeException ex)
         {
             return;
         }
 
-        Exception ex = e.Exception;
-        string message = $"""
-            {string.Join("\n", ex.Message.Split('\n').Select(l => l.TrimEnd()).Distinct())}
-            {string.Join("\n", frames.Take(last + 1)
-                .Select(f =>
-                {
-                    MethodBase? mb = f.GetMethod();
-                    string declaration = $"{mb}";
-                    int space = declaration.IndexOf(' ') + 1;
+        if (ex.Message is not string message)
+        {
+            return;
+        }
 
-                    return $"   at {mb?.DeclaringType}.{declaration[space..]}";
-                }))}
-            """;
+        if (ex.InnerException?.StackTrace is not string stackTrace)
+        {
+            return;
+        }
 
-        _messageField.SetValue(ex, $"{message}".Trim());
+        string[] messageLines = message.Split(_newLines, StringSplitOptions.None);
+        string[] stackTraceLines = stackTrace.Split(_newLines, StringSplitOptions.None);
+
+        StringBuilder sb = new(message.Length + stackTrace.Length);
+
+        for (int i = 0; i < messageLines.Length - 2; i++)
+        {
+            sb.AppendLine(messageLines[i]);
+        }
+
+        foreach (string line in stackTraceLines)
+        {
+            if (line.StartsWith(UpdateAndExecuteVoid) || line.StartsWith(CompiledScriptExecute))
+            {
+                break;
+            }
+
+            sb.AppendLine(line);
+        }
+
+        sb.AppendLine();
+        sb.Append(messageLines[^1]);
+
+        _messageField.SetValue(ex, sb.ToString());
     }
 }
