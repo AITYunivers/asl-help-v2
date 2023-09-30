@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Text;
 
 using AslHelp.Common.Exceptions;
-using AslHelp.Common.Extensions;
 using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.LiveSplitInterop;
 

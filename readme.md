@@ -47,7 +47,7 @@ When your project builds, open a pull request with your changes.
     - Do not require adding inheritance depth, if possible
     - Make it work with IL2CPP
   - Special Unity-related features
-    - Improved `SceneManager`
+    - Improve `SceneManager`
     - `TimeManager`, `PlayerSettings`, `InputManager`
     - Add ability to access `Components` on `Transforms` in the current scene
       - This would mark Unity games 100% solved

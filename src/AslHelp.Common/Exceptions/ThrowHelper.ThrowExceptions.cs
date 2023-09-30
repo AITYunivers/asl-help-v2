@@ -9,12 +9,6 @@ namespace AslHelp.Common.Exceptions;
 
 public static partial class ThrowHelper
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static string WithErrorPrefix(this string message)
-    {
-        return $"[asl-help] [Error] {message}";
-    }
-
     /// <summary>
     ///     Throws an <see cref="ArgumentException"/> with a specified error message
     ///     and the name of the parameter that causes this exception.
@@ -30,7 +24,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowArgumentException(string paramName, string message)
     {
-        throw new ArgumentException(message.WithErrorPrefix(), paramName);
+        throw new ArgumentException(message, paramName);
     }
 
     /// <summary>
@@ -48,7 +42,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowArgumentNullException(string paramName, string message)
     {
-        throw new ArgumentNullException(paramName, message.WithErrorPrefix());
+        throw new ArgumentNullException(paramName, message);
     }
 
     /// <summary>
@@ -66,7 +60,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowArgumentOutOfRangeException(string paramName, string message)
     {
-        throw new ArgumentOutOfRangeException(message.WithErrorPrefix(), paramName);
+        throw new ArgumentOutOfRangeException(message, paramName);
     }
 
     /// <summary>
@@ -82,7 +76,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowDirectoryNotFoundException(string message)
     {
-        throw new DirectoryNotFoundException(message.WithErrorPrefix());
+        throw new DirectoryNotFoundException(message);
     }
 
     /// <summary>
@@ -98,7 +92,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowFileNotFoundException(string message)
     {
-        throw new FileNotFoundException(message.WithErrorPrefix());
+        throw new FileNotFoundException(message);
     }
 
     /// <summary>
@@ -114,7 +108,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowFormatException(string message)
     {
-        throw new FormatException(message.WithErrorPrefix());
+        throw new FormatException(message);
     }
 
     /// <summary>
@@ -130,7 +124,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowInvalidDataException(string message)
     {
-        throw new InvalidDataException(message.WithErrorPrefix());
+        throw new InvalidDataException(message);
     }
 
     /// <summary>
@@ -146,7 +140,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowInvalidOperationException(string message)
     {
-        throw new InvalidOperationException(message.WithErrorPrefix());
+        throw new InvalidOperationException(message);
     }
 
     /// <summary>
@@ -162,7 +156,7 @@ public static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void ThrowKeyNotFoundException(string message)
     {
-        throw new KeyNotFoundException(message.WithErrorPrefix());
+        throw new KeyNotFoundException(message);
     }
 
     /// <summary>

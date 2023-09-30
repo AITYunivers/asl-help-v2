@@ -22,8 +22,8 @@ public class Signature
 
         if (signature.Length % 2 != 0)
         {
-            string msg = "Signature was not in the expected format. All bytes must be fully specified.";
-            ThrowHelper.ThrowArgumentException(nameof(signature), msg);
+            const string msg = "Signature was not in the expected format. All bytes must be fully specified.";
+            ThrowHelper.ThrowArgumentException(nameof(pattern), msg);
         }
 
         int bytes = signature.Length / 2;

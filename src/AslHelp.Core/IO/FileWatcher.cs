@@ -65,5 +65,7 @@ public sealed class FileWatcher : IDisposable
     {
         _reader?.Dispose();
         _reader = null;
+
+        _isConnected = false;
     }
 }
