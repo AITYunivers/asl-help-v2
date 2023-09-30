@@ -1,0 +1,45 @@
+name: Build asl-help
+
+on:
+  workflow_call:
+  pull_request:
+
+jobs:
+  build-livesplit:
+    uses: ./.github/workflows/00_00_build-livesplit.yml
+
+  build-asl-help:
+    runs-on: windows-latest
+    needs: build-livesplit
+
+    steps:
+      - name: Set up .NET 8.0 environment
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+          dotnet-quality: 'preview'
+
+      - name: Checkout asl-help
+        uses: actions/checkout@v3
+
+      - name: Load LiveSplit build artifacts
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: livesplit-artifacts
+          path: ./ref
+
+      - name: Delete cached LiveSplit build artifacts
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: livesplit-artifacts
+          failOnError: false
+
+      - name: Build asl-help
+        run: dotnet build ./src/AslHelp.Build -c Release -p:LibraryName=asl-help
+
+      - name: Cache asl-help.dll as artifact
+        uses: actions/upload-artifact@v3.1.3
+        with:
+          name: asl-help-dll
+          path: ./artifacts/bin/AslHelp.Build/release/asl-help.dll
+          retention-days: 1

@@ -1,0 +1,37 @@
+name: Build LiveSplit
+
+on:
+  workflow_call:
+
+jobs:
+  build-livesplit:
+    runs-on: windows-2019
+
+    steps:
+      - name: Set up .NET Framework environment
+        uses: vrnobody/Setup-DotNetFrameworkEnv@v1.10.1
+
+      - name: Checkout LiveSplit
+        uses: actions/checkout@v4
+        with:
+          repository: LiveSplit/LiveSplit
+          submodules: recursive
+
+      - name: Restore LiveSplit NuGet packages
+        run: nuget restore ./LiveSplit/LiveSplit.sln
+
+      - name: Build LiveSplit
+        run: msbuild ./LiveSplit/LiveSplit.sln /verbosity:minimal /p:NoWarn=1591 /p:Configuration=Release /p:OutputPath=$pwd/artifacts/bin/LiveSplit/release
+
+      - name: Cache LiveSplit build artifacts
+        uses: actions/upload-artifact@v3.1.3
+        with:
+          name: livesplit-artifacts
+          path: |
+            ./artifacts/bin/LiveSplit/release/Irony.dll
+            ./artifacts/bin/LiveSplit/release/LiveSplit.Core.dll
+            ./artifacts/bin/LiveSplit/release/LiveSplit.ScriptableAutoSplit.dll
+            ./artifacts/bin/LiveSplit/release/LiveSplit.Text.dll
+            ./artifacts/bin/LiveSplit/release/LiveSplit.View.dll
+            ./artifacts/bin/LiveSplit/release/UpdateManager.dll
+          retention-days: 1

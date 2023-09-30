@@ -1,0 +1,36 @@
+name: Run all tests
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build-livesplit:
+    uses: ./.github/workflows/00_00_build-livesplit.yml
+
+  # Test projects
+
+  test-AslHelp_Common_UnitTests:
+    needs: build-livesplit
+    uses: ./.github/workflows/02_00_test-project.yml
+    with:
+      project: AslHelp.Common.UnitTests
+
+  # End Test projects
+
+  post-tests:
+    if: always()
+    needs: [
+      test-AslHelp_Common_UnitTests
+    ]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Delete cached LiveSplit build artifacts
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: livesplit-artifacts
+          failOnError: false
