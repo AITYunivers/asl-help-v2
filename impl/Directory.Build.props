@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="$(MSBuildThisFileDirectory)\..\ref\LiveSplit.Core.dll" />
+    <Reference Include="$(MSBuildThisFileDirectory)\..\lib\LiveSplit.Core.dll" />
   </ItemGroup>
 
 </Project>

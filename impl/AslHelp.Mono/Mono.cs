@@ -7,7 +7,6 @@ public partial class Mono : Basic
 {
     protected override IMemoryManager InitializeMemory(Process process)
     {
-        Debug.Info("Initializing Mono-specific memory...");
         return new MonoExternalMemoryManager(process, Logger);
     }
 }

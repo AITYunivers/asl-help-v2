@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="..\..\ref\LiveSplit.ScriptableAutoSplit.dll" />
+    <Reference Include="..\..\lib\LiveSplit.ScriptableAutoSplit.dll" />
   </ItemGroup>
 
 </Project>

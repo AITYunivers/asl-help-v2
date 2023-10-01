@@ -10,7 +10,7 @@ To contribute, make sure you have the following installed:
 * .NET 8.0 SDK (`winget install Microsoft.DotNet.SDK.Preview`)
 * .NET Framework 4.8.1 SDK (`winget install Microsoft.DotNet.Framework.DeveloperPack_4`)
 
-After cloning the repository, create a folder named `ref` in it. Place the below files in it. You can find them your `~/LiveSplit` and `~/LiveSplit/Components` folders:
+After cloning the repository, create a folder named `lib` in it. Place the below files in it. You can find them your `~/LiveSplit` and `~/LiveSplit/Components` folders:
 * Irony.dll
 * LiveSplit.Core.dll
 * LiveSplit.ScriptableAutoSplit.dll
