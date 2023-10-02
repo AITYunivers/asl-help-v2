@@ -1,5 +1,5 @@
 name: Bug Report
-description: Something about the `asl-help` API is not working as expected.
+description: Something about asl-help is not working as expected.
 title: "[Bug]: "
 labels: ["bug", "untriaged"]
 body:
