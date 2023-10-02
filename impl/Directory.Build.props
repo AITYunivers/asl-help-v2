@@ -1,18 +1,17 @@
 <Project>
 
-  <Import Project="../Directory.Build.props" />
+  <Import Project="..\Directory.Build.props" />
 
   <PropertyGroup>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <PolySharpIncludeRuntimeSupportedAttributes>true</PolySharpIncludeRuntimeSupportedAttributes>
+    <TargetFramework>net481</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PolySharp" Version="1.13.2" PrivateAssets="all" />
+    <Using Alias="Debug" Include="AslHelp.Core.Diagnostics.Debug" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(MSBuildThisFileDirectory)\..\lib\LiveSplit.Core.dll" />
   </ItemGroup>
 
 </Project>

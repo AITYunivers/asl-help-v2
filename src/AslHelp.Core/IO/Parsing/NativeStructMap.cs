@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
-using AslHelp.Common.Exceptions;
 using AslHelp.Core.Collections;
 
 namespace AslHelp.Core.IO.Parsing;
 
-public sealed class NativeStructMap : OrderedDictionary<string, NativeStruct>
+public sealed partial class NativeStructMap : OrderedDictionary<string, NativeStruct>
 {
     private NativeStructMap() { }
 
@@ -22,64 +18,19 @@ public sealed class NativeStructMap : OrderedDictionary<string, NativeStruct>
         return item.Name;
     }
 
-    private record Root(
-        [property: JsonPropertyName("inherits")] Inheritance? Inheritance,
-        Signature[]? Signatures,
-        Struct[]? Structs);
-
-    private record Inheritance(
-        string Major,
-        string Minor);
-
-    private record Signature(
-        string Name,
-        int Offset,
-        string Pattern);
-
-    private record Struct(
-        string Name,
-        string? Super,
-        Field[] Fields);
-
-    private record Field(
-        string Type,
-        string Name,
-        int? Alignment);
+    public static NativeStructMap Parse(string engine, int major, int minor, bool is64Bit)
+    {
+        return Parse(engine, major.ToString(), minor.ToString(), is64Bit);
+    }
 
     public static NativeStructMap Parse(string engine, string major, string minor, bool is64Bit)
     {
         Assembly assembly = Assembly.GetCallingAssembly();
-        using Stream source = EmbeddedResource.GetResourceStream($"AslHelp.{engine}.Memory.Native.{major}-{minor}.json", assembly);
+        ParsedJsonInput input = GetOrderedInput(assembly, engine, major, minor);
 
-        Root? root = JsonSerializer.Deserialize<Root>(source, new JsonSerializerOptions
-        {
-            ReadCommentHandling = JsonCommentHandling.Skip,
-            PropertyNameCaseInsensitive = true
-        });
+        NativeStructMap nsm = new();
 
-        if (root is null)
-        {
-            const string msg = "Provided resource was a JSON 'null' literal.";
-            ThrowHelper.ThrowFormatException(msg);
-        }
-
-        if (root.Inheritance is null && root.Structs is null)
-        {
-            const string msg = "One of 'inherit' or 'structs' must be provided.";
-            ThrowHelper.ThrowFormatException(msg);
-        }
-
-        NativeStructMap nsm =
-            root.Inheritance is { Major.Length: > 0, Minor.Length: > 0 } inherit
-            ? Parse(engine, inherit.Major, inherit.Minor, is64Bit)
-            : new();
-
-        if (root.Structs is not { Length: > 0 } structs)
-        {
-            return nsm;
-        }
-
-        foreach (Struct s in structs)
+        foreach (Struct s in input)
         {
             NativeStruct ns = new()
             {
@@ -108,12 +59,9 @@ public sealed class NativeStructMap : OrderedDictionary<string, NativeStruct>
             nsm[s.Name] = ns;
         }
 
-        if (root.Signatures is Signature[] signatures)
+        foreach (var signature in input.Signatures)
         {
-            foreach (Signature sig in signatures)
-            {
-                nsm.Signatures[sig.Name] = new(sig.Offset, sig.Pattern);
-            }
+            nsm.Signatures[signature.Key] = signature.Value;
         }
 
         return nsm;

@@ -61,7 +61,7 @@ public static class MemoryExtensions
         {
             foreach (uint scanOffset in new ScanEnumerator(buffer, signature, alignment))
             {
-                return startAddress + scanOffset + (uint)signature.Offset;
+                return startAddress + (uint)(scanOffset + signature.Offset);
             }
         }
 

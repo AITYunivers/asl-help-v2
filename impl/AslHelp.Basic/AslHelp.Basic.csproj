@@ -1,16 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net481</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/AslHelp.Core/AslHelp.Core.csproj" />
+    <ProjectReference Include="..\..\src\AslHelp.Core\*.csproj" />
   </ItemGroup>
 
-  <ItemGroup Label="References">
-    <Reference Include="../../ref/LiveSplit.Core.dll" />
+  <ItemGroup>
+    <Reference Include="..\..\lib\LiveSplit.ScriptableAutoSplit.dll" />
   </ItemGroup>
 
 </Project>

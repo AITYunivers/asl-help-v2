@@ -22,8 +22,7 @@ public sealed class TextComponentController
             IList<ILayoutComponent> components = Timer.Layout.LayoutComponents;
             for (int i = components.Count - 1; i >= 0; i--)
             {
-                ILayoutComponent component = components[i];
-                if (component.Component is not TextComponent tc)
+                if (components[i] is not { Component: TextComponent tc } component)
                 {
                     continue;
                 }
@@ -91,8 +90,7 @@ public sealed class TextComponentController
         IList<ILayoutComponent> components = Timer.Layout.LayoutComponents;
         for (int i = components.Count - 1; i >= 0; i--)
         {
-            ILayoutComponent component = components[i];
-            if (component.Component is not TextComponent tc)
+            if (components[i] is not { Component: TextComponent tc } component)
             {
                 continue;
             }

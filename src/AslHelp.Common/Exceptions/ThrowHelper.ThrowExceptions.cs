@@ -22,14 +22,9 @@ public static partial class ThrowHelper
     /// <exception cref="ArgumentException"/>
     [DoesNotReturn]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowArgumentException(string paramName, string message, [CallerMemberName] string? caller = null)
+    public static void ThrowArgumentException(string paramName, string message)
     {
-        if (caller is not null)
-        {
-            message = $"[{caller}] {message}";
-        }
-
-        throw new ArgumentException($"[asl-help] [Error] {message}", paramName);
+        throw new ArgumentException(message, paramName);
     }
 
     /// <summary>
@@ -45,14 +40,9 @@ public static partial class ThrowHelper
     /// <exception cref="ArgumentNullException"/>
     [DoesNotReturn]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowArgumentNullException(string paramName, string message, [CallerMemberName] string? caller = null)
+    public static void ThrowArgumentNullException(string paramName, string message)
     {
-        if (caller is not null)
-        {
-            message = $"[{caller}] {message}";
-        }
-
-        throw new ArgumentNullException(paramName, $"[asl-help] [Error] {message}");
+        throw new ArgumentNullException(paramName, message);
     }
 
     /// <summary>
@@ -68,14 +58,9 @@ public static partial class ThrowHelper
     /// <exception cref="ArgumentOutOfRangeException"/>
     [DoesNotReturn]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowArgumentOutOfRangeException(string paramName, string message, [CallerMemberName] string? caller = null)
+    public static void ThrowArgumentOutOfRangeException(string paramName, string message)
     {
-        if (caller is not null)
-        {
-            message = $"[{caller}] {message}";
-        }
-
-        throw new ArgumentOutOfRangeException($"[asl-help] [Error] {message}", paramName);
+        throw new ArgumentOutOfRangeException(message, paramName);
     }
 
     /// <summary>
@@ -89,14 +74,9 @@ public static partial class ThrowHelper
     /// <exception cref="DirectoryNotFoundException"/>
     [DoesNotReturn]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowDirectoryNotFoundException(string message, [CallerMemberName] string? caller = null)
+    public static void ThrowDirectoryNotFoundException(string message)
     {
-        if (caller is not null)
-        {
-            message = $"[{caller}] {message}";
-        }
-
-        throw new DirectoryNotFoundException($"[asl-help] [Error] {message}");
+        throw new DirectoryNotFoundException(message);
     }
 
     /// <summary>
@@ -110,14 +90,9 @@ public static partial class ThrowHelper
     /// <exception cref="FileNotFoundException"/>
     [DoesNotReturn]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowFileNotFoundException(string message, [CallerMemberName] string? caller = null)
+    public static void ThrowFileNotFoundException(string message)
     {
-        if (caller is not null)
-        {
-            message = $"[{caller}] {message}";
-        }
-
-        throw new FileNotFoundException($"[asl-help] [Error] {message}");
+        throw new FileNotFoundException(message);
     }
 
     /// <summary>
@@ -131,14 +106,9 @@ public static partial class ThrowHelper
     /// <exception cref="FormatException"/>
     [DoesNotReturn]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowFormatException(string message, [CallerMemberName] string? caller = null)
+    public static void ThrowFormatException(string message)
     {
-        if (caller is not null)
-        {
-            message = $"[{caller}] {message}";
-        }
-
-        throw new FormatException($"[asl-help] [Error] {message}");
+        throw new FormatException(message);
     }
 
     /// <summary>
@@ -152,14 +122,9 @@ public static partial class ThrowHelper
     /// <exception cref="InvalidDataException"/>
     [DoesNotReturn]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowInvalidDataException(string message, [CallerMemberName] string? caller = null)
+    public static void ThrowInvalidDataException(string message)
     {
-        if (caller is not null)
-        {
-            message = $"[{caller}] {message}";
-        }
-
-        throw new InvalidDataException($"[asl-help] [Error] {message}");
+        throw new InvalidDataException(message);
     }
 
     /// <summary>
@@ -173,14 +138,9 @@ public static partial class ThrowHelper
     /// <exception cref="InvalidOperationException"/>
     [DoesNotReturn]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowInvalidOperationException(string message, [CallerMemberName] string? caller = null)
+    public static void ThrowInvalidOperationException(string message)
     {
-        if (caller is not null)
-        {
-            message = $"[{caller}] {message}";
-        }
-
-        throw new InvalidOperationException($"[asl-help] [Error] {message}");
+        throw new InvalidOperationException(message);
     }
 
     /// <summary>
@@ -194,14 +154,9 @@ public static partial class ThrowHelper
     /// <exception cref="KeyNotFoundException"/>
     [DoesNotReturn]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void ThrowKeyNotFoundException(string message, [CallerMemberName] string? caller = null)
+    public static void ThrowKeyNotFoundException(string message)
     {
-        if (caller is not null)
-        {
-            message = $"[{caller}] {message}";
-        }
-
-        throw new KeyNotFoundException($"[asl-help] [Error] {message}");
+        throw new KeyNotFoundException(message);
     }
 
     /// <summary>

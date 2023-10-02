@@ -1,0 +1,49 @@
+name: Run tests
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        description: 'The name of the project to test.'
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'The name of the project to test.'
+        type: string
+        required: true
+
+jobs:
+  build-livesplit:
+    if: ${{ github.event.workflow == 'workflow_dispatch' }}
+    uses: ./.github/workflows/00_00_build-livesplit.yml
+
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Set up .NET 8.0 environment
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+          dotnet-quality: 'preview'
+
+      - name: Checkout asl-help
+        uses: actions/checkout@v4
+
+      - name: Load LiveSplit build artifacts
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: livesplit-artifacts
+          path: ./ref
+
+      - name: Delete cached LiveSplit build artifacts
+        uses: geekyeggo/delete-artifact@v2
+        if: ${{ github.event.workflow == 'workflow_dispatch' }}
+        with:
+          name: livesplit-artifacts
+          failOnError: false
+
+      - name: Test ${{ inputs.project }}
+        run: dotnet test ./test/${{ inputs.project }}

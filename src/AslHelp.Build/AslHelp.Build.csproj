@@ -7,17 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ilmerge" Version="3.0.41" />
+    <ProjectReference Include="..\..\impl\*\*.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../impl/AslHelp.Basic/AslHelp.Basic.csproj" />
-    <ProjectReference Include="../../impl/AslHelp.Mono/AslHelp.Mono.csproj" />
-
-    <!-- <ProjectReference Include="../../native/AslHelp.Native/AslHelp.Native.cxxproj" ReferenceOutputAssembly="false" /> -->
+    <PackageReference Include="ilmerge" Version="3.0.41" />
   </ItemGroup>
 
-  <!-- <Import Project="EmbedNativeLibraries.targets" /> -->
   <Import Project="MergeAssemblies.targets" />
+  <Import Project="MoveOutput.targets" />
 
 </Project>

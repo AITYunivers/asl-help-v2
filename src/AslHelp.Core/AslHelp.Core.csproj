@@ -7,24 +7,24 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="AslHelp.Basic" />
+    <InternalsVisibleTo Include="AslHelp.ClickteamFusion" />
     <InternalsVisibleTo Include="AslHelp.Mono" />
-
-    <InternalsVisibleTo Include="AslHelp.Core.IO.Benchmarks" />
-    <InternalsVisibleTo Include="AslHelp.Core.Memory.Benchmarks" />
   </ItemGroup>
 
-  <ItemGroup Label="GlobalUsings">
+  <ItemGroup>
     <Using Alias="Debug" Include="AslHelp.Core.Diagnostics.Debug" />
     <Using Alias="Timer" Include="AslHelp.Core.LiveSplitInterop.Timer" />
   </ItemGroup>
 
-  <ItemGroup Label="References">
-    <Reference Include="../../ref/*.dll" />
+  <ItemGroup>
+    <Reference Include="..\..\lib\*.dll" />
 
+    <ProjectReference Include="..\AslHelp.Common\*.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.Extensions" />
-
-    <ProjectReference Include="../AslHelp.Common/AslHelp.Common.csproj" />
 
     <PackageReference Include="System.Text.Json" Version="7.0.3" />
   </ItemGroup>

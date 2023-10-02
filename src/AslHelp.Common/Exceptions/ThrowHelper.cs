@@ -25,18 +25,17 @@ public static partial class ThrowHelper
     public static void ThrowIfNull(
         [NotNull] object? argument,
         string? message = null,
-        [CallerArgumentExpression(nameof(argument))] string paramName = "",
-        [CallerMemberName] string? caller = null)
+        [CallerArgumentExpression(nameof(argument))] string paramName = "")
     {
         if (argument is null)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                ThrowArgumentNullException(paramName, "Value cannot be null.", caller);
+                ThrowArgumentNullException(paramName, "Value cannot be null.");
             }
             else
             {
-                ThrowArgumentNullException(paramName, message!, caller);
+                ThrowArgumentNullException(paramName, message!);
             }
         }
     }
@@ -56,23 +55,22 @@ public static partial class ThrowHelper
     public static void ThrowIfNullOrEmpty<T>(
         [NotNull] IEnumerable<T>? collection,
         string? message = null,
-        [CallerArgumentExpression(nameof(collection))] string paramName = "",
-        [CallerMemberName] string? caller = null)
+        [CallerArgumentExpression(nameof(collection))] string paramName = "")
     {
         if (collection is null)
         {
-            ThrowArgumentNullException(paramName, "Value cannot be null.", caller);
+            ThrowArgumentNullException(paramName, "Value cannot be null.");
         }
 
         if (!collection.Any())
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                ThrowArgumentException(paramName, "Collection cannot be empty.", caller);
+                ThrowArgumentException(paramName, "Collection cannot be empty.");
             }
             else
             {
-                ThrowArgumentException(paramName, message!, caller);
+                ThrowArgumentException(paramName, message!);
             }
         }
     }
@@ -90,12 +88,11 @@ public static partial class ThrowHelper
     public static void ThrowIfAddressInvalid(
         nuint address,
         string message,
-        [CallerArgumentExpression(nameof(address))] string paramName = "",
-        [CallerMemberName] string? caller = null)
+        [CallerArgumentExpression(nameof(address))] string paramName = "")
     {
         if (address <= 0)
         {
-            ThrowArgumentOutOfRangeException(paramName, message, caller);
+            ThrowArgumentOutOfRangeException(paramName, message);
         }
     }
 
@@ -115,19 +112,18 @@ public static partial class ThrowHelper
         T value,
         T min,
         string? message = null,
-        [CallerArgumentExpression(nameof(value))] string paramName = "",
-        [CallerMemberName] string? caller = null)
+        [CallerArgumentExpression(nameof(value))] string paramName = "")
         where T : unmanaged, IComparable<T>
     {
         if (value.CompareTo(min) < 0)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                ThrowArgumentOutOfRangeException(paramName, $"'{paramName}' must be >= {min}.", caller);
+                ThrowArgumentOutOfRangeException(paramName, $"'{paramName}' must be >= {min}.");
             }
             else
             {
-                ThrowArgumentOutOfRangeException(paramName, message!, caller);
+                ThrowArgumentOutOfRangeException(paramName, message!);
             }
         }
     }
@@ -148,19 +144,18 @@ public static partial class ThrowHelper
         T value,
         T max,
         string? message = null,
-        [CallerArgumentExpression(nameof(value))] string paramName = "",
-        [CallerMemberName] string? caller = null)
+        [CallerArgumentExpression(nameof(value))] string paramName = "")
         where T : unmanaged, IComparable<T>
     {
         if (value.CompareTo(max) > 0)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                ThrowArgumentOutOfRangeException(paramName, $"'{paramName}' must be <= {max}.", caller);
+                ThrowArgumentOutOfRangeException(paramName, $"'{paramName}' must be <= {max}.");
             }
             else
             {
-                ThrowArgumentOutOfRangeException(paramName, message!, caller);
+                ThrowArgumentOutOfRangeException(paramName, message!);
             }
         }
     }
@@ -184,11 +179,10 @@ public static partial class ThrowHelper
         T min,
         T max,
         string? message = null,
-        [CallerArgumentExpression(nameof(value))] string paramName = "",
-        [CallerMemberName] string? caller = null)
+        [CallerArgumentExpression(nameof(value))] string paramName = "")
         where T : unmanaged, IComparable<T>
     {
-        ThrowIfLessThan(value, min, message, paramName, caller);
-        ThrowIfLargerThan(value, max, message, paramName, caller);
+        ThrowIfLessThan(value, min, message, paramName);
+        ThrowIfLargerThan(value, max, message, paramName);
     }
 }

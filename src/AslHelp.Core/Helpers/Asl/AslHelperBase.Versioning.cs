@@ -123,19 +123,19 @@ public abstract partial class AslHelperBase : IAslHelper.Versioning
 
     [MemberNotNull(nameof(Memory))]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void EnsureInInitForVersioning([CallerMemberName] string caller = "")
+    private void EnsureInInitForVersioning()
     {
         string action = Actions.CurrentAction;
         if (action is not "init")
         {
             string msg = $"Attempted to get versioning information in the '{action}' action.";
-            ThrowHelper.ThrowInvalidOperationException(msg, caller);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
 
         if (Memory is null)
         {
             string msg = "Attempted to access uninitialized memory.";
-            ThrowHelper.ThrowInvalidOperationException(msg, caller);
+            ThrowHelper.ThrowInvalidOperationException(msg);
         }
     }
 }

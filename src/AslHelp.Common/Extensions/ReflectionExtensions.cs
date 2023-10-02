@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -94,25 +94,22 @@ public static class ReflectionExtensions
     }
 
     /// <summary>
+    ///     Gets the assembly that contains the code that is currently executing.
+    /// </summary>
+    public static Assembly ExecutingAssembly { get; } = Assembly.GetExecutingAssembly();
+
+    /// <summary>
     ///     Gets the assembly that contains the code that called this method.
     /// </summary>
-    public static Assembly? CurrentAssembly
+    public static IEnumerable<Assembly> AssemblyTrace
     {
         get
         {
-            StackFrame[] frames = new StackTrace().GetFrames();
-
-            foreach (StackFrame frame in frames)
-            {
-                Type? decl = frame.GetMethod()?.DeclaringType;
-
-                if (decl?.Name == "CompiledScript")
-                {
-                    return decl.Assembly;
-                }
-            }
-
-            return null;
+            return
+                new StackTrace().GetFrames()
+                .Select(frame => frame.GetMethod()?.DeclaringType?.Assembly)
+                .OfType<Assembly>()
+                .Distinct();
         }
     }
 }

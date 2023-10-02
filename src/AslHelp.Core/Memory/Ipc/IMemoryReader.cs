@@ -96,34 +96,4 @@ public interface IMemoryReader
 
     bool TryReadSizedString([NotNullWhen(true)] out string? result, nuint baseAddress, params int[] offsets);
     bool TryReadSizedString([NotNullWhen(true)] out string? result, ReadStringType stringType, nuint baseAddress, params int[] offsets);
-
-    dynamic? ReadDef(ITypeDefinition definition, uint baseOffset, params int[] offsets);
-    dynamic? ReadDef(ITypeDefinition definition, string moduleName, uint baseOffset, params int[] offsets);
-    dynamic? ReadDef(ITypeDefinition definition, Module module, uint baseOffset, params int[] offsets);
-    dynamic? ReadDef(ITypeDefinition definition, nuint baseAddress, params int[] offsets);
-
-    bool TryReadDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic? result, uint baseOffset, params int[] offsets);
-    bool TryReadDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic? result, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets);
-    bool TryReadDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic? result, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets);
-    bool TryReadDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic? result, nuint baseAddress, params int[] offsets);
-
-    dynamic?[] ReadSpanDef(ITypeDefinition definition, int length, uint baseOffset, params int[] offsets);
-    dynamic?[] ReadSpanDef(ITypeDefinition definition, int length, string moduleName, uint baseOffset, params int[] offsets);
-    dynamic?[] ReadSpanDef(ITypeDefinition definition, int length, Module module, uint baseOffset, params int[] offsets);
-    dynamic?[] ReadSpanDef(ITypeDefinition definition, int length, nuint baseAddress, params int[] offsets);
-
-    void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, uint baseOffset, params int[] offsets);
-    void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, string moduleName, uint baseOffset, params int[] offsets);
-    void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, Module module, uint baseOffset, params int[] offsets);
-    void ReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nuint baseAddress, params int[] offsets);
-
-    bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, uint baseOffset, params int[] offsets);
-    bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets);
-    bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets);
-    bool TryReadSpanDef(ITypeDefinition definition, [NotNullWhen(true)] out dynamic[]? results, int length, nuint baseAddress, params int[] offsets);
-
-    bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, uint baseOffset, params int[] offsets);
-    bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, [NotNullWhen(true)] string? moduleName, uint baseOffset, params int[] offsets);
-    bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, [NotNullWhen(true)] Module? module, uint baseOffset, params int[] offsets);
-    bool TryReadSpanDef(ITypeDefinition definition, Span<dynamic> buffer, nuint baseAddress, params int[] offsets);
 }

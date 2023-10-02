@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Common.Extensions;
@@ -47,6 +48,7 @@ internal static class Script
 
         IEnumerable<IComponent> components = Timer.Layout.Components.Prepend(Timer.Run.AutoSplitter?.Component);
 
+        Assembly scriptAssembly = ReflectionExtensions.AssemblyTrace.Skip(2).First();
         ASLComponent component = (ASLComponent)components.FirstOrDefault(c =>
         {
             if (c is not ASLComponent aslc)
@@ -66,7 +68,7 @@ internal static class Script
             }
 
             object cc = method.GetFieldValue<object>("_compiled_code");
-            return cc?.GetType().Assembly == ReflectionExtensions.CurrentAssembly;
+            return cc?.GetType().Assembly == scriptAssembly;
         });
 
         if (component is null)
@@ -130,7 +132,75 @@ internal static class Script
             string name = (string)method.ChildNodes[0].Token.Value;
             string body = (string)method.ChildNodes[2].Token.Value;
             int line = method.ChildNodes[0].Token.Location.Line + 1;
-            typeof(Actions).SetPropertyValue<Actions.Action>(name, new(body, name, line));
+
+            switch (name)
+            {
+                case "startup":
+                {
+                    Actions.startup = new(body, name, line);
+                    continue;
+                }
+                case "onStart":
+                {
+                    Actions.onStart = new(body, name, line);
+                    continue;
+                }
+                case "onSplit":
+                {
+                    Actions.onSplit = new(body, name, line);
+                    continue;
+                }
+                case "onReset":
+                {
+                    Actions.onReset = new(body, name, line);
+                    continue;
+                }
+                case "init":
+                {
+                    Actions.init = new(body, name, line);
+                    continue;
+                }
+                case "update":
+                {
+                    Actions.update = new(body, name, line);
+                    continue;
+                }
+                case "start":
+                {
+                    Actions.start = new(body, name, line);
+                    continue;
+                }
+                case "split":
+                {
+                    Actions.split = new(body, name, line);
+                    continue;
+                }
+                case "reset":
+                {
+                    Actions.reset = new(body, name, line);
+                    continue;
+                }
+                case "gameTime":
+                {
+                    Actions.gameTime = new(body, name, line);
+                    continue;
+                }
+                case "isLoading":
+                {
+                    Actions.isLoading = new(body, name, line);
+                    continue;
+                }
+                case "exit":
+                {
+                    Actions.exit = new(body, name, line);
+                    continue;
+                }
+                case "shutdown":
+                {
+                    Actions.shutdown = new(body, name, line);
+                    continue;
+                }
+            }
         }
 
         Debug.Info("      => Success.");

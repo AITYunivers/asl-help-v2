@@ -1,0 +1,83 @@
+name: Create release information
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        type: string
+        required: true
+      release_message:
+        type: string
+        required: true
+      release_notes:
+        type: string
+        required: true
+      pre_release:
+        type: boolean
+        required: true
+    outputs:
+      release_message:
+        value: "${{ jobs.create-release-message.outputs.release_message }}"
+
+jobs:
+  create-release-message:
+    runs-on: ubuntu-latest
+
+    outputs:
+      release_message: "${{ steps.create-release-message.outputs.release_message }}"
+
+    steps:
+      - name: Checkout asl-help
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Create release notes from JSON input
+        id: parse-release-notes
+        uses: mikefarah/yq@v4.35.2
+        with:
+          cmd: echo '${{ inputs.release_notes }}' | yq -pj 'to_entries | map(["## " + .key] + (.value | map("- " + .))) | flatten | join("\n")'
+
+      - name: Fetch previous release
+        id: previous-release
+        uses: cardinalby/git-get-release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          latest: true
+          prerelease: ${{ !inputs.pre_release && 'false' || '' }}
+          doNotFailIfNotFound: true
+
+      - name: Build complete release message
+        id: create-release-message
+        run: |
+          {
+            echo 'release_message<<EOF'
+
+            if [ -n "${{ inputs.release_message }}" ]; then
+              echo "${{ inputs.release_message }}"
+              echo ""
+            fi
+
+            if [ -n "${{ steps.parse-release-notes.outputs.result }}" ]; then
+              echo "${{ steps.parse-release-notes.outputs.result }}"
+
+              if [ -n "${{ steps.previous-release.outputs.tag_name }}" ]; then
+                echo ""
+                echo "---"
+                echo ""
+              fi
+            fi
+
+            if [ -n "${{ steps.previous-release.outputs.tag_name }}" ]; then
+              echo "All changed files: https://github.com/${{ github.repository }}/compare/${{ steps.previous-release.outputs.tag_name }}...${{ inputs.tag }}."
+              echo "<details>"
+              echo "<summary><i>Detailed Change Log</i></summary>"
+              echo ""
+              git log --pretty=format:"- %s (%H)" ${{ steps.previous-release.outputs.tag_name }}..HEAD
+              echo "</details>"
+            fi
+
+            echo EOF
+          } >> $GITHUB_OUTPUT

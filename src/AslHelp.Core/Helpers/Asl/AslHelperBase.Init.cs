@@ -1,5 +1,8 @@
 using AslHelp.Common.Exceptions;
 using AslHelp.Core.Helpers.Asl.Contracts;
+using AslHelp.Core.LiveSplitInterop;
+
+using LsTimer = AslHelp.Core.LiveSplitInterop.Timer;
 
 namespace AslHelp.Core.Helpers.Asl;
 
@@ -18,7 +21,7 @@ public abstract partial class AslHelperBase : IAslHelper.Initialization
     /// <summary>
     ///     This method is called from <see cref="Init"/> when <see cref="DoCodeGeneration"/> was called with <see langword="true"/>.
     /// </summary>
-    protected abstract void GenerateCode();
+    protected abstract void GenerateCodeImpl(string? helperName);
 
     public IAslHelper Init(string? gameName = null, bool generateCode = false)
     {
@@ -34,6 +37,9 @@ public abstract partial class AslHelperBase : IAslHelper.Initialization
 
         InitImpl();
 
+        LsTimer.Init();
+        Script.Init();
+
         if (generateCode)
         {
             Debug.Info("  => Generating code...");
@@ -45,5 +51,20 @@ public abstract partial class AslHelperBase : IAslHelper.Initialization
         _initialized = true;
 
         return this;
+    }
+
+    private void GenerateCode()
+    {
+        string? helperName = null;
+
+        foreach (var entry in Script.Vars)
+        {
+            if (entry.Value == this)
+            {
+                helperName = entry.Key;
+            }
+        }
+
+        GenerateCodeImpl(helperName);
     }
 }

@@ -197,25 +197,5 @@ public class PointerFactory : Dictionary<string, IPointer>, IPointerFactory
     {
         return new(_manager, stringType, module.Base + baseOffset, offsets);
     }
-
-    public TypeDefinitionPointer MakeDef(ITypeDefinition definition, uint baseOffset, params int[] offsets)
-    {
-        return new(_manager, definition, _manager.MainModule.Base + baseOffset, offsets);
-    }
-
-    public TypeDefinitionPointer MakeDef(ITypeDefinition definition, string moduleName, uint baseOffset, params int[] offsets)
-    {
-        return new(_manager, definition, _manager.Modules[moduleName].Base + baseOffset, offsets);
-    }
-
-    public TypeDefinitionPointer MakeDef(ITypeDefinition definition, Module module, uint baseOffset, params int[] offsets)
-    {
-        return new(_manager, definition, module.Base + baseOffset, offsets);
-    }
-
-    public TypeDefinitionPointer MakeDef(ITypeDefinition definition, nuint baseAddress, params int[] offsets)
-    {
-        return new(_manager, definition, baseAddress, offsets);
-    }
 }
 

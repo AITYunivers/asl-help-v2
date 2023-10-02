@@ -1,0 +1,72 @@
+name: Create release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The version identifier for the new release.'
+        type: string
+        required: true
+      release_message:
+        description: 'The release message.'
+        type: string
+      release_notes:
+        description: 'The release notes, in JSON form.'
+        default: '{}'
+        type: string
+      pre_release:
+        description: 'This is a pre-release.'
+        type: boolean
+
+jobs:
+  build-asl-help:
+    uses: ./.github/workflows/00_01_build-asl-help.yml
+
+  create-release-message:
+    needs: build-asl-help
+    uses: ./.github/workflows/01_00_create-release-message.yml
+    with:
+      tag: ${{ inputs.tag }}
+      release_message: ${{ inputs.release_message }}
+      release_notes: ${{ inputs.release_notes }}
+      pre_release: ${{ inputs.pre_release }}
+
+  create-release:
+    needs: create-release-message
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout asl-help
+        uses: actions/checkout@v4
+
+      - name: Create release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag_name: ${{ inputs.tag }}
+          release_name: ${{ inputs.tag }}
+          body: ${{ needs.create-release-message.outputs.release_message }}
+          prerelease: ${{ github.event.inputs.pre_release }}
+
+      - name: Load cached asl-help.dll from artifacts
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: asl-help-dll
+
+      - name: Delete cached asl-help.dll from artifacts
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: asl-help-dll
+          failOnError: false
+
+      - name: Upload asl-help as release asset
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./asl-help.dll
+          asset_name: asl-help
+          asset_content_type: application/octet-stream

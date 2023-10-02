@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
-using AslHelp.Common.Exceptions;
 using AslHelp.Core.Memory.SignatureScanning;
 
 namespace AslHelp.Core.Memory.Ipc;
@@ -67,7 +65,7 @@ public partial class MemoryManagerBase
     {
         foreach (uint scanOffset in new ScanEnumerator(buffer, signature, alignment))
         {
-            yield return scanOffset + (uint)signature.Offset;
+            yield return (uint)(scanOffset + signature.Offset);
         }
     }
 }

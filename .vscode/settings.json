@@ -2,8 +2,14 @@
   "dotnet.defaultSolution": "asl-help.sln",
   "json.schemas": [
     {
-      "fileMatch": [ "./impl/**/Native/*.json" ],
-      "url": "./schemas/asl-help.structs.schema.json"
+      "fileMatch": [ "${workspaceFolder}/impl/*/Structs/*.json" ],
+      "url": "${workspaceFolder}/schemas/asl-help.structs.schema.json"
     }
-  ]
+  ],
+  "files.exclude": {
+    "lib": true,
+    "artifacts": true,
+    "**/bin": true,
+    "**/obj": true
+  }
 }
