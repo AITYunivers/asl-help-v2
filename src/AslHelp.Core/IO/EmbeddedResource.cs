@@ -23,7 +23,6 @@ public static class EmbeddedResource
 
     public static Stream GetResourceStream(string resource, Assembly assembly)
     {
-        System.Console.WriteLine(assembly.FullName);
         Stream? resourceStream = assembly.GetManifestResourceStream(resource);
 
         if (resourceStream is null)
