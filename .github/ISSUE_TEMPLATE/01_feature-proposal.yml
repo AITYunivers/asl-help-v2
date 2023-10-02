@@ -1,0 +1,44 @@
+name: Feature Proposal
+description: Propose a change or addition to `asl-help`'s features.
+title: "[Feature Proposal]: "
+labels: ["feature proposal", "untriaged"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature proposals are very welcome! Please understand that not all proposals can be considered.
+        This template will help gather the information we need to start the review process.
+  - type: textarea
+    id: background-and-motivation
+    attributes:
+      label: Background and Motivation
+      description: |
+        Please describe the purpose and idea behind the new feature, as well as the value it will bring to you and other users.
+      placeholder: Describe the purpose.
+    validations:
+      required: true
+  - type: textarea
+    id: api-proposal
+    attributes:
+      label: API Proposal
+      description: |
+        If applicable, please provide the specific API signature(s) you are proposing.
+      value: |
+        namespace AslHelp.SomeNamespace;
+
+        public class SomeClass
+        {
+            public void SomeMethod();
+        }
+      render: csharp
+    validations:
+      required: false
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks
+      description: |
+        Please mention any risks that to your knowledge the proposal might entail, such as breaking changes, performance regressions, etc.
+      placeholder: Any potential risks?
+    validations:
+      required: false
