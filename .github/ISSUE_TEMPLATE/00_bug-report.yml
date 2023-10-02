@@ -1,0 +1,72 @@
+name: Bug Report
+description: Something about the `asl-help` API is not working as expected.
+title: "[Bug]: "
+labels: ["bug", "untriaged"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Bug reports are very welcome!
+        This template will help gather the information needed to start the review process.
+  - type: dropdown
+    attributes:
+      label: Where this issue occur?
+      multiple: false
+      options:
+        - Basic
+        # - Clickteam Fusion
+        # - Emu
+        - Mono
+        # - RE Engine
+        # - Unreal
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Please share a clear and concise description of the problem.
+        Include the behavior you expect and the behavior you are actually seeing.
+      placeholder: Describe your issue.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Reproduction Steps
+      description: |
+        Please include minimal steps to reproduce the problem, if possible.
+        This could be the smallest possible ASL script to reproduce the error, or other small code snippets.
+        If possible, please avoid including screenshots.
+      placeholder: Reproduction steps (minimal).
+      value: |
+        startup
+        {
+          Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Basic");
+        }
+
+        // ...
+      render: csharp
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: |
+        Please provide what version of `asl-help` your issue occurs on.
+        This can be the commit hash, or a release tag.
+    validations:
+      required: true
+  - type: textarea
+    id: potential-causes-and-fixes
+    attributes:
+      label: Potential Causes and Fixes
+      description: |
+        Do you already know what could be causing this?
+        Any and all hints could be valuable.
+        Please provide us with what you know.
+      placeholder: Provide potential fixes, if known.
+    validations:
+      required: false

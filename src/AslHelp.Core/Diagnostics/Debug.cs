@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 
-using AslHelp.Common.Extensions;
 using AslHelp.Core.Diagnostics.Logging;
 
 namespace AslHelp.Core.Diagnostics;
@@ -116,10 +114,10 @@ internal static class Debug
                 .GetFrames()
                 .Select(frame =>
                 {
-                    MethodBase method = frame.GetMethod();
-                    Type? decl = method.DeclaringType;
+                    MethodBase? method = frame.GetMethod();
+                    Type? decl = method?.DeclaringType;
 
-                    return decl is null ? method.Name : $"{decl.Name}.{method.Name}";
+                    return decl is null ? $"{method?.Name}" : $"{decl.Name}.{method?.Name}";
                 });
         }
     }

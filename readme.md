@@ -29,7 +29,7 @@ When your project builds, open a pull request with your changes.
 - Do we care about injection (for Unity for example)?
   - Makes finding things a lot easier, but we have to do the external version anyway so
 - Struct parser doesn't work man
-  - Need to replace before parsing, obviously
+  - [x] Need to replace before parsing, obviously
   - Need to check whether parent stuff works
 - Unit tests
 - Benchmarks?
@@ -38,6 +38,7 @@ When your project builds, open a pull request with your changes.
 - Overhaul `Pointer` classes
   - Maybe change from `Make` to `Create`?
   - Allow children to be created from span-like `Pointer`s by accessing one specific index
+    - How the FUCK do we do this
 - Create common interfaces for interacting with game engines
   - Include a way to dump all available information
     - Create common interfaces for formatting this information
@@ -64,3 +65,7 @@ When your project builds, open a pull request with your changes.
   - Figure out everything
 - Emulator-related features
   - Jujstme will do it
+- RE Engine-related features
+  - ???
+- Clickteam Fusion (2.5)-related features
+  - ???

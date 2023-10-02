@@ -49,9 +49,4 @@ public interface IPointerFactory : IDictionary<string, IPointer>
     SizedStringPointer MakeSizedString(ReadStringType stringType, uint baseOffset, params int[] offsets);
     SizedStringPointer MakeSizedString(ReadStringType stringType, string moduleName, uint baseOffset, params int[] offsets);
     SizedStringPointer MakeSizedString(ReadStringType stringType, Module module, uint baseOffset, params int[] offsets);
-
-    TypeDefinitionPointer MakeDef(ITypeDefinition definition, uint baseOffset, params int[] offsets);
-    TypeDefinitionPointer MakeDef(ITypeDefinition definition, string moduleName, uint baseOffset, params int[] offsets);
-    TypeDefinitionPointer MakeDef(ITypeDefinition definition, Module module, uint baseOffset, params int[] offsets);
-    TypeDefinitionPointer MakeDef(ITypeDefinition definition, nuint baseAddress, params int[] offsets);
 }
