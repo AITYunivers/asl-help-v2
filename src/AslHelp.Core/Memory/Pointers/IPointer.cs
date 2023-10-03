@@ -8,7 +8,6 @@ public interface IPointer
     object? Old { get; set; }
     bool Changed { get; }
 
-    string? Name { get; set; }
     bool Enabled { get; set; }
     bool LogChange { get; set; }
     bool UpdateOnFail { get; set; }

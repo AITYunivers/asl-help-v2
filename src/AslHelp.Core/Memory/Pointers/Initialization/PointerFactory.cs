@@ -12,14 +12,9 @@ public class PointerFactory : Dictionary<string, IPointer>, IPointerFactory
 {
     private readonly IMemoryManager _manager;
 
-    private PointerFactory(IMemoryManager manager)
+    public PointerFactory(IMemoryManager manager)
     {
         _manager = manager;
-    }
-
-    public static PointerFactory Create(IMemoryManager manager)
-    {
-        return new(manager);
     }
 
     public void MapTo(IDictionary<string, object> destination)

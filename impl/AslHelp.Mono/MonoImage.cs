@@ -1,13 +1,19 @@
 using System.Collections.Generic;
 
 using AslHelp.Core.Collections;
-using AslHelp.Mono.Memory.MonoInterop;
+using AslHelp.Core.Memory.Pointers;
+using AslHelp.Mono.Memory.Pointers.Initialization;
+
+using OneOf;
 
 namespace AslHelp.Mono;
 
-public class MonoImage : LazyDictionary<string, MonoClass>
+public class MonoImage : LazyDictionary<string, MonoClass>, IPointerFromImageFactory
 {
-    private readonly IMonoManager _manager;
+    public Pointer<T> Make<T>(string className, string staticFieldName, params OneOf<string, int>[] next) where T : unmanaged
+    {
+        throw new System.NotImplementedException();
+    }
 
     public override IEnumerator<MonoClass> GetEnumerator()
     {
@@ -16,6 +22,6 @@ public class MonoImage : LazyDictionary<string, MonoClass>
 
     protected override string GetKey(MonoClass value)
     {
-        throw new System.NotImplementedException();
+        return value.Name;
     }
 }
