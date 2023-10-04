@@ -7,9 +7,9 @@ namespace AslHelp.Core.IO.Parsing;
 
 internal record struct FieldParseResult(
     string TypeName,
-    int Offset,
-    int Size,
-    int Alignment,
+    uint Offset,
+    uint Size,
+    uint Alignment,
     BitField? BitField);
 
 public record struct BitField(
@@ -25,10 +25,10 @@ internal sealed class NativeFieldParser
     private readonly NativeStructMap _structs;
     private readonly byte _ptrSize;
 
-    private int _fieldOffset;
+    private uint _fieldOffset;
     private int _bitOffset = -1;
 
-    private int _pAlignment;
+    private uint _pAlignment;
     private int _pSize = -1;
 
     public NativeFieldParser(NativeStructMap structs, bool is64Bit)
@@ -44,9 +44,11 @@ internal sealed class NativeFieldParser
         _pAlignment = super.Alignment;
     }
 
-    public FieldParseResult ParseNext(string typeName, int? forceAlignment)
+    public FieldParseResult ParseNext(string typeName, uint? forceAlignment)
     {
-        int tBitOffset = _bitOffset, tOffset = _fieldOffset;
+        int tBitOffset = _bitOffset;
+        uint tOffset = _fieldOffset;
+
         var result = ParseTypeSize(typeName);
 
         // Result was not a bitfield or we weren't previously in a bitfield.
@@ -64,23 +66,23 @@ internal sealed class NativeFieldParser
         }
 
         _fieldOffset = tOffset + result.Size;
-        _pSize = result.Size;
+        _pSize = (int)result.Size;
         _pAlignment = result.Alignment;
 
         return new(typeName, tOffset, result.Size, result.Alignment, result.BitField);
     }
 
-    private (string TypeName, int Size, int Alignment, BitField? BitField) ParseTypeSize(string typeName)
+    private (string TypeName, uint Size, uint Alignment, BitField? BitField) ParseTypeSize(string typeName)
     {
         // If we're not in a bitfield, we simply reset the offset to -1.
 
-        if (IsNativeType(typeName, out int size))
+        if (IsNativeType(typeName, out uint size))
         {
             _bitOffset = -1;
             return (typeName, size, size, null);
         }
 
-        if (IsKnownStruct(typeName, out size, out int alignment))
+        if (IsKnownStruct(typeName, out size, out uint alignment))
         {
             _bitOffset = -1;
             return (typeName, size, alignment, null);
@@ -97,7 +99,7 @@ internal sealed class NativeFieldParser
             _bitOffset = -1;
 
             // We allow empty array sizes to be specified, in which case we default to 1.
-            if (!int.TryParse(sCount, out int count))
+            if (!uint.TryParse(sCount, out uint count))
             {
                 count = 1;
             }
@@ -129,7 +131,7 @@ internal sealed class NativeFieldParser
             _bitOffset += bitFieldSize;
 
             alignment = size;
-            size = _bitOffset / 8;
+            size = (uint)_bitOffset / 8;
 
             // We only care about the bitfield offset within the current byte.
             _bitOffset %= 8;
@@ -142,7 +144,7 @@ internal sealed class NativeFieldParser
         return (typeName, _ptrSize, _ptrSize, null);
     }
 
-    private bool IsKnownStruct(string typeName, out int size, out int alignment)
+    private bool IsKnownStruct(string typeName, out uint size, out uint alignment)
     {
         // Check the backing data for whether we already know this struct's size and alignment.
         // This is used for in-line (arrays of) structs.
@@ -158,7 +160,7 @@ internal sealed class NativeFieldParser
         return false;
     }
 
-    private bool IsNativeType(string typeName, out int size)
+    private bool IsNativeType(string typeName, out uint size)
     {
         // C and C++ primitive types are redefined in the JSON files to match C# types.
         // This is to avoid having to accommodate for all combinations of `int`, `long`, `int32_t`, etc.
@@ -171,10 +173,10 @@ internal sealed class NativeFieldParser
             "ulong" or "long" or "double" => 0x08,
             "decimal" => 0x10,
             "nint" or "nuint" => _ptrSize,
-            _ => -1
+            _ => 0
         };
 
-        return size != -1;
+        return size != 0;
     }
 
     /// <summary>
@@ -185,14 +187,14 @@ internal sealed class NativeFieldParser
     /// <returns>
     ///     The aligned offset.
     /// </returns>
-    public static int Align(int offset, int alignment)
+    public static uint Align(uint offset, uint alignment)
     {
         if (alignment <= 0)
         {
             return 0;
         }
 
-        int mod = offset % alignment;
+        uint mod = offset % alignment;
         if (mod > 0)
         {
             offset += alignment - mod;

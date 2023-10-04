@@ -20,7 +20,6 @@ public partial class Basic
                 Debug.Info("Initializing memory...");
 
                 _memory = InitializeMemory(game);
-                _pointers = PointerFactory.Create(_memory);
 
                 Debug.Info("  => Done.");
             }

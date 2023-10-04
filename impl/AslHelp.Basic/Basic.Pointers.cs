@@ -21,7 +21,7 @@ public partial class Basic
             if (Game is Process game)
             {
                 _memory = InitializeMemory(game);
-                _pointers = PointerFactory.Create(_memory);
+                _pointers = new PointerFactory(_memory);
             }
 
             return _pointers;

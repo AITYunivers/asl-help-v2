@@ -18,12 +18,12 @@ public sealed partial class NativeStructMap : OrderedDictionary<string, NativeSt
         return item.Name;
     }
 
-    public static NativeStructMap Parse(string engine, int major, int minor, bool is64Bit)
+    public static NativeStructMap FromFile(string engine, int major, int minor, bool is64Bit)
     {
-        return Parse(engine, major.ToString(), minor.ToString(), is64Bit);
+        return FromFile(engine, major.ToString(), minor.ToString(), is64Bit);
     }
 
-    public static NativeStructMap Parse(string engine, string major, string minor, bool is64Bit)
+    public static NativeStructMap FromFile(string engine, string major, string minor, bool is64Bit)
     {
         Assembly assembly = Assembly.GetCallingAssembly();
         ParsedJsonInput input = GetOrderedInput(assembly, engine, major, minor);

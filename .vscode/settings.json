@@ -7,8 +7,9 @@
     }
   ],
   "files.exclude": {
-    "lib": true,
     "artifacts": true,
+    "deprecated": true,
+    "lib": true,
     "**/bin": true,
     "**/obj": true
   }

@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 
+#
 VisualStudioVersion = 17.5.002.0
-MinimumVisualStudioVersion = 
+MinimumVisualStudioVersion =
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{A46E4AD5-173F-4C5B-806D-93D2CF8E02C2}"
 	ProjectSection(SolutionItems) = preProject
 		.clang-format = .clang-format
@@ -36,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Core", "src\AslHelp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Basic", "impl\AslHelp.Basic\AslHelp.Basic.csproj", "{FFED421D-4DA8-4D1C-A26C-7FDD4A8644C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Mono", "impl\AslHelp.Mono\AslHelp.Mono.csproj", "{1E9EE522-2F4D-4AEA-BC37-D1BBA1344083}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Unity", "impl\AslHelp.Unity\AslHelp.Unity.csproj", "{1E9EE522-2F4D-4AEA-BC37-D1BBA1344083}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.ClickteamFusion", "impl\AslHelp.ClickteamFusion\AslHelp.ClickteamFusion.csproj", "{1725218C-32CB-4502-9E85-EF73342A0FC9}"
 EndProject

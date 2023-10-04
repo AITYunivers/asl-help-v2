@@ -19,20 +19,15 @@ public sealed class NativeField
 
     public required string Name { get; init; }
     public required string Type { get; init; }
-    public required int Offset { get; init; }
-    public required int Size { get; init; }
-    public required int Alignment { get; init; }
+    public required uint Offset { get; init; }
+    public required uint Size { get; init; }
+    public required uint Alignment { get; init; }
 
     public uint BitMask { get; }
 
-    public static implicit operator int(NativeField field)
-    {
-        return field.Offset;
-    }
-
     public static implicit operator uint(NativeField field)
     {
-        return (uint)field.Offset;
+        return field.Offset;
     }
 
     public static byte operator &(byte value, NativeField field)

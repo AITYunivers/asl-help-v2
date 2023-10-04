@@ -91,5 +91,5 @@ public sealed partial class NativeStructMap
     private record Field(
         string Type,
         string Name,
-        int? Alignment);
+        uint? Alignment);
 }

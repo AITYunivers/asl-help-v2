@@ -17,3 +17,4 @@ BenchmarkDotNet.Artifacts/
 
 # asl-help
 lib/
+# deprecated/
