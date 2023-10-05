@@ -43,7 +43,7 @@ public class ExternalMemoryManager : MemoryManagerBase
         }
 
         nuint result = baseAddress, handle = _processHandle;
-        uint ptrSize = PtrSize;
+        uint ptrSize = PointerSize;
 
         for (int i = 0; i < offsets.Length; i++)
         {

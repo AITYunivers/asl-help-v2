@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Common.Results;
@@ -50,6 +51,19 @@ public partial class MemoryManagerBase
 
     public unsafe void ReadSpan<T>(Span<T> buffer, nuint baseAddress, params int[] offsets) where T : unmanaged
     {
+        if (!Is64Bit && IsNativeInt<T>())
+        {
+            Span<uint> buf32 = MemoryMarshal.Cast<T, uint>(buffer);
+            Span<ulong> buf64 = MemoryMarshal.Cast<T, ulong>(buffer);
+
+            ReadSpan<uint>(buf32[buf64.Length..], baseAddress, offsets);
+
+            for (int i = 0; i < buf64.Length; i++)
+            {
+                buf64[i] = buf32[buf64.Length + i];
+            }
+        }
+
         fixed (T* pBuffer = buffer)
         {
             Result readResult = TryRead<T>(pBuffer, GetNativeSizeOf<T>(buffer.Length), baseAddress, offsets);
@@ -127,6 +141,24 @@ public partial class MemoryManagerBase
 
     public unsafe bool TryReadSpan<T>(Span<T> buffer, nuint baseAddress, params int[] offsets) where T : unmanaged
     {
+        if (!Is64Bit && IsNativeInt<T>())
+        {
+            Span<uint> buf32 = MemoryMarshal.Cast<T, uint>(buffer);
+            Span<ulong> buf64 = MemoryMarshal.Cast<T, ulong>(buffer);
+
+            if (!TryReadSpan<uint>(buf32[buf64.Length..], baseAddress, offsets))
+            {
+                return false;
+            }
+
+            for (int i = 0; i < buf64.Length; i++)
+            {
+                buf64[i] = buf32[buf64.Length + i];
+            }
+
+            return true;
+        }
+
         fixed (T* pBuffer = buffer)
         {
             Result readResult = TryRead<T>(pBuffer, GetNativeSizeOf<T>(buffer.Length), baseAddress, offsets);

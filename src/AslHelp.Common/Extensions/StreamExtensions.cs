@@ -166,14 +166,14 @@ public static class StreamExtensions
         return stream.TryRead(out response);
     }
 
-    private static void ReadExactly(this Stream stream, Span<byte> buffer)
+    public static void ReadExactly(this Stream stream, Span<byte> buffer)
     {
         ThrowHelper.ThrowIfNull(stream);
 
         _ = ReadAtLeastCore(stream, buffer, buffer.Length, throwOnEndOfStream: true);
     }
 
-    private static int ReadAtLeast(this Stream stream, Span<byte> buffer, int minimumBytes, bool throwOnEndOfStream = true)
+    public static int ReadAtLeast(this Stream stream, Span<byte> buffer, int minimumBytes, bool throwOnEndOfStream = true)
     {
         ThrowHelper.ThrowIfNull(stream);
 
@@ -225,14 +225,16 @@ public static class StreamExtensions
     {
         if (minimumBytes < 0)
         {
-            string msg = "Non-negative number required.";
+            const string msg = "Non-negative number required.";
             ThrowHelper.ThrowArgumentOutOfRangeException(nameof(minimumBytes), msg);
         }
 
         if (bufferLength < minimumBytes)
         {
-            string msg = "Offset and length were out of bounds for the array " +
+            const string msg =
+                "Offset and length were out of bounds for the array " +
                 "or count is greater than the number of elements from index to the end of the source collection.";
+
             ThrowHelper.ThrowArgumentOutOfRangeException(nameof(minimumBytes), msg);
         }
     }

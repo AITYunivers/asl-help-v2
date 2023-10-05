@@ -49,7 +49,10 @@ public partial class Basic
         return File.Exists(file) ? Assembly.LoadFrom(file) : null;
     }
 
-    private const string UpdateAndExecuteVoid =
+    private const string UpdateAndExecute2 =
+        "at System.Dynamic.UpdateDelegates.UpdateAndExecute2[T0,T1,TRet](CallSite site, T0 arg0, T1 arg1)";
+
+    private const string UpdateAndExecuteVoid2 =
         "   at System.Dynamic.UpdateDelegates.UpdateAndExecuteVoid2[T0,T1](CallSite site, T0 arg0, T1 arg1)";
     private const string CompiledScriptExecute =
         "   at CompiledScript.Execute(LiveSplitState timer, Object old, Object current, Object vars, Process game, Object settings)";
@@ -86,7 +89,9 @@ public partial class Basic
 
         foreach (string line in stackTraceLines)
         {
-            if (line.StartsWith(UpdateAndExecuteVoid) || line.StartsWith(CompiledScriptExecute))
+            if (line.StartsWith(UpdateAndExecute2)
+                || line.StartsWith(UpdateAndExecuteVoid2)
+                || line.StartsWith(CompiledScriptExecute))
             {
                 break;
             }

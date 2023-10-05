@@ -25,8 +25,8 @@ public partial class MonoMemoryManagerBase
     {
         nuint deref = Read<nuint>(address, offsets);
 
-        int length = Read<int>(deref + (PtrSize * 3U));
-        return ReadSpan<T>(length, deref + (PtrSize * 4U));
+        int length = Read<int>(deref + (PointerSize * 3U));
+        return ReadSpan<T>(length, deref + (PointerSize * 4U));
     }
 
     public bool TryReadArray<T>([NotNullWhen(true)] out T[]? results, uint baseOffset, params int[] offsets) where T : unmanaged
@@ -64,12 +64,12 @@ public partial class MonoMemoryManagerBase
             return false;
         }
 
-        if (!TryRead<int>(out int length, deref + (PtrSize * 3U)))
+        if (!TryRead<int>(out int length, deref + (PointerSize * 3U)))
         {
             results = default;
             return false;
         }
 
-        return TryReadSpan<T>(out results, length, deref + (PtrSize * 4U));
+        return TryReadSpan<T>(out results, length, deref + (PointerSize * 4U));
     }
 }

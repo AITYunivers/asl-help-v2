@@ -28,14 +28,14 @@ public partial class MonoMemoryManagerBase
     {
         nuint deref = Read<nuint>(address, offsets);
 
-        int count = Read<int>(deref + (PtrSize * 3U));
+        int count = Read<int>(deref + (PointerSize * 3U));
 
         List<T> results = new(count);
 
         (T[] items, _) = Emissions<T>.GetBackingArray(results);
         Span<T> buffer = new(items, 0, count);
 
-        ReadSpan<T>(buffer, deref + (PtrSize * 2U), PtrSize * 4);
+        ReadSpan<T>(buffer, deref + (PointerSize * 2U), PointerSize * 4);
 
         return results;
     }
@@ -75,7 +75,7 @@ public partial class MonoMemoryManagerBase
             return false;
         }
 
-        if (!TryRead(out int count, deref + (PtrSize * 3U)))
+        if (!TryRead(out int count, deref + (PointerSize * 3U)))
         {
             results = default;
             return false;
@@ -86,7 +86,7 @@ public partial class MonoMemoryManagerBase
         (T[] items, _) = Emissions<T>.GetBackingArray(results);
         Span<T> buffer = new(items, 0, count);
 
-        if (!TryReadSpan(buffer, deref + (PtrSize * 2U), PtrSize * 4))
+        if (!TryReadSpan(buffer, deref + (PointerSize * 2U), PointerSize * 4))
         {
             results = default;
             return false;

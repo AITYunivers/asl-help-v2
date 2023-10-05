@@ -34,10 +34,11 @@ public partial class Basic
         return new ExternalMemoryManager(process, Logger);
     }
 
-    protected override void DisposeMemory()
+    protected override void DisposeProcessInstanceData()
     {
-        base.DisposeMemory();
+        base.DisposeProcessInstanceData();
 
+        _game = null;
         _pointers = null;
     }
 }

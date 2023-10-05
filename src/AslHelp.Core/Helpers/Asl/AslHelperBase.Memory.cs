@@ -18,7 +18,7 @@ public abstract partial class AslHelperBase
     /// <summary>
     ///     Disposes of any resources pertaining to managing memory.
     /// </summary>
-    protected virtual void DisposeMemory()
+    protected virtual void DisposeProcessInstanceData()
     {
         Memory?.Dispose();
         Memory = null;

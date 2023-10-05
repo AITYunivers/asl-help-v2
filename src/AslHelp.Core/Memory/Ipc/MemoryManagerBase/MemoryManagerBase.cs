@@ -31,7 +31,7 @@ public abstract partial class MemoryManagerBase : IMemoryManager
 
         Process = process;
         Is64Bit = WinInteropWrapper.ProcessIs64Bit(_processHandle);
-        PtrSize = (byte)(Is64Bit ? 0x8 : 0x4);
+        PointerSize = (byte)(Is64Bit ? 0x8 : 0x4);
         Modules = new(process);
         MainModule = Modules.First();
     }
@@ -49,14 +49,14 @@ public abstract partial class MemoryManagerBase : IMemoryManager
 
         Process = process;
         Is64Bit = WinInteropWrapper.ProcessIs64Bit(_processHandle);
-        PtrSize = (byte)(Is64Bit ? 0x8 : 0x4);
+        PointerSize = (byte)(Is64Bit ? 0x8 : 0x4);
         Modules = new(process);
         MainModule = Modules.First();
     }
 
     public Process Process { get; }
     public bool Is64Bit { get; }
-    public byte PtrSize { get; }
+    public byte PointerSize { get; }
 
     public Module MainModule { get; }
     public ModuleCache Modules { get; }
@@ -127,6 +127,6 @@ public abstract partial class MemoryManagerBase : IMemoryManager
     protected unsafe uint GetNativeSizeOf<T>(int count = 1)
         where T : unmanaged
     {
-        return (uint)(IsNativeInt<T>() ? PtrSize : sizeof(T)) * (uint)count;
+        return (uint)(IsNativeInt<T>() ? PointerSize : sizeof(T)) * (uint)count;
     }
 }

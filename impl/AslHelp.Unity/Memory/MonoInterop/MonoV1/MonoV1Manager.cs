@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 using AslHelp.Core.Extensions;
 using AslHelp.Core.IO.Parsing;
 using AslHelp.Core.Memory.SignatureScanning;
@@ -28,6 +26,6 @@ public partial class MonoV1Manager : MonoManagerBase
 
         nuint loadedAssembliesRelative = _memory.Scan(signatures, monoAssemblyForeach, 0x100);
         nuint loadedAssemblies = _memory.ReadRelative(loadedAssembliesRelative);
-        return _memory.Read<nuint>(loadedAssemblies);
+        return loadedAssemblies;
     }
 }

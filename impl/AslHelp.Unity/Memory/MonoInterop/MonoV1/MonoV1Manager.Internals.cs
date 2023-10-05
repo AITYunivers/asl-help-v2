@@ -17,11 +17,6 @@ public partial class MonoV1Manager
         return _memory.Read<nuint>(assembly + _structs["MonoAssembly"]["image"]);
     }
 
-    protected virtual nuint MonoClassParent(nuint klass)
-    {
-        return _memory.Read<nuint>(klass + _structs["MonoClass"]["parent"]);
-    }
-
     protected virtual nuint MonoClassFields(nuint klass)
     {
         return _memory.Read<nuint>(klass + _structs["MonoClass"]["fields"]);

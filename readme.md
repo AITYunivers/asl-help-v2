@@ -44,6 +44,7 @@ When your project builds, open a pull request with your changes.
     - Create common interfaces for formatting this information
 - Mono-related features
   - Figure out how to infer `cattrs` without having to look at memory
+    - Maybe presence of both `mono.dll` and `UnityPlayer.dll`?
   - Improve `Make` abilities
     - Do not require adding inheritance depth, if possible
     - Make it work with IL2CPP

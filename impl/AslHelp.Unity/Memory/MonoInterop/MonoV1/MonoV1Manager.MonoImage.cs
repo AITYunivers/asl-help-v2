@@ -8,7 +8,7 @@ public partial class MonoV1Manager
 {
     public override IEnumerable<nuint> GetImages()
     {
-        nuint assemblies = _assemblies;
+        nuint assemblies = _memory.Read<nuint>(_assemblies);
 
         while (assemblies != 0)
         {

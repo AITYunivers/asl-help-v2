@@ -1,19 +1,23 @@
 using System.Collections.Generic;
 
 using AslHelp.Core.Collections;
-using AslHelp.Core.Memory.Pointers;
 using AslHelp.Unity.Memory.MonoInterop;
-using AslHelp.Unity.Memory.Pointers.Initialization;
 
-using OneOf;
+namespace AslHelp.Unity.Memory;
 
-namespace AslHelp.Unity;
-
-public class MonoClass(nuint address, IMonoManager mono) : IPointerFromClassFactory
+public class MonoClass
 {
-    private readonly IMonoManager _mono = mono;
+    private readonly IMonoManager _mono;
 
-    public nuint Address { get; } = address;
+    public MonoClass(nuint address, IMonoManager mono)
+    {
+        _mono = mono;
+
+        Address = address;
+        Fields = new MonoFieldCache(address, mono);
+    }
+
+    public nuint Address { get; }
 
     private string? _name;
     public string Name => _name ??= _mono.GetClassName(Address);
@@ -21,11 +25,18 @@ public class MonoClass(nuint address, IMonoManager mono) : IPointerFromClassFact
     private string? _namespace;
     public string Namespace => _namespace ??= _mono.GetClassNamespace(Address);
 
-    public LazyDictionary<string, MonoField> Fields { get; } = new MonoFieldCache(address, mono);
+    public LazyDictionary<string, MonoField> Fields { get; }
 
-    public Pointer<T> Make<T>(string staticFieldName, params OneOf<string, int>[] next) where T : unmanaged
+    public override string ToString()
     {
-        throw new System.NotImplementedException();
+        if (string.IsNullOrEmpty(Namespace))
+        {
+            return Name;
+        }
+        else
+        {
+            return $"{Namespace}.{Name}";
+        }
     }
 
     private class MonoFieldCache(nuint address, IMonoManager mono) : LazyDictionary<string, MonoField>

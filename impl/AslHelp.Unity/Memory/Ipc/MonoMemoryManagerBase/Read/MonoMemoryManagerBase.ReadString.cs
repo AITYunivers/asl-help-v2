@@ -28,7 +28,7 @@ public partial class MonoMemoryManagerBase
     public string ReadString(nuint address, params int[] offsets)
     {
         nuint deref = Read<nuint>(address, offsets);
-        return ReadSizedString(ReadStringType.UTF16, deref + (PtrSize * 2U) + 4U);
+        return ReadSizedString(ReadStringType.UTF16, deref + (PointerSize * 2U) + 4U);
     }
 
     public bool TryReadString([NotNullWhen(true)] out string? result, uint baseOffset, params int[] offsets)
@@ -68,6 +68,6 @@ public partial class MonoMemoryManagerBase
             return false;
         }
 
-        return TryReadSizedString(out result, ReadStringType.UTF16, deref + (PtrSize * 2U) + 4U);
+        return TryReadSizedString(out result, ReadStringType.UTF16, deref + (PointerSize * 2U) + 4U);
     }
 }

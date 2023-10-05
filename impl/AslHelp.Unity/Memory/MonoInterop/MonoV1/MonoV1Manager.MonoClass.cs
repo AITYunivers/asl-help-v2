@@ -21,11 +21,9 @@ public partial class MonoV1Manager
 
         for (int i = 0; i < classes.Length; i++)
         {
-            nuint klass = classes[i];
-            while (klass != 0)
+            for (nuint klass = classes[i]; klass != 0; klass = MonoClassNextClassCache(klass))
             {
                 yield return klass;
-                klass = MonoClassNextClassCache(klass);
             }
         }
     }
@@ -40,5 +38,20 @@ public partial class MonoV1Manager
     {
         nuint nameSpaceStart = _memory.Read<nuint>(klass + _structs["MonoClass"]["name_space"]);
         return _memory.ReadString(256, ReadStringType.UTF8, nameSpaceStart);
+    }
+
+    public override nuint GetClassParent(nuint klass)
+    {
+        return _memory.Read<nuint>(klass + _structs["MonoClass"]["parent"]);
+    }
+
+    public override nuint GetArrayClass(nuint arrayClass)
+    {
+        return _memory.Read<nuint>(arrayClass + _structs["MonoArrayType"]["rank"]);
+    }
+
+    public override nuint GetGenericInstClass(nuint genericClass)
+    {
+        return _memory.Read<nuint>(genericClass + _structs["MonoGenericClass"]["context"]);
     }
 }

@@ -31,7 +31,16 @@ public abstract class MonoManagerBase : IMonoManager
     public abstract string GetClassName(nuint klass);
     public abstract string GetClassNamespace(nuint klass);
 
+    public abstract nuint GetClassParent(nuint klass);
+    public abstract nuint GetArrayClass(nuint arrayClass);
+    public abstract nuint GetGenericInstClass(nuint genericClass);
+
     public abstract IEnumerable<nuint> GetClassFields(nuint klass);
     public abstract string GetFieldName(nuint field);
     public abstract int GetFieldOffset(nuint field);
+    public abstract nuint GetFieldType(nuint field);
+
+    public abstract nuint GetTypeData(nuint type);
+    public abstract MonoFieldAttribute GetTypeAttributes(nuint type);
+    public abstract MonoElementType GetTypeElementType(nuint type);
 }

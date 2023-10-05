@@ -14,7 +14,7 @@ public interface IMemoryManager
 {
     Process Process { get; }
     bool Is64Bit { get; }
-    byte PtrSize { get; }
+    byte PointerSize { get; }
 
     Module MainModule { get; }
     ModuleCache Modules { get; }

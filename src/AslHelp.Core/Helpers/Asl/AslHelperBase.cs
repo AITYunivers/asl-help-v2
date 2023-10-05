@@ -21,7 +21,7 @@ public abstract partial class AslHelperBase : IAslHelper
 
         Debug.Info("Disposing...");
 
-        DisposeMemory();
+        DisposeProcessInstanceData();
 
         OnExitImpl();
     }
@@ -42,7 +42,7 @@ public abstract partial class AslHelperBase : IAslHelper
 
         Debug.Info("Disposing...");
 
-        DisposeMemory();
+        DisposeProcessInstanceData();
 
         bool closing = Debug.StackTraceNames.Any(t => t
             is "TimerForm.TimerForm_FormClosing"

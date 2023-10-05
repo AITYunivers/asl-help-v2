@@ -18,17 +18,13 @@ public partial class MonoV2Manager
         }
         else
         {
-            return default;
+            return 0;
         }
     }
 
     protected virtual MonoTypeKind MonoClassClassKind(nuint klass)
     {
-        if (!_memory.TryRead(out uint classKind, klass + _structs["MonoClass"]["class_kind"]))
-        {
-            return default;
-        }
-
+        uint classKind = _memory.Read<uint>(klass + _structs["MonoClass"]["class_kind"]);
         classKind &= _structs["MonoClass"]["class_kind"];
 
         return (MonoTypeKind)classKind;
@@ -36,26 +32,12 @@ public partial class MonoV2Manager
 
     protected virtual nuint MonoClassGenericClass(nuint klass)
     {
-        if (!_memory.TryRead(out nuint genericClass, klass + _structs["MonoClass"]["generic_class"]))
-        {
-            return default;
-        }
-
-        if (!_memory.TryRead(out nuint containerClass, genericClass + _structs["MonoGenericClass"]["container_class"]))
-        {
-            return default;
-        }
-
-        return containerClass;
+        nuint genericClass = _memory.Read<nuint>(klass + _structs["MonoClassGenericInst"]["generic_class"]);
+        return _memory.Read<nuint>(genericClass + _structs["MonoGenericClass"]["container_class"]);
     }
 
     protected override nuint MonoClassNextClassCache(nuint klass)
     {
-        if (!_memory.TryRead(out nuint nextClassCache, klass + _structs["MonoClass"]["next_class_cache"]))
-        {
-            return default;
-        }
-
-        return nextClassCache;
+        return _memory.Read<nuint>(klass + _structs["MonoClassDef"]["next_class_cache"]);
     }
 }
