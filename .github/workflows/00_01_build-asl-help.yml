@@ -26,7 +26,7 @@ jobs:
         uses: actions/download-artifact@v3.0.2
         with:
           name: livesplit-artifacts
-          path: ./ref
+          path: ./lib
 
       - name: Delete cached LiveSplit build artifacts
         uses: geekyeggo/delete-artifact@v2
