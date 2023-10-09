@@ -1,3 +1,4 @@
+using AslHelp.Common.Results;
 using AslHelp.Core.IO.Parsing;
 using AslHelp.Unity.Memory.Ipc;
 
@@ -8,8 +9,8 @@ public partial class MonoV2Manager : MonoV1Manager
     public MonoV2Manager(IMonoMemoryManager memory)
         : base(memory) { }
 
-    // protected override NativeStructMap InitializeStructs()
-    // {
-    //     return NativeStructMap.FromFile("Unity", "mono", "v2", _memory.Is64Bit);
-    // }
+    protected override Result<NativeStructMap, ParseError> InitializeStructs()
+    {
+        return NativeStructMap.InitializeFromResource("Unity", "mono", "v2", _memory.Is64Bit);
+    }
 }

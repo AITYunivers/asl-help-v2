@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
+using AslHelp.Common.Results;
 using AslHelp.Core.IO.Parsing;
 using AslHelp.Core.Memory.SignatureScanning;
 using AslHelp.Unity.Memory.Ipc;
@@ -14,12 +15,92 @@ public partial class Il2CppV24Manager : MonoManagerBase
     public Il2CppV24Manager(IMonoMemoryManager memory)
         : base(memory) { }
 
-    protected override bool TryInitializeStructs([NotNullWhen(true)] out NativeStructMap? structs)
+    protected override Result<nuint, MonoInitializationError> FindLoadedAssemblies()
     {
         throw new System.NotImplementedException();
     }
 
-    protected override bool TryFindLoadedAssemblies(out nuint loadedAssemblies)
+    protected override Result<NativeStructMap, ParseError> InitializeStructs()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override nuint GetArrayClass(nuint arrayClass)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override IEnumerable<nuint> GetClassFields(nuint klass)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override string GetClassName(nuint klass)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override string GetClassNamespace(nuint klass)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override nuint GetClassParent(nuint klass)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override string GetFieldName(nuint field)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override int GetFieldOffset(nuint field)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override nuint GetFieldType(nuint field)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override nuint GetGenericInstClass(nuint genericClass)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override IEnumerable<nuint> GetImageClasses(nuint image)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override string GetImageFileName(nuint image)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override string GetImageName(nuint image)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override IEnumerable<nuint> GetImages()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override MonoFieldAttribute GetTypeAttributes(nuint type)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override nuint GetTypeData(nuint type)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override MonoElementType GetTypeElementType(nuint type)
     {
         throw new System.NotImplementedException();
     }
@@ -50,85 +131,5 @@ public partial class Il2CppV24Manager : MonoManagerBase
     //     Debug.Warn($"{_assembliesSize}");
 
     //     return front;
-}
-
-public override IEnumerable<nuint> GetImages()
-{
-    throw new System.NotImplementedException();
-}
-
-public override string GetImageName(nuint image)
-{
-    throw new System.NotImplementedException();
-}
-
-public override string GetImageFileName(nuint image)
-{
-    throw new System.NotImplementedException();
-}
-
-public override IEnumerable<nuint> GetImageClasses(nuint image)
-{
-    throw new System.NotImplementedException();
-}
-
-public override string GetClassName(nuint klass)
-{
-    throw new System.NotImplementedException();
-}
-
-public override string GetClassNamespace(nuint klass)
-{
-    throw new System.NotImplementedException();
-}
-
-public override IEnumerable<nuint> GetClassFields(nuint klass)
-{
-    throw new System.NotImplementedException();
-}
-
-public override string GetFieldName(nuint field)
-{
-    throw new System.NotImplementedException();
-}
-
-public override int GetFieldOffset(nuint field)
-{
-    throw new System.NotImplementedException();
-}
-
-public override nuint GetClassParent(nuint klass)
-{
-    throw new System.NotImplementedException();
-}
-
-public override nuint GetArrayClass(nuint arrayClass)
-{
-    throw new System.NotImplementedException();
-}
-
-public override nuint GetGenericInstClass(nuint genericClass)
-{
-    throw new System.NotImplementedException();
-}
-
-public override nuint GetTypeData(nuint type)
-{
-    throw new System.NotImplementedException();
-}
-
-public override MonoFieldAttribute GetTypeAttributes(nuint type)
-{
-    throw new System.NotImplementedException();
-}
-
-public override MonoElementType GetTypeElementType(nuint type)
-{
-    throw new System.NotImplementedException();
-}
-
-public override nuint GetFieldType(nuint field)
-{
-    throw new System.NotImplementedException();
-}
+    // }
 }

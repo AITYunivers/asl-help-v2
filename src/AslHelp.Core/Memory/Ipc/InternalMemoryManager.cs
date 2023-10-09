@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Common.Extensions;
+using AslHelp.Common.Memory.Ipc;
 using AslHelp.Common.Results;
 using AslHelp.Core.Diagnostics.Logging;
 
@@ -71,7 +72,7 @@ public class InternalMemoryManager : MemoryManagerBase
         }
     }
 
-    protected internal override unsafe Result<nuint> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets)
+    protected internal override unsafe Result<nuint, IpcError> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (VerifyArguments(baseAddress, offsets) is { IsSuccess: false } errorResult)
         {
@@ -86,31 +87,36 @@ public class InternalMemoryManager : MemoryManagerBase
 
         offsets.CopyTo(new(req.Offsets, offsets.Length));
 
-        _pipe.Write(1);
+        _pipe.Write(PipeRequest.Deref);
         _pipe.Write(req);
 
-        if (!_pipe.TryRead(out int response) || response != 0)
+        if (!_pipe.TryRead(out PipeResponse response))
         {
             return new(
                 IsSuccess: false,
-                Throw: () =>
-                {
-                    string msg = $"Failed to dereference pointer ({(int)response}: '{response}').";
-                    ThrowHelper.ThrowInvalidOperationException(msg);
-                });
+                Error: IpcError.ReceiveFailure);
+        }
+
+        if (response != PipeResponse.Success)
+        {
+            return new(
+                IsSuccess: false,
+                Error: new(IpcError.DerefFailure, $"Failure during dereferencing ({(int)response}: '{response}')."));
+        }
+
+        if (!_pipe.TryRead(out ulong deref))
+        {
+            return new(
+                IsSuccess: false,
+                Error: IpcError.ReceiveFailure);
         }
 
         return new(
-            IsSuccess: _pipe.TryRead(out ulong deref),
-            Value: (nuint)deref,
-            Throw: static () =>
-            {
-                const string msg = "Failed to receive result.";
-                ThrowHelper.ThrowInvalidOperationException(msg);
-            });
+            IsSuccess: true,
+            Value: (nuint)deref);
     }
 
-    protected internal override unsafe Result TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
+    protected internal override unsafe Result<IpcError> TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (VerifyArguments(baseAddress, offsets) is { IsSuccess: false } errorResult)
         {
@@ -126,30 +132,35 @@ public class InternalMemoryManager : MemoryManagerBase
 
         offsets.CopyTo(new(req.Offsets, offsets.Length));
 
-        _pipe.Write(2);
+        _pipe.Write(PipeRequest.Read);
         _pipe.Write(req);
 
-        if (!_pipe.TryRead(out int response) || response != 0)
+        if (!_pipe.TryRead(out PipeResponse response))
         {
             return new(
                 IsSuccess: false,
-                Throw: () =>
-                {
-                    string msg = $"Failed to dereference pointer ({(int)response}: '{response}').";
-                    ThrowHelper.ThrowInvalidOperationException(msg);
-                });
+                Error: IpcError.ReceiveFailure);
+        }
+
+        if (response != PipeResponse.Success)
+        {
+            return new(
+                IsSuccess: false,
+                Error: new(IpcError.DerefFailure, $"Failure during dereferencing ({(int)response}: '{response}')."));
+        }
+
+        if (!_pipe.TryRead<byte>(new(buffer, (int)length)))
+        {
+            return new(
+                IsSuccess: false,
+                Error: IpcError.ReceiveFailure);
         }
 
         return new(
-            IsSuccess: _pipe.TryRead<byte>(new(buffer, (int)length)),
-            Throw: static () =>
-            {
-                const string msg = "Failed to receive result.";
-                ThrowHelper.ThrowInvalidOperationException(msg);
-            });
+            IsSuccess: true);
     }
 
-    protected internal override unsafe Result TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
+    protected internal override unsafe Result<IpcError> TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (VerifyArguments(baseAddress, offsets) is { IsSuccess: false } errorResult)
         {
@@ -165,54 +176,46 @@ public class InternalMemoryManager : MemoryManagerBase
 
         offsets.CopyTo(new(req.Offsets, offsets.Length));
 
-        _pipe.Write(3);
+        _pipe.Write(PipeRequest.Write);
         _pipe.Write(req);
         _pipe.Write(new(data, (int)length));
 
+        if (!_pipe.TryRead(out PipeResponse response))
+        {
+            return new(
+                IsSuccess: false,
+                Error: IpcError.ReceiveFailure);
+        }
+
         return new(
-            IsSuccess: _pipe.TryRead(out int response) && response != 0,
-            Throw: () =>
-            {
-                string msg = $"Failed to dereference pointer ({(int)response}: '{response}').";
-                ThrowHelper.ThrowInvalidOperationException(msg);
-            });
+            IsSuccess: response == PipeResponse.Success,
+            Error: new(IpcError.WriteFailure, $"Failure during memory write ({(int)response}: '{response}')."));
     }
 
-    private Result<nuint> VerifyArguments(nuint baseAddress, ReadOnlySpan<int> offsets)
+    private Result<nuint, IpcError> VerifyArguments(nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (_isDisposed)
         {
             return new(
                 IsSuccess: false,
-                Throw: static () =>
-                {
-                    const string msg = "Cannot interact with the memory of an exited process.";
-                    ThrowHelper.ThrowInvalidOperationException(msg);
-                });
+                Error: IpcError.MemoryIsDisposed);
         }
 
         if (offsets.Length > 128)
         {
             return new(
                 IsSuccess: false,
-                Throw: static () =>
-                {
-                    const string msg = "Cannot dereference more than 128 offsets.";
-                    ThrowHelper.ThrowArgumentException(nameof(offsets), msg);
-                });
+                Error: IpcError.OffsetsLengthIsGreaterThan128);
         }
 
         if (baseAddress == 0)
         {
             return new(
                 IsSuccess: false,
-                Throw: static () =>
-                {
-                    const string msg = "Attempted to dereference a null pointer.";
-                    ThrowHelper.ThrowArgumentException(nameof(baseAddress), msg);
-                });
+                Error: IpcError.BaseAddressIsNullPtr);
         }
 
-        return new(IsSuccess: true);
+        return new(
+            IsSuccess: true);
     }
 }

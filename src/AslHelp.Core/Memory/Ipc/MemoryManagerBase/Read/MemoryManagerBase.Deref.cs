@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
+using AslHelp.Common.Exceptions;
 using AslHelp.Common.Results;
 
 namespace AslHelp.Core.Memory.Ipc;
@@ -24,11 +25,11 @@ public partial class MemoryManagerBase
 
     public nuint Deref(nuint baseAddress, params int[] offsets)
     {
-        Result<nuint> derefResult = TryDeref(baseAddress, offsets);
+        var derefResult = TryDeref(baseAddress, offsets);
 
         if (!derefResult.IsSuccess)
         {
-            derefResult.Throw();
+            ThrowHelper.ThrowException(derefResult.Error.Message);
         }
 
         return derefResult.Value;
@@ -63,11 +64,11 @@ public partial class MemoryManagerBase
 
     public bool TryDeref(out nuint result, nuint baseAddress, params int[] offsets)
     {
-        Result<nuint> derefResult = TryDeref(baseAddress, offsets);
+        var derefResult = TryDeref(baseAddress, offsets);
 
         result = derefResult.Value;
         return derefResult.IsSuccess;
     }
 
-    protected internal abstract Result<nuint> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets);
+    protected internal abstract Result<nuint, IpcError> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets);
 }

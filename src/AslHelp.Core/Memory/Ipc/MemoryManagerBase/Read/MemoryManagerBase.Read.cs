@@ -26,11 +26,11 @@ public partial class MemoryManagerBase
     public unsafe T Read<T>(nuint baseAddress, params int[] offsets) where T : unmanaged
     {
         T result;
-        Result readResult = TryRead<T>(&result, GetNativeSizeOf<T>(), baseAddress, offsets);
+        var readResult = TryRead<T>(&result, GetNativeSizeOf<T>(), baseAddress, offsets);
 
         if (!readResult.IsSuccess)
         {
-            readResult.Throw();
+            ThrowHelper.ThrowException(readResult.Error.Message);
         }
 
         return result;
@@ -67,10 +67,10 @@ public partial class MemoryManagerBase
     {
         fixed (T* pResult = &result)
         {
-            Result readResult = TryRead<T>(pResult, GetNativeSizeOf<T>(), baseAddress, offsets);
+            var readResult = TryRead<T>(pResult, GetNativeSizeOf<T>(), baseAddress, offsets);
             return readResult.IsSuccess;
         }
     }
 
-    protected internal abstract unsafe Result TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets) where T : unmanaged;
+    protected internal abstract unsafe Result<IpcError> TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets) where T : unmanaged;
 }

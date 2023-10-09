@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
+using AslHelp.Common.Results;
 using AslHelp.Core.Collections;
 
 namespace AslHelp.Core.IO.Parsing;
@@ -18,17 +19,31 @@ public sealed partial class NativeStructMap : OrderedDictionary<string, NativeSt
         return item.Name;
     }
 
-    public static NativeStructMap FromFile(string engine, int major, int minor, bool is64Bit)
+    public static Result<NativeStructMap, ParseError> InitializeFromResource(
+        string engine,
+        int major,
+        int minor,
+        bool is64Bit)
     {
-        return FromFile(engine, major.ToString(), minor.ToString(), is64Bit);
+        return InitializeFromResource(engine, major.ToString(), minor.ToString(), is64Bit);
     }
 
-    public static NativeStructMap FromFile(string engine, string major, string minor, bool is64Bit)
+    public static Result<NativeStructMap, ParseError> InitializeFromResource(
+        string engine,
+        string major,
+        string minor,
+        bool is64Bit)
     {
-        Assembly assembly = Assembly.GetCallingAssembly();
-        ParsedJsonInput input = GetOrderedInput(assembly, engine, major, minor);
+        var inputResult = GetOrderedInput(Assembly.GetCallingAssembly(), engine, major, minor);
+        if (!inputResult.IsSuccess)
+        {
+            return new(
+                IsSuccess: false,
+                Error: inputResult.Error);
+        }
 
-        NativeStructMap nsm = new();
+        ParsedJsonInput input = inputResult.Value;
+        NativeStructMap structs = new();
 
         foreach (Struct s in input)
         {
@@ -39,32 +54,44 @@ public sealed partial class NativeStructMap : OrderedDictionary<string, NativeSt
             };
 
             NativeFieldParser parser =
-                s.Super is not null && nsm.TryGetValue(s.Super, out var super)
-                ? new(nsm, super, is64Bit)
-                : new(nsm, is64Bit);
+                s.Super is not null && structs.TryGetValue(s.Super, out var super)
+                ? new(structs, super, is64Bit)
+                : new(structs, is64Bit);
 
             foreach (Field f in s.Fields)
             {
-                var result = parser.ParseNext(f.Type, f.Alignment);
-                ns[f.Name] = new(result.BitField)
+                // TODO: Refactor `NativeFieldParser` to return a `Result` instead of throwing exceptions.
+                try
                 {
-                    Name = f.Name,
-                    Type = result.TypeName,
-                    Offset = result.Offset,
-                    Size = result.Size,
-                    Alignment = result.Alignment
-                };
+                    FieldParseResult result = parser.ParseNext(f.Type, f.Alignment);
+                    ns[f.Name] = new(result.BitField)
+                    {
+                        Name = f.Name,
+                        Type = result.TypeName,
+                        Offset = result.Offset,
+                        Size = result.Size,
+                        Alignment = result.Alignment
+                    };
+                }
+                catch (Exception ex)
+                {
+                    return new(
+                        IsSuccess: false,
+                        Error: new(ParseError.FieldParseException, $"'{s.Name}.{f.Name}' parse error: {ex.Message}"));
+                }
             }
 
-            nsm[s.Name] = ns;
+            structs[s.Name] = ns;
         }
 
         foreach (var signature in input.Signatures)
         {
-            nsm.Signatures[signature.Key] = signature.Value;
+            structs.Signatures[signature.Key] = signature.Value;
         }
 
-        return nsm;
+        return new(
+            IsSuccess: true,
+            Value: structs);
     }
 
     public override string ToString()

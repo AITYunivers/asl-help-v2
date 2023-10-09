@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
+using AslHelp.Common.Exceptions;
 using AslHelp.Common.Results;
 using AslHelp.Core.Reflection;
 
@@ -152,10 +153,10 @@ public partial class MemoryManagerBase
     {
         fixed (T* pValues = values)
         {
-            Result writeResult = TryWrite<T>(pValues, GetNativeSizeOf<T>(values.Length), baseAddress, offsets);
+            var writeResult = TryWrite<T>(pValues, GetNativeSizeOf<T>(values.Length), baseAddress, offsets);
             if (!writeResult.IsSuccess)
             {
-                writeResult.Throw();
+                ThrowHelper.ThrowException(writeResult.Error.Message);
             }
         }
     }
@@ -219,7 +220,7 @@ public partial class MemoryManagerBase
     {
         fixed (T* pValues = values)
         {
-            Result writeResult = TryWrite<T>(pValues, GetNativeSizeOf<T>(values.Length), baseAddress, offsets);
+            var writeResult = TryWrite<T>(pValues, GetNativeSizeOf<T>(values.Length), baseAddress, offsets);
             return writeResult.IsSuccess;
         }
     }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 using AslHelp.Common.Exceptions;
+using AslHelp.Common.Results;
 using AslHelp.Core.Collections;
 using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.Memory.Native;
-using AslHelp.Core.Memory.SignatureScanning;
 
 namespace AslHelp.Core.Memory.Ipc;
 

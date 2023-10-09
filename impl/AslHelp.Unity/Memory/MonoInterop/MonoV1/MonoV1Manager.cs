@@ -1,7 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
-
+using AslHelp.Common.Results;
 using AslHelp.Core.Extensions;
 using AslHelp.Core.IO.Parsing;
+using AslHelp.Core.Memory;
 using AslHelp.Core.Memory.SignatureScanning;
 using AslHelp.Unity.Memory.Ipc;
 
@@ -12,32 +12,49 @@ public partial class MonoV1Manager : MonoManagerBase
     public MonoV1Manager(IMonoMemoryManager memory)
         : base(memory) { }
 
-    protected override bool TryFindLoadedAssemblies(out nuint loadedAssemblies)
+    protected override Result<nuint, MonoInitializationError> FindLoadedAssemblies()
     {
-        throw new System.NotImplementedException();
+        if (!_memory.MonoModule.Symbols.TryGetValue("mono_assembly_foreach", out DebugSymbol symMonoAssemblyForeach))
+        {
+            return new(
+                IsSuccess: false,
+                Error: MonoInitializationError.SymbolMonoAssemblyForeachNotFound);
+        }
+
+        if (symMonoAssemblyForeach.Address == 0)
+        {
+            return new(
+                IsSuccess: false,
+                Error: MonoInitializationError.SymbolMonoAssemblyForeachNull);
+        }
+
+        Signature[] signatures =
+            _memory.Is64Bit
+            ? [new(3, "48 8B 0D")]
+            : [new(2, "FF 35"), new(2, "8B 0D")];
+
+        nuint loadedAssembliesRelative = _memory.Scan(signatures, symMonoAssemblyForeach.Address, 0x100);
+        if (loadedAssembliesRelative == 0)
+        {
+            return new(
+                IsSuccess: false,
+                Error: MonoInitializationError.MonoAssemblyForeachSignatureNotResolved);
+        }
+
+        if (!_memory.TryReadRelative(loadedAssembliesRelative, out nuint loadedAssemblies))
+        {
+            return new(
+                IsSuccess: false,
+                Error: MonoInitializationError.MonoAssemblyForeachRelativeReadFailed);
+        }
+
+        return new(
+            IsSuccess: true,
+            Value: loadedAssemblies);
     }
 
-    protected override bool TryInitializeStructs([NotNullWhen(true)] out NativeStructMap? structs)
+    protected override Result<NativeStructMap, ParseError> InitializeStructs()
     {
-        throw new System.NotImplementedException();
+        return NativeStructMap.InitializeFromResource("Unity", "mono", "v1", _memory.Is64Bit);
     }
-
-    // protected override NativeStructMap InitializeStructs()
-    // {
-    //     return NativeStructMap.FromFile("Unity", "mono", "v1", _memory.Is64Bit);
-    // }
-
-    // protected override nuint FindLoadedAssemblies()
-    // {
-    //     nuint monoAssemblyForeach = _memory.MonoModule.Symbols["mono_assembly_foreach"].Address;
-
-    //     Signature[] signatures =
-    //         _memory.Is64Bit
-    //         ? [new(3, "48 8B 0D")]
-    //         : [new(2, "FF 35"), new(2, "8B 0D")];
-
-    //     nuint loadedAssembliesRelative = _memory.Scan(signatures, monoAssemblyForeach, 0x100);
-    //     nuint loadedAssemblies = _memory.ReadRelative(loadedAssembliesRelative);
-    //     return loadedAssemblies;
-    // }
 }

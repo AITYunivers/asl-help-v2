@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using AslHelp.Common.Exceptions;
+using AslHelp.Common.Results;
 using AslHelp.Core.Collections;
 
 namespace AslHelp.Core.IO.Parsing;
@@ -23,9 +23,20 @@ public sealed partial class NativeStructMap
         }
     }
 
-    private static ParsedJsonInput GetOrderedInput(Assembly asm, string engine, string major, string minor)
+    private static Result<ParsedJsonInput, ParseError> GetOrderedInput(
+        Assembly assembly,
+        string engine,
+        string major,
+        string minor)
     {
-        using Stream resource = EmbeddedResource.GetResourceStream($"AslHelp.{engine}.Structs.{major}-{minor}.json", asm);
+        string resourceName = $"AslHelp.{engine}.Structs.{major}-{minor}.json";
+        using Stream? resource = assembly.GetManifestResourceStream(resourceName);
+        if (resource is null)
+        {
+            return new(
+                IsSuccess: false,
+                Error: new(ParseError.EmbeddedResourceNotFound, $"The specified embedded resource '{resourceName}' could not be found."));
+        }
 
         Root? root = JsonSerializer.Deserialize<Root>(resource, new JsonSerializerOptions
         {
@@ -35,20 +46,33 @@ public sealed partial class NativeStructMap
 
         if (root is null)
         {
-            const string msg = "Provided resource was a JSON 'null' literal.";
-            ThrowHelper.ThrowFormatException(msg);
+            return new(
+                IsSuccess: false,
+                Error: new(ParseError.InvalidJson, "Root object is null."));
         }
 
         if (root.Inheritance is null && root.Structs is null)
         {
-            const string msg = "One of 'inherit' or 'structs' must be provided.";
-            ThrowHelper.ThrowFormatException(msg);
+            return new(
+                IsSuccess: false,
+                Error: new(ParseError.InvalidJson, "One of 'inherit' or 'structs' must be provided."));
         }
 
-        ParsedJsonInput pji =
-            root.Inheritance is { Major.Length: > 0, Minor.Length: > 0 } inherit
-            ? GetOrderedInput(asm, engine, inherit.Major, inherit.Minor)
-            : new();
+        ParsedJsonInput pji;
+        if (root.Inheritance is { Major.Length: > 0, Minor.Length: > 0 } inherit)
+        {
+            var inheritResult = GetOrderedInput(assembly, engine, inherit.Major, inherit.Minor);
+            if (!inheritResult.IsSuccess)
+            {
+                return inheritResult;
+            }
+
+            pji = inheritResult.Value;
+        }
+        else
+        {
+            pji = new();
+        }
 
         if (root.Structs is { Length: > 0 } structs)
         {
@@ -66,7 +90,9 @@ public sealed partial class NativeStructMap
             }
         }
 
-        return pji;
+        return new(
+            IsSuccess: true,
+            Value: pji);
     }
 
     private record Root(

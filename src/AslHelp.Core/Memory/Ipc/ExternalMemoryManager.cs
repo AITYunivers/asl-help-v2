@@ -1,9 +1,6 @@
 using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
-using AslHelp.Common.Exceptions;
 using AslHelp.Common.Results;
 using AslHelp.Core.Diagnostics.Logging;
 using AslHelp.Core.Memory.Native;
@@ -18,28 +15,20 @@ public class ExternalMemoryManager : MemoryManagerBase
     public ExternalMemoryManager(Process process, ILogger logger)
         : base(process, logger) { }
 
-    protected internal override unsafe Result<nuint> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets)
+    protected internal override unsafe Result<nuint, IpcError> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (_isDisposed)
         {
             return new(
                 IsSuccess: false,
-                Throw: static () =>
-                {
-                    const string msg = "Cannot interact with the memory of an exited process.";
-                    ThrowHelper.ThrowInvalidOperationException(msg);
-                });
+                Error: IpcError.MemoryIsDisposed);
         }
 
         if (baseAddress == 0)
         {
             return new(
                 IsSuccess: false,
-                Throw: static () =>
-                {
-                    const string msg = "Attempted to dereference a null pointer.";
-                    ThrowHelper.ThrowInvalidOperationException(msg);
-                });
+                Error: IpcError.BaseAddressIsNullPtr);
         }
 
         nuint result = baseAddress, handle = _processHandle;
@@ -51,11 +40,7 @@ public class ExternalMemoryManager : MemoryManagerBase
             {
                 return new(
                     IsSuccess: false,
-                    Throw: static () =>
-                    {
-                        const string msg = "Failed to dereference pointer.";
-                        ThrowHelper.ThrowInvalidOperationException(msg);
-                    });
+                    Error: IpcError.DerefFailure);
             }
 
             result += (uint)offsets[i];
@@ -66,20 +51,16 @@ public class ExternalMemoryManager : MemoryManagerBase
             Value: result);
     }
 
-    protected internal override unsafe Result TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
+    protected internal override unsafe Result<IpcError> TryRead<T>(T* buffer, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (_isDisposed)
         {
             return new(
                 IsSuccess: false,
-                Throw: static () =>
-                {
-                    const string msg = "Cannot interact with the memory of an exited process.";
-                    ThrowHelper.ThrowInvalidOperationException(msg);
-                });
+                Error: IpcError.MemoryIsDisposed);
         }
 
-        Result<nuint> derefResult = TryDeref(baseAddress, offsets);
+        Result<nuint, IpcError> derefResult = TryDeref(baseAddress, offsets);
         if (!derefResult.IsSuccess)
         {
             return derefResult;
@@ -88,27 +69,19 @@ public class ExternalMemoryManager : MemoryManagerBase
         nuint deref = derefResult.Value, handle = _processHandle;
         return new(
             IsSuccess: WinInteropWrapper.ReadMemory(handle, deref, buffer, length),
-            Throw: static () =>
-            {
-                string msg = $"ReadProcessMemory call failed. ({Marshal.GetLastWin32Error()})";
-                ThrowHelper.ThrowInvalidOperationException(msg);
-            });
+            Error: IpcError.ReadFailure);
     }
 
-    protected internal override unsafe Result TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
+    protected internal override unsafe Result<IpcError> TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets)
     {
         if (_isDisposed)
         {
             return new(
                 IsSuccess: false,
-                Throw: static () =>
-                {
-                    const string msg = "Cannot interact with the memory of an exited process.";
-                    ThrowHelper.ThrowInvalidOperationException(msg);
-                });
+                Error: IpcError.MemoryIsDisposed);
         }
 
-        Result<nuint> derefResult = TryDeref(baseAddress, offsets);
+        Result<nuint, IpcError> derefResult = TryDeref(baseAddress, offsets);
         if (!derefResult.IsSuccess)
         {
             return derefResult;
@@ -117,10 +90,6 @@ public class ExternalMemoryManager : MemoryManagerBase
         nuint deref = derefResult.Value, handle = _processHandle;
         return new(
             IsSuccess: WinInteropWrapper.WriteMemory(handle, deref, data, length),
-            Throw: static () =>
-            {
-                string msg = $"WriteProcessMemory call failed. ({Marshal.GetLastWin32Error()})";
-                ThrowHelper.ThrowInvalidOperationException(msg);
-            });
+            Error: IpcError.WriteFailure);
     }
 }

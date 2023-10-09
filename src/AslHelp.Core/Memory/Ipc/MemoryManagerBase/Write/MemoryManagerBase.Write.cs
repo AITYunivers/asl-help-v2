@@ -25,11 +25,11 @@ public partial class MemoryManagerBase
 
     public unsafe void Write<T>(T value, nuint baseAddress, params int[] offsets) where T : unmanaged
     {
-        Result writeResult = TryWrite<T>(&value, GetNativeSizeOf<T>(), baseAddress, offsets);
+        var writeResult = TryWrite<T>(&value, GetNativeSizeOf<T>(), baseAddress, offsets);
 
         if (!writeResult.IsSuccess)
         {
-            writeResult.Throw();
+            ThrowHelper.ThrowException(writeResult.Error.Message);
         }
     }
 
@@ -60,9 +60,9 @@ public partial class MemoryManagerBase
 
     public unsafe bool TryWrite<T>(T value, nuint baseAddress, params int[] offsets) where T : unmanaged
     {
-        Result writeResult = TryWrite<T>(&value, GetNativeSizeOf<T>(), baseAddress, offsets);
+        var writeResult = TryWrite<T>(&value, GetNativeSizeOf<T>(), baseAddress, offsets);
         return writeResult.IsSuccess;
     }
 
-    protected internal abstract unsafe Result TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets) where T : unmanaged;
+    protected internal abstract unsafe Result<IpcError> TryWrite<T>(T* data, uint length, nuint baseAddress, ReadOnlySpan<int> offsets) where T : unmanaged;
 }

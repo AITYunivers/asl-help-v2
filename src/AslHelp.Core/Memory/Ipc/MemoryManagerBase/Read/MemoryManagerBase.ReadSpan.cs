@@ -66,11 +66,11 @@ public partial class MemoryManagerBase
 
         fixed (T* pBuffer = buffer)
         {
-            Result readResult = TryRead<T>(pBuffer, GetNativeSizeOf<T>(buffer.Length), baseAddress, offsets);
+            var readResult = TryRead<T>(pBuffer, GetNativeSizeOf<T>(buffer.Length), baseAddress, offsets);
 
             if (!readResult.IsSuccess)
             {
-                readResult.Throw();
+                ThrowHelper.ThrowException(readResult.Error.Message);
             }
         }
     }
@@ -161,7 +161,7 @@ public partial class MemoryManagerBase
 
         fixed (T* pBuffer = buffer)
         {
-            Result readResult = TryRead<T>(pBuffer, GetNativeSizeOf<T>(buffer.Length), baseAddress, offsets);
+            var readResult = TryRead<T>(pBuffer, GetNativeSizeOf<T>(buffer.Length), baseAddress, offsets);
             return readResult.IsSuccess;
         }
     }
