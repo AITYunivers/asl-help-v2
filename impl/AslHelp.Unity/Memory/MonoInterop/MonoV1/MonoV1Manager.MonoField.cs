@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+
+using AslHelp.Core.IO.Parsing;
 
 using LiveSplit.ComponentUtil;
 
