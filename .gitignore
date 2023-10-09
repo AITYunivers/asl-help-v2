@@ -17,4 +17,5 @@ BenchmarkDotNet.Artifacts/
 
 # asl-help
 lib/
-# deprecated/
+deprecated/*
+!deprecated/readme.md
