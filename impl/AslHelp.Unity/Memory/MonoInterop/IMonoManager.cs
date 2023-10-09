@@ -1,9 +1,13 @@
 using System.Collections.Generic;
 
+using AslHelp.Core.Collections;
+
 namespace AslHelp.Unity.Memory.MonoInterop;
 
 public interface IMonoManager
 {
+    LazyDictionary<string, MonoImage> Images { get; }
+
     IEnumerable<nuint> GetImages();
     string GetImageName(nuint image);
     string GetImageFileName(nuint image);

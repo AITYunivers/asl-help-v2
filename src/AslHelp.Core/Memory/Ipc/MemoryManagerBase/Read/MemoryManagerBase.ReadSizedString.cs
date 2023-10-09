@@ -79,8 +79,7 @@ public partial class MemoryManagerBase
 
         fixed (sbyte* pBuffer = buffer)
         {
-            // String ctor stops at the first null terminator.
-            string result = new(pBuffer);
+            string result = new(pBuffer, 0, length);
             ArrayPool<sbyte>.Shared.ReturnIfNotNull(rented);
 
             return result;
@@ -100,10 +99,13 @@ public partial class MemoryManagerBase
 
         ReadSpan(buffer, deref);
 
-        string result = buffer[..length].ToString();
-        ArrayPool<char>.Shared.ReturnIfNotNull(rented);
+        fixed (char* pBuffer = buffer)
+        {
+            string result = new(pBuffer, 0, length);
+            ArrayPool<char>.Shared.ReturnIfNotNull(rented);
 
-        return result;
+            return result;
+        }
     }
 
     private unsafe string InternalReadSizedAutoString(nuint baseAddress, int[] offsets)
@@ -124,21 +126,14 @@ public partial class MemoryManagerBase
 
         fixed (byte* pBuffer = buffer)
         {
-            if (utf8Length >= 2 && pBuffer[1] == '\0')
-            {
-                string result = new ReadOnlySpan<char>(pBuffer, size).ToString();
-                ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
+            string result =
+                utf8Length >= 2 && pBuffer[1] == '\0'
+                ? new((char*)pBuffer, 0, size)
+                : new((sbyte*)pBuffer, 0, size);
 
-                return result;
-            }
-            else
-            {
-                // String ctor stops at the first null terminator.
-                string result = new((sbyte*)pBuffer);
-                ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
+            ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
 
-                return result;
-            }
+            return result;
         }
     }
 
@@ -227,7 +222,7 @@ public partial class MemoryManagerBase
             ? stackalloc sbyte[1024]
             : (rented = ArrayPool<sbyte>.Shared.Rent(length));
 
-        if (!TryReadSpan(buffer, deref))
+        if (!TryReadSpan(buffer[..length], deref))
         {
             result = default;
             return false;
@@ -235,8 +230,7 @@ public partial class MemoryManagerBase
 
         fixed (sbyte* pBuffer = buffer)
         {
-            // String ctor stops at the first null terminator.
-            result = new(pBuffer);
+            result = new(pBuffer, 0, length);
             ArrayPool<sbyte>.Shared.ReturnIfNotNull(rented);
 
             return true;
@@ -263,7 +257,7 @@ public partial class MemoryManagerBase
             ? stackalloc char[512]
             : (rented = ArrayPool<char>.Shared.Rent(length));
 
-        if (!TryReadSpan(buffer, deref))
+        if (!TryReadSpan(buffer[..length], deref))
         {
             result = default;
             return false;
@@ -271,8 +265,7 @@ public partial class MemoryManagerBase
 
         fixed (char* pBuffer = buffer)
         {
-            // String ctor stops at the first null terminator.
-            result = new(pBuffer);
+            result = new(pBuffer, 0, length);
             ArrayPool<char>.Shared.ReturnIfNotNull(rented);
 
             return true;
@@ -302,7 +295,7 @@ public partial class MemoryManagerBase
             ? stackalloc byte[1024]
             : (rented = ArrayPool<byte>.Shared.Rent(unicodeLength));
 
-        if (!TryReadSpan(buffer, deref))
+        if (!TryReadSpan(buffer[..unicodeLength], deref))
         {
             ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
 
@@ -312,21 +305,14 @@ public partial class MemoryManagerBase
 
         fixed (byte* pBuffer = buffer)
         {
-            if (utf8Length >= 2 && pBuffer[1] == '\0')
-            {
-                result = new ReadOnlySpan<char>(pBuffer, unicodeLength).ToString();
-                ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
+            result =
+                utf8Length >= 2 && pBuffer[1] == '\0'
+                ? new((char*)pBuffer, 0, size)
+                : new((sbyte*)pBuffer, 0, size);
 
-                return true;
-            }
-            else
-            {
-                // String ctor stops at the first null terminator.
-                result = new((sbyte*)pBuffer);
-                ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
+            ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
 
-                return true;
-            }
+            return true;
         }
     }
 }

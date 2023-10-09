@@ -4,31 +4,31 @@ public partial class MonoV1Manager
 {
     protected virtual nuint GListData(nuint gList)
     {
-        return _memory.Read<nuint>(gList + _structs["GList"]["data"]);
+        return _memory.Read<nuint>(gList + Structs["GList"]["data"]);
     }
 
     protected virtual nuint GListNext(nuint gList)
     {
-        return _memory.Read<nuint>(gList + _structs["GList"]["next"]);
+        return _memory.Read<nuint>(gList + Structs["GList"]["next"]);
     }
 
     protected virtual nuint MonoAssemblyImage(nuint assembly)
     {
-        return _memory.Read<nuint>(assembly + _structs["MonoAssembly"]["image"]);
+        return _memory.Read<nuint>(assembly + Structs["MonoAssembly"]["image"]);
     }
 
     protected virtual nuint MonoClassFields(nuint klass)
     {
-        return _memory.Read<nuint>(klass + _structs["MonoClass"]["fields"]);
+        return _memory.Read<nuint>(klass + Structs["MonoClass"]["fields"]);
     }
 
     protected virtual uint MonoClassFieldCount(nuint klass)
     {
-        return _memory.Read<uint>(klass + _structs["MonoClass"]["field.count"]);
+        return _memory.Read<uint>(klass + Structs["MonoClass"]["field.count"]);
     }
 
     protected virtual nuint MonoClassNextClassCache(nuint klass)
     {
-        return _memory.Read<nuint>(klass + _structs["MonoClass"]["next_class_cache"]);
+        return _memory.Read<nuint>(klass + Structs["MonoClass"]["next_class_cache"]);
     }
 }

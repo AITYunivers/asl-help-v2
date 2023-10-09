@@ -89,9 +89,9 @@ public partial class Basic
 
         foreach (string line in stackTraceLines)
         {
-            if (line.StartsWith(UpdateAndExecute2)
-                || line.StartsWith(UpdateAndExecuteVoid2)
-                || line.StartsWith(CompiledScriptExecute))
+            if (line.StartsWith(UpdateAndExecute2, StringComparison.Ordinal)
+                || line.StartsWith(UpdateAndExecuteVoid2, StringComparison.Ordinal)
+                || line.StartsWith(CompiledScriptExecute, StringComparison.Ordinal))
             {
                 break;
             }

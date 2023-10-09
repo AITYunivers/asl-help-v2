@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using AslHelp.Common.Exceptions;
 
@@ -15,13 +16,14 @@ namespace AslHelp.Core.Collections;
 /// <typeparam name="TValue">The type of the values in the <see cref="LazyDictionary{TKey, TValue}"/>.</typeparam>
 public abstract class LazyDictionary<TKey, TValue> : IEnumerable<TValue>
     where TKey : notnull
+    where TValue : notnull
 {
     private readonly IEqualityComparer<TKey> _comparer;
 
     /// <summary>
     ///     The internal cache of the <see cref="LazyDictionary{TKey, TValue}"/>.
     /// </summary>
-    protected readonly Dictionary<TKey, TValue?> _cache;
+    protected readonly Dictionary<TKey, TValue> _cache;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="LazyDictionary{TKey, TValue}"/> class
@@ -105,7 +107,7 @@ public abstract class LazyDictionary<TKey, TValue> : IEnumerable<TValue>
     ///     Thrown when no value corresponding to the given <paramref name="key"/>
     ///     is present in the <see cref="LazyDictionary{TKey, TValue}"/>.
     /// </exception>
-    public TValue? this[TKey key]
+    public TValue this[TKey key]
     {
         get
         {
@@ -133,7 +135,7 @@ public abstract class LazyDictionary<TKey, TValue> : IEnumerable<TValue>
     ///     with the specified <paramref name="key"/>;
     ///     otherwise, <see langword="false"/>.
     /// </returns>
-    public bool TryGetValue(TKey key, out TValue? value)
+    public bool TryGetValue(TKey key, [NotNullWhen(true)] out TValue? value)
     {
         if (_cache.TryGetValue(key, out value))
         {

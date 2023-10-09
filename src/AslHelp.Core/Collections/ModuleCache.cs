@@ -41,23 +41,6 @@ public sealed class ModuleCache : LazyDictionary<string, Module>
     }
 
     /// <summary>
-    ///     Gets or sets the <see cref="Module"/> associated with the specified <paramref name="key"/>.
-    /// </summary>
-    /// <param name="key">The name of the <see cref="Module"/> to get or set.</param>
-    /// <returns>
-    ///     The <see cref="Module"/> associated with the specified <paramref name="key"/>, if it exists.
-    /// </returns>
-    /// <exception cref="KeyNotFoundException">
-    ///     Thrown when no <see cref="Module"/> corresponding to the given <paramref name="key"/>
-    ///     is present in the <see cref="ModuleCache"/>.
-    /// </exception>
-    public new Module this[string key]
-    {
-        get => base[key]!;
-        set => base[key] = value;
-    }
-
-    /// <summary>
     ///     Returns an enumerator that iterates through the <see cref="ModuleCache"/>.
     /// </summary>
     public override IEnumerator<Module> GetEnumerator()

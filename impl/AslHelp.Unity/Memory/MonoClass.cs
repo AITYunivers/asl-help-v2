@@ -5,19 +5,13 @@ using AslHelp.Unity.Memory.MonoInterop;
 
 namespace AslHelp.Unity.Memory;
 
-public class MonoClass
+public class MonoClass(
+    nuint address,
+    IMonoManager mono)
 {
-    private readonly IMonoManager _mono;
+    private readonly IMonoManager _mono = mono;
 
-    public MonoClass(nuint address, IMonoManager mono)
-    {
-        _mono = mono;
-
-        Address = address;
-        Fields = new MonoFieldCache(address, mono);
-    }
-
-    public nuint Address { get; }
+    public nuint Address { get; } = address;
 
     private string? _name;
     public string Name => _name ??= _mono.GetClassName(Address);
@@ -25,7 +19,7 @@ public class MonoClass
     private string? _namespace;
     public string Namespace => _namespace ??= _mono.GetClassNamespace(Address);
 
-    public LazyDictionary<string, MonoField> Fields { get; }
+    public LazyDictionary<string, MonoField> Fields { get; } = new MonoFieldCache(address, mono);
 
     public override string ToString()
     {
@@ -39,7 +33,9 @@ public class MonoClass
         }
     }
 
-    private class MonoFieldCache(nuint address, IMonoManager mono) : LazyDictionary<string, MonoField>
+    private class MonoFieldCache(
+        nuint address,
+        IMonoManager mono) : LazyDictionary<string, MonoField>
     {
         private readonly nuint _address = address;
         private readonly IMonoManager _mono = mono;
@@ -54,7 +50,7 @@ public class MonoClass
 
         protected override string GetKey(MonoField value)
         {
-            return $"{value.Name}";
+            return value.Name;
         }
     }
 }

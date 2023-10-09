@@ -1,4 +1,4 @@
-namespace AslHelp.Unity.Memory;
+namespace AslHelp.Unity.Memory.MonoInterop;
 
 public record struct Il2CppGlobalMetadataHeader(
     int Sanity,

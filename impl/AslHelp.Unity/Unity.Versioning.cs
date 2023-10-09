@@ -4,7 +4,7 @@ using System.IO;
 
 using AslHelp.Common.Exceptions;
 using AslHelp.Common.Extensions;
-using AslHelp.Unity.Memory;
+using AslHelp.Unity.Memory.MonoInterop;
 
 public partial class Unity
 {

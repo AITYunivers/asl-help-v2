@@ -5,18 +5,13 @@ using AslHelp.Unity.Memory.MonoInterop;
 
 namespace AslHelp.Unity.Memory;
 
-public class MonoImage : LazyDictionary<string, MonoClass>
+public class MonoImage(
+    nuint address,
+    IMonoManager mono) : LazyDictionary<string, MonoClass>
 {
-    private readonly IMonoManager _mono;
+    private readonly IMonoManager _mono = mono;
 
-    public MonoImage(nuint address, IMonoManager mono)
-    {
-        _mono = mono;
-
-        Address = address;
-    }
-
-    public nuint Address { get; }
+    public nuint Address { get; } = address;
 
     private string? _name;
     public string Name => _name ??= _mono.GetImageName(Address);
@@ -36,7 +31,7 @@ public class MonoImage : LazyDictionary<string, MonoClass>
     {
         if (string.IsNullOrEmpty(value.Namespace))
         {
-            return $"{value.Name}";
+            return value.Name;
         }
         else
         {

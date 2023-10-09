@@ -79,10 +79,11 @@ public partial class MemoryManagerBase
             ? stackalloc sbyte[1024]
             : (rented = ArrayPool<sbyte>.Shared.Rent(length));
 
-        ReadSpan(buffer, baseAddress, offsets);
+        ReadSpan(buffer[..length], baseAddress, offsets);
 
         fixed (sbyte* pBuffer = buffer[..length])
         {
+            // String ctor stops at the first null terminator.
             string result = new(pBuffer);
             ArrayPool<sbyte>.Shared.ReturnIfNotNull(rented);
 
@@ -100,10 +101,11 @@ public partial class MemoryManagerBase
             ? stackalloc char[512]
             : (rented = ArrayPool<char>.Shared.Rent(length));
 
-        ReadSpan(buffer, baseAddress, offsets);
+        ReadSpan(buffer[..length], baseAddress, offsets);
 
         fixed (char* pBuffer = buffer[..length])
         {
+            // String ctor stops at the first null terminator.
             string result = new(pBuffer);
             ArrayPool<char>.Shared.ReturnIfNotNull(rented);
 
@@ -120,7 +122,7 @@ public partial class MemoryManagerBase
             ? stackalloc byte[1024]
             : (rented = ArrayPool<byte>.Shared.Rent(length * 2));
 
-        ReadSpan(buffer, baseAddress, offsets);
+        ReadSpan(buffer[..length], baseAddress, offsets);
 
         fixed (byte* pBuffer = buffer[..length])
         {
@@ -217,7 +219,7 @@ public partial class MemoryManagerBase
             ? stackalloc sbyte[1024]
             : (rented = ArrayPool<sbyte>.Shared.Rent(length));
 
-        if (!TryReadSpan(buffer, baseAddress, offsets))
+        if (!TryReadSpan(buffer[..length], baseAddress, offsets))
         {
             ArrayPool<sbyte>.Shared.ReturnIfNotNull(rented);
 
@@ -225,9 +227,10 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        fixed (sbyte* pBuffer = buffer)
+        fixed (sbyte* pBuffer = buffer[..length])
         {
-            result = new(pBuffer, 0, length);
+            // String ctor stops at the first null terminator.
+            result = new(pBuffer);
             ArrayPool<sbyte>.Shared.ReturnIfNotNull(rented);
 
             return true;
@@ -244,7 +247,7 @@ public partial class MemoryManagerBase
             ? stackalloc char[512]
             : (rented = ArrayPool<char>.Shared.Rent(length));
 
-        if (!TryReadSpan(buffer, baseAddress, offsets))
+        if (!TryReadSpan(buffer[..length], baseAddress, offsets))
         {
             ArrayPool<char>.Shared.ReturnIfNotNull(rented);
 
@@ -252,9 +255,10 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        fixed (char* pBuffer = buffer)
+        fixed (char* pBuffer = buffer[..length])
         {
-            result = new(pBuffer, 0, length);
+            // String ctor stops at the first null terminator.
+            result = new(pBuffer);
             ArrayPool<char>.Shared.ReturnIfNotNull(rented);
 
             return true;
@@ -270,7 +274,7 @@ public partial class MemoryManagerBase
             ? stackalloc byte[1024]
             : (rented = ArrayPool<byte>.Shared.Rent(length * 2));
 
-        if (!TryReadSpan(buffer, baseAddress, offsets))
+        if (!TryReadSpan(buffer[..length], baseAddress, offsets))
         {
             ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
 
@@ -278,13 +282,13 @@ public partial class MemoryManagerBase
             return false;
         }
 
-        fixed (byte* pBuffer = buffer)
+        fixed (byte* pBuffer = buffer[..length])
         {
             // String ctor stops at the first null terminator.
             result =
                 length >= 2 && pBuffer[1] == '\0'
-                ? new((char*)pBuffer, 0, length)
-                : new((sbyte*)pBuffer, 0, length);
+                ? new((char*)pBuffer)
+                : new((sbyte*)pBuffer);
 
             ArrayPool<byte>.Shared.ReturnIfNotNull(rented);
 

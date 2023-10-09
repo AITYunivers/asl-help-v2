@@ -2,18 +2,13 @@ using AslHelp.Unity.Memory.MonoInterop;
 
 namespace AslHelp.Unity.Memory;
 
-public class MonoField
+public class MonoField(
+    nuint address,
+    IMonoManager mono)
 {
-    private readonly IMonoManager _mono;
+    private readonly IMonoManager _mono = mono;
 
-    public MonoField(nuint address, IMonoManager mono)
-    {
-        _mono = mono;
-
-        Address = address;
-    }
-
-    public nuint Address { get; }
+    public nuint Address { get; } = address;
 
     private string? _name;
     public string Name

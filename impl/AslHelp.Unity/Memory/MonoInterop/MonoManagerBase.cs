@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
+using AslHelp.Core.Collections;
 using AslHelp.Core.IO.Parsing;
 using AslHelp.Unity.Memory.Ipc;
 
@@ -9,19 +12,57 @@ public abstract class MonoManagerBase : IMonoManager
 {
     protected readonly IMonoMemoryManager _memory;
 
-    protected readonly NativeStructMap _structs;
-    protected readonly nuint _assemblies;
-
     protected MonoManagerBase(IMonoMemoryManager memory)
     {
         _memory = memory;
 
-        _structs = InitializeStructs();
-        _assemblies = FindLoadedAssemblies();
+        Images = new MonoImageCache(this);
     }
 
-    protected abstract NativeStructMap InitializeStructs();
-    protected abstract nuint FindLoadedAssemblies();
+    public LazyDictionary<string, MonoImage> Images { get; }
+
+    protected NativeStructMap Structs { get; private set; }
+    protected nuint LoadedAssemblies { get; private set; }
+
+    protected abstract bool TryInitializeStructs([NotNullWhen(true)] out NativeStructMap? structs);
+    protected abstract bool TryFindLoadedAssemblies(out nuint loadedAssemblies);
+
+    public static bool TryInitializeMono(IMonoMemoryManager memory, [NotNullWhen(true)] out IMonoManager? mono)
+    {
+        if (memory.MonoModule.Name == "mono.dll")
+        {
+            mono = new MonoV1Manager(memory);
+        }
+        else if (memory.MonoModule.Name == "mono-2.0-bdwgc.dll")
+        {
+            mono = new MonoV2Manager(memory);
+        }
+        else
+        {
+            mono = null;
+            return false;
+        }
+
+        return TryInitialize((MonoManagerBase)mono);
+    }
+
+    public static bool TryInitializeIl2Cpp(IMonoMemoryManager memory, int il2CppVersion, [NotNullWhen(true)] out IMonoManager? mono)
+    {
+        if (memory.MonoModule.Name != "GameAssembly.dll")
+        {
+            mono = null;
+            return false;
+        }
+
+        if (il2CppVersion != 24)
+        {
+            mono = null;
+            return false;
+        }
+
+        mono = new Il2CppV24Manager(memory);
+        return TryInitialize((MonoManagerBase)mono);
+    }
 
     public abstract IEnumerable<nuint> GetImages();
     public abstract string GetImageName(nuint image);
@@ -43,4 +84,18 @@ public abstract class MonoManagerBase : IMonoManager
     public abstract nuint GetTypeData(nuint type);
     public abstract MonoFieldAttribute GetTypeAttributes(nuint type);
     public abstract MonoElementType GetTypeElementType(nuint type);
+
+    private static bool TryInitialize(MonoManagerBase mono)
+    {
+        if (mono.TryInitializeStructs(out NativeStructMap? structs)
+            && mono.TryFindLoadedAssemblies(out nuint loadedAssemblies))
+        {
+            mono.Structs = structs;
+            mono.LoadedAssemblies = loadedAssemblies;
+
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-#
+# 
 VisualStudioVersion = 17.5.002.0
-MinimumVisualStudioVersion =
+MinimumVisualStudioVersion = 
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{A46E4AD5-173F-4C5B-806D-93D2CF8E02C2}"
 	ProjectSection(SolutionItems) = preProject
 		.clang-format = .clang-format
@@ -44,6 +44,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2ABCC010-D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.Common.UnitTests", "test\AslHelp.Common.UnitTests\AslHelp.Common.UnitTests.csproj", "{C1A03378-D2DB-49D2-9225-4EF479027EC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AslHelp.GameMaker", "impl\AslHelp.GameMaker\AslHelp.GameMaker.csproj", "{AF268660-D741-4633-A9AC-9DE46E100E4B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,10 @@ Global
 		{C1A03378-D2DB-49D2-9225-4EF479027EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1A03378-D2DB-49D2-9225-4EF479027EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1A03378-D2DB-49D2-9225-4EF479027EC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF268660-D741-4633-A9AC-9DE46E100E4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF268660-D741-4633-A9AC-9DE46E100E4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF268660-D741-4633-A9AC-9DE46E100E4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF268660-D741-4633-A9AC-9DE46E100E4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,5 +97,6 @@ Global
 		{1E9EE522-2F4D-4AEA-BC37-D1BBA1344083} = {31E0FBCC-A99E-4675-97D7-2DE0597F39C1}
 		{1725218C-32CB-4502-9E85-EF73342A0FC9} = {31E0FBCC-A99E-4675-97D7-2DE0597F39C1}
 		{C1A03378-D2DB-49D2-9225-4EF479027EC9} = {2ABCC010-D775-407F-9F92-2F0EA8CBCA1B}
+		{AF268660-D741-4633-A9AC-9DE46E100E4B} = {31E0FBCC-A99E-4675-97D7-2DE0597F39C1}
 	EndGlobalSection
 EndGlobal
