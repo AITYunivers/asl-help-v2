@@ -8,6 +8,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="AslHelp.Basic" />
     <InternalsVisibleTo Include="AslHelp.ClickteamFusion" />
+    <InternalsVisibleTo Include="AslHelp.GameMaker" />
     <InternalsVisibleTo Include="AslHelp.Unity" />
   </ItemGroup>
 

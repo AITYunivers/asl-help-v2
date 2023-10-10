@@ -10,9 +10,9 @@ namespace AslHelp.Core.Memory.Ipc;
 public class ExternalMemoryManager : MemoryManagerBase
 {
     public ExternalMemoryManager(Process process)
-        : base(process) { }
+        : this(process, null) { }
 
-    public ExternalMemoryManager(Process process, ILogger logger)
+    public ExternalMemoryManager(Process process, ILogger? logger)
         : base(process, logger) { }
 
     protected internal override unsafe Result<nuint, IpcError> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets)

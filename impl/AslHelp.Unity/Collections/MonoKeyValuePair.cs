@@ -2,29 +2,28 @@ using System.Collections.Generic;
 
 namespace AslHelp.Unity.Collections;
 
-public readonly record struct MonoKeyValuePair<TKey, TValue>
+public readonly struct DictionaryEntry<TKey, TValue>
     where TKey : unmanaged
     where TValue : unmanaged
 {
-#pragma warning disable CS0169, IDE0051
-    private readonly ulong _padding;
-#pragma warning restore CS0169, IDE0051
-
-    public MonoKeyValuePair(TKey key, TValue value)
+    public DictionaryEntry(TKey key, TValue value)
     {
         Key = key;
         Value = value;
     }
 
+    public int HashCode { get; }
+    public int Next { get; }
+
     public TKey Key { get; }
     public TValue Value { get; }
 
-    public static implicit operator KeyValuePair<TKey, TValue>(MonoKeyValuePair<TKey, TValue> pair)
+    public static implicit operator KeyValuePair<TKey, TValue>(DictionaryEntry<TKey, TValue> pair)
     {
         return new(pair.Key, pair.Value);
     }
 
-    public static implicit operator MonoKeyValuePair<TKey, TValue>(KeyValuePair<TKey, TValue> pair)
+    public static implicit operator DictionaryEntry<TKey, TValue>(KeyValuePair<TKey, TValue> pair)
     {
         return new(pair.Key, pair.Value);
     }

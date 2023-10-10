@@ -19,24 +19,9 @@ public abstract partial class MemoryManagerBase : IMemoryManager
     protected bool _isDisposed;
 
     public MemoryManagerBase(Process process)
-    {
-        ThrowHelper.ThrowIfNull(process);
-        if (process.HasExited)
-        {
-            ThrowHelper.ThrowInvalidOperationException("Cannot interact with the memory of an exited process.");
-        }
+        : this(process, null) { }
 
-        _logger = null;
-        _processHandle = (nuint)(nint)process.Handle;
-
-        Process = process;
-        Is64Bit = WinInteropWrapper.ProcessIs64Bit(_processHandle);
-        PointerSize = (byte)(Is64Bit ? 0x8 : 0x4);
-        Modules = new(process);
-        MainModule = Modules.First();
-    }
-
-    public MemoryManagerBase(Process process, ILogger logger)
+    public MemoryManagerBase(Process process, ILogger? logger)
     {
         ThrowHelper.ThrowIfNull(process);
         if (process.HasExited)

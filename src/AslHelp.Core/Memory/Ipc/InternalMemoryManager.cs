@@ -27,13 +27,9 @@ public class InternalMemoryManager : MemoryManagerBase
     private readonly NamedPipeClientStream _pipe;
 
     public InternalMemoryManager(Process process, string namedPipeName, int timeout = -1)
-        : base(process)
-    {
-        _pipe = new(namedPipeName);
-        _pipe.Connect(timeout);
-    }
+        : this(process, null, namedPipeName, timeout) { }
 
-    public InternalMemoryManager(Process process, ILogger logger, string namedPipeName, int timeout = -1)
+    public InternalMemoryManager(Process process, ILogger? logger, string namedPipeName, int timeout = -1)
         : base(process, logger)
     {
         _pipe = new(namedPipeName);
@@ -41,20 +37,10 @@ public class InternalMemoryManager : MemoryManagerBase
     }
 
     public InternalMemoryManager(Process process, NamedPipeClientStream pipe)
-        : base(process)
-    {
-        VerifyPipeState(pipe);
-        _pipe = pipe;
-    }
+        : this(process, null, pipe) { }
 
-    public InternalMemoryManager(Process process, ILogger logger, NamedPipeClientStream pipe)
+    public InternalMemoryManager(Process process, ILogger? logger, NamedPipeClientStream pipe)
         : base(process, logger)
-    {
-        VerifyPipeState(pipe);
-        _pipe = pipe;
-    }
-
-    private static void VerifyPipeState(NamedPipeClientStream pipe)
     {
         if (!pipe.IsConnected)
         {
@@ -70,6 +56,8 @@ public class InternalMemoryManager : MemoryManagerBase
         {
             ThrowHelper.ThrowInvalidOperationException("Pipe stream was not writable.");
         }
+
+        _pipe = pipe;
     }
 
     protected internal override unsafe Result<nuint, IpcError> TryDeref(nuint baseAddress, ReadOnlySpan<int> offsets)

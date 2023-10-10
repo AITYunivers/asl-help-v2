@@ -6,8 +6,8 @@
       <AslHelpReferences Include="AslHelp.Common.dll" />
       <AslHelpReferences Include="AslHelp.Core.dll" />
       <AslHelpReferences Include="AslHelp.Basic.dll" />
-      <!-- <AslHelpReferences Include="AslHelp.ClickteamFusion.dll" /> -->
-      <!-- <AslHelpReferences Include="AslHelp.Unity.dll" /> -->
+      <AslHelpReferences Include="AslHelp.ClickteamFusion.dll" />
+      <AslHelpReferences Include="AslHelp.Unity.dll" />
 
       <MiscReferences Include="Microsoft.Bcl.AsyncInterfaces.dll" />
       <MiscReferences Include="System.Buffers.dll" />
