@@ -4,6 +4,8 @@ namespace AslHelp.Core.Memory.Ipc;
 
 public enum IpcError
 {
+    Unknown,
+
     [ErrorMessage("Cannot interact with the memory of an exited process.")]
     MemoryIsDisposed,
 

@@ -4,6 +4,8 @@ namespace AslHelp.Core.IO.Parsing;
 
 public enum ParseError
 {
+    Unknown,
+
     [ErrorMessage("The specified embedded resource could not be found.")]
     EmbeddedResourceNotFound,
 

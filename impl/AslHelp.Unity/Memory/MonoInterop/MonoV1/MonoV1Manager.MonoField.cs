@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+using AslHelp.Common.Results;
+
 using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Unity.Memory.MonoInterop;

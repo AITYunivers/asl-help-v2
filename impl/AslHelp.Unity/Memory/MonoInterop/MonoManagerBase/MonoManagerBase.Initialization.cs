@@ -8,6 +8,7 @@ public partial class MonoManagerBase
 {
     protected abstract Result<NativeStructMap, ParseError> InitializeStructs();
     protected abstract Result<nuint, MonoInitializationError> FindLoadedAssemblies();
+    protected abstract Result<nuint[], MonoInitializationError> FindDefaults();
 
     public static Result<IMonoManager, MonoInitializationError> InitializeMono(IMonoMemoryManager memory)
     {
@@ -76,8 +77,17 @@ public partial class MonoManagerBase
                 Error: loadedAssembliesResult.Error);
         }
 
+        var defaultsResult = mono.FindDefaults();
+        if (!defaultsResult.IsSuccess)
+        {
+            return new(
+                IsSuccess: false,
+                Error: defaultsResult.Error);
+        }
+
         mono.Structs = structsResult.Value;
         mono.LoadedAssemblies = loadedAssembliesResult.Value;
+        mono.Defaults = defaultsResult.Value;
 
         return new(
             IsSuccess: true,

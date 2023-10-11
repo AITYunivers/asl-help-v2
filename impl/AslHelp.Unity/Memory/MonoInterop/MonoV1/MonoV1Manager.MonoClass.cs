@@ -13,11 +13,7 @@ public partial class MonoV1Manager
         int classCacheSize = _memory.Read<int>(classCache + Structs["MonoInternalHashTable"]["size"]);
         nuint classCacheTable = _memory.Read<nuint>(classCache + Structs["MonoInternalHashTable"]["table"]);
 
-        nuint[] classes = new nuint[classCacheSize];
-        if (!_memory.TryReadSpan<nuint>(classes, classCacheTable))
-        {
-            yield break;
-        }
+        nuint[] classes = _memory.ReadSpan<nuint>(classCacheSize, classCacheTable);
 
         for (int i = 0; i < classes.Length; i++)
         {

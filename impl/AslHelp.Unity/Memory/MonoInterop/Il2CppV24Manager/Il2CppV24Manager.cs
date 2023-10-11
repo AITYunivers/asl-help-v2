@@ -12,6 +12,11 @@ public partial class Il2CppV24Manager : MonoManagerBase
     public Il2CppV24Manager(IMonoMemoryManager memory)
         : base(memory) { }
 
+    protected override Result<NativeStructMap, ParseError> InitializeStructs()
+    {
+        return NativeStructMap.InitializeFromResource("Unity", "il2cpp", "v24", _memory.Is64Bit);
+    }
+
     protected override Result<nuint, MonoInitializationError> FindLoadedAssemblies()
     {
         Signature sAssembliesSignatures =
@@ -39,19 +44,19 @@ public partial class Il2CppV24Manager : MonoManagerBase
             ? new(-4, "48 83 3C ?? 00 75 ?? 8B C? E8")
             : new(2, "C3 A1 ???????? 83 3C ?? 00");
 
-        nuint typeInfoDefinitionTableRelative = _memory.Scan(typeInfoDefinitionTableSignatures, _memory.MonoModule);
-        if (typeInfoDefinitionTableRelative == 0)
+        nuint sTypeInfoDefinitionTableRelative = _memory.Scan(typeInfoDefinitionTableSignatures, _memory.MonoModule);
+        if (sTypeInfoDefinitionTableRelative == 0)
         {
             return new(
                 IsSuccess: false,
-                Error: MonoInitializationError.TypeInfoDefinitionTableSignaturesNotResolved);
+                Error: MonoInitializationError.STypeInfoDefinitionTableSignaturesNotResolved);
         }
 
-        if (!_memory.TryReadRelative(typeInfoDefinitionTableRelative, out _typeInfoDefinitionTable))
+        if (!_memory.TryReadRelative(sTypeInfoDefinitionTableRelative, out _typeInfoDefinitionTable))
         {
             return new(
                 IsSuccess: false,
-                Error: MonoInitializationError.TypeInfoDefinitionTableRelativeReadFailed);
+                Error: MonoInitializationError.STypeInfoDefinitionTableRelativeReadFailed);
         }
 
         return new(
@@ -59,8 +64,8 @@ public partial class Il2CppV24Manager : MonoManagerBase
             Value: sAssemblies);
     }
 
-    protected override Result<NativeStructMap, ParseError> InitializeStructs()
+    protected override Result<nuint[], MonoInitializationError> FindDefaults()
     {
-        return NativeStructMap.InitializeFromResource("Unity", "il2cpp", "v24", _memory.Is64Bit);
+        throw new System.NotImplementedException();
     }
 }

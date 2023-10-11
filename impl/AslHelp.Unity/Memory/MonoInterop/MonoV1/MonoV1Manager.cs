@@ -12,6 +12,11 @@ public partial class MonoV1Manager : MonoManagerBase
     public MonoV1Manager(IMonoMemoryManager memory)
         : base(memory) { }
 
+    protected override Result<NativeStructMap, ParseError> InitializeStructs()
+    {
+        return NativeStructMap.InitializeFromResource("Unity", "mono", "v1", _memory.Is64Bit);
+    }
+
     protected override Result<nuint, MonoInitializationError> FindLoadedAssemblies()
     {
         if (!_memory.MonoModule.Symbols.TryGetValue("mono_assembly_foreach", out DebugSymbol symMonoAssemblyForeach))
@@ -53,8 +58,51 @@ public partial class MonoV1Manager : MonoManagerBase
             Value: loadedAssemblies);
     }
 
-    protected override Result<NativeStructMap, ParseError> InitializeStructs()
+    protected override Result<nuint[], MonoInitializationError> FindDefaults()
     {
-        return NativeStructMap.InitializeFromResource("Unity", "mono", "v1", _memory.Is64Bit);
+        if (!_memory.MonoModule.Symbols.TryGetValue("mono_get_corlib", out DebugSymbol symMonoGetCorLib))
+        {
+            return new(
+                IsSuccess: false,
+                Error: MonoInitializationError.Unknown);
+        }
+
+        if (symMonoGetCorLib.Address == 0)
+        {
+            return new(
+                IsSuccess: false,
+                Error: MonoInitializationError.Unknown);
+        }
+
+        Signature signature =
+            _memory.Is64Bit
+            ? new(3, "48 8B 05 ???????? C3")
+            : new(1, "A1 ???????? C3");
+
+        nuint monoDefaultsRelative = _memory.Scan(signature, symMonoGetCorLib.Address, 0x10);
+        if (monoDefaultsRelative == 0)
+        {
+            return new(
+                IsSuccess: false,
+                Error: MonoInitializationError.Unknown);
+        }
+
+        if (!_memory.TryReadRelative(monoDefaultsRelative, out nuint monoDefaults))
+        {
+            return new(
+                IsSuccess: false,
+                Error: MonoInitializationError.Unknown);
+        }
+
+        if (!_memory.TryReadSpan(out nuint[]? defaultInstances, 18, monoDefaults))
+        {
+            return new(
+                IsSuccess: false,
+                Error: MonoInitializationError.Unknown);
+        }
+
+        return new(
+            IsSuccess: true,
+            Value: defaultInstances);
     }
 }

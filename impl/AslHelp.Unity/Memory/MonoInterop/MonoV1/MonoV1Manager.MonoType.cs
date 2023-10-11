@@ -6,6 +6,16 @@ public partial class MonoV1Manager
 {
     public override nuint GetTypeClass(nuint type)
     {
+        MonoElementType elementType = GetTypeElementType(type);
+
+        switch (elementType)
+        {
+            case MonoElementType.Object:
+            {
+
+            }
+        }
+
         throw new NotImplementedException();
     }
 

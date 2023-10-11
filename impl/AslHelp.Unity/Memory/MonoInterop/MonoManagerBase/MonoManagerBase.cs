@@ -20,8 +20,10 @@ public abstract partial class MonoManagerBase : IMonoManager
     public LazyDictionary<string, MonoImage> Images { get; }
 
 #nullable disable
+    // These properties are initialized as part of `Initialize` and will never be `null`.
     protected NativeStructMap Structs { get; private set; }
     protected nuint LoadedAssemblies { get; private set; }
+    protected nuint[] Defaults { get; private set; }
 #nullable restore
 
     public abstract IEnumerable<nuint> GetImages();

@@ -4,15 +4,20 @@ namespace AslHelp.Unity.Memory.MonoInterop;
 
 public enum MonoInitializationError
 {
-    [ErrorMessage("Failure during struct initialization.")]
-    StructInitializationFailed,
+    Unknown,
 
+    // Startup errors.
     [ErrorMessage("The provided Mono module is not supported.")]
     InvalidMonoModule,
 
     [ErrorMessage("This Il2Cpp version is not supported.")]
     UnsupportedIl2CppVersion,
 
+    // Struct initialization errors.
+    [ErrorMessage("Failure during struct initialization.")]
+    StructInitializationFailed,
+
+    // Find loaded assemblies errors.
     [ErrorMessage("The symbol 'mono_assembly_foreach' was not found in the Mono module.")]
     SymbolMonoAssemblyForeachNotFound,
 
@@ -20,20 +25,32 @@ public enum MonoInitializationError
     SymbolMonoAssemblyForeachNull,
 
     [ErrorMessage("None of the signatures for 'mono_assembly_foreach' could be resolved.")]
-    MonoAssemblyForeachSignaturesNotResolved,
+
 
     [ErrorMessage("The relative address for 'mono_assembly_foreach' could not be read.")]
-    MonoAssemblyForeachRelativeReadFailed,
 
+
+    // s_Assemblies errors.
     [ErrorMessage("None of the signatures for 's_Assemblies' could be resolved.")]
     SAssembliesSignaturesNotResolved,
 
     [ErrorMessage("The relative address for 's_Assemblies' could not be read.")]
     SAssembliesRelativeReadFailed,
 
-    [ErrorMessage("None of the signatures for 'typeInfoDefinitionTable' could be resolved.")]
-    TypeInfoDefinitionTableSignaturesNotResolved,
+    // s_TypeInfoDefinitionTable errors.
+    [ErrorMessage("None of the signatures for 's_TypeInfoDefinitionTable' could be resolved.")]
+    STypeInfoDefinitionTableSignaturesNotResolved,
 
-    [ErrorMessage("The relative address for 'typeInfoDefinitionTable' could not be read.")]
-    TypeInfoDefinitionTableRelativeReadFailed
+    [ErrorMessage("The relative address for 's_TypeInfoDefinitionTable' could not be read.")]
+    STypeInfoDefinitionTableRelativeReadFailed,
+
+    // Defaults errors.
+    [ErrorMessage("None of the signatures for 'mono_defaults'/'il2cpp_defaults' could be resolved.")]
+    DefaultsSignaturesNotResolved,
+
+    [ErrorMessage("The relative address for 'mono_defaults'/'il2cpp_defaults' could not be read.")]
+    DefaultsRelativeReadFailed,
+
+    [ErrorMessage("The fields of the defaults could not be read.")]
+    DefaultsFieldsReadFailed
 }
