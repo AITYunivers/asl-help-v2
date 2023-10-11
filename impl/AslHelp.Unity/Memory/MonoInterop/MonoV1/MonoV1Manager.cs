@@ -38,7 +38,7 @@ public partial class MonoV1Manager : MonoManagerBase
         {
             return new(
                 IsSuccess: false,
-                Error: MonoInitializationError.MonoAssemblyForeachSignatureNotResolved);
+                Error: MonoInitializationError.MonoAssemblyForeachSignaturesNotResolved);
         }
 
         if (!_memory.TryReadRelative(loadedAssembliesRelative, out nuint loadedAssemblies))

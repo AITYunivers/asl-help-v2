@@ -23,6 +23,8 @@ internal partial class NetFx20Dictionary<TKey, TValue>
         {
             uint next = (uint)_next, count = (uint)_dictionary.Count;
 
+            // Use unsigned comparison, since we set `index` to `_dictionary.Count + 1` when the enumeration ends.
+            // `_dictionary.Count + 1` could be negative if `_dictionary.Count` is `int.MaxValue`.
             while (next < count)
             {
                 ref Link link = ref _dictionary._linkSlots[next++];

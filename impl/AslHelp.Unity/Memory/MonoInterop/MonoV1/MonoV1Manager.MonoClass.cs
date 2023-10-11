@@ -44,14 +44,4 @@ public partial class MonoV1Manager
     {
         return _memory.Read<nuint>(klass + Structs["MonoClass"]["parent"]);
     }
-
-    public override nuint GetArrayClass(nuint arrayClass)
-    {
-        return _memory.Read<nuint>(arrayClass + Structs["MonoArrayType"]["rank"]);
-    }
-
-    public override nuint GetGenericInstClass(nuint genericClass)
-    {
-        return _memory.Read<nuint>(genericClass + Structs["MonoGenericClass"]["context"]);
-    }
 }

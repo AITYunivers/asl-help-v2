@@ -7,17 +7,17 @@ using AslHelp.Core.Memory.Ipc;
 
 namespace AslHelp.Unity.Memory.Ipc;
 
-public sealed class MonoExternalMemoryManager : MonoMemoryManagerBase
+public sealed class ExternalMonoMemoryManager : MonoMemoryManagerBase
 {
     private readonly ExternalMemoryManager _baseManager;
 
-    public MonoExternalMemoryManager(Process process)
+    public ExternalMonoMemoryManager(Process process)
         : base(process)
     {
         _baseManager = new(process);
     }
 
-    public MonoExternalMemoryManager(Process process, ILogger logger)
+    public ExternalMonoMemoryManager(Process process, ILogger logger)
         : base(process, logger)
     {
         _baseManager = new(process, logger);

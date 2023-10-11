@@ -11,14 +11,6 @@ internal sealed partial class NetFx40Dictionary<TKey, TValue> : IReadOnlyDiction
     where TKey : unmanaged
     where TValue : unmanaged
 {
-    public struct Entry
-    {
-        public int HashCode;
-        public int Next;
-        public TKey Key;
-        public TValue Value;
-    }
-
     private readonly int[] _buckets;
     private readonly Entry[] _entries;
 

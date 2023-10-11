@@ -1,8 +1,9 @@
+
 using System;
 
 namespace AslHelp.Unity.Memory.MonoInterop;
 
-public partial class MonoV1Manager
+public partial class Il2CppV24Manager
 {
     public override nuint GetTypeClass(nuint type)
     {
@@ -11,11 +12,11 @@ public partial class MonoV1Manager
 
     public override MonoFieldAttribute GetTypeAttributes(nuint type)
     {
-        return _memory.Read<MonoFieldAttribute>(type + Structs["MonoType"]["attrs"]);
+        return _memory.Read<MonoFieldAttribute>(type + Structs["Il2CppType"]["attrs"]);
     }
 
     public override MonoElementType GetTypeElementType(nuint type)
     {
-        return _memory.Read<MonoElementType>(type + Structs["MonoType"]["type"]);
+        return _memory.Read<MonoElementType>(type + Structs["Il2CppType"]["type"]);
     }
 }

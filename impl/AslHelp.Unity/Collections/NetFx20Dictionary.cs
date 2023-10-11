@@ -10,10 +10,6 @@ internal sealed partial class NetFx20Dictionary<TKey, TValue> : IReadOnlyDiction
     where TKey : unmanaged
     where TValue : unmanaged
 {
-    public readonly record struct Link(
-        int HashCode,
-        int Next);
-
     private readonly int[] _table;
     private readonly Link[] _linkSlots;
 
@@ -54,11 +50,6 @@ internal sealed partial class NetFx20Dictionary<TKey, TValue> : IReadOnlyDiction
                 yield return enumerator.Current.Value;
             }
         }
-    }
-
-    private ref int GetBucket(uint hashCode)
-    {
-        return ref _table[(hashCode & 0x7FFFFFFF) % _table.Length];
     }
 
     public TValue this[TKey key]
@@ -104,6 +95,11 @@ internal sealed partial class NetFx20Dictionary<TKey, TValue> : IReadOnlyDiction
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
+    }
+
+    private ref int GetBucket(uint hashCode)
+    {
+        return ref _table[(hashCode & 0x7FFFFFFF) % _table.Length];
     }
 
     private ref TValue FindValue(TKey key)

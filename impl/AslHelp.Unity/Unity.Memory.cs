@@ -42,7 +42,7 @@ public partial class Unity
 
     protected override IMemoryManager InitializeMemory(Process process)
     {
-        return new MonoExternalMemoryManager(process, Logger);
+        return new ExternalMonoMemoryManager(process, Logger);
     }
 
     private IMonoManager InitializeMono(IMonoMemoryManager memory)

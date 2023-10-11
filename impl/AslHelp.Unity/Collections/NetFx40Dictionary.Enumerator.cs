@@ -5,6 +5,14 @@ namespace AslHelp.Unity.Collections;
 
 internal partial class NetFx40Dictionary<TKey, TValue>
 {
+    public struct Entry
+    {
+        public int HashCode;
+        public int Next;
+        public TKey Key;
+        public TValue Value;
+    }
+
     private struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>, IEnumerator
     {
         private readonly NetFx40Dictionary<TKey, TValue> _dictionary;
@@ -27,7 +35,7 @@ internal partial class NetFx40Dictionary<TKey, TValue>
             // `_dictionary.Count + 1` could be negative if `_dictionary.Count` is `int.MaxValue`.
             while (next < count)
             {
-                ref var entry = ref _dictionary._entries[next++];
+                ref Entry entry = ref _dictionary._entries[next++];
                 if (entry.Next >= -1)
                 {
                     Current = new(entry.Key, entry.Value);

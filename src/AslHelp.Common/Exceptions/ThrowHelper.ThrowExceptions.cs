@@ -166,6 +166,21 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
+    ///     Throws a <see cref="NotSupportedException"/> with a specified error message.
+    /// </summary>
+    /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <remarks>
+    ///     This method does not return and is not inlined to improve codegen of cold paths.
+    /// </remarks>
+    /// <exception cref="NotSupportedException"/>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void ThrowNotSupportedException(string message)
+    {
+        throw new NotSupportedException(message);
+    }
+
+    /// <summary>
     ///     Throws a <see cref="Win32Exception"/>.
     /// </summary>
     /// <remarks>

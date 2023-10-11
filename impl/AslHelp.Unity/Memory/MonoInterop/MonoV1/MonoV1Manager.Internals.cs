@@ -31,4 +31,14 @@ public partial class MonoV1Manager
     {
         return _memory.Read<nuint>(klass + Structs["MonoClass"]["next_class_cache"]);
     }
+
+    public virtual nuint MonoGenericClassClass(nuint genericClass)
+    {
+        return _memory.Read<nuint>(genericClass + Structs["MonoGenericClass"]["context"]);
+    }
+
+    public virtual nuint MonoArrayTypeClass(nuint arrayType)
+    {
+        return _memory.Read<nuint>(arrayType + Structs["MonoArrayType"]["eklass"]);
+    }
 }

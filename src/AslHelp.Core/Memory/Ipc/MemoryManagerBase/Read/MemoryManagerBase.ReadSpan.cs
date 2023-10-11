@@ -53,14 +53,16 @@ public partial class MemoryManagerBase
     {
         if (!Is64Bit && IsNativeInt<T>())
         {
+            // Need to read 32-bit integers for the pointers and then copy.
+
             Span<uint> buf32 = MemoryMarshal.Cast<T, uint>(buffer);
             Span<ulong> buf64 = MemoryMarshal.Cast<T, ulong>(buffer);
 
-            ReadSpan<uint>(buf32[buf64.Length..], baseAddress, offsets);
+            ReadSpan<uint>(buf32[..buf64.Length], baseAddress, offsets);
 
             for (int i = 0; i < buf64.Length; i++)
             {
-                buf64[i] = buf32[buf64.Length + i];
+                buf64[i] = buf32[i];
             }
         }
 
@@ -143,17 +145,19 @@ public partial class MemoryManagerBase
     {
         if (!Is64Bit && IsNativeInt<T>())
         {
+            // Need to read 32-bit integers for the pointers and then copy.
+
             Span<uint> buf32 = MemoryMarshal.Cast<T, uint>(buffer);
             Span<ulong> buf64 = MemoryMarshal.Cast<T, ulong>(buffer);
 
-            if (!TryReadSpan<uint>(buf32[buf64.Length..], baseAddress, offsets))
+            if (!TryReadSpan<uint>(buf32[..buf64.Length], baseAddress, offsets))
             {
                 return false;
             }
 
             for (int i = 0; i < buf64.Length; i++)
             {
-                buf64[i] = buf32[buf64.Length + i];
+                buf64[i] = buf32[i];
             }
 
             return true;
