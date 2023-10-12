@@ -24,11 +24,9 @@ public enum MonoInitializationError
     [ErrorMessage("The address for 'mono_assembly_foreach' was null.")]
     SymbolMonoAssemblyForeachNull,
 
-    [ErrorMessage("None of the signatures for 'mono_assembly_foreach' could be resolved.")]
+    // [ErrorMessage("None of the signatures for 'mono_assembly_foreach' could be resolved.")]
 
-
-    [ErrorMessage("The relative address for 'mono_assembly_foreach' could not be read.")]
-
+    // [ErrorMessage("The relative address for 'mono_assembly_foreach' could not be read.")]
 
     // s_Assemblies errors.
     [ErrorMessage("None of the signatures for 's_Assemblies' could be resolved.")]

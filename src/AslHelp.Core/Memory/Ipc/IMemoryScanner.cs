@@ -7,21 +7,15 @@ namespace AslHelp.Core.Memory.Ipc;
 public interface IMemoryScanner
 {
     nuint Scan(int offset, params string[] pattern);
-    nuint Scan(int offset, params byte[] pattern);
     nuint Scan(string moduleName, int offset, params string[] pattern);
-    nuint Scan(string moduleName, int offset, params byte[] pattern);
     nuint Scan(Module module, int offset, params string[] pattern);
-    nuint Scan(Module module, int offset, params byte[] pattern);
     nuint Scan(nuint startAddress, nuint endAddress, int offset, params string[] pattern);
     nuint Scan(nuint startAddress, uint size, int offset, params string[] pattern);
     uint Scan(byte[] buffer, int offset, params string[] pattern);
 
     IEnumerable<nuint> ScanAll(int offset, params string[] pattern);
-    IEnumerable<nuint> ScanAll(int offset, params byte[] pattern);
     IEnumerable<nuint> ScanAll(string moduleName, int offset, params string[] pattern);
-    IEnumerable<nuint> ScanAll(string moduleName, int offset, params byte[] pattern);
     IEnumerable<nuint> ScanAll(Module module, int offset, params string[] pattern);
-    IEnumerable<nuint> ScanAll(Module module, int offset, params byte[] pattern);
     IEnumerable<nuint> ScanAll(nuint startAddress, nuint endAddress, int offset, params string[] pattern);
     IEnumerable<nuint> ScanAll(nuint startAddress, uint size, int offset, params string[] pattern);
     IEnumerable<uint> ScanAll(byte[] buffer, int offset, params string[] pattern);

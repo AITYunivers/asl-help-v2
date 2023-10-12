@@ -7,10 +7,9 @@
     }
   ],
   "files.exclude": {
+    ".idea": true,
+    ".vs": true,
     "artifacts": true,
-    "deprecated/asl-help": true,
-    "deprecated/LiveSplit.ASLHelper.bin": true,
-    "deprecated/UnityASL.bin": true,
     "lib": true,
     "**/bin": true,
     "**/obj": true

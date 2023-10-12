@@ -26,14 +26,14 @@ public partial class Il2CppV24Manager
 
     public override string GetImageName(nuint image)
     {
-        nuint assemblyNameStart = _memory.Read<nuint>(image + Structs["Il2CppImage"]["nameNoExt"]);
+        nuint assemblyNameStart = _memory.Read<nuint>(image + _structs["Il2CppImage"]["nameNoExt"]);
         return _memory.ReadString(256, ReadStringType.UTF8, assemblyNameStart);
     }
 
     public override string GetImageFileName(nuint image)
     {
         // TODO: Check if this is correct. Might be Il2CppImage.assembly.aname.name?
-        nuint assemblyNameStart = _memory.Read<nuint>(image + Structs["Il2CppImage"]["name"]);
+        nuint assemblyNameStart = _memory.Read<nuint>(image + _structs["Il2CppImage"]["name"]);
         return _memory.ReadString(260, ReadStringType.UTF8, assemblyNameStart);
     }
 }

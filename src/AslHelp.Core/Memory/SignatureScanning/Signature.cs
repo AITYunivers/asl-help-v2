@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 using AslHelp.Common.Exceptions;
@@ -53,11 +53,6 @@ public class Signature
                     (false, true) => (lower, (byte)0x0F),
                     (false, false) => ((byte)0x00, (byte)0x00)
                 };
-
-                if (!hasUpper || !hasLower)
-                {
-                    HasMasks = true;
-                }
             }
         }
 
@@ -68,29 +63,9 @@ public class Signature
         Masks = MemoryMarshal.Cast<byte, ulong>(masks).ToArray();
     }
 
-    public Signature(params byte[] pattern)
-        : this(0, pattern) { }
-
-    public Signature(int offset, params byte[] pattern)
-    {
-        ThrowHelper.ThrowIfNullOrEmpty(pattern);
-
-        Offset = offset;
-        Length = pattern.Length;
-
-        // There has to be a better way to do this.
-        int length = (pattern.Length + 7) & ~7;
-        Array.Resize(ref pattern, length);
-
-        Values = MemoryMarshal.Cast<byte, ulong>(pattern).ToArray();
-    }
-
     public int Offset { get; }
     public int Length { get; }
 
     public ulong[] Values { get; }
-    public ulong[]? Masks { get; }
-
-    [MemberNotNullWhen(true, nameof(Masks))]
-    public bool HasMasks { get; }
+    public ulong[] Masks { get; }
 }

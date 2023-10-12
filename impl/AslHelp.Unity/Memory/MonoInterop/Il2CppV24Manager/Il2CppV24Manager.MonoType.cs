@@ -12,11 +12,11 @@ public partial class Il2CppV24Manager
 
     public override MonoFieldAttribute GetTypeAttributes(nuint type)
     {
-        return _memory.Read<MonoFieldAttribute>(type + Structs["Il2CppType"]["attrs"]);
+        return _memory.Read<MonoFieldAttribute>(type + _structs["Il2CppType"]["attrs"]);
     }
 
     public override MonoElementType GetTypeElementType(nuint type)
     {
-        return _memory.Read<MonoElementType>(type + Structs["Il2CppType"]["type"]);
+        return _memory.Read<MonoElementType>(type + _structs["Il2CppType"]["type"]);
     }
 }

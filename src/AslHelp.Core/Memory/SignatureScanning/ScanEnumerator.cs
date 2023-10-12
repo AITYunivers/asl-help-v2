@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AslHelp.Core.Memory.SignatureScanning;
 
@@ -11,7 +12,6 @@ public sealed unsafe class ScanEnumerator : IEnumerable<uint>, IEnumerator<uint>
     private readonly ulong[] _values;
     private readonly ulong[]? _masks;
 
-    private readonly bool _hasMasks;
     private readonly int _length;
     private readonly int _end;
 
@@ -25,7 +25,6 @@ public sealed unsafe class ScanEnumerator : IEnumerable<uint>, IEnumerator<uint>
         _values = signature.Values;
         _masks = signature.Masks;
 
-        _hasMasks = signature.HasMasks;
         _length = signature.Values.Length;
         _end = memory.Length - _length - UNROLLS;
 
@@ -39,11 +38,6 @@ public sealed unsafe class ScanEnumerator : IEnumerable<uint>, IEnumerator<uint>
     object IEnumerator.Current => Current;
 
     public bool MoveNext()
-    {
-        return _hasMasks ? NextPattern() : NextBytes();
-    }
-
-    private unsafe bool NextPattern()
     {
         int length = _length, end = _end;
         uint next = _next;
@@ -116,99 +110,6 @@ public sealed unsafe class ScanEnumerator : IEnumerable<uint>, IEnumerator<uint>
                 for (int i = 1; i < length; i++)
                 {
                     if ((*(ulong*)(pMemory + match) & pMasks[i]) != pValues[i])
-                    {
-                        goto Next;
-                    }
-
-                    match += sizeof(ulong);
-                }
-
-                Current = next;
-                _next = next + pAlign[1];
-
-                return true;
-
-            Next:
-                ;
-            }
-
-            return false;
-        }
-    }
-
-    private unsafe bool NextBytes()
-    {
-        int length = _length, end = _end;
-        uint next = _next;
-
-        fixed (byte* pMemory = _memory)
-        fixed (uint* pAlign = _align)
-        fixed (ulong* pValues = _values)
-        {
-            ulong value0 = pValues[0];
-
-            while (next < end)
-            {
-                if ((*(ulong*)(pMemory + next) & value0) != value0)
-                {
-                    if ((*(ulong*)(pMemory + next + pAlign[1]) & value0) != value0)
-                    {
-                        if ((*(ulong*)(pMemory + next + pAlign[2]) & value0) != value0)
-                        {
-                            if ((*(ulong*)(pMemory + next + pAlign[3]) & value0) != value0)
-                            {
-                                if ((*(ulong*)(pMemory + next + pAlign[4]) & value0) != value0)
-                                {
-                                    if ((*(ulong*)(pMemory + next + pAlign[5]) & value0) != value0)
-                                    {
-                                        if ((*(ulong*)(pMemory + next + pAlign[6]) & value0) != value0)
-                                        {
-                                            if ((*(ulong*)(pMemory + next + pAlign[7]) & value0) != value0)
-                                            {
-                                                next += pAlign[8];
-                                                goto Next;
-                                            }
-                                            else
-                                            {
-                                                next += pAlign[7];
-                                            }
-                                        }
-                                        else
-                                        {
-                                            next += pAlign[6];
-                                        }
-                                    }
-                                    else
-                                    {
-                                        next += pAlign[5];
-                                    }
-                                }
-                                else
-                                {
-                                    next += pAlign[4];
-                                }
-                            }
-                            else
-                            {
-                                next += pAlign[3];
-                            }
-                        }
-                        else
-                        {
-                            next += pAlign[2];
-                        }
-                    }
-                    else
-                    {
-                        next += pAlign[1];
-                    }
-                }
-
-                uint match = next + sizeof(ulong);
-
-                for (int i = 1; i < length; i++)
-                {
-                    if (*(ulong*)(pMemory + match) != pValues[i])
                     {
                         goto Next;
                     }

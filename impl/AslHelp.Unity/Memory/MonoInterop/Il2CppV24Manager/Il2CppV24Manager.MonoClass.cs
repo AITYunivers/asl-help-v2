@@ -23,18 +23,18 @@ public partial class Il2CppV24Manager
 
     public override string GetClassName(nuint klass)
     {
-        nuint nameStart = _memory.Read<nuint>(klass + Structs["Il2CppClass"]["name"]);
+        nuint nameStart = _memory.Read<nuint>(klass + _structs["Il2CppClass"]["name"]);
         return _memory.ReadString(128, ReadStringType.UTF8, nameStart);
     }
 
     public override string GetClassNamespace(nuint klass)
     {
-        nuint nameStart = _memory.Read<nuint>(klass + Structs["Il2CppClass"]["namespaze"]);
+        nuint nameStart = _memory.Read<nuint>(klass + _structs["Il2CppClass"]["namespaze"]);
         return _memory.ReadString(256, ReadStringType.UTF8, nameStart);
     }
 
     public override nuint GetClassParent(nuint klass)
     {
-        return _memory.Read<nuint>(klass + Structs["Il2CppClass"]["parent"]);
+        return _memory.Read<nuint>(klass + _structs["Il2CppClass"]["parent"]);
     }
 }
