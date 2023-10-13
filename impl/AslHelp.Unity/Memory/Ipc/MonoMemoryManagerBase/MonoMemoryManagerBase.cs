@@ -17,17 +17,20 @@ public abstract partial class MonoMemoryManagerBase : MemoryManagerBase, IMonoMe
     {
         foreach (Module module in Modules)
         {
-            string name = module.Name;
-            if (name is "mono.dll" or "mono-2.0-bdwgc.dll")
+            switch (module.Name)
             {
-                MonoModule = module;
-                return;
-            }
-            else if (name is "GameAssembly.dll")
-            {
-                IsIl2Cpp = true;
-                MonoModule = module;
-                return;
+                case "mono.dll":
+                    MonoModule = module;
+                    RuntimeVersion = MonoRuntimeVersion.Mono;
+                    return;
+                case "mono-2.0-bdwgc.dll":
+                    MonoModule = module;
+                    RuntimeVersion = MonoRuntimeVersion.Mono20;
+                    return;
+                case "GameAssembly.dll":
+                    MonoModule = module;
+                    RuntimeVersion = MonoRuntimeVersion.Il2Cpp;
+                    return;
             }
         }
 
@@ -37,5 +40,5 @@ public abstract partial class MonoMemoryManagerBase : MemoryManagerBase, IMonoMe
 
     public Module MonoModule { get; }
 
-    public bool IsIl2Cpp { get; }
+    public MonoRuntimeVersion RuntimeVersion { get; }
 }

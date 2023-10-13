@@ -6,9 +6,9 @@ using AslHelp.Unity.Memory.MonoInterop;
 namespace AslHelp.Unity.Memory;
 
 public class MonoImageCache(
-    IMonoManager mono) : LazyDictionary<string, MonoImage>
+    IMonoInteroperator mono) : LazyDictionary<string, MonoImage>
 {
-    private readonly IMonoManager _mono = mono;
+    private readonly IMonoInteroperator _mono = mono;
 
     public override IEnumerator<MonoImage> GetEnumerator()
     {

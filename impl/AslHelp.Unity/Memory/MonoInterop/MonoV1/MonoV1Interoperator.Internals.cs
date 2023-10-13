@@ -1,6 +1,6 @@
 namespace AslHelp.Unity.Memory.MonoInterop;
 
-public partial class MonoV1Manager
+public partial class MonoV1Interoperator
 {
     protected virtual nuint GListData(nuint gList)
     {

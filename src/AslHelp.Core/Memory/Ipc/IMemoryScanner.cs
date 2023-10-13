@@ -32,6 +32,7 @@ public interface IMemoryScanner
     nuint Scan(Signature signature, Module module, uint alignment = 1);
     nuint Scan(Signature signature, Module module, uint size, uint alignment = 1);
     nuint Scan(Signature signature, nuint startAddress, nuint endAddress, uint alignment = 1);
+    nuint Scan(Signature signature, nuint startAddress, uint size, uint alignment = 1);
     uint Scan(Signature signature, byte[] buffer, uint alignment = 1);
 
     IEnumerable<nuint> ScanAll(Signature signature, uint alignment = 1);

@@ -1,6 +1,6 @@
 namespace AslHelp.Unity.Memory.MonoInterop;
 
-public partial class MonoV2Manager
+public partial class MonoV2Interoperator
 {
     protected override uint MonoClassFieldCount(nuint klass)
     {

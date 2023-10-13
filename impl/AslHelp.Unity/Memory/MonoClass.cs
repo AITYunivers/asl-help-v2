@@ -7,9 +7,9 @@ namespace AslHelp.Unity.Memory;
 
 public class MonoClass(
     nuint address,
-    IMonoManager mono)
+    IMonoInteroperator mono)
 {
-    private readonly IMonoManager _mono = mono;
+    private readonly IMonoInteroperator _mono = mono;
 
     public nuint Address { get; } = address;
 
@@ -35,10 +35,10 @@ public class MonoClass(
 
     private class MonoFieldCache(
         nuint address,
-        IMonoManager mono) : LazyDictionary<string, MonoField>
+        IMonoInteroperator mono) : LazyDictionary<string, MonoField>
     {
         private readonly nuint _address = address;
-        private readonly IMonoManager _mono = mono;
+        private readonly IMonoInteroperator _mono = mono;
 
         public override IEnumerator<MonoField> GetEnumerator()
         {

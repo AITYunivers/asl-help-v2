@@ -6,7 +6,7 @@ namespace AslHelp.Unity.Memory.MonoInterop.Initialization;
 
 public interface IMonoInitializer
 {
-    Result<NativeStructMap, ParseError> InitializeStructs(IMonoMemoryManager memory);
+    Result<NativeStructMap, MonoInitializationError> InitializeStructs(IMonoMemoryManager memory);
     Result<nuint, MonoInitializationError> FindLoadedAssemblies(IMonoMemoryManager memory);
-    Result<nuint[], MonoInitializationError> FindDefaults(IMonoMemoryManager memory);
+    Result<nuint, MonoInitializationError> FindDefaults(IMonoMemoryManager memory);
 }

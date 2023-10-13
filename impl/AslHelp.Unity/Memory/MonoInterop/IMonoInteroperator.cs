@@ -4,7 +4,7 @@ using AslHelp.Core.Collections;
 
 namespace AslHelp.Unity.Memory.MonoInterop;
 
-public interface IMonoManager
+public interface IMonoInteroperator
 {
     LazyDictionary<string, MonoImage> Images { get; }
 

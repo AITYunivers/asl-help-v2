@@ -35,4 +35,9 @@ public sealed class Error<TError>(
     {
         return new(code);
     }
+
+    public override string ToString()
+    {
+        return $"{Code}: {Message}";
+    }
 }

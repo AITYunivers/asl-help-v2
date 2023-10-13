@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-using AslHelp.Core.Reflection;
-
 using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Core.Memory.Ipc;

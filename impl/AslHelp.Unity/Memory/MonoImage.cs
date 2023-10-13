@@ -7,9 +7,9 @@ namespace AslHelp.Unity.Memory;
 
 public class MonoImage(
     nuint address,
-    IMonoManager mono) : LazyDictionary<string, MonoClass>
+    IMonoInteroperator mono) : LazyDictionary<string, MonoClass>
 {
-    private readonly IMonoManager _mono = mono;
+    private readonly IMonoInteroperator _mono = mono;
 
     public nuint Address { get; } = address;
 

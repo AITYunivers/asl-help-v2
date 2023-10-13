@@ -5,21 +5,31 @@ using AslHelp.Unity.Memory.Ipc;
 
 namespace AslHelp.Unity.Memory.MonoInterop.Initialization;
 
-public readonly struct MonoV1Initializer : IMonoInitializer
+public class MonoV1Initializer : IMonoInitializer
 {
-    public Result<NativeStructMap, ParseError> InitializeStructs(IMonoMemoryManager memory)
+    public virtual Result<NativeStructMap, MonoInitializationError> InitializeStructs(IMonoMemoryManager memory)
     {
-        return NativeStructMap.InitializeFromResource("Unity", "mono", "v1", memory.Is64Bit);
+        var result = NativeStructMap.InitializeFromResource("Unity", "mono", "v1", memory.Is64Bit);
+        if (!result.IsSuccess)
+        {
+            return new(
+                IsSuccess: false,
+                Error: new(MonoInitializationError.StructInitializationFailed, result.Error.Message));
+        }
+
+        return new(
+            IsSuccess: true,
+            Value: result.Value);
     }
 
-    public Result<nuint, MonoInitializationError> FindLoadedAssemblies(IMonoMemoryManager memory)
+    public virtual Result<nuint, MonoInitializationError> FindLoadedAssemblies(IMonoMemoryManager memory)
     {
         if (!memory.MonoModule.Symbols.TryGetValue("mono_assembly_foreach", out var symMonoAssemblyForeach)
             || symMonoAssemblyForeach.Address == 0)
         {
             return new(
                 IsSuccess: false,
-                Error: MonoInitializationError.Unknown);
+                Error: MonoInitializationError.LoadedAssembliesNotResolved);
         }
 
         Signature signature =
@@ -32,7 +42,7 @@ public readonly struct MonoV1Initializer : IMonoInitializer
         {
             return new(
                 IsSuccess: false,
-                Error: MonoInitializationError.Unknown);
+                Error: MonoInitializationError.LoadedAssembliesNotResolved);
         }
 
         return new(
@@ -40,14 +50,14 @@ public readonly struct MonoV1Initializer : IMonoInitializer
             Value: loadedAssemblies);
     }
 
-    public Result<nuint[], MonoInitializationError> FindDefaults(IMonoMemoryManager memory)
+    public virtual Result<nuint, MonoInitializationError> FindDefaults(IMonoMemoryManager memory)
     {
         if (!memory.MonoModule.Symbols.TryGetValue("mono_get_corlib", out var symMonoGetCorLib)
             || symMonoGetCorLib.Address == 0)
         {
             return new(
                 IsSuccess: false,
-                Error: MonoInitializationError.Unknown);
+                Error: MonoInitializationError.MonoDefaultsNotResolved);
         }
 
         Signature signature =
@@ -56,16 +66,15 @@ public readonly struct MonoV1Initializer : IMonoInitializer
             : new(1, "A1");
 
         nuint monoDefaultsRelative = memory.Scan(signature, symMonoGetCorLib.Address, 0x10);
-        if (!memory.TryReadRelative(monoDefaultsRelative, out nuint monoDefaults)
-            || !memory.TryReadSpan(out nuint[]? defaultInstances, 18, monoDefaults))
+        if (!memory.TryReadRelative(monoDefaultsRelative, out nuint monoDefaults))
         {
             return new(
                 IsSuccess: false,
-                Error: MonoInitializationError.Unknown);
+                Error: MonoInitializationError.MonoDefaultsNotResolved);
         }
 
         return new(
             IsSuccess: true,
-            Value: defaultInstances);
+            Value: monoDefaults);
     }
 }

@@ -1,7 +1,7 @@
 
 namespace AslHelp.Unity.Memory.MonoInterop;
 
-public partial class Il2CppV24Manager
+public partial class Il2CppV24Interoperator
 {
     protected virtual nuint Il2CppAssemblyImage(nuint assembly)
     {

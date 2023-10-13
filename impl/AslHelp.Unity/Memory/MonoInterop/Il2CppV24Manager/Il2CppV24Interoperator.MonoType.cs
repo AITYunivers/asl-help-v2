@@ -3,7 +3,7 @@ using System;
 
 namespace AslHelp.Unity.Memory.MonoInterop;
 
-public partial class Il2CppV24Manager
+public partial class Il2CppV24Interoperator
 {
     public override nuint GetTypeClass(nuint type)
     {

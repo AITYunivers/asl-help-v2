@@ -7,11 +7,21 @@ using AslHelp.Unity.Memory.Ipc;
 
 namespace AslHelp.Unity.Memory.MonoInterop.Initialization;
 
-public readonly struct Il2CppV24Initializer : IIl2CppInitializer
+public class Il2CppV24Initializer : IIl2CppInitializer
 {
-    public Result<NativeStructMap, ParseError> InitializeStructs(IMonoMemoryManager memory)
+    public Result<NativeStructMap, MonoInitializationError> InitializeStructs(IMonoMemoryManager memory)
     {
-        return NativeStructMap.InitializeFromResource("Unity", "il2cpp", "v24", memory.Is64Bit);
+        var result = NativeStructMap.InitializeFromResource("Unity", "il2cpp", "v24", memory.Is64Bit);
+        if (!result.IsSuccess)
+        {
+            return new(
+                IsSuccess: false,
+                Error: new(MonoInitializationError.StructInitializationFailed, result.Error.Message));
+        }
+
+        return new(
+            IsSuccess: true,
+            Value: result.Value);
     }
 
     public Result<nuint, MonoInitializationError> FindLoadedAssemblies(IMonoMemoryManager memory)
@@ -21,7 +31,7 @@ public readonly struct Il2CppV24Initializer : IIl2CppInitializer
         {
             return new(
                 IsSuccess: false,
-                Error: MonoInitializationError.Unknown);
+                Error: MonoInitializationError.SAssembliesNotResolved);
         }
 
         Signature callSignature =
@@ -44,7 +54,7 @@ public readonly struct Il2CppV24Initializer : IIl2CppInitializer
         {
             return new(
                 IsSuccess: false,
-                Error: MonoInitializationError.Unknown);
+                Error: MonoInitializationError.SAssembliesNotResolved);
         }
 
         return new(
@@ -52,12 +62,12 @@ public readonly struct Il2CppV24Initializer : IIl2CppInitializer
             Value: sAssemblies);
     }
 
-    public Result<nuint[], MonoInitializationError> FindDefaults(IMonoMemoryManager memory)
+    public Result<nuint, MonoInitializationError> FindTypeInfoDefinitions(IMonoMemoryManager memory)
     {
         throw new NotImplementedException();
     }
 
-    public Result<nuint, MonoInitializationError> FindTypeInfoDefinitions(IMonoMemoryManager memory)
+    public Result<nuint, MonoInitializationError> FindDefaults(IMonoMemoryManager memory)
     {
         throw new NotImplementedException();
     }

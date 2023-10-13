@@ -9,5 +9,5 @@ public interface IMonoMemoryManager :
     IMonoMemoryWriter
 {
     Module MonoModule { get; }
-    bool IsIl2Cpp { get; }
+    MonoRuntimeVersion RuntimeVersion { get; }
 }

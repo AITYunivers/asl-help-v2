@@ -5,15 +5,15 @@ using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Unity.Memory.MonoInterop;
 
-public partial class Il2CppV24Manager
+public partial class Il2CppV24Interoperator
 {
     public override IEnumerable<nuint> GetImages()
     {
         byte ptrSize = _memory.PointerSize;
 
         // il2cpp::vm::s_Assemblies is a std::vector<Il2CppAssembly*>
-        nuint front = _memory.Read<nuint>(LoadedAssemblies + (ptrSize * 0U));
-        nuint back = _memory.Read<nuint>(LoadedAssemblies + (ptrSize * 1U));
+        nuint front = _memory.Read<nuint>(_loadedAssemblies + (ptrSize * 0U));
+        nuint back = _memory.Read<nuint>(_loadedAssemblies + (ptrSize * 1U));
 
         int assembliesSize = (int)(back - front) / ptrSize;
 

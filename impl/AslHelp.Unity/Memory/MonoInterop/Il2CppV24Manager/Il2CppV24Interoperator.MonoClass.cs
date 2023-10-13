@@ -5,11 +5,11 @@ using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Unity.Memory.MonoInterop;
 
-public partial class Il2CppV24Manager
+public partial class Il2CppV24Interoperator
 {
     public override IEnumerable<nuint> GetImageClasses(nuint image)
     {
-        nuint typeInfos = _memory.Read<nuint>(_typeInfoDefinitionTable);
+        nuint typeInfos = _memory.Read<nuint>(_typeInfoDefinitions);
 
         int typeStart = Il2CppImageTypeStart(image);
         uint typeCount = Il2CppImageTypeCount(image);

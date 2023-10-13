@@ -11,9 +11,9 @@ namespace AslHelp.Unity.Memory.Pointers.Initialization;
 
 public class MonoPointerFactory : PointerFactory, IMonoPointerFactory
 {
-    private readonly IMonoManager _mono;
+    private readonly IMonoInteroperator _mono;
 
-    public MonoPointerFactory(IMonoMemoryManager memory, IMonoManager mono)
+    public MonoPointerFactory(IMonoMemoryManager memory, IMonoInteroperator mono)
         : base(memory)
     {
         _mono = mono;

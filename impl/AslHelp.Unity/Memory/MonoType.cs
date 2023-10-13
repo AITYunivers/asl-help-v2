@@ -6,9 +6,9 @@ namespace AslHelp.Unity.Memory;
 
 public class MonoType(
     nuint address,
-    IMonoManager mono)
+    IMonoInteroperator mono)
 {
-    private readonly IMonoManager _mono = mono;
+    private readonly IMonoInteroperator _mono = mono;
 
     public nuint Address { get; } = address;
 

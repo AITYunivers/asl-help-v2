@@ -6,7 +6,7 @@ using LiveSplit.ComponentUtil;
 
 namespace AslHelp.Unity.Memory.MonoInterop;
 
-public partial class MonoV1Manager
+public partial class MonoV1Interoperator
 {
     public override IEnumerable<nuint> GetClassFields(nuint klass)
     {
