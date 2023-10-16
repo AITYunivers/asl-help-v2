@@ -10,8 +10,8 @@
         { "type": "sbyte*", "name": "name" },
         { "type": "sbyte*", "name": "namespaze" },
 
-        { "type": "Il2CppType*", "name": "byval_arg" },
-        { "type": "Il2CppType*", "name": "this_arg" },
+        { "type": "Il2CppType", "name": "byval_arg" },
+        { "type": "Il2CppType", "name": "this_arg" },
 
         { "type": "Il2CppClass*", "name": "element_class" },
         { "type": "Il2CppClass*", "name": "castClass" },

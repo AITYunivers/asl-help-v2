@@ -6,6 +6,9 @@ public enum MonoInitializationError
 {
     Unknown,
 
+    [ErrorMessage("This Mono module is unsupported.")]
+    UnsupportedMonoModule,
+
     [ErrorMessage("This Il2Cpp version is not supported.")]
     UnsupportedIl2CppVersion,
 

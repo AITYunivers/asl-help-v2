@@ -49,13 +49,16 @@ public partial class Basic
         return File.Exists(file) ? Assembly.LoadFrom(file) : null;
     }
 
-    private const string UpdateAndExecute2 =
-        "at System.Dynamic.UpdateDelegates.UpdateAndExecute2[T0,T1,TRet](CallSite site, T0 arg0, T1 arg1)";
+    private const string CallSiteTarget
+        = "   at CallSite.Target(Closure , CallSite , Object , Object )";
 
-    private const string UpdateAndExecuteVoid2 =
-        "   at System.Dynamic.UpdateDelegates.UpdateAndExecuteVoid2[T0,T1](CallSite site, T0 arg0, T1 arg1)";
-    private const string CompiledScriptExecute =
-        "   at CompiledScript.Execute(LiveSplitState timer, Object old, Object current, Object vars, Process game, Object settings)";
+    private const string UpdateAndExecute2
+        = "at System.Dynamic.UpdateDelegates.UpdateAndExecute2[T0,T1,TRet](CallSite site, T0 arg0, T1 arg1)";
+
+    private const string UpdateAndExecuteVoid2
+        = "   at System.Dynamic.UpdateDelegates.UpdateAndExecuteVoid2[T0,T1](CallSite site, T0 arg0, T1 arg1)";
+    private const string CompiledScriptExecute
+        = "   at CompiledScript.Execute(LiveSplitState timer, Object old, Object current, Object vars, Process game, Object settings)";
 
     private static readonly string[] _newLines = ["\r\n", "\n"];
     private static readonly FieldInfo _messageField = typeof(Exception).GetField("_message", BindingFlags.Instance | BindingFlags.NonPublic)!;
@@ -89,7 +92,8 @@ public partial class Basic
 
         foreach (string line in stackTraceLines)
         {
-            if (line.StartsWith(UpdateAndExecute2, StringComparison.Ordinal)
+            if (line.StartsWith(CallSiteTarget, StringComparison.Ordinal)
+                || line.StartsWith(UpdateAndExecute2, StringComparison.Ordinal)
                 || line.StartsWith(UpdateAndExecuteVoid2, StringComparison.Ordinal)
                 || line.StartsWith(CompiledScriptExecute, StringComparison.Ordinal))
             {

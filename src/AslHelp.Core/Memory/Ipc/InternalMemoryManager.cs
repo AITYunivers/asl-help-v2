@@ -12,7 +12,7 @@ using AslHelp.Core.Diagnostics.Logging;
 
 namespace AslHelp.Core.Memory.Ipc;
 
-public class InternalMemoryManager : MemoryManagerBase
+public class InternalMemoryManager : MemoryManager
 {
     [SkipLocalsInit]
     [StructLayout(LayoutKind.Explicit)]

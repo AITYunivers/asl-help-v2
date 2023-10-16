@@ -7,7 +7,7 @@ using AslHelp.Core.Memory.Ipc;
 
 namespace AslHelp.Unity.Memory.Ipc;
 
-public abstract partial class MonoMemoryManagerBase : MemoryManagerBase, IMonoMemoryManager
+public abstract partial class MonoMemoryManagerBase : MemoryManager, IMonoMemoryManager
 {
     public MonoMemoryManagerBase(Process process)
         : this(process, null) { }

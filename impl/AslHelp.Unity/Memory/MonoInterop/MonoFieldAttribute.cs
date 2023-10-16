@@ -1,11 +1,9 @@
-using System;
-
 namespace AslHelp.Unity.Memory.MonoInterop;
 
-[Flags]
 public enum MonoFieldAttribute : ushort
 {
     COMPILER_CONTROLLED = 0x0000,
+
     PRIVATE = 0x0001,
     FAM_AND_ASSEM = 0x0002,
     ASSEMBLY = 0x0003,

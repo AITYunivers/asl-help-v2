@@ -7,7 +7,7 @@ using AslHelp.Core.Memory.Native;
 
 namespace AslHelp.Core.Memory.Ipc;
 
-public class ExternalMemoryManager : MemoryManagerBase
+public class ExternalMemoryManager : MemoryManager
 {
     public ExternalMemoryManager(Process process)
         : this(process, null) { }

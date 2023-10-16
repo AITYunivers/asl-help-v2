@@ -1,12 +1,12 @@
-using AslHelp.Unity.Memory.MonoInterop;
+using AslHelp.Unity.Memory.MonoInterop.Management;
 
 namespace AslHelp.Unity.Memory;
 
 public class MonoField(
     nuint address,
-    IMonoInteroperator mono)
+    MonoManager mono)
 {
-    private readonly IMonoInteroperator _mono = mono;
+    private readonly MonoManager _mono = mono;
 
     public nuint Address { get; } = address;
 
@@ -36,4 +36,9 @@ public class MonoField(
 
     private MonoType? _type;
     public MonoType Type => _type ??= new(_mono.GetFieldType(Address), _mono);
+
+    public override string ToString()
+    {
+        return $"0x{Offset:X3}: {Type} {Name}";
+    }
 }
