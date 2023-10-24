@@ -1,11 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-
+    <TargetFramework>net481</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AslHelp.Basic\*.csproj" />
+    <ProjectReference Include="../AslHelp.Basic/AslHelp.Basic.csproj" />
   </ItemGroup>
 
+  <ItemGroup Label="References">
+    <Reference Include="../../lib/LiveSplit.Core.dll" />
+  </ItemGroup>
 </Project>
